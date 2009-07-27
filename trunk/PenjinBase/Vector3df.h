@@ -1,7 +1,7 @@
 #ifndef VECTOR3DF_H
 #define VECTOR3DF_H
 
-#include "vector_math.h"        //  Vectors
+#include "trenki/vector_math.h"        //  Vectors
 #include "PenjinFixedFunc.h"
 #include <limits>
 

@@ -1,8 +1,8 @@
 #ifndef VECTOR2DX_H
 #define VECTOR2DX_H
 
-#include "vector_math.h"        //  Vectors
-#include "fixed_class.h"
+#include "trenki/vector_math.h"        //  Vectors
+#include "trenki/fixed_class.h"
 #include <limits>
 
 using namespace vmath;

@@ -1,8 +1,8 @@
 #ifndef PENJINFIXEDFUNC_H_INCLUDED
 #define PENJINFIXEDFUNC_H_INCLUDED
-#include "fixed_class.h"
-#include "fixed_func.h"
-#include "vector_math.h"
+#include "trenki/fixed_class.h"
+#include "trenki/fixed_func.h"
+#include "trenki/vector_math.h"
 namespace fixedpoint
 {
     template <int p>

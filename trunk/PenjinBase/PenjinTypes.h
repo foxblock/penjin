@@ -5,7 +5,7 @@ NOTE: Be very careful with inclusion as the typedefs will affect any headers inc
 
 #include <string>
 //#include "PenjinFixedFunc.h"    // Fixed point
-#include "vector_math.h"        //  Vectors
+#include "trenki/vector_math.h"        //  Vectors
 #include "Vector2df.h"
 #include "Vector2dx.h"
 #include "Vector2di.h"
