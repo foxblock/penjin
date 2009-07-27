@@ -1,6 +1,6 @@
 #ifndef VECTOR2DF_H
 #define VECTOR2DF_H
-#include "vector_math.h"        //  Vectors
+#include "trenki/vector_math.h"        //  Vectors
 #include "PenjinFixedFunc.h"
 #include <limits>
 
