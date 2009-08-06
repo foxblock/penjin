@@ -25,10 +25,10 @@ class CollisionMap
 		{
 			if(x < 0 || y < 0 || x > map.getWidth() || y > map.getHeight())
 				return noCollision;
-			else
-				Colour c = map.getPixel(x,y);
-				c.alpha = 255;
-				return c;
+			
+			Colour c = map.getPixel(x,y);
+			c.alpha = 255;
+			return c;
 		}  //  check what sort of collision has been made.
         
 bool hasCollided(CRuint x, CRuint y){return (getCollisionType(x,y) != noCollision);}         //  has there been a collision?
