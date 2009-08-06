@@ -3,6 +3,7 @@
 
 #include "PenjinTypes.h"
 #include "Colour.h"
+#include "GFX.h"
 #ifdef PENJIN_GL
 #include <SDL/SDL_opengl.h>
 #endif
@@ -27,6 +28,16 @@ class Rectangle
 
         template <class T>
         void setDimensions(const T& w, const T& h)
+        {
+            dimensions.x = w; dimensions.y = h;
+            #ifdef PENJIN_SDL
+                resize();
+                setRectangle();
+            #endif
+        }
+
+        template <class T, class S>
+        void setDimensions(const T& w, const S& h)
         {
             dimensions.x = w; dimensions.y = h;
             #ifdef PENJIN_SDL

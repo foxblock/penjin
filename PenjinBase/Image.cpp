@@ -452,7 +452,51 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     void Image::setPixel(CRfloat x,CRfloat y,const uchar& r,const uchar& g,const uchar& b,const uchar& a){setPixel(x,y,0.0f,r,g,b,255);}
     void Image::setPixel(CRfloat x,CRfloat y,const uchar& r,const uchar& g,const uchar& b){setPixel(x,y,0.0f,r,g,b,255);}
     void Image::setPixel(CRfloat x,CRfloat y,const Colour& c){setPixel(x,y,0.0f,c.red,c.green,c.blue,c.alpha);}
-#endif // PENJIN3D
+
+    Colour Image::getPixel(CRint x, CRint y)
+    {
+        glPushAttrib(GL_ENABLE_BIT);
+        glDrawBuffer(GL_BACK);
+
+        // TODO: save the pixel that was at 0, 0
+
+        // Only clear one point for our operation
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glScissor(0, 0, 1, 1);
+        glEnable(GL_SCISSOR_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glOrtho(0, 1.0, 1.0, 0, -0.001, 1.0);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glBindTexture(GL_TEXTURE_2D, textures.at(0).getTextureID());
+        glEnable(GL_TEXTURE_2D);
+
+        // Draw the one point of our texture
+        glBegin(GL_POINTS);
+            glTexCoord3f(x/getWidth(), y/getHeight(), 0);
+            glVertex3f(0, 0, 0);
+        glEnd();
+
+        // Read the alpha value: if the pixel was
+        // opaque (glAlphaTest succeeded), z-buffer was
+        // written to by the above operation, otherwise
+        // it should be intact
+        GLfloat pix[4*4];
+        glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, pix);
+
+        // TODO: put back the pixel that was at 0, 0
+
+        glScissor(0, 0, 1, 1);
+
+        glMatrixMode(GL_PROJECTION);
+        glDepthFunc(GL_LESS);
+
+        glPopAttrib();
+        return Colour(pix[0],pix[1],pix[2],pix[3]);
+    }
+#endif // PENJIN_SDL
 
 size_t Image::size()const
 {

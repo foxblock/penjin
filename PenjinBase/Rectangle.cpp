@@ -15,6 +15,7 @@ Rectangle::Rectangle()
     colour = WHITE;
     #ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
+        rectangle = NULL;
     #endif
 }
 
@@ -29,6 +30,7 @@ Rectangle::Rectangle()
         angle = 0.0f;
         #ifdef PENJIN_SDL
             screen = SDL_GetVideoSurface();
+            rectangle = NULL;
         #endif
     }
 #endif
@@ -54,13 +56,12 @@ Rectangle::~Rectangle()
 #ifdef PENJIN_SDL
 void Rectangle::render(SDL_Surface* scr)
 {
-    SDL_Rect src,dst;
-    dst.x = dst.y = 0;
-    src.x = position.x;
-    src.y = position.y;
-    src.w = dst.w = dimensions.x;
-    src.h = dst.h = dimensions.y;
-    SDL_BlitSurface(rectangle, &src, scr, &dst);
+    SDL_Rect dst;
+    dst.x = position.x;
+    dst.y = position.y;
+    dst.w = dimensions.x;
+    dst.h = dimensions.y;
+    SDL_BlitSurface(rectangle, NULL, scr, &dst);
 }
 #else
 void Rectangle::render()
@@ -136,6 +137,8 @@ void Rectangle::render()
         t.x=t.y=0;
         t.w = dimensions.x;
         t.h = dimensions.y;
+        SDL_FillRect(rectangle, NULL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
+        SDL_SetColorKey(rectangle, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
         SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red,colour.green,colour.blue));
         if(colour.alpha != SDL_ALPHA_OPAQUE)
             SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
