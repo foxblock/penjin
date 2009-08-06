@@ -163,6 +163,9 @@ class Image
             void setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a);
             void setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b);
 
+            // Get a pixel from the image
+            Colour getPixel(CRint x, CRint y);
+
             /// Override dimensions of texture
             void setWidth(CRint w){textures[0].setWidth(w);}
             void setHeight(CRint h){textures[0].setHeight(h);}

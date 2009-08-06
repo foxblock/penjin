@@ -10,7 +10,7 @@ class CollisionMap
         CollisionMap();
         ~CollisionMap();
 
-        PENJIN_ERRORS loadImage(CRstring image){return map.loadImage(image);}
+        PENJIN_ERRORS loadImage(CRstring image){return map.loadImageNoKey(image);}
         void setNoCollisionColour(const Colour& c){noCollision = c;}
         Colour getNoCollisionColour()const{return noCollision;}
 

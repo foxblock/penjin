@@ -329,8 +329,6 @@ void Emitter::update()
         if(invisible > 0)
         {
             --invisible;
-            if(!stopNew)
-                reset(max-1-invisible);
         }
     }
 
@@ -366,13 +364,13 @@ void Emitter::update()
                         particles[i]->changeAlpha(fadeValue);// should be alpha but that doesn't have a working routine yet.
                 #endif
                 Colour col = particles[i]->getColour();
-                if((col == BLACK || col == WHITE) && !stopNew)
+                if((col == BLACK || col == WHITE))
                     reset(i);
             }
         }
         if(particles[i]->getLifeTime() >= lifeTime)
         {
-            if(repeat && !stopNew)
+            if(repeat)
                 reset(i);
             else
             {

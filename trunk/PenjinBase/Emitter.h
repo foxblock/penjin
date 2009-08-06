@@ -93,27 +93,30 @@ class Emitter
 
         void reset(CRint i)
         {
-            particles[i]->setPosition(position);
-            #ifndef PENJIN3D
-                #ifdef PENJIN_FIXED
-                    Fixed x = Random::nextFixed(0,(maxVelocity.x.intValue >> 16) *2)-maxVelocity.x;
-                    Fixed y = Random::nextFixed(0,(maxVelocity.y.intValue >> 16) *2)-maxVelocity.y;
+            if(!stopNew)
+            {
+                particles[i]->setPosition(position);
+                #ifndef PENJIN3D
+                    #ifdef PENJIN_FIXED
+                        Fixed x = Random::nextFixed(0,(maxVelocity.x.intValue >> 16) *2)-maxVelocity.x;
+                        Fixed y = Random::nextFixed(0,(maxVelocity.y.intValue >> 16) *2)-maxVelocity.y;
+                    #else
+                        float x = Random::nextFloat(0,maxVelocity.x *2)-maxVelocity.x;
+                        float y = Random::nextFloat(0,maxVelocity.y *2)-maxVelocity.y;
+                    #endif
+                    particles[i]->setVelocity(Vector2df(x,y));
                 #else
                     float x = Random::nextFloat(0,maxVelocity.x *2)-maxVelocity.x;
                     float y = Random::nextFloat(0,maxVelocity.y *2)-maxVelocity.y;
+                    float z = Random::nextFloat(0,maxVelocity.z *2)-maxVelocity.z;
+                    particles[i]->setVelocity(Vector3df(x,y,z));
                 #endif
-                particles[i]->setVelocity(Vector2df(x,y));
-            #else
-                float x = Random::nextFloat(0,maxVelocity.x *2)-maxVelocity.x;
-                float y = Random::nextFloat(0,maxVelocity.y *2)-maxVelocity.y;
-                float z = Random::nextFloat(0,maxVelocity.z *2)-maxVelocity.z;
-                particles[i]->setVelocity(Vector3df(x,y,z));
-            #endif
-            particles[i]->setColour(colour);
-            particles[i]->setGravity(gravity);
-            particles[i]->setAcceleration(acceleration);
-            particles[i]->setDeviation(deviance);
-            particles[i]->setLifeTime(0);
+                particles[i]->setColour(colour);
+                particles[i]->setGravity(gravity);
+                particles[i]->setAcceleration(acceleration);
+                particles[i]->setDeviation(deviance);
+                particles[i]->setLifeTime(0);
+            }
         }
         void resetPlayback()
         {

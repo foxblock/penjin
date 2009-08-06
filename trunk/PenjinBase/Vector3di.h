@@ -96,9 +96,15 @@ class Vector3di : public vec3<int>
         /// Vector operations
         Vector3di unit()const{fixed_point<16> temp = length();return Vector3di(fix2int(x/temp),fix2int(y/temp),fix2int(z/temp));}
         template <class T>
-        fixed_point<16> dot(const T& v)const{return (x*v.x+y*v.y+z*v.z);}
-        fixed_point<16> length() const{return fixsqrt16(lengthSquared());}
-        fixed_point<16> lengthSquared() const{return (x*x + y*y + z*z);}
+        #ifdef PENJIN_FIXED
+            fixed_point<16> dot(const T& v)const{return (x*v.x+y*v.y+z*v.z);}
+            fixed_point<16> length() const{return fixsqrt16(lengthSquared());}
+            fixed_point<16> lengthSquared() const{return (x*x + y*y + z*z);}
+        #else
+            float dot(const T& v)const{return (x*v.x+y*v.y+z*v.z);}
+            float length() const{return fixsqrt16(lengthSquared());}
+            float lengthSquared() const{return (x*x + y*y + z*z);}
+        #endif
         void normalise();
 
         //  TODO the following functions need implementing.

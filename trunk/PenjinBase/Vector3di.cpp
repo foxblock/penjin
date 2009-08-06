@@ -7,12 +7,22 @@ Vector3di::Vector3di()
 
 void Vector3di::normalise()
 {
-    fixed_point<16> temp = (1/length());
+    #ifdef PENJIN_FIXED
+        fixed_point<16> temp = (1/length());
+	#else
+        float temp = (1/length());
+	#endif
 	if (temp <= std::numeric_limits<float>::max())
 	{
-		x *= fix2int(temp);
-		y *= fix2int(temp);
-		z *= fix2int(temp);
+        #ifdef PENJIN_FIXED
+            x *= fix2int(temp);
+            y *= fix2int(temp);
+            z *= fix2int(temp);
+        #else
+            x *= temp;
+            y *= temp;
+            z *= temp;
+        #endif
 	}
 	else
 	{
