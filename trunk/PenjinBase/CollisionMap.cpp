@@ -3,7 +3,7 @@
 CollisionMap::CollisionMap()
 {
     //ctor
-    noCollision = BLACK;
+    noCollision = WHITE;
 }
 
 CollisionMap::~CollisionMap()
