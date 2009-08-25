@@ -11,10 +11,12 @@
 #include "Rectangle.h"
 #include "CollisionMap.h"
 
+// RECT Struct
 struct RECT
 {
     int x, y, w, h;
 };
+
 //-----------------------------------------------------
 // HitRegion Class
 //-----------------------------------------------------
@@ -36,6 +38,7 @@ public:
     bool hitTest(HitRegion region);
     bool hitTest(HitRegion* region);
     bool hitTest(CollisionMap* map);
+    Colour colourTest(CollisionMap* map);
 
 private:
 	//-------------------------------------------------
@@ -50,14 +53,6 @@ private:
 	// Datamembers
 	//-------------------------------------------------
     RECT m_Region;
-};
-
-//-----------------------------------------------------
-// POINT Struct
-//-----------------------------------------------------
-struct POINT
-{
-    int x, y;
 };
 
 #endif // HitRegion_H
