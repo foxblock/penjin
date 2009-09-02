@@ -10,10 +10,8 @@
 #endif
 
 #include "version.h"    //  Application version info
-#include "PenjinStates.h"		//	List all game states in this file
-#include "PenjinTypes.h"		//	All Penjin types listed here.
 #include "ErrorHandler.h"	// Will report various errors depending on where called.
-#include "StringUtility.h"
+#include "GFX.h"
 #include "SimpleJoy.h"
 
 #include <string>

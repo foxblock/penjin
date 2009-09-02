@@ -198,7 +198,7 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
         // Don't render if invisible or if there is no image!
         if(alpha == SDL_ALPHA_TRANSPARENT)
             return;
-        if(!images.size())
+        if(!images.size() || i >= this->size())
         {
             if(sheetMode)   //  We have a spritesheet
             {
@@ -494,7 +494,7 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
         glDepthFunc(GL_LESS);
 
         glPopAttrib();
-        return Colour(pix[0],pix[1],pix[2],pix[3]);
+        return Colour(pix[0]*255.0f,pix[1]*255.0f,pix[2]*255.0f,pix[3]*255.0f);
     }
 #endif // PENJIN_SDL
 
