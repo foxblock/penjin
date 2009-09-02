@@ -75,6 +75,14 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 	alpha = 255;
 }
 
+void Colour::setColour(CRint rgb)
+{
+    alpha = 255;
+    red = (rgb & 0x0000ff);
+    green = (rgb & 0x00ff00)/0x100;
+    blue = (rgb & 0xff0000)/0x10000;
+}
+
 bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
 {
    if(red >= r)

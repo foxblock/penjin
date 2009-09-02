@@ -40,11 +40,13 @@ class Colour
 			blue = colour.blue;
 			alpha = colour.alpha;
         }
+        Colour (CRint rgb){setColour(rgb);}
 
         void setColour(const Colour& c){setColour(c.red,c.green,c.blue,c.alpha);}
         void setColour(const uchar& r,const uchar& g,const uchar& b);            // Set the colour using RGB
         void setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a);	//	Set the colour using RGBA
         void setColour(const PENJIN_COLOURS& colour);						//	Set the colour using predefines
+        void setColour(CRint rgb);                                          // Set the colour using a Delphi int (red + green * 256 + blue * 256 * 256)
 
         SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
         Uint32 getSDL_Uint32Colour(const SDL_Surface* dst)const;
