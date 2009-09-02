@@ -37,6 +37,7 @@ class Animation
         //  Overide the start frame
         void setCurrentFrame(CRuint frame){currentFrame = frame;}
         uint getCurrentFrame()const{return currentFrame;}
+        bool hasFinished()const{return((size_t)currentFrame >= image.size()-1 && numLoops == 0);}
         void rewind()
         {
             currentFrame = 0;
@@ -67,5 +68,6 @@ class Animation
         bool playReversed;
         bool reachedEnd;        //  Used in conjunction with playReversed.
                             //  Keeps track of which end of the animation we're at.
+        bool firstRender;
 };
 #endif	//	ANIMATION_H

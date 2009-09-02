@@ -10,7 +10,7 @@
 #ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
 #elif PENJIN_SDL
-    #include <SDL.h>
+    #include <SDL/SDL.h>
 #endif
 //#include "LUT.h"
 

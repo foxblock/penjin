@@ -14,6 +14,7 @@ Animation::Animation()
 	#endif
 	playReversed = false;
 	reachedEnd = false;
+	firstRender = false;
 	#ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
 	#endif
@@ -71,7 +72,10 @@ void Animation::update()
     	if(animationTimer.getScaledTicks() >= 1)
         {
             animationTimer.start();
-            ++currentFrame;
+
+            // prevent frame advance if no frames have been rendered
+            if(firstRender)
+                ++currentFrame;
         }
         if((size_t)currentFrame > image.size()-1)
         {
@@ -124,8 +128,18 @@ void Animation::update()
 }
 
 #ifdef PENJIN_SDL
-    void Animation::render(SDL_Surface *screen){image.renderImage(currentFrame, screen, position);}
+    void Animation::render(SDL_Surface *screen)
+    {
+        if(!firstRender)
+            firstRender = true;
+        image.renderImage(currentFrame, screen, position);
+    }
 #else
-    void Animation::render(){image.renderImage(currentFrame, position);}
+    void Animation::render()
+    {
+        if(!firstRender)
+            firstRender = true;
+        image.renderImage(currentFrame, position);
+    }
 #endif
 

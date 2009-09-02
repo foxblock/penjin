@@ -42,10 +42,6 @@ class  BaseState
             virtual void render();		//	Draw all objects
             virtual void pauseScreen();
         #endif
-        /// Pausing
-        bool getIsPaused()const{return isPaused;}
-        bool getFirstPaused()const{return firstPaused;}
-        void setFirstPaused(CRbool pause){firstPaused = pause;}
         virtual void pauseUpdate();     //  Update to run when paused
 
         virtual void onPause(){;}       //  Do stuff when just paused
@@ -55,6 +51,12 @@ class  BaseState
 		virtual void unlimitedUpdate(); //  Update not restricted by frame rate
 		virtual void userInput();	    //	Take user input
 		virtual void init();		    //	init function for states if you need to setup variables etc
+
+
+        /// Pausing
+        bool getIsPaused()const{return isPaused;}
+        bool getFirstPaused()const{return firstPaused;}
+        void setFirstPaused(CRbool pause){firstPaused = pause;}
 
 		/// State Management
 		uint getNextState()const{return nextState;}
