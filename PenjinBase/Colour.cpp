@@ -2,13 +2,26 @@
 
 void Colour::setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a)
 {
-   red = r;
-   green = g;
-   blue = b;
-   alpha = a;
+    red = r;
+    green = g;
+    blue = b;
+    alpha = a;
+    #ifdef PENJIN_GL
+        toGL();
+    #endif
 }
 
-void Colour::setColour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b,255);}
+void Colour::setColour(CRfloat r, CRfloat g, CRfloat b, CRfloat a)
+{
+
+    red = r;
+    green = g;
+    blue = b;
+    alpha = a;
+    #ifndef PENJIN_GL
+        toNormal();
+    #endif
+}
 
 void Colour::setColour(const PENJIN_COLOURS& c)
 {
@@ -73,6 +86,10 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 		blue = 0;
 	}
 	alpha = 255;
+
+    #ifdef PENJIN_GL
+        toGL();
+    #endif
 }
 
 void Colour::setColour(CRint rgb)
@@ -81,6 +98,9 @@ void Colour::setColour(CRint rgb)
     red = (rgb & 0x0000ff);
     green = (rgb & 0x00ff00)/0x100;
     blue = (rgb & 0xff0000)/0x10000;
+    #ifdef PENJIN_GL
+        toGL();
+    #endif
 }
 
 bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
@@ -111,10 +131,16 @@ bool Colour::isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a
 
 SDL_Color Colour::getSDL_Colour()
 {
-	SDL_Color tempCol;
-	tempCol.r = red;
-	tempCol.g = green;
-	tempCol.b = blue;
+    SDL_Color tempCol;
+	#ifdef PENJIN_GL
+        tempCol.r = red * 255;
+        tempCol.g = green * 255;
+        tempCol.b = blue * 255;
+    #else
+        tempCol.r = red;
+        tempCol.g = green;
+        tempCol.b = blue;
+	#endif
 	return tempCol;
 }
 
@@ -122,7 +148,7 @@ Uint32 Colour::getSDL_Uint32Colour(const SDL_Surface* dst)const{return SDL_MapRG
 
 void Colour::convertColour(Uint32 c)
 {
-    //Change from an "int color" to an SDL_Color
+    //Change from an "int color" to a Colour
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         alpha = (c & 0xff000000)/0x1000000;
         red = (c & 0x00ff0000)/0x10000;
@@ -134,4 +160,27 @@ void Colour::convertColour(Uint32 c)
         blue = (c & 0x00ff0000)/0x10000;
         alpha = (c & 0xff000000)/0x1000000;
     #endif
+    #ifdef PENJIN_GL
+        toGL();
+    #endif
 }
+
+#ifdef PENJIN_GL
+    void Colour::toGL()
+    {
+        const float DIV_255 = 0.003921569f;
+        red = red * DIV_255;
+        green = green * DIV_255;
+        blue = blue * DIV_255;
+        alpha = alpha * DIV_255;
+    }
+#else
+    void Colour::toNormal()
+    {
+        const uchar t = 255;
+        red = red * t;
+        green = green * t;
+        blue = blue * t;
+        alpha = alpha * t;
+    }
+#endif

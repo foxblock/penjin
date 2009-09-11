@@ -183,7 +183,7 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
             }
 
             //  With the surface now converted to a texture we can render it to a quad
-            glColor4f(1.0f, 1.0f, 1.0f, colour.alpha*0.003921569f);
+            glColor4f(1.0f, 1.0f, 1.0f, colour.alpha);
             glBindTexture (GL_TEXTURE_2D, texture.getTextureID());
             glEnable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);

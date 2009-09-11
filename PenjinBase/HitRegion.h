@@ -30,7 +30,10 @@ public:
 	// Public Methods
 	//-------------------------------------------------
     void init(int x, int y, int width, int height);
-    void render(SDL_Surface* screen);
+    #ifdef PENJIN_SDL
+        void render(SDL_Surface* screen);
+    #endif
+    void render();
 
     void move(int x, int y);
     void moveTo(int x, int y);

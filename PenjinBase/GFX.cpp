@@ -2,8 +2,8 @@
 
 namespace GFX
 {
-    Colour clear;
 #ifdef PENJIN_SDL
+    Colour clear;
     SDL_Surface* screen;
 #endif
 }
@@ -28,7 +28,7 @@ namespace GFX
                     //	check if the coord is within the border else continue
                     if((j<= y+thick || j>=y+h-thick) || (i <= x+thick || i>=x+w-thick))
                     {
-                        baseColour.setColour(baseColour.red-i+j,baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
+                        baseColour.setColour((uchar)(baseColour.red-i+j),baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
                         //baseColour.setColour(baseColour.red+ ,baseColour.green+lut.Lsin(j).intValue >> 16,baseColour.blue+lut.Lsin(j).intValue >> 16);
                         t.setPosition(i,j);
                         t.setColour(baseColour);
@@ -43,7 +43,7 @@ namespace GFX
             {
                 for(int j = h-1; j >= y; --j)
                 {
-                    baseColour.setColour(baseColour.red-i+j,baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
+                    baseColour.setColour((uchar)(baseColour.red-i+j),baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
                     //baseColour.setColour(baseColour.red+ ,baseColour.green+lut.Lsin(j).intValue >> 16,baseColour.blue+lut.Lsin(j).intValue >> 16);
                     t.setPosition(i,j);
                     t.setColour(baseColour);
@@ -155,14 +155,14 @@ namespace GFX
 #elif PENJIN_GL
     void GFX::setPixel(CRint x, CRint y, const Colour& colour)
     {
-        glColor4f(colour.red*0.003921569f, colour.green*0.003921569f, colour.blue*0.003921569f, colour.alpha*0.003921569f); // 1/255
+        glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
         glVertex2i(x,y);
     }
     Colour GFX::getPixel(CRint x, CRint y)
     {
 
     }
-    void GFX::setClearColour(const Colour& c){glClearColor(c.red*0.003921569f,c.green*0.003921569f,c.blue*0.003921569f,c.alpha*0.003921569f);}
+    void GFX::setClearColour(const Colour& c){glClearColor(c.red,c.green,c.blue,c.alpha);}
     void GFX::init2DRendering(CRint x, CRint y)
     {
         // Setup OpenGL
