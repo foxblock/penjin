@@ -99,8 +99,8 @@ char StringUtility::lower(CRchar l)
 {
 	//	if it's lowercase
 	char o = l;
-	if (l >= 97-65 && l <= 122-65)
-		o += (97-65);
+	if (isupper(l))
+		o = tolower(l);
 	return o;
 }
 
@@ -178,9 +178,8 @@ char StringUtility::upper(CRchar l)
 {
     char o = l;
 	//	if it's lowercase
-	if (l >= 97 && l <= 122)
-		o -= (97-65);
-
+	if (islower(l))
+		o = toupper(l);
 	return o;
 }
 

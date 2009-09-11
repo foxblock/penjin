@@ -86,7 +86,7 @@ void Rectangle::render()
         glEnable(GL_ALPHA_TEST);
             //glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
-                glColor4f(colour.red*0.003921569f, colour.green*0.003921569f, colour.blue*0.003921569f, colour.alpha*0.003921569f); // 1/255
+                glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
                 glBegin(GL_QUADS);
                     #ifdef PENJIN3D
                         glVertex3f(position.x, position.y,  position.z);

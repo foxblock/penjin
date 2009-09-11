@@ -17,12 +17,12 @@ enum PENJIN_COLOURS
 	RED,
 	GREEN,
 	BLUE,
-	WHITE,
 	YELLOW,
 	PURPLE,
 	MAGENTA,
 	ORANGE,
-	BROWN
+	BROWN,
+	WHITE
 };
 
 class Colour
@@ -42,9 +42,14 @@ class Colour
         }
         Colour (CRint rgb){setColour(rgb);}
 
+        // OpenGL type colour
+        void setColour(CRfloat r,CRfloat g,CRfloat b,CRfloat a);
+        void setColour(CRfloat r,CRfloat g,CRfloat b){setColour(r,g,b,1.0f);}
+
+        //  Normal colours
         void setColour(const Colour& c){setColour(c.red,c.green,c.blue,c.alpha);}
-        void setColour(const uchar& r,const uchar& g,const uchar& b);            // Set the colour using RGB
         void setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a);	//	Set the colour using RGBA
+        void setColour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b,255);}            // Set the colour using RGB
         void setColour(const PENJIN_COLOURS& colour);						//	Set the colour using predefines
         void setColour(CRint rgb);                                          // Set the colour using a Delphi int (red + green * 256 + blue * 256 * 256)
 
@@ -149,10 +154,21 @@ class Colour
         bool notEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return !isEqual(r,g,b,a);}
 
         // Colour data
-        uchar red;
-        uchar green;
-        uchar blue;
-        uchar alpha;
+        #ifdef PENJIN_GL
+            float red; // Values stores in range 0.0 - 1.0f
+            float green;
+            float blue;
+            float alpha;
+
+            void toGL();
+        #else
+            uchar red; // 0 - 256 range
+            uchar green;
+            uchar blue;
+            uchar alpha;
+
+            void toNormal();
+        #endif
 };
 
 #endif // COLOUR_H_INCLUDED

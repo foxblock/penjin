@@ -62,7 +62,7 @@ void Particle::init()
     void Particle::render()
     {
         /// TODO update rendering for OGL since Pixel class has been added
-        glColor4f(colour.getRed()/255.0f, colour.getGreen()/255.0f, colour.getBlue()/255.0f, colour.getAlpha()/255.0f);
+        glColor4f(colour.getRed(), colour.getGreen(), colour.getBlue(), colour.getAlpha());
         #ifdef PENJIN3D
             glVertex3f(position.x,position.y,position.z);
         #else

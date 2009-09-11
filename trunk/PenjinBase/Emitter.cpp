@@ -270,19 +270,19 @@ void Emitter::advanceUpdate(CRuint n)
                 {
                     Colour col = particles[i]->getColour();
                     Colour tCol;
-                    tCol.setColour(5,5,5);
+                    tCol.setColour((uchar)5,5,5);
                     if((col >= BLACK && col <= Colour(BLACK) + tCol) || (col <= WHITE && col >= Colour(WHITE) - tCol))
                         reset(i);
                     #ifdef PENJIN_FIXED
                         if(fade == 1)
                             particles[i]->changeColour(fadeValue.intValue<<16);
                         else if (fade == 2)
-                            particles[i]->changeColour(fadeValue.intValue<<16);// should be alpha but that doesn't have a working routine yet.
+                            particles[i]->changeAlpha(fadeValue.intValue<<16);// should be alpha but that doesn't have a working routine yet.
                     #else
                         if(fade == 1)
                             particles[i]->changeColour(fadeValue);
                         else if (fade == 2)
-                            particles[i]->changeColour(fadeValue);// should be alpha but that doesn't have a working routine yet.
+                            particles[i]->changeAlpha(fadeValue);// should be alpha but that doesn't have a working routine yet.
                     #endif
 
                 }
