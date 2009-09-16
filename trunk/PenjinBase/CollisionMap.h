@@ -25,12 +25,17 @@ class CollisionMap
 		{
 			if(x < 0 || y < 0 || x > map.getWidth() || y > map.getHeight())
 				return noCollision;
-			
+
 			Colour c = map.getPixel(x,y);
-			c.alpha = 255;
+			#ifdef PENJIN_SDL
+                c.alpha = 255;
+            #else
+                c.alpha = 1.0f;
+            #endif
+
 			return c;
 		}  //  check what sort of collision has been made.
-        
+
 bool hasCollided(CRuint x, CRuint y){return (getCollisionType(x,y) != noCollision);}         //  has there been a collision?
 
     private:

@@ -1,6 +1,6 @@
 #ifndef BACKBUFFER_H
 #define BACKBUFFER_H
-
+#include "GFX.h"
 #include "Pixel.h"
 
 class BackBuffer
@@ -21,7 +21,9 @@ class BackBuffer
             void setPixel(Pixel p){p.render(buffer);}
         #else
             void render();
-            void update();
+            void update(){;}
+            void setAlpha(CRuchar a){alpha = a * 0.003921569f;}
+            void setAlpah(CRfloat a){alpha = a;}
         #endif
 
 
@@ -30,6 +32,8 @@ class BackBuffer
         #ifdef PENJIN_SDL
             SDL_Surface* buffer;    //  The back buffer
             SDL_Surface* screen;    //  The pointer to the screen.
+        #else
+            float alpha;
         #endif
 };
 
