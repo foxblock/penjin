@@ -494,7 +494,7 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
         glDepthFunc(GL_LESS);
 
         glPopAttrib();
-        return Colour(pix[0]*255.0f,pix[1]*255.0f,pix[2]*255.0f,pix[3]*255.0f);
+        return Colour((float)pix[0],pix[1],pix[2],pix[3]);
     }
 #endif // PENJIN_SDL
 

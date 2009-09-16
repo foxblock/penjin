@@ -5,6 +5,8 @@
 #include "Colour.h"
 #ifdef PENJIN_GL
 #include <SDL/SDL_opengl.h>
+#elif PENJIN_SDL
+#include <SDL/SDL_gfxPrimitives.h>
 #endif
 class Line
 {
@@ -36,6 +38,9 @@ class Line
         #endif
         float lineWidth;
         Colour colour;
+        #ifdef PENJIN_SDL
+        SDL_Surface* screen;
+        #endif
 };
 
 #endif // LINE_H

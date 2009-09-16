@@ -6,6 +6,9 @@ Line::Line()
     start.x = start.y = 0;
     end.y = end.x = 10;
     lineWidth = 1.0f;
+    #ifdef PENJIN_SDL
+    screen = SDL_GetVideoSurface();
+    #endif
 }
 
 Line::~Line()
@@ -13,8 +16,19 @@ Line::~Line()
     //dtor
 }
 
+#ifdef PENJIN_SDL
+void Line::render(SDL_Surface* scr)
+{
+lineRGBA(scr,
+             start.x, start.y,
+             end.x, end.y,
+             colour.red, colour.green, colour.blue, colour.alpha);
+}
+#endif
+
 void Line::render()
 {
+#ifdef PENJIN_GL
         // Scale and rotate
     glPushMatrix();
 /*
@@ -53,4 +67,7 @@ void Line::render()
             //glDisable(GL_BLEND);
         glDisable(GL_ALPHA_TEST);
     glPopMatrix();
+#else
+    render(screen);
+#endif
 }
