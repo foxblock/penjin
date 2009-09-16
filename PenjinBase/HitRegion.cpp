@@ -80,7 +80,7 @@ bool HitRegion::hitTest(CollisionMap* map)
     {
         for(int ypos = m_Region.y; ypos <= m_Region.y + m_Region.h; ypos += 1)
         {
-            if(map->hasCollided(xpos, ypos)) return true;
+            if(map->getCollisionType(xpos, ypos) == BLACK) return true;
         }
     }
 

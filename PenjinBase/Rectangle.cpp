@@ -125,7 +125,7 @@ void Rectangle::render()
         }
         else if(dimensions.x > rectangle->w || dimensions.y > rectangle->h)
         {
-            delete rectangle;
+            SDL_FreeSurface(rectangle);
             init();
         }
         // Surface should now be big enough

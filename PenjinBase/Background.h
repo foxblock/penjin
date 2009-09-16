@@ -10,6 +10,7 @@ public:
 	~Background();
 
 	PENJIN_ERRORS loadBackground(CRstring file);
+	void setPosition(Vector2di pos){position = pos;}
     #ifdef PENJIN_SDL
         void render(SDL_Surface *screen);	//	The destination surface the animation should be rendered to
         void render(){render(screen);}
