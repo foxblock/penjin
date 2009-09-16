@@ -42,16 +42,14 @@ public:
     bool hitTest(HitRegion* region);
     bool hitTest(CollisionMap* map);
     Colour colourTest(CollisionMap* map);
+    Colour colourTest(CollisionMap* map, int x, int y);
 
-private:
-	//-------------------------------------------------
-	// Private Methods
-	//-------------------------------------------------
     int getX();
     int getY();
     int getWidth();
     int getHeight();
 
+private:
 	//-------------------------------------------------
 	// Datamembers
 	//-------------------------------------------------

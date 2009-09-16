@@ -90,6 +90,14 @@ Colour HitRegion::colourTest(CollisionMap* map)
 {
     return map->getCollisionType(m_Region.x + (m_Region.w / 2), m_Region.y + (m_Region.h / 2));
 }
+Colour HitRegion::colourTest(CollisionMap* map, int x, int y)
+{
+    int xpos = min(m_Region.w - 1, x);
+
+    int ypos = min(m_Region.h - 1, y);
+
+    return map->getCollisionType(m_Region.x + xpos, m_Region.y + ypos);
+}
 int HitRegion::getX()
 {
     return m_Region.x;
