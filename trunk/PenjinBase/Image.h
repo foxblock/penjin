@@ -179,6 +179,11 @@ class Image
         #endif
 
     private:
+        // Disabled to revent double freed pointers.
+        Image(const Image& BlingRef);
+        Image& operator=(const Image& BlingRef);
+
+
 		#ifdef PENJIN_SDL
             bool useHardware;           //  To know if the images should be converted to hardware surfaces
             vector<SDL_Surface*>images; //  Stores surfaces
