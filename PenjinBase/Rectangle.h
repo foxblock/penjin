@@ -53,7 +53,15 @@ class Rectangle
                 setRectangle();
             #endif
         }
-
+#ifdef PENJIN_SDL
+    void setThickness(CRuint t)
+    {
+        thickness = t;
+        setRectangle();
+    }
+#else
+    void setThickness(CRfloat t){thickness = t;}
+#endif
         void init();
 
         virtual ~Rectangle();
@@ -68,14 +76,17 @@ class Rectangle
 
         Vector2di dimensions;
         Colour colour;
+
     #ifdef PENJIN3D
         Vector3df position;
         Vector3df scale;
         Vector3df rotation;
+        float thickness;
     #else
         Vector2df position;
         Vector2df scale;
         float angle;
+        uint thickness;
     #endif
 
     #ifdef PENJIN_SDL
