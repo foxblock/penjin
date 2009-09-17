@@ -5,6 +5,7 @@ Rectangle::Rectangle()
     //ctor
     position.x = position.y;
     dimensions.x = dimensions.y = 1;
+    thickness = 0;
     #ifdef PENJIN3D
         scale.x = scale.y = scale.z = 1.0f;
         rotation.x = rotation.y = rotation.z = 0.0f;
@@ -28,6 +29,7 @@ Rectangle::Rectangle()
         dimensions.y = r.h;
         scale.x = scale.y = 1.0f;
         angle = 0.0f;
+        thickness = 0;
         #ifdef PENJIN_SDL
             screen = SDL_GetVideoSurface();
             rectangle = NULL;
@@ -87,6 +89,12 @@ void Rectangle::render()
             //glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
                 glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
+                if(thickness>0)
+                {
+                glLineWidth(thickness);
+                glBegin(GL_LINE_LOOP);
+                }
+                else
                 glBegin(GL_QUADS);
                     #ifdef PENJIN3D
                         glVertex3f(position.x, position.y,  position.z);
@@ -140,6 +148,14 @@ void Rectangle::render()
         SDL_FillRect(rectangle, NULL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
         SDL_SetColorKey(rectangle, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
         SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red,colour.green,colour.blue));
+        if(thickness>0)
+        {
+            t.x+=thickness;
+            t.y+=thickness;
+            t.w-=thickness*2;
+            t.h-=thickness*2;
+            SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
+        }
         if(colour.alpha != SDL_ALPHA_OPAQUE)
             SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
     }
