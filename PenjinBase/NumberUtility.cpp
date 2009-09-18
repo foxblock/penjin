@@ -1,5 +1,9 @@
 #include "NumberUtility.h"
 
+///----------------------
+/// analysis
+///----------------------
+
 #ifdef PENJIN_FIXED
     Fixed NumberUtility::linearInterpolate(CRint x, CRint y, CRFixed step)
     {
@@ -8,8 +12,6 @@
             return temp;
         return Fixed(y);
     }
-    int NumberUtility::roundUp(CRFixed x){return Fixed(x + 0.5f).intValue<<16;}
-    int NumberUtility::roundDown(CRFixed x){return Fixed(x - 0.5f).intValue<<16;}
 #else
     float NumberUtility::linearInterpolate(CRint x, CRint y, CRfloat step)
     {
@@ -18,8 +20,6 @@
             return temp;
         return (float)y;
     }
-    int NumberUtility::roundUp(CRfloat x){return (int)(x + 0.5f);}
-    int NumberUtility::roundDown(CRfloat x){return (int)(x - 0.5f);}
 #endif
 
 int NumberUtility::nextPowerOfTwo(CRint x)
@@ -28,8 +28,26 @@ int NumberUtility::nextPowerOfTwo(CRint x)
     return (int)round(pow(2,ceil(logbase2)));
 }
 
-/// Check if a value is a power of two
 bool NumberUtility::isPowerOfTwo(CRint x){return ((x != 0) && !(x & (x - 1)));}
+
+bool NumberUtility::isPrime(CRint value)
+{
+    for (int I = 2; I < int(value/2); I++)
+        if (value % I == 0)
+            return false;
+    return true;
+}
+
+bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
+
+template <class T>
+int NumberUtility::sign(const T& value)
+{
+    if (value == 0)
+        return 0;
+    else
+        return value / abs(value);
+}
 
 int NumberUtility::wrapValue(int val,CRint limit)
 {
@@ -52,9 +70,6 @@ int NumberUtility::wrapValue(int val,CRint limit)
     return val;
 }
 
-
-bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
-
 //template<typename T>
 //T NumberUtility::wrapValue(T val,const T& limit)
 //{
@@ -76,3 +91,52 @@ bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
 //    }
 //    return val;
 //}
+
+
+///----------------------
+/// statistics
+///----------------------
+
+int NumberUtility::getGreatest(const int arr[], CRint length)
+{
+    int result = arr[0];
+    for (int I = 1; I < length; I++)
+    {
+        if (arr[I] > result)
+        {
+            result = arr[I];
+        }
+    }
+    return result;
+}
+
+int NumberUtility::getGreatestIndex(const int arr[], CRint length)
+{
+    int result = 0;
+    for (int I = 1; I < length; I++)
+    {
+        if (arr[I] > arr[result])
+        {
+            result = I;
+        }
+    }
+    return result;
+}
+
+bool NumberUtility::isGreatest(const int arr[], CRint index, CRint length)
+{
+    for (int I = 0; I < length; I++)
+    {
+        if (arr[I] > arr[index])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/*template <class T, int length>
+T NumberUtility::test(const T (&arr)[length], CRint index)
+{
+    return arr[index];
+}*/
