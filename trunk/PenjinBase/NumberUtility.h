@@ -17,7 +17,7 @@ namespace NumberUtility
     T limit(const T& x, const T& minV, const T& maxV){return min( maxV, max(minV,x));}
     bool isMultiple(CRint x,CRint y);
     bool isPowerOfTwo(CRint x);
-    bool isPrime(CRint value);
+    bool isPrime(CRuint value);
     int nextPowerOfTwo(CRint x);
     template <class T>
     int sign(const T& value);   // Signum function, returns the sign of a number
@@ -27,9 +27,9 @@ namespace NumberUtility
 
     /// statistics
 
-    int getGreatest(const int arr[], CRint length);                    // Returns the greatest number in an array
-    int getGreatestIndex(const int arr[], CRint length);               // Returns the index of the greatest number in an array
-    bool isGreatest(const int arr[], CRint index, CRint length);       // Checks if the supplied element is the greatest in an array of numbers
+    int getGreatest(const int arr[], CRuint length);                    // Returns the greatest number in an array
+    int getGreatestIndex(const int arr[], CRuint length);               // Returns the index of the greatest number in an array
+    bool isGreatest(const int arr[], CRuint index, CRuint length);       // Checks if the supplied element is the greatest in an array of numbers
     //template <class T, int length>
     //T test(const T (&arr)[length], CRint index);
 

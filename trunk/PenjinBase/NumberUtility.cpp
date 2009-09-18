@@ -30,9 +30,9 @@ int NumberUtility::nextPowerOfTwo(CRint x)
 
 bool NumberUtility::isPowerOfTwo(CRint x){return ((x != 0) && !(x & (x - 1)));}
 
-bool NumberUtility::isPrime(CRint value)
+bool NumberUtility::isPrime(CRuint value)
 {
-    for (int I = 2; I < int(value/2); I++)
+    for (int I = 2; I <= int(value/2); I++)
         if (value % I == 0)
             return false;
     return true;
@@ -97,7 +97,7 @@ int NumberUtility::wrapValue(int val,CRint limit)
 /// statistics
 ///----------------------
 
-int NumberUtility::getGreatest(const int arr[], CRint length)
+int NumberUtility::getGreatest(const int arr[], CRuint length)
 {
     int result = arr[0];
     for (int I = 1; I < length; I++)
@@ -110,7 +110,7 @@ int NumberUtility::getGreatest(const int arr[], CRint length)
     return result;
 }
 
-int NumberUtility::getGreatestIndex(const int arr[], CRint length)
+int NumberUtility::getGreatestIndex(const int arr[], CRuint length)
 {
     int result = 0;
     for (int I = 1; I < length; I++)
@@ -123,7 +123,7 @@ int NumberUtility::getGreatestIndex(const int arr[], CRint length)
     return result;
 }
 
-bool NumberUtility::isGreatest(const int arr[], CRint index, CRint length)
+bool NumberUtility::isGreatest(const int arr[], CRuint index, CRuint length)
 {
     for (int I = 0; I < length; I++)
     {
