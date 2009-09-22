@@ -1,0 +1,12 @@
+03 September 2009
+   released version 0.0.57 of TestSuite
+
+     Change log:
+        -Updated: StateAnimation. now checks the hasFinished state of both Animations and AnimatedSprites. Pressing LEFT rewinds the animation.
+
+03 September 2009
+   released version 0.0.53 of TestSuite
+
+     Change log:
+        -Added: Some basic Point types which may be useful in future.
+
