@@ -22,11 +22,36 @@
     }
 #endif
 
+int NumberUtility::digitSum(CRuint value)
+{
+    int result = 0;
+    int temp = value;
+    while (temp > 0)
+        {
+            result += temp % 10;
+            temp /= 10;
+        }
+    return result;
+}
+
+template <class T>
+int NumberUtility::sign(const T& value)
+{
+    if (value == 0)
+        return 0;
+    else
+        return value / abs(value);
+}
+
 int NumberUtility::nextPowerOfTwo(CRint x)
 {
     double logbase2 = log(x) / log(2);
     return (int)round(pow(2,ceil(logbase2)));
 }
+
+bool NumberUtility::isEven(CRint value){return (value%2 == 0);}
+
+bool NumberUtility::isOdd(CRint value){return !(value%2 ==0);}
 
 bool NumberUtility::isPowerOfTwo(CRint x){return ((x != 0) && !(x & (x - 1)));}
 
@@ -39,15 +64,6 @@ bool NumberUtility::isPrime(CRuint value)
 }
 
 bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
-
-template <class T>
-int NumberUtility::sign(const T& value)
-{
-    if (value == 0)
-        return 0;
-    else
-        return value / abs(value);
-}
 
 int NumberUtility::wrapValue(int val,CRint limit)
 {
