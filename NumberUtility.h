@@ -13,9 +13,12 @@ namespace NumberUtility
     float linearInterpolate(CRint x, CRint y, CRfloat step);
 #endif
 
+    int digitSum(CRuint value);
     template <class T>
     T limit(const T& x, const T& minV, const T& maxV){return min( maxV, max(minV,x));}
+    bool isEven(CRint value);
     bool isMultiple(CRint x,CRint y);
+    bool isOdd(CRint value);
     bool isPowerOfTwo(CRint x);
     bool isPrime(CRuint value);
     int nextPowerOfTwo(CRint x);
