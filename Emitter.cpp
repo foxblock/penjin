@@ -275,9 +275,9 @@ void Emitter::advanceUpdate(CRuint n)
                         reset(i);
                     #ifdef PENJIN_FIXED
                         if(fade == 1)
-                            particles[i]->changeColour(fadeValue.intValue<<16);
+                            particles[i]->changeColour(fadeValue);
                         else if (fade == 2)
-                            particles[i]->changeAlpha(fadeValue.intValue<<16);// should be alpha but that doesn't have a working routine yet.
+                            particles[i]->changeAlpha(fixedpoint::fix2int(fadeValue));// should be alpha but that doesn't have a working routine yet.
                     #else
                         if(fade == 1)
                             particles[i]->changeColour(fadeValue);
@@ -354,7 +354,7 @@ void Emitter::update()
             {
                 #ifdef PENJIN_FIXED
                     if(fade == 1)
-                        particles[i]->changeColour(fadeValue.intValue<<16);
+                        particles[i]->changeColour(fadeValue);
                     else if (fade == 2)
                         particles[i]->changeAlpha(fadeValue.intValue<<16);// should be alpha but that doesn't have a working routine yet.
                 #else
