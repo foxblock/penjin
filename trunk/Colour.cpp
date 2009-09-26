@@ -13,11 +13,17 @@ void Colour::setColour(const uchar& r,const uchar& g,const uchar& b,const uchar&
 
 void Colour::setColour(CRfloat r, CRfloat g, CRfloat b, CRfloat a)
 {
-
-    red = r;
-    green = g;
-    blue = b;
-    alpha = a;
+    #ifdef PENJIN_FIXED
+        red = fixedpoint::fix2int(r);
+        green = fixedpoint::fix2int(g);
+        blue = fixedpoint::fix2int(b);
+        alpha = fixedpoint::fix2int(a);
+    #else
+        red = r;
+        green = g;
+        blue = b;
+        alpha = a;
+    #endif
     #ifndef PENJIN_GL
         toNormal();
     #endif

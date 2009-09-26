@@ -16,8 +16,13 @@ void LUT::init()
     for(uint i = 0; i < 128; ++i)
     {
         //  1/256 = 0.00390625f
-        sinCos[i] = sin(i * (2*PI)*ONE_OVER_TWOFIVESIX);
-        tanTable[i] = tan(i * (2*PI)*ONE_OVER_TWOFIVESIX);
+        #ifdef PENJIN_FIXED
+            sinCos[i] = sin(fixedpoint::fix2float(i * (2*PI)*ONE_OVER_TWOFIVESIX));
+            tanTable[i] = tan(fixedpoint::fix2float(i * (2*PI)*ONE_OVER_TWOFIVESIX));
+        #else
+            sinCos[i] = sin(i * (2*PI)*ONE_OVER_TWOFIVESIX);
+            tanTable[i] = tan(i * (2*PI)*ONE_OVER_TWOFIVESIX);
+        #endif
     }
 
 }

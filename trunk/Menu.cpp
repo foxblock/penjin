@@ -182,7 +182,7 @@ void Menu::removeItem()
         removeItem(size-1);
 }
 
-int Menu::loadFont(CRstring fontName,CRint fontSize)
+PENJIN_ERRORS Menu::loadFont(CRstring fontName,CRint fontSize)
 {
     //  Check for the existence of the Text
     if(text)

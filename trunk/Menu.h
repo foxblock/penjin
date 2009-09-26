@@ -35,10 +35,11 @@ class Menu
         void menuDown();
 
         /// Report active selection
-        int getCurrentSelection(){return currentSelection;}
-        void setCurrentSelection(CRint curr){currentSelection = curr;}
+        int getSelection(){return currentSelection;}
+        void setSelection(CRint curr){currentSelection = curr;}
         bool setMouseSelection(const Vector2di& mousePos){return setMouseSelection(mousePos.x, mousePos.y);}
         bool setMouseSelection(CRint x,CRint y);   //  Returns true if mouse is hovering over a section false otherwise
+        Vector2df getSelectionPosition()const{return menuItems.at(currentSelection)->getPosition();}
 
         /// Set the topleft corner of the menu
         #ifndef PENJIN3D
@@ -74,14 +75,14 @@ class Menu
         void clear();                                   //  Clear the menu completely.
 
         /// Size operations
-        uint size(){return menuItems.size();}
+        size_t size()const{return menuItems.size();}
 
         /// MenuItem functions
         void setIsSelectable(CRuint item,CRbool isSelectable);
         void setIsSelectable(CRbool isSelectable);        //  Set the last menu item's selectability
 
         /// StringMenuItem functions
-        int loadFont(CRstring fontName,CRint fontSize);   //  Load a font into the shared Text
+        PENJIN_ERRORS loadFont(CRstring fontName,CRint fontSize);   //  Load a font into the shared Text
         void setTextColour(const Colour& colour);              //  Set the colour of the text
         void setTextSelectionColour(const Colour& colour){textSelectionColour = colour;}
         void setMenuItemText(CRstring text);              //  Set the topmost menu item text properties
