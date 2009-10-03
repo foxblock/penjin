@@ -22,11 +22,11 @@
     }
 #endif
 
-int NumberUtility::digitSum(CRuint value)
+int NumberUtility::digitSum(CRint value)
 {
     int result = 0;
     int temp = value;
-    while (temp > 0)
+    while (temp != 0)
         {
             result += temp % 10;
             temp /= 10;
@@ -34,26 +34,19 @@ int NumberUtility::digitSum(CRuint value)
     return result;
 }
 
-template <class T>
-int NumberUtility::sign(const T& value)
-{
-    if (value == 0)
-        return 0;
-    else
-        return value / abs(value);
-}
+bool NumberUtility::isEven(CRint value){return (value%2 == 0);}
+
+bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
+
+bool NumberUtility::isOdd(CRint value){return !(value%2 ==0);}
+
+bool NumberUtility::isPowerOfTwo(CRint x){return ((x != 0) && !(x & (x - 1)));}
 
 int NumberUtility::nextPowerOfTwo(CRint x)
 {
     double logbase2 = log(x) / log(2);
     return (int)round(pow(2,ceil(logbase2)));
 }
-
-bool NumberUtility::isEven(CRint value){return (value%2 == 0);}
-
-bool NumberUtility::isOdd(CRint value){return !(value%2 ==0);}
-
-bool NumberUtility::isPowerOfTwo(CRint x){return ((x != 0) && !(x & (x - 1)));}
 
 bool NumberUtility::isPrime(CRuint value)
 {
@@ -62,8 +55,6 @@ bool NumberUtility::isPrime(CRuint value)
             return false;
     return true;
 }
-
-bool NumberUtility::isMultiple(CRint x,CRint y){return (x%y == 0);}
 
 int NumberUtility::wrapValue(int val,CRint limit)
 {
@@ -113,46 +104,8 @@ int NumberUtility::wrapValue(int val,CRint limit)
 /// statistics
 ///----------------------
 
-int NumberUtility::getGreatest(const int arr[], CRuint length)
-{
-    int result = arr[0];
-    for (int I = 1; I < length; I++)
-    {
-        if (arr[I] > result)
-        {
-            result = arr[I];
-        }
-    }
-    return result;
-}
-
-int NumberUtility::getGreatestIndex(const int arr[], CRuint length)
-{
-    int result = 0;
-    for (int I = 1; I < length; I++)
-    {
-        if (arr[I] > arr[result])
-        {
-            result = I;
-        }
-    }
-    return result;
-}
-
-bool NumberUtility::isGreatest(const int arr[], CRuint index, CRuint length)
-{
-    for (int I = 0; I < length; I++)
-    {
-        if (arr[I] > arr[index])
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 /*template <class T, int length>
-T NumberUtility::test(const T (&arr)[length], CRint index)
+T NumberUtility::test(T (&arr)[length], int index)
 {
     return arr[index];
 }*/
