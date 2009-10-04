@@ -4,6 +4,16 @@
 //#include "KeyboardDefines.h"
 #include "PenjinTypes.h"
 #include "KeyMapper.h"
+
+#if defined(PLATFORM_PANDORA)
+#include <linux/input.h>
+
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#endif
+
 /*
 TODO: Add Wii Controls/GBA/NDS etc
 */
@@ -49,6 +59,11 @@ class SimpleJoy
         bool isUpRight()const{return UpRight;}
         bool isDownLeft()const{return DownLeft;}
         bool isDownRight()const{return DownRight;}
+    #else
+        bool isUpLeft()const{return false;}
+        bool isUpRight()const{return false;}
+        bool isDownLeft()const{return false;}
+        bool isDownRight()const{return false;}
     #endif
 
         /// Joystick
@@ -87,6 +102,16 @@ class SimpleJoy
         int getTouchY()const{return mouse.y;}
         bool isTouch()const{return leftClick;}
 
+#if defined(PLATFORM_PANDORA)
+        /// Nub's
+        Vector2di getNubLeft()const{return nubL;}
+        int getNubLeftX()const{return nubL.x;}
+        int getNubLeftY()const{return nubL.y;}
+        Vector2di getNubRight()const{return nubR;}
+        int getNubRightX()const{return nubR.x;}
+        int getNubRightY()const{return nubR.y;}
+#endif
+
         void resetKeys();
 
         /// Status
@@ -116,6 +141,26 @@ class SimpleJoy
     #endif
         KeyMapper mapper;
         bool mapLoaded;
+
+    #if defined(PLATFORM_PANDORA)
+        #define DEV_NUBL 1
+        #define DEV_NUBR 2
+        #define PND_NUBL "vsense66"
+        #define PND_NUBR "vsense67"
+        #define NUB_CUTOFF 5
+        #define NUB_SCALE  10
+
+        int PND_OpenEventDeviceByName( char device_name[] );
+        void PND_ReadEvents( int fd, int device );
+        void PND_CheckEvent( struct input_event *event, int device );
+
+        int fd_nubL, fd_nubR, rd, version, i;
+        struct input_event ev[64];
+        char event_name[30];
+        char dev_name[256]; //= "Unknown";
+        unsigned short id[4];
+        Vector2di nubL, nubR;
+    #endif
 };
 
 #endif // SIMPLEJOY_H

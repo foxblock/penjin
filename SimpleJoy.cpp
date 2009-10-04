@@ -5,6 +5,13 @@ SimpleJoy::~SimpleJoy()
 {
     if(Joy)
         SDL_JoystickClose(0);
+
+#if defined(PLATFORM_PANDORA)
+	if( fd_nubL > 0 )
+		close(fd_nubL );
+	if( fd_nubR > 0 )
+		close(fd_nubR );
+#endif
 }
 
 SimpleJoy::SimpleJoy()
@@ -26,6 +33,11 @@ SimpleJoy::SimpleJoy()
     joystickStatus();
 #endif
 
+#if defined(PLATFORM_PANDORA)
+	// Open Pandora analog nub's
+	fd_nubL = PND_OpenEventDeviceByName(PND_NUBL);
+	fd_nubR = PND_OpenEventDeviceByName(PND_NUBR);
+#endif
 }
 
 void SimpleJoy::update()
@@ -132,6 +144,11 @@ void SimpleJoy::update()
             case SDL_MOUSEMOTION:       mouseMotion(Event.motion.x, Event.motion.y);break;
         }*/
     }
+
+    #if defined(PLATFORM_PANDORA)
+    PND_ReadEvents( fd_nubL, DEV_NUBL );
+    PND_ReadEvents( fd_nubR, DEV_NUBR );
+    #endif
 }
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
@@ -280,6 +297,13 @@ void SimpleJoy::resetKeys()
         mouse.x = 0;
         mouse.y = 0;
         leftClick=rightClick=false;
+
+    #if defined(PLATFORM_PANDORA)
+        nubL.x = 0;
+        nubL.y = 0;
+        nubR.x = 0;
+        nubR.y = 0;
+    #endif
 }
 
 void SimpleJoy::joystickStatus()
@@ -295,3 +319,94 @@ void SimpleJoy::joystickStatus()
     }
 }
 
+#if defined(PLATFORM_PANDORA)
+int SimpleJoy::PND_OpenEventDeviceByName( char device_name[] )
+{
+	int fd;
+
+	for (i = 0; 1; i++)
+	{
+		snprintf( event_name, sizeof(event_name), "/dev/input/event%d", i );
+		//printf( "Device: %s\n", event_name );
+		if ((fd = open(event_name, O_RDONLY |  O_NDELAY)) < 0) {
+			perror("ERROR: Could not open device");
+			return 0;
+		}
+		if (fd < 0) break; /* no more devices */
+
+		ioctl(fd, EVIOCGNAME(sizeof(dev_name)), dev_name);
+		if (strcmp(dev_name, device_name) == 0)
+		{
+			if (ioctl(fd, EVIOCGVERSION, &version)) {
+				perror("evtest: can't get version");
+				return 0;
+			}
+
+			printf("Input driver version is %d.%d.%d\n",
+				version >> 16, (version >> 8) & 0xff, version & 0xff);
+
+			ioctl(fd, EVIOCGID, id);
+			printf("Input device ID: bus 0x%x vendor 0x%x product 0x%x version 0x%x\n",
+				id[ID_BUS], id[ID_VENDOR], id[ID_PRODUCT], id[ID_VERSION]);
+
+			ioctl(fd, EVIOCGNAME(sizeof(dev_name)), dev_name);
+			printf("Input device name: \"%s\"\n", dev_name);
+
+			return fd;
+		}
+		close(fd); /* we don't need this device */
+	}
+	return 0;
+}
+
+void SimpleJoy::PND_ReadEvents( int fd, int device )
+{
+	if( fd != 0 )
+	{
+		rd = read(fd, ev, sizeof(struct input_event) * 64);
+
+		if (rd > (int) sizeof(struct input_event))
+		{
+			for (i = 0; i < rd / sizeof(struct input_event); i++)
+			{
+				PND_CheckEvent( &ev[i], device );
+			}
+		}
+	}
+}
+
+void SimpleJoy::PND_CheckEvent( struct input_event *event, int device )
+{
+	int value;
+
+	//printf( "Device %d Type %d Code %d Value %d\n", device, event->type, event->code, event->value );
+
+	value = event->value;
+	switch( event->type )
+	{
+		case EV_ABS:
+			switch( device )
+			{
+				case DEV_NUBL:
+					if( event->code == ABS_X ) {
+					    nubL.x = value;
+					}
+					if( event->code == ABS_Y ) {
+					    nubL.y = value;
+					}
+					break;
+				case DEV_NUBR:
+					if( event->code == ABS_X ) {
+					    nubR.x = value;
+					}
+					if( event->code == ABS_Y ) {
+					    nubR.y = value;
+					}
+					break;
+			}
+            break;
+        default:
+            break;
+	}
+}
+#endif
