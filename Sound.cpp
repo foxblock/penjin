@@ -95,5 +95,12 @@ void Sound::playPause()
 
 void Sound::stop()
 {
-	Mix_HaltChannel(channel);
+    //  Don't stop all channels!
+    if(channel != -1)
+        Mix_HaltChannel(channel);
+}
+
+void Sound::stopAll()
+{
+    Mix_HaltChannel(-1);
 }

@@ -160,6 +160,9 @@ class SimpleJoy
         char dev_name[256]; //= "Unknown";
         unsigned short id[4];
         Vector2di nubL, nubR;
+        // KEV nub code
+        void MappedNubAxes(const SIMPLEJOY_MAP& map, CRint axis);
+
     #endif
 };
 

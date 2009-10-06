@@ -109,3 +109,13 @@ T NumberUtility::test(T (&arr)[length], int index)
 {
     return arr[index];
 }*/
+
+float NumberUtility::degToRad(CRfloat a)
+{
+    return a * 0.017453292f;
+}
+
+float NumberUtility::radToDeg(CRfloat a)
+{
+    return a * 57.29578f;
+}
