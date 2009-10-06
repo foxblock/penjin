@@ -47,6 +47,11 @@ void SimpleJoy::update()
         mapper.loadDefaultMap();
         mapLoaded = true;
     }
+    /// Read Pandora nubs directly
+    #if defined(PLATFORM_PANDORA)
+    PND_ReadEvents( fd_nubL, DEV_NUBL );
+    PND_ReadEvents( fd_nubR, DEV_NUBR );
+    #endif
     while (SDL_PollEvent(&Event))
     {
         #ifdef PLATFORM_PC
@@ -88,11 +93,22 @@ void SimpleJoy::update()
             else if(device == DEV_JOYSTICK_AXIS)
             {
                 // Axis may be changed
-                if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
-                {
-                    if(Event.type == SDL_JOYAXISMOTION)
-                        mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                }
+                #ifdef PLATFORM_PANDORA
+                    //  first check if SDL is using a joystick
+                    if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                    {
+                        if(Event.type == SDL_JOYAXISMOTION)
+                            mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                    }
+                    //  check where we are mapping the nubs to
+                    MappedNubAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget(),((KeyMapJoyAxis*)mapper.keys[b])->getAxis());
+                #else
+                    if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                    {
+                        if(Event.type == SDL_JOYAXISMOTION)
+                            mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                    }
+                #endif
 
             }
             else if (device == DEV_JOYSTICK_HAT)
@@ -144,11 +160,6 @@ void SimpleJoy::update()
             case SDL_MOUSEMOTION:       mouseMotion(Event.motion.x, Event.motion.y);break;
         }*/
     }
-
-    #if defined(PLATFORM_PANDORA)
-    PND_ReadEvents( fd_nubL, DEV_NUBL );
-    PND_ReadEvents( fd_nubR, DEV_NUBR );
-    #endif
 }
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
@@ -409,4 +420,121 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int device )
             break;
 	}
 }
+void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
+{
+    //  map is the target device and axis
+    if(ax == 0)//   LEFTNUB_X
+    {
+        switch(map)
+        {
+            case SJ_LEFTSTICK_X:
+                if(leftStick.x != nubL.x* scaler)
+                    leftStick.x = nubL.x * scaler;
+            break;
+            case SJ_LEFTSTICK_Y:
+                if(leftStick.y != nubL.x* scaler)
+                    leftStick.y = nubL.x * scaler;
+            break;
+            case SJ_RIGHTSTICK_X:
+                if(rightStick.x != nubL.x* scaler)
+                    rightStick.x = nubL.x * scaler;
+            break;
+            case SJ_RIGHTSTICK_Y:
+                if(rightStick.y != nubL.x* scaler)
+                    rightStick.y = nubL.x * scaler;
+            break;
+            case SJ_MOUSE_X:
+                oldMouse.x = mouse.x;mouse.x += nubL.x * scaler;
+            break;
+            case SJ_MOUSE_Y:
+                oldMouse.y = mouse.y;mouse.y += nubL.x * scaler;
+            break;
+        }
+    }
+    else if(ax == 1)//  LEFTNUB_Y
+    {
+        switch(map)
+        {
+            case SJ_LEFTSTICK_X:
+                if(leftStick.x != nubL.y* scaler)
+                    leftStick.x = nubL.y * scaler;
+            break;
+            case SJ_LEFTSTICK_Y:
+                if(leftStick.y != nubL.y* scaler)
+                    leftStick.y = nubL.y * scaler;
+            break;
+            case SJ_RIGHTSTICK_X:
+                if(rightStick.x != nubL.y* scaler)
+                    rightStick.x = nubL.y * scaler;
+            break;
+            case SJ_RIGHTSTICK_Y:
+                if(rightStick.y != nubL.y* scaler)
+                    rightStick.y = nubL.y * scaler;
+            break;
+            case SJ_MOUSE_X:
+                oldMouse.x = mouse.x;mouse.x += nubL.y * scaler;
+            break;
+            case SJ_MOUSE_Y:
+                oldMouse.y = mouse.y;mouse.y += nubL.y * scaler;
+            break;
+        }
+    }
+    else if(ax == 2)//  RIGHTNUB_X
+    {
+        switch(map)
+        {
+            case SJ_LEFTSTICK_X:
+                if(leftStick.x != nubR.x* scaler)
+                    leftStick.x = nubR.x * scaler;
+            break;
+            case SJ_LEFTSTICK_Y:
+                if(leftStick.y != nubR.x* scaler)
+                    leftStick.y = nubR.x * scaler;
+            break;
+            case SJ_RIGHTSTICK_X:
+                if(rightStick.x != nubR.x* scaler)
+                    rightStick.x = nubR.x * scaler;
+            break;
+            case SJ_RIGHTSTICK_Y:
+                if(rightStick.y != nubR.x* scaler)
+                    rightStick.y = nubR.x * scaler;
+            break;
+            case SJ_MOUSE_X:
+                oldMouse.x = mouse.x;mouse.x += nubR.x * scaler;
+            break;
+            case SJ_MOUSE_Y:
+                oldMouse.y = mouse.y;mouse.y += nubR.x * scaler;
+            break;
+        }
+    }
+    else if(ax == 3)//  RIGHTNUB_Y
+    {
+        switch(map)
+        {
+            case SJ_LEFTSTICK_X:
+                if(leftStick.x != nubR.y* scaler)
+                    leftStick.x = nubR.y * scaler;
+            break;
+            case SJ_LEFTSTICK_Y:
+                if(leftStick.y != nubR.y* scaler)
+                    leftStick.y = nubR.y * scaler;
+            break;
+            case SJ_RIGHTSTICK_X:
+                if(rightStick.x != nubR.y* scaler)
+                    rightStick.x = nubR.y * scaler;
+            break;
+            case SJ_RIGHTSTICK_Y:
+                if(rightStick.y != nubR.y* scaler)
+                    rightStick.y = nubR.y * scaler;
+            break;
+            case SJ_MOUSE_X:
+                oldMouse.x = mouse.x;mouse.x += nubR.y * scaler;
+            break;
+            case SJ_MOUSE_Y:
+                oldMouse.y = mouse.y;mouse.y += nubR.y * scaler;
+            break;
+        }
+    }
+}
+
 #endif

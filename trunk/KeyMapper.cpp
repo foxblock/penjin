@@ -144,17 +144,17 @@ void KeyMapper::defaultMap()
     keys[keys.size()-1] = new KeyMapJoyButton("CLICK",i,0);
 #elif PLATFORM_PANDORA
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("A","K",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(3,"A",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("B","J",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(0,"B",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("X","I",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(1,"X",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("Y","M",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(2,"Y",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("L","Q",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(4,"L",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("R","W",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(5,"R",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapSDLKey("SELECT","RIGHT_SHIFT",0);
     keys.push_back(NULL);

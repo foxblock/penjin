@@ -31,13 +31,16 @@ namespace NumberUtility
     //T wrapValue(T val,const T& limit);
 
     /// statistics
-
     template <class T, int length>
     T getGreatest(const T (&arr)[length]); // Returns the greatest number in an array
     template <class T, int length>
     int getGreatestIndex(const T (&arr)[length]); // Returns the index of the greatest number in an array
     template <class T, int length>
     bool isGreatest(const T (&arr)[length], CRuint index); // Checks if the supplied element is the greatest in an array of numbers
+
+    /// Angles
+    float degToRad(CRfloat a);
+    float radToDeg(CRfloat a);
 };
 
 #include "NumberUtility.inl"

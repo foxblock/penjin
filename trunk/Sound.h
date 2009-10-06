@@ -30,6 +30,7 @@ class Sound
         void pause();
         void playPause();
         void stop();
+        void stopAll();
 
         void shutdown();
         void freeAll();
