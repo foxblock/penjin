@@ -3,7 +3,7 @@
 Rectangle::Rectangle()
 {
     //ctor
-    position.x = position.y;
+    position.x = position.y = 0;
     dimensions.x = dimensions.y = 1;
     thickness = 0;
     #ifdef PENJIN3D
