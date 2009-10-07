@@ -14,8 +14,6 @@ enum TimerScalers
     THIRTY_FRAMES,
     FIFTY_FRAMES,
     SIXTY_FRAMES,
-    NANO_SECONDS,
-    MICRO_SECONDS,
     MILLI_SECONDS,
     CENTI_SECONDS,
     DECI_SECONDS,
@@ -43,14 +41,14 @@ class Timer
                 scaler = 0.0f;
             #endif
         }
-        Timer(CRint lim)
+        Timer(const TimerScalers& scale)
         {
-            startTicks = SDL_GetTicks();
-            mode = SIXTY_FRAMES;
+            startTicks = 0;
+            pausedTicks = 0;
             is_Paused = false;
             is_Started = false;
+            mode = scale;
             calcScaler();
-            pausedTicks = 0;
         }
 
         void setMode(const TimerScalers& mode)       // Set the timer scaler
