@@ -21,7 +21,25 @@ class Rectangle
     #endif
 
         template <class T>
-        Rectangle(const T& x, const T& y){position.x = x; position.y=y;}
+        Rectangle(const T& w, const T& h)
+        {
+            position.x = position.y = 0;
+            dimensions.x = w;
+            dimensions.y = h;
+            thickness = 0;
+            #ifdef PENJIN3D
+                scale.x = scale.y = scale.z = 1.0f;
+                rotation.x = rotation.y = rotation.z = 0.0f;
+            #else
+                scale.x = scale.y = 1.0f;
+                angle = 0.0f;
+            #endif
+            colour = WHITE;
+            #ifdef PENJIN_SDL
+                screen = SDL_GetVideoSurface();
+                rectangle = NULL;
+            #endif
+        }
 
         template <class T>
         void setPosition(const T& x, const T& y){position.x = x; position.y=y;}
