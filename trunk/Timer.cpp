@@ -36,10 +36,6 @@ void Timer::calcScaler()
         else if (mode == SIXTY_FRAMES)
             scaler = (float)MY_CLOCKS / 60.0f;
     #endif
-        else if (mode == NANO_SECONDS)
-            scaler = MY_CLOCKS / 1000000000;
-        else if (mode == MICRO_SECONDS)
-            scaler = MY_CLOCKS / 1000000;
         else if (mode == MILLI_SECONDS)
             scaler = MY_CLOCKS / 1000;
         else if (mode == CENTI_SECONDS)
