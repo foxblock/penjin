@@ -34,11 +34,11 @@ class Timer
             pausedTicks = 0;
             is_Paused = false;
             is_Started = false;
-            mode = SIXTY_FRAMES;
+            mode = MILLI_SECONDS;   // default value
             #ifdef PENJIN_FIXED
-                scaler = 0;
+                scaler = 1;
             #else
-                scaler = 0.0f;
+                scaler = 1.0f;
             #endif
         }
         Timer(const TimerScalers& scale)
@@ -63,7 +63,7 @@ class Timer
             setMode(mode);
             return getScaledTicks();
         }
-        int getScaledTicks()              // Return the remaining coutdown time
+        int getScaledTicks()              // Return the scaled elapsed time
         {
             #ifdef PENJIN_FIXED
                 return Fixed(getTicks()/scaler).intValue>>16;
@@ -142,10 +142,9 @@ class Timer
             void setScaler(CRfloat scale){setMode(CUSTOM);scaler =scale;}
             float getScaler(){return scaler;}
         #endif
-    private:
+    protected:
         void calcScaler();   // Calculate the resolution of timer updates
 
-        //  when we set a time limit we use the scaler to calc the number of ticks to be reached
         TimerScalers mode;
         int startTicks;
         int pausedTicks;
