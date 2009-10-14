@@ -69,7 +69,8 @@ void Music::play()
 
 void Music::stop()
 {
-	Mix_HaltMusic();
+    if(isPlaying())
+        Mix_HaltMusic();
 }
 
 void Music::fade(CRint ms)

@@ -22,7 +22,7 @@ class AnimatedSprite
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v);
-        uchar getAlpha(){return image.getAlpha();}
+        uchar getAlpha()const{return image.getAlpha();}
 
         void setPosition(const Vector2di& pos){position.x = pos.x;position.y=pos.y;}
         void setPosition(const Vector2df& pos){position.x=pos.x;position.y=pos.y;}

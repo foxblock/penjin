@@ -26,12 +26,10 @@ Engine::Engine()
         yRes = 768;
         fullScreen = false;
     #endif
-    #ifdef _DEBUG
-        frameCount = 0;
-    #endif
 
 	gameTimer.setMode(SIXTY_FRAMES);
     input = NULL;
+    now = SDL_GetTicks();
 }
 
 Engine::Engine(CRstring appName,CRint xRes,CRint yRes,CRbool fullScreen)
@@ -196,7 +194,6 @@ PENJIN_ERRORS Engine::init()
 
 	#ifdef _DEBUG
         GFX::showVideoInfo();
-        frameCount = 0;
 	#endif
 
 	return PENJIN_OK;
@@ -257,7 +254,7 @@ bool Engine::stateLoop()
 			gameTimer.start();
 			state->update();
 			if(state->getNeedInit())
-            return true;
+                return true;
 			//  Render objects
             state->render();
             #ifdef PLATFORM_GP2X
@@ -268,7 +265,8 @@ bool Engine::stateLoop()
             #elif PENJIN_SDL
                 SDL_Flip(screen);
             #endif
-			#ifdef _DEBUG
+            #ifdef _DEBUG
+                int frameCount = calcFPS();
                 if(frameCount>=20)//only update if there are a reasonable number of redundant updates
                 {
                     //  This code seems to slow down Linux builds majorly.
@@ -280,16 +278,13 @@ bool Engine::stateLoop()
                     + AutoVersion::DATE + "-"
                     + AutoVersion::MONTH + "-"
                     + AutoVersion::YEAR).c_str(), NULL );
-                    frameCount = 0;
+                    //frameCount = 0;
                 }
 			#endif
 		}
 		else
 		{
-		    #ifdef _DEBUG
-                ++frameCount;
-		    #endif
-            SDL_Delay(1);  // Release CPU briefly
+            SDL_Delay(/*timeRemaining((uint)gameTimer.getScaler())*/1);  // Release CPU briefly
 		}
 		return true;   // Continue program execution
 	}
@@ -330,4 +325,5 @@ void Engine::stateManagement()
         exit(PENJIN_UNDEFINED_STATE);
     }
 }
+
 

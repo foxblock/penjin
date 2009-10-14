@@ -54,10 +54,33 @@ class Engine
 		SDL_Surface* screen;
 		vector<Variable> variables;		//	Variable storage for transfer between states
 		Timer gameTimer;				//	Timer for frame regulation and event scheduling.
+		uint now;
 		SimpleJoy* input;
 		#ifdef _DEBUG
-            int frameCount;             //  Keeps track of the num updates...
+            float calcFPS()
+            {
+                static float fps = 0.0f;
+                static float lastTime = 0.0f;
+                float currentTime = SDL_GetTicks();
+                fps = fps*0.9f+(100.0f/(currentTime - lastTime));
+                lastTime = currentTime;
+                return fps;
+            }
 		#endif
+
+        uint timeRemaining(CRuint x)
+        {
+            static uint nextTime = 0;
+            now = SDL_GetTicks();
+            if (nextTime <= now)
+            {
+                nextTime = now + x;
+                return(0);
+            }
+            return(nextTime - now);
+        }
+
+
 };
 
 #endif	//	ENGINE_H

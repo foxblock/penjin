@@ -10,14 +10,14 @@
 enum TimerScalers
 {
     //	Various modes that the timer can be put in.
-    FIFTEEN_FRAMES,
-    THIRTY_FRAMES,
-    FIFTY_FRAMES,
-    SIXTY_FRAMES,
-    MILLI_SECONDS,
-    CENTI_SECONDS,
-    DECI_SECONDS,
-    SECONDS,
+    FIFTEEN_FRAMES=15,
+    THIRTY_FRAMES=30,
+    FIFTY_FRAMES=50,
+    SIXTY_FRAMES=60,
+    MILLI_SECONDS=1000,
+    CENTI_SECONDS=100,
+    DECI_SECONDS=10,
+    SECONDS=1,
     MINUTES,
     HOURS,
     CUSTOM
@@ -56,6 +56,8 @@ class Timer
             this->mode = mode;
             calcScaler();
         }
+        TimerScalers getMode()const{return mode;}
+
         int getScaledTicks(const TimerScalers& mode)
         {
             setMode(mode);
@@ -144,7 +146,7 @@ class Timer
         void calcScaler();   // Calculate the resolution of timer updates
 
         //  when we set a time limit we use the scaler to calc the number of ticks to be reached
-        uint mode;
+        TimerScalers mode;
         int startTicks;
         int pausedTicks;
         bool is_Paused;
