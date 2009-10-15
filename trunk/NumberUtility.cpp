@@ -22,7 +22,7 @@
     }
 #endif
 
-int NumberUtility::digitSum(CRint value)
+int NumberUtility::digitSum(CRuint value)
 {
     int result = 0;
     int temp = value;
@@ -31,6 +31,16 @@ int NumberUtility::digitSum(CRint value)
             result += temp % 10;
             temp /= 10;
         }
+    return result;
+}
+
+double NumberUtility::fact(CRuint value)
+{
+    double result=1;
+    for (int I=value; I > 0; --I)
+    {
+        result *= I;
+    }
     return result;
 }
 

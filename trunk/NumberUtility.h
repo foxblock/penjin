@@ -13,16 +13,17 @@ namespace NumberUtility
     float linearInterpolate(CRint x, CRint y, CRfloat step);
 #endif
 
-    int digitSum(CRint value);
+    int digitSum(CRuint value);
+    double fact(CRuint value);  // Returns the factorial of a given value (limit is 170)
     template <class T, int length>
     int getSize(const T (&arr)[length]){return length;} // Get the size of any array
-    template <class T>
-    T limit(const T& x, const T& minV, const T& maxV){return min( maxV, max(minV,x));}
     bool isEven(CRint value);
     bool isMultiple(CRint x,CRint y);
     bool isOdd(CRint value);
     bool isPowerOfTwo(CRint x);
     bool isPrime(CRuint value);
+    template <class T>
+    T limit(const T& x, const T& minV, const T& maxV){return min( maxV, max(minV,x));}
     int nextPowerOfTwo(CRint x);
     template <class T>
     int sign(const T& value); // Signum function, returns the sign of a number
