@@ -15,7 +15,7 @@ class CountDown : public Timer
 {
     public:
         CountDown();
-        void init(const int& newLimit, const TimerScalers& newMode, void* object=NULL, void (*newCallback)(void*)=NULL);
+        void init(const int& newLimit, const TimerScalers& newMode=MILLI_SECONDS, void* object=NULL, void (*newCallback)(void*)=NULL);
 
         int getLimit(){return limit;}
         int getTimeLeft(){return limit - getScaledTicks();}
