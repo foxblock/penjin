@@ -27,6 +27,7 @@ Text::Text()
     clipBoundary.y = 0;
     IsInitialised = false;
     centreText = false;
+    relativePos = false;
 }
 
 int Text::initialise()
