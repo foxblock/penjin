@@ -3,6 +3,7 @@
 BaseState::BaseState()
 {
     isPaused = false;
+    firstPaused = false;
     nullify = false;
     needInit = true;
     nextState = 0;

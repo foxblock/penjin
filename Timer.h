@@ -131,8 +131,8 @@ class Timer
             }
         }
 
-        bool isPaused(){return is_Paused;};
-        bool isStarted(){return is_Started;};
+        bool isPaused()const{return is_Paused;};
+        bool isStarted()const{return is_Started;};
 
         /// Set a custom timer resolution.
         #ifdef PENJIN_FIXED
@@ -140,7 +140,7 @@ class Timer
             Fixed getScaler(){return scaler;}
         #else
             void setScaler(CRfloat scale){setMode(CUSTOM);scaler =scale;}
-            float getScaler(){return scaler;}
+            float getScaler()const{return scaler;}
         #endif
     protected:
         void calcScaler();   // Calculate the resolution of timer updates

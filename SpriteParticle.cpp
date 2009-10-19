@@ -5,7 +5,8 @@ SpriteParticle::SpriteParticle()
     //ctor
     particleType = SPRITE_PARTICLE;
     spritePointer = NULL;
-    colour.setAlpha(255);
+    alpha = 255;
+    colour.setAlpha(alpha);
 }
 
 SpriteParticle::~SpriteParticle()
