@@ -279,7 +279,9 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
             if(!isConverted[i])
             {
                 //	convert current image
+                SDL_Surface* temp = images[i];
                 images[i] = SDL_ConvertSurface(images[i], dstimg->format, SDL_HWSURFACE);
+                SDL_FreeSurface(temp);
                 isConverted[i] = true;
             }
             // Now we blit
