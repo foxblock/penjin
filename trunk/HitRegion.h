@@ -54,6 +54,7 @@ private:
 	// Datamembers
 	//-------------------------------------------------
     RECT m_Region;
+    Rectangle box;
 };
 
 #endif // HitRegion_H
