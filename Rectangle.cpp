@@ -17,6 +17,7 @@ Rectangle::Rectangle()
     #ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
         rectangle = NULL;
+        init();
     #endif
 }
 
@@ -33,6 +34,7 @@ Rectangle::Rectangle()
         #ifdef PENJIN_SDL
             screen = SDL_GetVideoSurface();
             rectangle = NULL;
+            init();
         #endif
     }
 #endif

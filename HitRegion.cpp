@@ -12,6 +12,8 @@ HitRegion::HitRegion()
     m_Region.y = 0;
     m_Region.w = 0;
     m_Region.h = 0;
+    box.setColour(RED);
+    box.setThickness(1);
 }
 HitRegion::~HitRegion()
 {
@@ -26,38 +28,30 @@ void HitRegion::init(int x, int y, int width, int height)
     m_Region.y = y;
     m_Region.w = width;
     m_Region.h = height;
+    box.setPosition(x,y);
+    box.setDimensions(width,height);
 }
 void HitRegion::move(int x, int y)
 {
     m_Region.x += x;
     m_Region.y += y;
+    box.setPosition(x,y);
 }
 void HitRegion::moveTo(int x, int y)
 {
     m_Region.x = x;
     m_Region.y = y;
+    box.setPosition(x,y);
 }
 
 #ifdef PENJIN_SDL
     void HitRegion::render(SDL_Surface* screen)
     {
-        Rectangle box;
-
-        box.init();
-        box.setPosition(m_Region.x, m_Region.y);
-        box.setDimensions(m_Region.w, m_Region.h);
-        box.setColour(RED);
         box.render(screen);
     }
 #endif
 void HitRegion::render()
 {
-    Rectangle box;
-
-    box.init();
-    box.setPosition(m_Region.x, m_Region.y);
-    box.setDimensions(m_Region.w, m_Region.h);
-    box.setColour(RED);
     box.render();
 }
 bool HitRegion::hitTest(HitRegion region)
