@@ -20,17 +20,17 @@ Animation::Animation()
 	#endif
 }
 
-PENJIN_ERRORS Animation::setTransparentColour(const Colour& c)
-{
-    PENJIN_ERRORS error = PENJIN_ERROR;
-    for(int i = image.size()-1; i>= 0; --i)
-    {
-        error = image.setTransparentColour(i,c);
-        if(error != PENJIN_OK)
-            return error;
-    }
-    return PENJIN_OK;
-}
+//PENJIN_ERRORS Animation::setTransparentColour(const Colour& c)
+//{
+//    PENJIN_ERRORS error = PENJIN_ERROR;
+//    for(int i = image.size()-1; i>= 0; --i)
+//    {
+//        error = image.setTransparentColour(i,c);
+//        if(error != PENJIN_OK)
+//            return error;
+//    }
+//    return PENJIN_OK;
+//}
 
 PENJIN_ERRORS Animation::setTransparentColour(const Vector2di& v)
 {
