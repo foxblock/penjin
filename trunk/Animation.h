@@ -20,7 +20,7 @@ class Animation
         PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
         PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
-        PENJIN_ERRORS setTransparentColour(const Colour& c);
+        PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v);
         uchar getAlpha(){return image.getAlpha();}
 
