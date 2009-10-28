@@ -52,6 +52,7 @@ class StateAnimation : public BaseState
         void changeAnimMode();
         void setLooping();
         void setReverse();
+        void cycleTimerMode();
         void setFPS();
         void setPause();
         void rewind();

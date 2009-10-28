@@ -1,3 +1,9 @@
+28 October 2009
+   released version 0.0.62 of TestSuite
+
+     Change log:
+        -Fixed: Updated project to work with the changed Timer class values.
+
 03 September 2009
    released version 0.0.57 of TestSuite
 

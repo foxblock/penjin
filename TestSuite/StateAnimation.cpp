@@ -91,10 +91,6 @@ void StateAnimation::render()
         text.print("FIFTY_FRAMES");
     else if(fpsMode == SIXTY_FRAMES)
         text.print("SIXTY_FRAMES");
-    else if(fpsMode == NANO_SECONDS)
-        text.print("NANO_SECONDS");
-    else if(fpsMode == MICRO_SECONDS)
-        text.print("MICRO_SECONDS");
     else if(fpsMode == MILLI_SECONDS)
         text.print("MILLI_SECONDS");
     else if(fpsMode == CENTI_SECONDS)
@@ -140,8 +136,7 @@ void StateAnimation::userInput()
     }
     if(input->isB())
     {
-        ++fpsMode;
-        setFPS();
+        cycleTimerMode();
     }
     if(input->isLeft())
     {
@@ -224,10 +219,6 @@ void StateAnimation::setPause()
 
 void StateAnimation::setFPS()
 {
-    if(fpsMode < FIFTEEN_FRAMES)
-        fpsMode = MINUTES;
-    else if(fpsMode > MINUTES)
-        fpsMode = FIFTEEN_FRAMES;
     if(anim)
         anim->setFrameRate((TimerScalers)fpsMode);
     else if(animS)
@@ -242,3 +233,38 @@ void StateAnimation::rewind()
         animS->rewind();
 }
 
+void StateAnimation::cycleTimerMode()
+{
+    /*
+    MILLI_SECONDS=1000,
+    CENTI_SECONDS=100,
+    SIXTY_FRAMES=60,
+    FIFTY_FRAMES=50,
+    THIRTY_FRAMES=30,
+    FIFTEEN_FRAMES=15,
+    DECI_SECONDS=10,
+    SECONDS=1,
+    MINUTES,
+    HOURS,
+    CUSTOM
+    */
+        if(fpsMode == MILLI_SECONDS)
+            fpsMode = CENTI_SECONDS;
+        else if(fpsMode == CENTI_SECONDS)
+            fpsMode = SIXTY_FRAMES;
+        else if(fpsMode == SIXTY_FRAMES)
+            fpsMode = FIFTY_FRAMES;
+        else if(fpsMode == FIFTY_FRAMES)
+            fpsMode = THIRTY_FRAMES;
+        else if(fpsMode == THIRTY_FRAMES)
+            fpsMode = FIFTEEN_FRAMES;
+        else if(fpsMode == FIFTEEN_FRAMES)
+            fpsMode = DECI_SECONDS;
+        else if(fpsMode == DECI_SECONDS)
+            fpsMode = SECONDS;
+        else if(fpsMode == SECONDS)
+            fpsMode = MINUTES;
+        else if(fpsMode == MINUTES)
+            fpsMode = MILLI_SECONDS;
+        setFPS();
+}
