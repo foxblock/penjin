@@ -60,6 +60,9 @@ Rectangle::~Rectangle()
 #ifdef PENJIN_SDL
 void Rectangle::render(SDL_Surface* scr)
 {
+    // If the domensions are impossible don't draw the rect
+    if(dimensions.x <= 0 || dimensions.y <= 0)
+        return;
     SDL_Rect dst;
     dst.x = position.x;
     dst.y = position.y;
@@ -70,6 +73,9 @@ void Rectangle::render(SDL_Surface* scr)
 #else
 void Rectangle::render()
 {
+    // If the domensions are impossible don't draw the rect
+    if(dimensions.x <= 0 || dimensions.y <= 0)
+        return;
     // Scale and rotate
     glPushMatrix();
 
@@ -156,7 +162,9 @@ void Rectangle::render()
             t.y+=thickness;
             t.w-=thickness*2;
             t.h-=thickness*2;
-            SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
+            //  do some checks to see if the borders are close enough to render a normal rect
+            if(t.w < dimensions.x && t.h < dimensions.y)
+                SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
         }
         if(colour.alpha != SDL_ALPHA_OPAQUE)
             SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);

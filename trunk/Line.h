@@ -30,11 +30,11 @@ class Line
 
     private:
         #ifdef PENJIN3D
-            Point3df start;
-            Point3df end;
+            Point3di start;
+            Point3di end;
         #else
-            Point2df start;
-            Point2df end;
+            Point2di start;
+            Point2di end;
         #endif
         float lineWidth;
         Colour colour;
