@@ -10,12 +10,12 @@
 enum TimerScalers
 {
     //	Various modes that the timer can be put in.
-    FIFTEEN_FRAMES=15,
-    THIRTY_FRAMES=30,
-    FIFTY_FRAMES=50,
-    SIXTY_FRAMES=60,
     MILLI_SECONDS=1000,
     CENTI_SECONDS=100,
+    SIXTY_FRAMES=60,
+    FIFTY_FRAMES=50,
+    THIRTY_FRAMES=30,
+    FIFTEEN_FRAMES=15,
     DECI_SECONDS=10,
     SECONDS=1,
     MINUTES,
