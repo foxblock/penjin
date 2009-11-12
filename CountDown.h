@@ -26,7 +26,7 @@ class CountDown : public Timer
         void setRewind(const RewindModes& rew){rewind = rew;}
 
         void start(){Timer::start();}
-        void start(int newLimit){limit = newLimit; start();}
+        void start(int newLimit){setLimit(newLimit); start();}
         void update();
     private:
         void (*callback)(void*);

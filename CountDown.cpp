@@ -5,7 +5,7 @@ CountDown::CountDown() : Timer()
     limit = 1000;
     callback = NULL;
     obj = NULL;
-    rewind = STOP_AND_REWIND;
+    rewind = STOP;
 }
 
 void CountDown::init(const int& newLimit, const TimerScalers& newMode, void* object, void (*newCallback)(void*))
@@ -14,8 +14,8 @@ void CountDown::init(const int& newLimit, const TimerScalers& newMode, void* obj
     setMode(newMode);
     callback = newCallback;
     obj = object;
-    if (!callback)
-        rewind = STOP;
+    if (callback)
+        rewind = STOP_AND_REWIND;
     is_Started = false;
     is_Paused = false;
     startTicks = 0;
