@@ -16,7 +16,7 @@ namespace NumberUtility
     int digitSum(CRuint value);
     double fact(CRuint value);  // Returns the factorial of a given value (limit is 170)
     template <class T, int length>
-    int getSize(const T (&arr)[length]){return length;} // Get the size of any array
+    int getSize(const T (&arr)[length]){return length;} // Get the size of any array (array type must not have private data members)
     bool isEven(CRint value);
     bool isMultiple(CRint x,CRint y);
     bool isOdd(CRint value);
