@@ -72,7 +72,5 @@ typedef const std::string& CRstring;
     #define float Fixed
     #define CRfloat CRFixed
 #endif  //  PENJIN_FIXED
-
-#include "userTypes.h"
 #include "Variable.h"	        // multiple type storage
 #endif	//	TYPES_H
