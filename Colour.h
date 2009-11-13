@@ -3,8 +3,9 @@
 
 #include "PenjinTypes.h"
 #include <SDL/SDL.h>
-
- /**
+#include <algorithm>
+using namespace std;
+/**
   * Colour class allows manipulation of colours
   *
   * @author Kevin Winfield-Pantoja
@@ -15,13 +16,20 @@ enum PENJIN_COLOURS
 {
     BLACK=0,
 	RED,
+	LIGHT_RED,
 	GREEN,
+	LIGHT_GREEN,
 	BLUE,
+	LIGHT_BLUE,
 	YELLOW,
 	PURPLE,
 	MAGENTA,
+	CYAN,
 	ORANGE,
 	BROWN,
+	DARK_GREY,
+	GREY,
+	LIGHT_GREY,
 	WHITE
 };
 
@@ -58,67 +66,82 @@ class Colour
         Uint32 getSDL_Uint32Colour(){return getSDL_Uint32Colour(SDL_GetVideoSurface());}
         void convertColour(Uint32 colour);      //  Converts an SDL Uint32 colour to a Colour object
 
+        Colour getGreyScale();  //  Get this colour as a grayscale colour.
+        void toGreyScale(){*this = getGreyScale();}     //  Convert this colour to grayscale
+
 
         // Operators
         Colour operator+(const uchar& c)
         {
-            Colour b;
-            b.setColour(c+red,c+green,c+blue,alpha);
-            return b;
+            return (*this +Colour(c,c,c));
         }
         Colour operator+(const Colour& c)
         {
             Colour b = *this;
-            b.red+=c.red;
-            b.green+=c.green;
-            b.blue+=c.blue;
-            b.alpha+=c.alpha;
+            #ifdef PENJIN_GL
+                b.red = min(b.red + c.red,1.0f);
+                b.green = min(b.green + c.green,1.0f);
+                b.blue = min(b.blue + c.blue,1.0f);
+            #else
+                b.red = min((uint)b.red + c.red,(uint)255);
+                b.green = min((uint)b.green + c.green,(uint)255);
+                b.blue = min((uint)b.blue + c.blue,(uint)255);
+            #endif
             return b;
         }
         Colour operator-(const Colour& c)
         {
             Colour b = *this;
-            b.red-=c.red;
-            b.green-=c.green;
-            b.blue-=c.blue;
-            b.alpha-=c.alpha;
+            #ifdef PENJIN_GL
+                b.red = max(b.red - c.red,0.0f);
+                b.green = max(b.green - c.green,0.0f);
+                b.blue = max(b.blue - c.blue,0.0f);
+            #else
+                b.red = max(b.red - c.red,0);
+                b.green = max(b.green - c.green,0);
+                b.blue = max(b.blue - c.blue,0);
+            #endif
             return b;
         }
         Colour operator-(const uchar& c)
         {
-            Colour b;
-            b.setColour(red-c,green-c,blue-c,alpha);
-            return b;
+            return (*this -Colour(c,c,c));
         }
         Colour operator*(const Colour& c)
         {
             Colour b = *this;
-            b.red*=c.red;
-            b.green*=c.green;
-            b.blue*=c.blue;
-            b.alpha*=c.alpha;
+            #ifdef PENJIN_GL
+                b.red = min(b.red * c.red,1.0f);
+                b.green = min(b.green * c.green,1.0f);
+                b.blue = min(b.blue * c.blue,1.0f);
+            #else
+                b.red = min((uint)b.red * c.red,(uint)255);
+                b.green = min((uint)b.green * c.green,(uint)255);
+                b.blue = min((uint)b.blue * c.blue,(uint)255);
+            #endif
             return b;
         }
         Colour operator*(const uchar& c)
         {
-            Colour b;
-            b.setColour(c*red,c*green,c*blue,alpha);
-            return b;
+            return (*this *Colour(c,c,c));
         }
         Colour operator/(const Colour& c)
         {
             Colour b = *this;
-            b.red/=c.red;
-            b.green/=c.green;
-            b.blue/=c.blue;
-            b.alpha/=c.alpha;
+            #ifdef PENJIN_GL
+                b.red = max(b.red / c.red,0.0f);
+                b.green = max(b.green / c.green,0.0f);
+                b.blue = max(b.blue / c.blue,0.0f);
+            #else
+                b.red = max(b.red / c.red,0);
+                b.green = max(b.green / c.green,0);
+                b.blue = max(b.blue / c.blue,0);
+            #endif
             return b;
         }
         Colour operator/(const uchar& c)
         {
-            Colour b;
-            b.setColour(red/c,green/c,blue/c,alpha);
-            return b;
+            return (*this /Colour(c,c,c));
         }
         //  Less Than Equal
         bool operator<=(const Colour& c){return lessThanEqual(c.red,c.green,c.blue,c.alpha);}
@@ -152,6 +175,14 @@ class Colour
         bool operator!=(const PENJIN_COLOURS& colour){return !operator==(colour);}
         bool notEqual(const uchar& r,const uchar& g,const uchar& b){return !isEqual(r,g,b);}
         bool notEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return !isEqual(r,g,b,a);}
+
+        //  Negation - Provides the inverse colour
+        Colour operator- ()const{return (Colour(WHITE) - *this);}
+
+        //  Channel ops - swap colour channels around
+        void swapRG();
+        void swapGB();
+        void swapRB();
 
         // Colour data
         #ifdef PENJIN_GL

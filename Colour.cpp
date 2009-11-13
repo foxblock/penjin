@@ -37,16 +37,34 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 		green = 0;
 		blue = 0;
 	}
+    else if(c == LIGHT_RED)
+	{
+		red = 255;
+		green = 128;
+		blue = 128;
+	}
 	else if(c == GREEN)
 	{
 		red = 0;
 		green = 255;
 		blue = 0;
 	}
+    else if(c == LIGHT_GREEN)
+	{
+		red = 128;
+		green = 255;
+		blue = 128;
+	}
 	else if(c == BLUE)
 	{
 		red = 0;
 		green = 0;
+		blue = 255;
+	}
+    else if(c == LIGHT_BLUE)
+	{
+		red = 128;
+		green = 128;
 		blue = 255;
 	}
 	else if(c == YELLOW)
@@ -60,6 +78,24 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 		red = 255;
 		green = 255;
 		blue = 255;
+	}
+    else if(c == LIGHT_GREY)
+	{
+		red = 192;
+		green = 192;
+		blue = 192;
+	}
+    else if(c == GREY)
+	{
+		red = 128;
+		green = 128;
+		blue = 128;
+	}
+    else if(c == DARK_GREY)
+	{
+		red = 64;
+		green = 64;
+		blue = 64;
 	}
 	else if(c == BLACK)
 	{
@@ -79,6 +115,12 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 		green = 0;
 		blue = 255;
 	}
+	else if (c == CYAN)
+	{
+	    red = 0;
+	    green = 255;
+	    blue = 255;
+    }
 	else if(c == ORANGE)
 	{
 		red = 255;
@@ -180,6 +222,29 @@ void Colour::convertColour(Uint32 c)
         blue = blue * DIV_255;
         alpha = alpha * DIV_255;
     }
+    Colour Colour::getGreyScale()
+    {
+        float t = (red + green + blue)*0.33f;
+        return Colour(t,t,t);
+    }
+    void Colour::swapGB()
+    {
+        float t = green;
+        green = blue;
+        blue = t;
+    }
+    void Colour::swapRG()
+    {
+        float t = red;
+        red = green;
+        green = t;
+    }
+    void Colour::swapRB()
+    {
+        float t = red;
+        red = blue;
+        blue = t;
+    }
 #else
     void Colour::toNormal()
     {
@@ -188,5 +253,28 @@ void Colour::convertColour(Uint32 c)
         green = green * t;
         blue = blue * t;
         alpha = alpha * t;
+    }
+    Colour Colour::getGreyScale()
+    {
+        uchar t = (red + green + blue)*0.33f;
+        return Colour(t,t,t);
+    }
+    void Colour::swapGB()
+    {
+        uchar t = green;
+        green = blue;
+        blue = t;
+    }
+    void Colour::swapRG()
+    {
+        uchar t = red;
+        red = green;
+        green = t;
+    }
+    void Colour::swapRB()
+    {
+        uchar t = red;
+        red = blue;
+        blue = t;
     }
 #endif
