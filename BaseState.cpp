@@ -150,6 +150,11 @@ void BaseState::userInput()
 	}
 }
 
+void BaseState::pauseInput()
+{
+    userInput();
+}
+
 void BaseState::joyButtonDown(const Uint8& button)
 {
 }

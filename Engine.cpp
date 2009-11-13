@@ -210,7 +210,11 @@ bool Engine::stateLoop()
 	else if (state->getNeedInit() == false)
 	{
         //  Take input
-        state->userInput();
+        if(!state->getIsPaused())
+            state->userInput();
+        else
+            state->pauseInput();
+
         if(state->getNeedInit())
             return true;
         //  Update physics

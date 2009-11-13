@@ -9,6 +9,9 @@ Menu::Menu()
         angle = 0.0f;
         angleDelta = 0.1f;
     #endif
+    #ifdef PENJIN_SDL
+        screen = SDL_GetVideoSurface();
+    #endif
 }
 
 Menu::~Menu()

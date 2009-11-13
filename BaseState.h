@@ -50,6 +50,7 @@ class  BaseState
 		virtual void update();		    //	Update all objects (lited to frame rate)
 		virtual void unlimitedUpdate(); //  Update not restricted by frame rate
 		virtual void userInput();	    //	Take user input
+		virtual void pauseInput();      //  Take user input on pauseScreen
 		virtual void init();		    //	init function for states if you need to setup variables etc
 
 
@@ -102,5 +103,6 @@ class  BaseState
     #else
         virtual void pauseSymbol();
     #endif
+        void pauseToggle(){isPaused = !isPaused;}
 };
 #endif	// BASESTATE_H
