@@ -203,9 +203,9 @@ void Colour::convertColour(Uint32 c)
         green = (c &0x0000ff00)/0x100;
         blue =  (c & 0x000000ff);
     #else
-        red = (c & 0x000000ff);
+        red = (c & 0x00ff0000)/0x10000;
         green = (c &0x0000ff00)/0x100;
-        blue = (c & 0x00ff0000)/0x10000;
+        blue = (c & 0x000000ff);
         alpha = (c & 0xff000000)/0x1000000;
     #endif
     #ifdef PENJIN_GL
