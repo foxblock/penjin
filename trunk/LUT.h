@@ -8,6 +8,7 @@ Uses 256 devisions per circle rather than 360
 Written by Kevin Winfield-Pantoja
 */
 #include "PenjinTypes.h"
+#include "NumberUtility.h"
 #include <cmath>
 
 #ifndef PI
@@ -23,6 +24,12 @@ namespace LUT
     float Lsin(uchar angle);
     float Lcos(CRuchar angle);
     float Ltan(uchar angle);
+    // Trig functions with interpolation between values
+    // Caution, will not be accurate.
+    float LIsin(float angle);
+    float LIcos(float angle);
+    float LItan(float angle);
+
     /// Conversion
     uchar degreeToBrad(CRfloat angle);
     uchar radianToBrad(CRfloat angle);
