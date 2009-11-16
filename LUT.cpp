@@ -64,6 +64,32 @@ float LUT::Ltan(uchar angle)
     return tanTable[angle];
 }
 
+/// Interpolated Trig functions
+//  CAUTION will not be accurate...
+float LUT::LIsin(float angle)
+{
+    float x1 = floor(angle*1000*ONE_OVER_PI);
+    float y1 = Lsin(x1);
+    float y2 = Lsin(x1+1);
+    return y1 + (y2-y1)*(angle*1000/PI-x1);
+}
+
+float LUT::LIcos(float angle)
+{
+    float x1 = floor(angle*1000*ONE_OVER_PI);
+    float y1 = Lcos(x1);
+    float y2 = Lcos(x1+1);
+    return y1 + (y2-y1)*(angle*1000/PI-x1);
+}
+
+float LUT::LItan(float angle)
+{
+    float x1 = floor(angle*1000*ONE_OVER_PI);
+    float y1 = Ltan(x1);
+    float y2 = Ltan(x1+1);
+    return y1 + (y2-y1)*(angle*1000/PI-x1);
+}
+
 uchar LUT::degreeToBrad(CRfloat angle)
 {
     #ifdef PENJIN_FIXED

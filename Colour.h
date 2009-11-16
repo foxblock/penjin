@@ -121,9 +121,17 @@ class Colour
             #endif
             return b;
         }
-        Colour operator*(const uchar& c)
+        template <class T>
+        Colour operator*(const T& c)
         {
-            return (*this *Colour(c,c,c));
+            #ifdef PENJIN_GL
+                red = red*(float)c;
+                green = green*(float)c;
+                blue = blue*(float)c;
+                return *this;
+            #else
+                return (*this *Colour(c,c,c));
+            #endif
         }
         Colour operator/(const Colour& c)
         {
@@ -141,8 +149,17 @@ class Colour
         }
         Colour operator/(const uchar& c)
         {
-            return (*this /Colour(c,c,c));
+            #ifdef PENJIN_GL
+                float f = 1/(float)c;
+                red = red*f;
+                green = green*f;
+                blue = blue*f;
+                return *this;
+            #else
+                return (*this /Colour(c,c,c));
+            #endif
         }
+        //Colour operator/(const float& c){return Colour(red/c,green/c,blue/c,alpha);}
         //  Less Than Equal
         bool operator<=(const Colour& c){return lessThanEqual(c.red,c.green,c.blue,c.alpha);}
         bool operator<=(const PENJIN_COLOURS& colour){return operator<=(Colour(colour));}
