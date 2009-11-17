@@ -3,7 +3,7 @@
 namespace GFX
 {
 #ifdef PENJIN_SDL
-    Colour clear;
+    Colour clear(BLACK);
     SDL_Surface* screen;
 #endif
 }
@@ -151,6 +151,11 @@ namespace GFX
         SDL_SetColorKey(cropped, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(cropped->format,col.red,col.green,col.blue));
         SDL_BlitSurface(in,c,cropped,NULL);
         return cropped;
+    }
+
+    Colour GFX::getPixel(CRint x, CRint y)
+    {
+        return getPixel(screen,x,y);
     }
 #elif PENJIN_GL
     void GFX::setPixel(CRint x, CRint y, const Colour& colour)
