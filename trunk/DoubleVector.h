@@ -15,14 +15,14 @@ template <typename T>
 class DoubleVector
 {
     public:
-        DoubleVector(){};
+        DoubleVector(){;}
         DoubleVector(CRuint rows,CRuint cols)	//	Create a vectorInVector with specified dimensions.
-        :data(rows, vector<T>(cols))
-        {}
+        :data(rows, std::vector<T>(cols))
+        {;}
 
-        vector<T> & operator[](CRuint i){return data[i];}
+        std::vector<T> & operator[](CRuint i){return data[i];}
 
-        const vector<T> & operator[] (CRuint i) const{return data[i];}
+        const std::vector<T> & operator[] (CRuint i) const{return data[i];}
 
         void resize(CRuint rows,CRuint cols)		//	Change the vectorInVector dimensions
         {
@@ -56,6 +56,6 @@ class DoubleVector
             return mySize;
         }
     private:
-        vector<vector<T> > data;
+        std::vector<std::vector<T> > data;
 };
 #endif //	DOUBLEVECTOR_H

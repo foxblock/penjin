@@ -54,12 +54,16 @@ class Pixel
         template <class T>
         Pixel(const T& p, const Colour& c)
         {
+            setPixel(p,c);
+        }
+        template <class T>
+        void setPixel(const T& p, const Colour& c)
+        {
             setPosition(p);
             init();
             setColour(c);
             setPixel();
         }
-
         void setColour(const Colour& c);
         void setColour(CRuchar r, CRuchar g, CRuchar b, CRuchar a);
         void setColour(CRuchar r, CRuchar g, CRuchar b);

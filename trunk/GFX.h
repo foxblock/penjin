@@ -19,6 +19,8 @@ namespace GFX
 {
     /// Get display setting info
     void showVideoInfo();
+    // Force to blit to screen now!
+    void forceBlit();
 
     #if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks */
         const int RED_MASK =    0x000000FF;

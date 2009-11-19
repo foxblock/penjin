@@ -8,7 +8,15 @@ namespace GFX
 #endif
 }
 
-
+// Force to blit to screen now!
+void GFX::forceBlit()
+{
+    #ifdef PENJIN_GL
+        SDL_GL_SwapBuffers();
+    #elif PENJIN_SDL
+        SDL_Flip(screen);
+    #endif
+}
 
 #ifdef PENJIN_SDL
     void GFX::initVideoSurface(SDL_Surface* scr){screen = scr;}
@@ -242,21 +250,30 @@ void GFX::showVideoInfo()
 
 Colour GFX::getPixel(SDL_Surface* src, CRint x, CRint y)
 {
-        if(x > src->w || y > src->h)
-            return Colour(255,255,255,255);
-        Uint32 colour;
-        //determine position
-        char* pPosition = ( char* ) src->pixels ;
+    if(src == NULL)
+        return Colour(MAGENTA);
+    int bpp = src->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)src->pixels + y * src->pitch + x * bpp;
+    Colour c;
+    switch(bpp) {
+    case 1:
+        c.convertColour(*p,src->format);break;
 
-        //offset by y
-        pPosition += ( src->pitch * y ) ;
+    case 2:
+        c.convertColour(*(Uint16 *)p,src->format);break;
 
-        //offset by x
-        pPosition += ( src->format->BytesPerPixel * x ) ;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            c.convertColour(p[0] << 16 | p[1] << 8 | p[2],src->format);
+        else
+            c.convertColour(p[0] | p[1] << 8 | p[2] << 16,src->format);
+        break;
+    case 4:
+        c.convertColour( *(Uint32 *)p,src->format);break;
 
-        //copy pixel data
-        memcpy (&colour , pPosition, src->format->BytesPerPixel );
-        Colour c;
-        c.convertColour(colour);
-        return c;
+    default:
+        c.setColour(MAGENTA);       /* shouldn't happen, but avoids warnings */
+    }
+    return c;
 }
