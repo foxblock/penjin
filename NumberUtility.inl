@@ -9,7 +9,7 @@
 template <class T>
 int NumberUtility::sign(const T& value)
 {
-    return (Value > 0) - (0 > Value);
+    return (value > 0) - (0 > value);
 }
 
 ///----------------------
