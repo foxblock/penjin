@@ -64,7 +64,7 @@ class Colour
         SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
         Uint32 getSDL_Uint32Colour(const SDL_Surface* dst)const;
         Uint32 getSDL_Uint32Colour(){return getSDL_Uint32Colour(SDL_GetVideoSurface());}
-        void convertColour(Uint32 colour);      //  Converts an SDL Uint32 colour to a Colour object
+        void convertColour(Uint32 colour,SDL_PixelFormat *format);      //  Converts an SDL Uint32 colour to a Colour object
 
         Colour getGreyScale();  //  Get this colour as a grayscale colour.
         void toGreyScale(){*this = getGreyScale();}     //  Convert this colour to grayscale
