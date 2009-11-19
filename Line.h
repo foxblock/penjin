@@ -16,9 +16,9 @@ class Line
         virtual ~Line();
 
         template <class T>
-        void setStartPosition(const T& pos){start = pos;}
+        void setStartPosition(const T& pos){start.x = pos.x;start.y=pos.y;}
         template <class T>
-        void setEndPosition(const T& pos){end = pos;}
+        void setEndPosition(const T& pos){end.x = pos.x;end.y=pos.y;}
 
         void setColour(const Colour& c){colour = c;}
         void setLineWidth(CRfloat w){lineWidth = w;}

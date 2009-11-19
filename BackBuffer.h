@@ -23,7 +23,7 @@ class BackBuffer
             void render();
             void update(){;}
             void setAlpha(CRuchar a){alpha = a * 0.003921569f;}
-            void setAlpah(CRfloat a){alpha = a;}
+            void setAlpha(CRfloat a){alpha = a;}
         #endif
 
 

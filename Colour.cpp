@@ -194,20 +194,9 @@ SDL_Color Colour::getSDL_Colour()
 
 Uint32 Colour::getSDL_Uint32Colour(const SDL_Surface* dst)const{return SDL_MapRGBA(dst->format,red,green,blue,alpha);}
 
-void Colour::convertColour(Uint32 c)
+void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
 {
-    //Change from an "int color" to a Colour
-    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        red = 	(c & 0xff000000)/0x1000000;
-        green = (c & 0x00ff0000)/0x10000;
-        blue =  (c & 0x0000ff00)/0x100;
-        alpha = (c & 0x000000ff);
-    #else
-        alpha = (c & 0xff000000)/0x1000000;
-        red = 	(c & 0x00ff0000)/0x10000;
-        green = (c & 0x0000ff00)/0x100;
-        blue = 	(c & 0x000000ff);
-    #endif
+    SDL_GetRGBA(pixel,format,&red,&green,&blue,&alpha);
     #ifdef PENJIN_GL
         toGL();
     #endif

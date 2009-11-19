@@ -238,11 +238,7 @@ bool Engine::stateLoop()
                 #ifdef PLATFORM_GP2X
                     hack.flushCache(screen->pixels, (char*)screen->pixels + *xRes * *yRes);
                 #endif
-                #ifdef PENJIN_SDL
-                    SDL_Flip(screen);
-                #elif PENJIN_GL
-                    SDL_GL_SwapBuffers();
-                #endif
+                GFX::forceBlit();
                 gameTimer.start();
             }
             else
@@ -264,11 +260,7 @@ bool Engine::stateLoop()
             #ifdef PLATFORM_GP2X
                 hack.flushCache(screen->pixels, (char*)screen->pixels + *xRes * *yRes);
             #endif
-            #ifdef PENJIN_GL
-                SDL_GL_SwapBuffers();
-            #elif PENJIN_SDL
-                SDL_Flip(screen);
-            #endif
+            GFX::forceBlit();
             #ifdef _DEBUG
                 int frameCount = calcFPS();
                 if(frameCount>=20)//only update if there are a reasonable number of redundant updates
