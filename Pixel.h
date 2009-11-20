@@ -3,6 +3,7 @@
 
 #include "PenjinTypes.h"
 #include "Colour.h"
+#include "GFX.h"
 
 class Pixel
 {

@@ -196,9 +196,17 @@ Uint32 Colour::getSDL_Uint32Colour(const SDL_Surface* dst)const{return SDL_MapRG
 
 void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
 {
-    SDL_GetRGBA(pixel,format,&red,&green,&blue,&alpha);
-    #ifdef PENJIN_GL
+
+    #if PENJIN_GL
+        Uint8 r,g,b,a;
+        SDL_GetRGBA(pixel,format,&r,&g,&b,&a);
+        red = r;
+        green = g;
+        blue = b;
+        alpha = a;
         toGL();
+    #else
+        SDL_GetRGBA(pixel,format,&red,&green,&blue,&alpha);
     #endif
 }
 
