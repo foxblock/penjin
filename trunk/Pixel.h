@@ -76,7 +76,7 @@ class Pixel
         void setRed(CRuchar r){colour.red=r;}
         void setGreen(CRuchar g){colour.green=g;}
         void setBlue(CRuchar b){colour.blue=b;}
-        void setAlpha(CRuchar a){colour.alpha=a;}
+        void setAlpha(CRuchar a){colour.alpha=a;SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);}
         template <class T>
         void setPosition(const T& x, const T& y){position.x=x;position.y=y;}
     #ifdef PENJIN_FIXED
