@@ -36,12 +36,7 @@ void Pixel::setColour(CRuchar r, CRuchar g, CRuchar b)
 
 void Pixel::setPixel()
 {
-#ifdef PENJIN_SDL
-    Uint32 c =  colour.getSDL_Uint32Colour(pixel);
-    memcpy ( pixel->pixels , &c , pixel->format->BytesPerPixel ) ;
-    if(colour.alpha != SDL_ALPHA_OPAQUE)
-        SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
-#endif
+    GFX::setPixel(pixel,0,0,colour);
 }
 
 Pixel::~Pixel()
