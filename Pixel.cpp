@@ -25,20 +25,26 @@ void Pixel::setColour(const Colour& c)
 void Pixel::setColour(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
 {
     colour.setColour(r,g,b,a);
-    SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
+    #ifdef PENJIN_SDL
+        SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
+    #endif
     setPixel();
 }
 
 void Pixel::setColour(CRuchar r, CRuchar g, CRuchar b)
 {
     colour.setColour(r,g,b);
-    SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, 255);
+    #ifdef PENJIN_SDL
+        SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, 255);
+    #endif
     setPixel();
 }
 
 void Pixel::setPixel()
 {
-    GFX::setPixel(pixel,0,0,colour);
+    #ifdef PENJIN_SDL
+        GFX::setPixel(pixel,0,0,colour);
+    #endif
 }
 
 Pixel::~Pixel()
@@ -62,6 +68,6 @@ Pixel::~Pixel()
 #else
     void Pixel::render()
     {
-
+        GFX::setPixel(position.x,position.y,colour);
     }
 #endif
