@@ -25,12 +25,14 @@ void Pixel::setColour(const Colour& c)
 void Pixel::setColour(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
 {
     colour.setColour(r,g,b,a);
+    SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
     setPixel();
 }
 
 void Pixel::setColour(CRuchar r, CRuchar g, CRuchar b)
 {
     colour.setColour(r,g,b);
+    SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL, 255);
     setPixel();
 }
 
