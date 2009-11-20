@@ -209,12 +209,6 @@ bool Engine::stateLoop()
 	}
 	else if (state->getNeedInit() == false)
 	{
-        //  Take input
-        if(!state->getIsPaused())
-            state->userInput();
-        else
-            state->pauseInput();
-
         if(state->getNeedInit())
             return true;
         //  Update physics
@@ -232,6 +226,7 @@ bool Engine::stateLoop()
             }
             if(gameTimer.getScaledTicks() > 1)
             {
+                state->pauseInput();
                 state->pauseUpdate();
                 state->pauseScreen();
                 //	Flush the cache on GP2X just before the screen is flipped
@@ -252,6 +247,7 @@ bool Engine::stateLoop()
 		else if(gameTimer.getScaledTicks() > 1)
 		{
 			gameTimer.start();
+			state->userInput();
 			state->update();
 			if(state->getNeedInit())
                 return true;
