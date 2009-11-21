@@ -134,6 +134,7 @@ class Image
             void setPixel(CRint x,CRint y,const uchar& r,const uchar& g,const uchar& b);
             // get a pixel
             Colour getPixel(CRint x,CRint y){return GFX::getPixel(images.at(0),x,y);}
+            Colour getPixel(CRuint i,CRint x,CRint y){return GFX::getPixel(images.at(i),x,y);}
             uint* getPixelArray(CRint x,CRint y);
             // check and unlock screen
             void screenUnlock();
