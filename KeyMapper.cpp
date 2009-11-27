@@ -156,9 +156,9 @@ void KeyMapper::defaultMap()
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyButton(5,"R",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","RIGHT_SHIFT",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(7,"SELECT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("START","RETURN",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(6,"START",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
     keys.push_back(NULL);
