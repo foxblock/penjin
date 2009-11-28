@@ -64,7 +64,7 @@ void ScoreScreen::init()
 
     /// setup Text positions
     textStrings[0] = "   ";
-    textStrings[2] = "Entry Complete!";
+    textStrings[2] = "OK?";
     textStrings[3] = "Game Over!";
     #ifdef PENJIN_SDL
         SDL_Surface* scr = SDL_GetVideoSurface();
@@ -125,14 +125,17 @@ void ScoreScreen::update()
             /// Display Name entry mode
             text.setColour(YELLOW);
             text.setPosition(textPositions[0]);
-            textStrings[0][0] = currentLetter;
+            if(textStrings[1].size()<3)
+                textStrings[0][0] = currentLetter;
+            else
+                textStrings[0][0] = '?';
             text.print(screen, textStrings[0]);
             text.setPosition(textPositions[1]);
             text.setColour(WHITE);
-            if(textStrings[1].size()<=3)
+            if(textStrings[1].size()<3)
                 text.print(screen,textStrings[1]);
             else
-                text.print(screen,textStrings[2]);
+                text.print(screen,textStrings[1] + " " + textStrings[2]);
             text.setPosition(textPositions[2]);
             text.setColour(BLUE);
             text.print(screen,(int)score);
@@ -158,11 +161,14 @@ void ScoreScreen::update()
             /// Display Name entry mode
             text.setColour(YELLOW);
             text.setPosition(textPositions[0]);
-            textStrings[0][0] = currentLetter;
+            if(textStrings[1].size()<3)
+                textStrings[0][0] = currentLetter;
+            else
+                textStrings[0][0] = '?';
             text.print(textStrings[0]);
             text.setPosition(textPositions[1]);
             text.setColour(WHITE);
-            if(textStrings[1].size()<=3)
+            if(textStrings[1].size()<3)
                 text.print(textStrings[1]);
             else
                 text.print(textStrings[2]);
