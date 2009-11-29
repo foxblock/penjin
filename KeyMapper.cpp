@@ -156,10 +156,13 @@ void KeyMapper::defaultMap()
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyButton(5,"R",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(7,"SELECT",0);
+    //  Buttons 6 and 7 are the Secondary Shoulder buttons. 
+    //  These do not exist physically on a standard Pandora.
+    keys[keys.size()-1] = new KeyMapJoyButton(8,"SELECT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(6,"START",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(9,"START",0);
     keys.push_back(NULL);
+    // TODO: Add Pandora Menu button support.! This is button 10
     keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyAxis(1,"LEFTSTICK_Y",0);
