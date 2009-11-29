@@ -104,65 +104,67 @@ void KeyMapper::defaultMap()
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapSDLKey("START","RETURN",0);
 #elif PLATFORM_GP2X
+    int i = -1;
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("UP",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UP",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("UPLEFT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UPLEFT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("LEFT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"LEFT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("DOWNLEFT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWNLEFT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("DOWN",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWN",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("DOWNRIGHT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWNRIGHT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("RIGHT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"RIGHT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("UPRIGHT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UPRIGHT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("START",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"START",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("SELECT",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"SELECT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("L",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"L",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("R",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"R",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("A",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"A",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("B",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"B",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("Y",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"Y",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("X",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"X",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("VOLUP",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"VOLUP",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("VOLDOWN",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"VOLDOWN",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton("CLICK",i,0);
+    keys[keys.size()-1] = new KeyMapJoyButton(++i,"CLICK",0);
 #elif PLATFORM_PANDORA
+//0 TOP/X,1 RIGHT/A,2 BOTTOM/B,3 LEFT/Y,4 SELECT,5 START,6 PANDORA,7 L,8 R,9 L2,10 R2,11 HOLD
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(3,"A",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(0,"X",0);// TOP
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(0,"B",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(1,"A",0);// RIGHT
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(1,"X",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(2,"B",0);// BOTTOM
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(2,"Y",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(3,"Y",0);// LEFT
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(4,"L",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(4,"SELECT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(5,"R",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(5,"START",0);
     keys.push_back(NULL);
-    //  Buttons 6 and 7 are the Secondary Shoulder buttons. 
-    //  These do not exist physically on a standard Pandora.
-    keys[keys.size()-1] = new KeyMapJoyButton(8,"SELECT",0);
+    // TODO: Add Pandora Menu button support.! This is button 6
+    keys[keys.size()-1] = new KeyMapJoyButton(7,"L",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(9,"START",0);
+    keys[keys.size()-1] = new KeyMapJoyButton(8,"R",0);
     keys.push_back(NULL);
-    // TODO: Add Pandora Menu button support.! This is button 10
+    //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons. 
+    //  These do not exist physically on a standard Pandora and for this reason are ommited.
     keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyAxis(1,"LEFTSTICK_Y",0);
