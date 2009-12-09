@@ -103,16 +103,12 @@ void StateAnimation::render()
         text.print("MINUTES");
 }
 
-void StateAnimation::update()
+void StateAnimation::unlimitedUpdate()
 {
     if(anim)
         anim->update();
     else if(animS)
         animS->update();
-}
-
-void StateAnimation::unlimitedUpdate()
-{
 }
 
 void StateAnimation::userInput()
@@ -129,6 +125,8 @@ void StateAnimation::userInput()
         if(input->isQuit())
             nullifyState();
     #endif
+    if(input->isStart())
+        setNextState(STATE_TITLE);
     if(input->isA())
     {
         ++animMode;

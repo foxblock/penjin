@@ -12,18 +12,23 @@
 				<![CDATA[Penjin Test Suite Project
 ###############
 
-
 This is a series of states which are created with the sole intent of testing Penjin Functionality.
 
 Currently, there are states provided to test:
 
-Animations - StateAnimation]]>
+Animations - StateAnimation
+Colours - StateColour
+Menus - StateTitle - only basic functionality of the menu system.
+Primitives - StatePrimitive
+RayCaster - StateRaycast - Nowhere near finished... too slow current version crashes.
+
+Press START in any of the Test States to return to the TitleState Menu.]]>
 			</notes>
 		</Option>
 		<Build>
 			<Target title="W32 Debug">
 				<Option platforms="Windows;" />
-				<Option output="bin/Debug/W32/Penjin3D" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/W32/TestSuite_D" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="built" />
 				<Option object_output="obj/W32/Debug/" />
 				<Option type="1" />
@@ -52,7 +57,7 @@ Animations - StateAnimation]]>
 			</Target>
 			<Target title="W32 Release">
 				<Option platforms="Windows;" />
-				<Option output="bin/Release/W32/Penjin3D" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/W32/TestSuite_R" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="built" />
 				<Option object_output="obj/W32/Release/" />
 				<Option type="0" />
@@ -84,7 +89,7 @@ Animations - StateAnimation]]>
 			</Target>
 			<Target title="Lin Debug">
 				<Option platforms="Unix;" />
-				<Option output="bin/Debug/Linux/Penjin3D" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuite_D" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
 				<Option object_output="obj/lin/Debug/" />
 				<Option type="1" />
@@ -108,7 +113,7 @@ Animations - StateAnimation]]>
 			</Target>
 			<Target title="Lin Release">
 				<Option platforms="Unix;" />
-				<Option output="bin/Release/Linux/Penjin3D" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuite_R" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
 				<Option object_output="obj/lin/Release/" />
 				<Option type="0" />
@@ -132,7 +137,7 @@ Animations - StateAnimation]]>
 				</Linker>
 			</Target>
 			<Target title="Pandora Debug">
-				<Option output="bin/Debug/Pandora/Penjin3D.pxf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Pandora/TestSuite_D.pxf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
 				<Option object_output="obj/Pandora/Debug/" />
 				<Option type="1" />
@@ -163,7 +168,7 @@ Animations - StateAnimation]]>
 				</Linker>
 			</Target>
 			<Target title="Pandora Release">
-				<Option output="bin/Release/Pandora/Penjin3D.pxf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Pandora/TestSuite_R.pxf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
 				<Option object_output="obj/Pandora/Release/" />
 				<Option type="0" />
@@ -194,9 +199,9 @@ Animations - StateAnimation]]>
 			</Target>
 			<Target title="LinGL Debug">
 				<Option platforms="Unix;" />
-				<Option output="bin/Debug/Linux/Penjin3D" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuiteGL_D" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj/lin/Debug/" />
+				<Option object_output="obj/lin/DebugGL/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -283,6 +288,18 @@ Animations - StateAnimation]]>
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
 		<Unit filename="../PenjinBase/Colour.h">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/ColourHSL.cpp">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/ColourHSL.h">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/ColourHSV.cpp">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/ColourHSV.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
 		<Unit filename="../PenjinBase/Command.cpp">
@@ -420,6 +437,12 @@ Animations - StateAnimation]]>
 		<Unit filename="../PenjinBase/LUT.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
+		<Unit filename="../PenjinBase/Line.cpp">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
+		</Unit>
+		<Unit filename="../PenjinBase/Line.h">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
+		</Unit>
 		<Unit filename="../PenjinBase/MMUHack.cpp">
 			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
 		</Unit>
@@ -508,6 +531,12 @@ Animations - StateAnimation]]>
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
 		<Unit filename="../PenjinBase/Random.h">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/Raycast.cpp">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/Raycast.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
 		<Unit filename="../PenjinBase/Rectangle.cpp">
@@ -685,14 +714,35 @@ Animations - StateAnimation]]>
 		<Unit filename="StateAnimation.h">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
+		<Unit filename="StateColour.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateColour.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StatePrimitive.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StatePrimitive.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateRaycast.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateRaycast.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateTitle.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateTitle.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
 		<Unit filename="_main.cpp">
 			<Option virtualFolder="MyGame/" />
 		</Unit>
 		<Unit filename="userStates.h">
-			<Option virtualFolder="MyGame/" />
-		</Unit>
-		<Unit filename="userTypes.h">
-			<Option virtualFolder="MyGame/" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="version.h">
 			<Option virtualFolder="MyGame/" />

@@ -1,3 +1,10 @@
+30 October 2009
+   released version 0.0.80 of TestSuite
+
+     Change log:
+        -Fixed: Rectangles don't render if their dimensions are 0
+        -Fixed: Rectangles with large border sizes are rendered as a normal Rectangle.
+
 28 October 2009
    released version 0.0.62 of TestSuite
 

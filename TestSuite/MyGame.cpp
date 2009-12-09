@@ -115,7 +115,7 @@ PENJIN_ERRORS MyGame::init()
 
 	TTF_Init();
 	//Sound().init();
-	setInitialState(STATE_ANIMATION);
+	setInitialState(STATE_TITLE);
 	gameTimer.start();
 
     input = NULL;
@@ -125,6 +125,15 @@ PENJIN_ERRORS MyGame::init()
 	#ifdef _DEBUG
         GFX::showVideoInfo();
 	#endif
+
+	#ifdef PENJIN_GL
+        #ifdef PENJIN3D
+            GFX::init3DRendering(xRes,yRes);
+        #else
+            GFX::init2DRendering(xRes,yRes);
+        #endif
+	#endif
+	Text().initialise();
 	return PENJIN_OK;
 }
 
@@ -142,6 +151,14 @@ void MyGame::stateManagement()
 		state = new BaseState;
     else if(next == STATE_ANIMATION)
         state = new StateAnimation;
+    else if(next == STATE_PRIMITIVE)
+        state = new StatePrimitive;
+    else if(next == STATE_RAYCAST)
+        state = new StateRaycast;
+    else if(next == STATE_COLOUR)
+        state = new StateColour;
+    else if(next == STATE_TITLE)
+		state = new StateTitle;
 	/* EXAMPLE OF STATE CHECKING
 	else if(next == STATE_TITLE)
 		state = new StateTitle;*/

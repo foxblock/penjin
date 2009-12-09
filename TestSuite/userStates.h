@@ -15,9 +15,15 @@ NOTE: Be sure to #include ALL state headers which correspond to these modes.
 enum STATE_MODES
 {
 	STATE_TITLE = 2,
-	STATE_MAIN,
     STATE_ANIMATION,
+    STATE_COLOUR,
+    STATE_PRIMITIVE,
+    STATE_RAYCAST
 };
+#include "StateTitle.h"
 #include "StateAnimation.h" //  Animation testing suite.
+#include "StateColour.h"    //  Colour class tests
+#include "StatePrimitive.h" //  Primitive tests.
+#include "StateRaycast.h"   //  Raycaster
 
 #endif	//	USERSTATES_H

@@ -25,7 +25,6 @@ class StateAnimation : public BaseState
 
         virtual void render();
         virtual void userInput();
-        virtual void update();
         virtual void unlimitedUpdate();
 
     private:
