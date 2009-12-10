@@ -5,6 +5,13 @@
 #include "PenjinStates.h"		//	List all game states in this file
 #include "PenjinTypes.h"		//	All Penjin types listed here.
 #include "StringUtility.h"
+
+#ifdef USE_ACHIEVEMENTS
+    #include "AchievementSystem.h"
+    #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
+#endif
+
+
 using namespace StringUtility;
 
 /* This is a base engine class. You do not use this directly, it is inherited by and overridden by a child class.

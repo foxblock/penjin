@@ -19,6 +19,11 @@ using std::vector;
     #include <SDL/SDL_opengl.h>
 #endif
 
+#ifdef USE_ACHIEVEMENTS
+    #include "AchievementSystem.h"
+    #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
+#endif
+
 #ifndef STATE_NULL
 	#define STATE_NULL 0	//	Exit the program
 #endif	//	STATE_NULL
