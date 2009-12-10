@@ -91,6 +91,54 @@ void AchievementSystem::update()
 	log.clear();
 }
 
+PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
+{
+	doc.clear();
+	doc.load(file);
+	if(!doc.size())
+		return PENJIN_FILE_NOT_FOUND;
+    int i = 0;
+    while(i < doc.size())
+    {
+        // get a line
+        string line = doc.getLine(i);
+        vector<Achievement*>::iterator I;
+        // first look for the name of the achievement
+        for (I=achievements.begin(); I < achievements.end(); ++I)
+        {
+            // when we find a name which matches an achievement
+            string name = (*I)->getName() + "\n";
+            if(name == line)
+            {
+                //  the next line is the count
+                ++i;
+                (*I)->setCount(StringUtility::stringToInt(doc.getLine(i)));
+                //  move to the next line
+                ++i;
+                //  break out since we are finished with this achievement
+                break;
+            }
+        }
+    }
+	return PENJIN_OK;
+}
+
+PenjinErrors::PENJIN_ERRORS AchievementSystem::save(CRstring file)
+{
+	doc.clear();
+    vector<Achievement*>::iterator I;
+    // run through the achievements
+    for (I=achievements.begin(); I < achievements.end(); ++I)
+    {
+        //  save the name
+        doc.append((*I)->getName());
+        //  save the count
+        doc.append(StringUtility::intToString((*I)->getCount()));
+    }
+	doc.save(file);
+	return PENJIN_OK;
+}
+
 ///------------------------------
 /// Private
 ///------------------------------

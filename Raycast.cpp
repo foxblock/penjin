@@ -53,6 +53,9 @@ int worldMap[mapWidth][mapHeight]=
 Raycast::Raycast() : screenX(0), screenY(0), screenWidth(800), screenHeight(480), texSize(64)
 {
     LUT::init();
+    #ifdef PENJIN_SDL
+        screen = SDL_GetVideoSurface();
+    #endif
 }
 Raycast::~Raycast()
 {

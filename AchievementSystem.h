@@ -17,7 +17,11 @@
 #include "AchievementBoolean.h"
 #include "AchievementCount.h"
 #include "Text.h"
+#include "TextDoc.h"
+#include "Encryption.h"
+#include "PenjinErrors.h"
 
+using namespace PenjinErrors;
 using namespace std;
 using namespace AchievementUtility;
 
@@ -51,9 +55,14 @@ class AchievementSystem
         #endif
         void update();
 
+        PENJIN_ERRORS load(CRstring file);
+        PENJIN_ERRORS save(CRstring file);
+
     private:
         vector<Event> log;
         vector<Achievement*> achievements;
+        Encryption crypt;
+        TextDoc doc;
 
         int offsetX;
         int offsetY;

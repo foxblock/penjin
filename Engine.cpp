@@ -54,6 +54,10 @@ Engine::~Engine()
         delete input;
         input = NULL;
 	}
+	#ifdef PENJIN_ASCII
+        caca_free_display(display);
+        cucul_free_canvas(canvas);
+	#endif
 }
 
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
@@ -135,7 +139,7 @@ PENJIN_ERRORS Engine::init()
     #endif
     state = NULL;
 	state = new BaseState;
-
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
 	const SDL_VideoInfo* info = NULL;	//Information about the current video settings
     int flags = 0;						//Flags for SDL_SetVideoMode
 
@@ -151,7 +155,10 @@ PENJIN_ERRORS Engine::init()
 	{
 		return PENJIN_SDL_VIDEO_QUERY_FAILED;
     }
-
+#elif PENJIN_ASCII
+    canvas = cucul_create_canvas(xRes, yRes);
+    display = caca_create_display(canvas);
+#endif
 #ifdef PENJIN_GL
         //Setup OpenGL window attributes
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
@@ -165,9 +172,10 @@ PENJIN_ERRORS Engine::init()
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 16);
     #endif
         flags = SDL_OPENGL;
-#else
+#elif PENJIN_SDL
     flags = SDL_SWSURFACE;
 #endif
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
 	if(fullScreen)
 		flags = flags | SDL_FULLSCREEN;
     screen = NULL;
@@ -176,17 +184,23 @@ PENJIN_ERRORS Engine::init()
 	{
 		return PENJIN_SDL_SETVIDEOMODE_FAILED;
     }
+#endif
 #ifdef PENJIN_SDL
     GFX::initVideoSurface(SDL_GetVideoSurface());
 #endif
 
     //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
 	SDL_ShowCursor(SDL_DISABLE);
-
+#endif
     //  Can't display window title on a GP2X
     #ifndef PLATFORM_GP2X
-        SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str(), NULL);
+        #if defined(PENJIN_SDL) || defined(PENJIN_GL)
+            SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str(), NULL);
+        #endif
+        #ifdef PENJIN_ASCII
+            caca_set_display_title(display, (appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str());
+        #endif
     #endif
 
 	setInitialState(STATE_BASE);

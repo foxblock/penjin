@@ -38,7 +38,7 @@ class Image
                 SDL_SetColorKey(images.at(i), 0, SDL_MapRGB(images.at(i)->format,0,0,0));
             }
             void disableTransparentColour(){disableTransparentColour(images.size()-1);}
-        #else
+        #elif PENJIN_GL
             void loadImage(const Texture& t)
             {
                 textures.push_back(t);
@@ -95,7 +95,7 @@ class Image
         {
             #ifdef PENJIN_SDL
                 return setTransparentColour(images.size()-1,pixel);
-            #else
+            #elif PENJIN_GL
                 return setTransparentColour(textures.size()-1,pixel);
             #endif
         }
@@ -104,7 +104,7 @@ class Image
         {
             #ifdef PENJIN_SDL
                 return setTransparentColour(images.size()-1,c);
-            #else
+            #elif PENJIN_GL
                 return setTransparentColour(textures.size()-1,c);
             #endif
         }
@@ -138,7 +138,7 @@ class Image
             uint* getPixelArray(CRint x,CRint y);
             // check and unlock screen
             void screenUnlock();
-        #else
+        #elif PENJIN_GL
             #ifdef PENJIN3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
                 void setRotation(CRfloat a){rotation.z = a;}
@@ -190,7 +190,7 @@ class Image
             vector<SDL_Surface*>images; //  Stores surfaces
             vector<bool>isConverted;    //  Determines if a surface has been converted to hardware
             SDL_Surface* screen;        //  The pointer to the screen;
-		#else
+		#elif PENJIN_GL
             vector<Texture> textures;   //  Stores Textures for image
 		#endif
 
