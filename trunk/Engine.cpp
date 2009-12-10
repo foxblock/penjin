@@ -249,10 +249,18 @@ bool Engine::stateLoop()
 			gameTimer.start();
 			state->userInput();
 			state->update();
+			#ifdef USE_ACHIEVEMENTS
+			ACHIEVEMENTS->update();
+			#endif
+
 			if(state->getNeedInit())
                 return true;
 			//  Render objects
             state->render();
+            #ifdef USE_ACHIEVEMENTS
+            ACHIEVEMENTS->render(screen);
+            #endif
+
             #ifdef PLATFORM_GP2X
                 hack.flushCache(screen->pixels, (char*)screen->pixels + *xRes * *yRes);
             #endif

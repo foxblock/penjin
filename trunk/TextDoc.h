@@ -28,7 +28,7 @@ class TextDoc
         string getLine(CRint line);				//	get the string data of the line
         void viewDoc();							//	View an outline of the doc
         void clear();							//	Clear data out of doc.
-        void append(CRstring data);				//	add s string to the document
+        void append(CRstring data);				//	adds a string to the document
     private:
         int findLine(CRstring target);
         vector <string> docData;
