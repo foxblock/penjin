@@ -18,7 +18,7 @@ class Sprite
             Sprite(const Vector3df& position);
         #endif
         PENJIN_ERRORS loadSprite(CRstring fileName);     // Loads an image for this sprite
-        void loadSprite(SDL_Surface* s){image.loadImage(s);}
+
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v){return image.setTransparentColour(v);}
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
@@ -27,6 +27,7 @@ class Sprite
             void render(SDL_Surface* screen);         // Draws the image onto the screen
             void render(){render(screen);}
             bool hasCollided(Sprite &spr);			//	Has this sprite collided with the passed in sprite?
+            void loadSprite(SDL_Surface* s){image.loadImage(s);}
         #else
             void render();
         #endif

@@ -5,6 +5,8 @@ namespace GFX
 #ifdef PENJIN_SDL
     Colour clear(BLACK);
     SDL_Surface* screen;
+#elif PENJIN_ASCII
+
 #endif
 }
 
@@ -15,6 +17,9 @@ void GFX::forceBlit()
         SDL_GL_SwapBuffers();
     #elif PENJIN_SDL
         SDL_Flip(screen);
+    #elif PENJIN_ASCII
+        /// TODO: Pass display pointer into GFX or create here instead.
+        caca_refresh_display(display);
     #endif
 }
 
@@ -227,7 +232,7 @@ void GFX::showVideoInfo()
 {
     SDL_Surface* screen = SDL_GetVideoSurface();
     cout << "Screen Info" << endl;
-    cout << screen->w << "x" << screen->h << " " << screen->format->BitsPerPixel << "BPP" << endl;
+    cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
     #ifdef PENJIN_GL
         printf("GL Info\n");
         printf("Vendor:     %s\n",glGetString(GL_VENDOR));

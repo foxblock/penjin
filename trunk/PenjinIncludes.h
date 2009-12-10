@@ -4,9 +4,13 @@
 #ifdef PLATFORM_WII
     #include <gccore.h>
 #endif
-#include <SDL/SDL.h>
-#ifdef PENJIN_GL
+#ifdef PENJIN_SDL
+    #include <SDL/SDL.h>
+#elif PENJIN_GL
     #include <SDL/SDL_opengl.h>
+#elif PENJIN_ASCII
+    #include <cucul.h>
+    #include <caca.h>
 #endif
 
 #include "version.h"    //  Application version info

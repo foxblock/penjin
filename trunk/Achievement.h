@@ -51,6 +51,7 @@ class Achievement
         virtual int getLimit() const {return limit;};
         virtual void setLimit(CRint value) {limit = value;};
         virtual int getCount() const {return count;};
+        virtual void setCount(CRint c){count = c;}
         virtual int eventCount() const {return events.size();}
 
         virtual int getType() const {return type;};

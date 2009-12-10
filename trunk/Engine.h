@@ -58,7 +58,13 @@ class Engine
 		bool fullScreen;				//	Fullscreen == true, Windowed == false
 		bool paused;
 		BaseState* state;				//	The current game state
-		SDL_Surface* screen;
+        #if defined(PENJIN_SDL) || defined(PENJIN_GL)
+            SDL_Surface* screen;
+		#endif
+		#ifdef PENJIN_ASCII
+            cucul_canvas_t *canvas;
+            caca_display_t *display;
+		#endif
 		vector<Variable> variables;		//	Variable storage for transfer between states
 		Timer gameTimer;				//	Timer for frame regulation and event scheduling.
 		uint now;

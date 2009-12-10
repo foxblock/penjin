@@ -49,6 +49,7 @@ public:
     void setTextureSize(int size){texSize = size;}
 	#ifdef PENJIN_SDL
 	void render(SDL_Surface* screen);
+	void render(){render(screen);}
 	#else
 	void render();
 	#endif
@@ -56,6 +57,9 @@ public:
 	void loadTexture(CRstring imageName);
 
 private:
+    #ifdef PENJIN_SDL
+        SDL_Surface* screen;
+    #endif
     void rotate(CRfloat sinV,CRfloat cosV)
     {
         float oldDirX = dirX;
