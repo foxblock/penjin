@@ -68,6 +68,10 @@ namespace AchievementUtility
     // checks whether an event is already present in an vector of events
     bool isEvent(CRstring name, const vector<Event>& events);
     bool isEventSpecial(CRstring name, const vector<SpecialProperty>& special, const vector<Event>& events);
+
+    // secret text
+    string getSecretName();
+    string getSecretDescription();
 }
 
 #endif // ACHIEVEMENTUTILITY_H
