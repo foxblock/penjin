@@ -338,6 +338,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/GFX.h">
 			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
+		<Unit filename="../PenjinBase/Glyph.cpp" />
+		<Unit filename="../PenjinBase/Glyph.h" />
 		<Unit filename="../PenjinBase/HiScore.cpp">
 			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>

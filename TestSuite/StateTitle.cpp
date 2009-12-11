@@ -23,6 +23,8 @@ void StateTitle::initMenu()
     menu.setMenuStart(getStateXResolution()*0.25f - 15,50);
     menu.setSelection(1);
     menu.loadFont("font/unispace.ttf", 18);
+    test.loadFont("font/unispace.ttf", 12);
+    test.setColour(RED);
     menu.setTextColour(Colour(YELLOW));
     menu.setTextSelectionColour(Colour(WHITE));
     menu.addItem(MENU_STRING_ITEM);
@@ -64,6 +66,7 @@ void StateTitle::initMenu()
 void StateTitle::render()
 {
     GFX::clearScreen();
+    test.glyphPrint(SDL_GetVideoSurface(), "Test Text!");
     menu.render();
 }
 
