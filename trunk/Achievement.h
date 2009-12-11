@@ -9,6 +9,9 @@
 /// You could use this class, but it's better to create a child class and change at least the changeCount function
 ///------------------------------
 
+#define ACHIEVEMENT_HEIGHT 80
+#define ACHIEVEMENT_WIDTH 300
+
 #include <vector>
 #include <string>
 #include "StringUtility.h"
@@ -61,7 +64,7 @@ class Achievement
         virtual string getDescription() const {return descr;};
         virtual void setDescription(CRstring newDescr) {if (newDescr.size() > 0) descr = newDescr;};
         virtual const AnimatedSprite* getIcon() const {return &icon;};
-        virtual void setIcon(string fileName) {icon.loadFrames(fileName,1,1);};
+        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1);};
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};
         virtual bool getStatus() const {return unlocked;};
@@ -86,6 +89,7 @@ class Achievement
         AnimatedSprite icon;
         Text tDescr;
         Text tName;
+        Rectangle bgBox;
         bool secret;
 
         // data

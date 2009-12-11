@@ -55,8 +55,11 @@ bool Achievement::check(const vector<Event>& checkEvents)
     changeCount(countEvents);
 
     // returns true if achievemnt has been unlocked
-    if (count >= limit)
+    if (count >= limit && not unlocked)
+    {
+        unlocked = true;
         return true;
+    }
     else
         return false;
 }
@@ -80,41 +83,77 @@ void Achievement::addEventSpecial(CRstring name, const vector<SpecialProperty>& 
 #ifdef PENJIN_SDL
 void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
 {
-    Rectangle rect;
-    rect.setPosition(xPos,yPos);
-    rect.setDimensions(300,80);
-    rect.setColour(DARK_GREY);
-    rect.render(screen);
+    // background box
+    bgBox.setPosition(xPos,yPos);
+    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
+    if (unlocked)
+        bgBox.setColour(LIGHT_GREY);
+    else
+        bgBox.setColour(DARK_GREY);
+    bgBox.render(screen);
+
+    // icon
     icon.setPosition(xPos+5,yPos+5);
+    if (unlocked)
+        icon.setCurrentFrame(1);
+    else
+        icon.setCurrentFrame(0);
     icon.render(screen);
 
+    // text
     tName.setPosition(xPos+80,yPos+5);
-    tName.print(screen,name);
     tDescr.setPosition(xPos+80,yPos+30);
-    tDescr.print(screen,descr);
-    tName.setPosition(xPos+260,yPos+55);
-    string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
-    tName.print(screen,temp);
+    if (secret && not unlocked)
+    {
+        tName.print(screen,getSecretName());
+        tDescr.print(screen,getSecretDescription());
+    }
+    else
+    {
+        tName.print(screen,name);
+        tDescr.print(screen,descr);
+        tName.setPosition(xPos+260,yPos+55);
+        string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
+        tName.print(screen,temp);
+    }
 }
 
 #else
 void Achievement::render(int xPos, int yPos)
 {
-    Rectangle rect;
-    rect.setPosition(xPos,yPos);
-    rect.setDimensions(300,80);
-    rect.setColour(DARK_GREY);
-    rect.render();
+    // background box
+    bgBox.setPosition(xPos,yPos);
+    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
+    if (unlocked)
+        bgBox.setColour(LIGHT_GREY);
+    else
+        bgBox.setColour(DARK_GREY);
+    bgBox.render();
+
+    // icon
     icon.setPosition(xPos+5,yPos+5);
+    if (unlocked)
+        icon.setCurrentFrame(1);
+    else
+        icon.setCurrentFrame(0);
     icon.render();
 
+    // text
     tName.setPosition(xPos+80,yPos+5);
-    tName.print(name);
     tDescr.setPosition(xPos+80,yPos+30);
-    tDescr.print(descr);
-    tName.setPosition(xPos+260,yPos+55);
-    string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
-    tName.print(temp);
+    if (secret && not unlocked)
+    {
+        tName.print(getSecretName());
+        tDescr.print(getSecretDescription());
+    }
+    else
+    {
+        tName.print(name);
+        tDescr.print(descr);
+        tName.setPosition(xPos+260,yPos+55);
+        string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
+        tName.print(temp);
+    }
 }
 #endif
 

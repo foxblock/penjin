@@ -17,6 +17,8 @@
 #include "AchievementBoolean.h"
 #include "AchievementCount.h"
 #include "Text.h"
+#include "Timer.h"
+
 #include "TextDoc.h"
 #include "Encryption.h"
 #include "PenjinErrors.h"
@@ -24,6 +26,22 @@
 using namespace PenjinErrors;
 using namespace std;
 using namespace AchievementUtility;
+
+enum PopupPos // Top positions currently not sliding in correctly
+{
+    ppTOPLEFT,
+    ppTOPCENTER,
+    ppTOPRIGHT,
+    ppBOTTOMLEFT,
+    ppBOTTOMCENTER,
+    ppBOTTOMRIGHT
+};
+
+struct Popup
+{
+    Achievement* a;
+    int time;
+};
 
 class AchievementSystem
 {
@@ -46,6 +64,9 @@ class AchievementSystem
 
         // display and layout functions
         void setOffset(int newX, int newY) {offsetX = newX; offsetY = newY;};
+        void setPopupPosition(PopupPos pos);
+        void setPopupFadeTime(int newFade) {fadeTime = newFade;};
+        void setPopupShowTime(int newShow) {showTime = newShow;};
 
         // general functions
         #ifdef PENJIN_SDL
@@ -61,11 +82,17 @@ class AchievementSystem
     private:
         vector<Event> log;
         vector<Achievement*> achievements;
+        vector<Popup> popups;
         Encryption crypt;
         TextDoc doc;
 
         int offsetX;
         int offsetY;
+        int popupX;
+        int popupY;
+        int fadeTime;
+        int showTime;
+        Timer popupTimer;
 };
 
 #endif // ACHIEVEMENTSYSTEM_H
