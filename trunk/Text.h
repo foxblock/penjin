@@ -1,19 +1,10 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-
-#include <SDL/SDL.h>
-#ifdef PENJIN_GL
-    #include <SDL/SDL_opengl.h>
-    #include <SDL/SDL_ttf.h>
-    #include "Texture.h"
-#else
-    #include <SDL/SDL_ttf.h>
-#endif
-
-/// TODO:  Add glyph creation.
-
+/// TODO:  Finish glyph creation.
+#include "Glyph.h"
 #include <string>
+#include <vector>
 using namespace std;
 #include "PenjinTypes.h"
 #include "Colour.h"
@@ -33,7 +24,7 @@ class Text
         Text();		//	Initialise font handling
         ~Text();	//	Shutdown font handling
 
-        int initialise();                          //  Must be called once before any TexHandler objects are used.
+        int initialise();                          //  Must be called once before any Text objects are used.
         void deInitialise();                        //  Must be called once before program termination.
         bool getIsInitialised(){return IsInitialised;}
         PENJIN_ERRORS loadFont(CRstring fontName,CRuint fontSize);		//	Loads a TTF
@@ -87,6 +78,7 @@ class Text
         //	write a float number to the screen
         void print(CRfloat number){print(StringUtility::floatToString(number));}
         #ifdef PENJIN_SDL
+            void glyphPrint(SDL_Surface* screen , CRstring text);   /// WIP glyph rendering
             void print(SDL_Surface* screen, char* text);		//	write a char* string to the screen
             void print(SDL_Surface* screen, const char* text);
             void print(SDL_Surface* screen, CRstring text);       //	write a string to the screen
@@ -120,9 +112,10 @@ class Text
         string stripCRs(string line);	//	Removes carriage returns from an input string
         void newLine(SDL_Surface* textSurface);                 //  Causes the cursor to be moved to the next line.
         TTF_Font* font;
+        uint fontSize;
         #ifndef PENJIN3D
-            Vector2df position;
-            Vector2df startPos;
+            Vector2di position;
+            Vector2di startPos;
             Vector2di dimensions;
         #else
             Vector3df position;
@@ -135,6 +128,7 @@ class Text
         #elif PENJIN_SDL
             SDL_Surface* screen;
         #endif
+        vector<Glyph*> glyphs;  //  stores each individual charactor for printing.
             string lastPrint;
 
         bool relativePos;
