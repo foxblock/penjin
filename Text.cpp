@@ -3,6 +3,7 @@
 Text::Text()
 {
 	font = NULL;
+	fontSize = 0;
 	position.x = 0;
 	position.y = 0;
 	startPos.x = 0;
@@ -68,6 +69,11 @@ Text::~Text()
 {
 	clear();
 //
+    for(int i = glyphs.size()-1; i >=0; --i)
+    {
+        delete glyphs[i];
+        glyphs[i] = NULL;
+    }
 }
 
 PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
@@ -75,11 +81,57 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
 	clear();
 	font = TTF_OpenFont(fontName.c_str(), fontSize);
 	if(font)
+	{
+	    this->fontSize = fontSize;
 		return PENJIN_OK;
+	}
 	return PENJIN_TTF_UNABLE_TO_OPEN;
 }
 
 #ifdef PENJIN_SDL
+    void Text::glyphPrint(SDL_Surface* screen, CRstring text)
+    {
+        //  no text, no render
+        if(!text.size())
+            return;
+        //  Run through the text chars
+        for(int i = 0; i < text.size(); ++i)
+        {
+            char c = text[i];
+            //  create more glyphs as needed
+            while(glyphs.size() <= c)
+            {
+                glyphs.push_back(NULL);
+                glyphs[glyphs.size()-1] = new Glyph();
+            }
+
+            //  check properties of glyph if they differ from what we want to render.
+            bool changed = false;
+            if(glyphs.at(c)->getColour() != colour)
+            {
+                glyphs.at(c)->setColour(colour);
+                changed = true;
+            }
+            if(glyphs.at(c)->getFontSize() != fontSize)
+            {
+                glyphs.at(c)->setFontSize(fontSize);
+                changed = true;
+            }
+            if(glyphs.at(c)->getCharacter() != c)
+            {
+                glyphs.at(c)->setCharacter(c);
+                changed = true;
+            }
+            //  set common glyph properties
+            glyphs.at(c)->setFont(font);
+            glyphs.at(c)->setPosition(&position);
+            if(changed)
+                glyphs.at(c)->refresh();
+
+            //  if everything up to date we can render the glyph
+            glyphs.at(c)->render(screen);
+        }
+    }
     void Text::print(SDL_Surface* screen, CRstring text)
     {
         if(!text.size())
@@ -103,7 +155,7 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
         if(centreText)
             centralise();
         uint CRcount = countCRs((string)text);
-        if(CRcount) //  if we spand several lines
+        if(CRcount) //  if we span several lines
         {
             string tString;
             tString = stripCRs((string)text).c_str();
