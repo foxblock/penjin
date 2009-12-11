@@ -6,6 +6,12 @@ vector<SpecialProperty> AchievementUtility::emptySpecial()
     return prop;
 }
 
+SpecialProperty AchievementUtility::special(string name, int value, int comparison)
+{
+    SpecialProperty prop = {name,value,comparison};
+    return prop;
+}
+
 bool AchievementUtility::compare(CRint reference, CRint value, CRint op)
 {
     if (op == coDONT_CARE)
@@ -28,7 +34,7 @@ bool AchievementUtility::checkSpecial(const SpecialProperty& sp1, const SpecialP
 
 bool AchievementUtility::checkSpecial(const vector<SpecialProperty>& sp1, const vector<SpecialProperty>& sp2)
 {
-    if (sp1.size() == 0 && sp2.size() == 0)
+    if (sp1.size() == 0)
         return true;
 
     vector<SpecialProperty>::const_iterator I;

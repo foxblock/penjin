@@ -149,7 +149,7 @@ void AchievementSystem::update()
     {
         for (I = achievements.begin(); I < achievements.end(); ++I)
         {
-            if ((**I).check(log))
+            if (not (**I).getStatus() && (**I).check(log))
             {
                 save("achieve.ach");
                 Popup temp = {(*I),popupTimer.getScaledTicks()};

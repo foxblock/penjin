@@ -62,8 +62,9 @@ namespace AchievementUtility
     // compares a value with a reference value using a comparison operator (CompareOp)
     bool compare(CRint reference, CRint value, CRint op);
 
-    // returns an empty special property
+    // special property functions
     vector<SpecialProperty> emptySpecial();
+    SpecialProperty special(string name, int value, int comparison);
 
     // checks whether an event is already present in an vector of events
     bool isEvent(CRstring name, const vector<Event>& events);
