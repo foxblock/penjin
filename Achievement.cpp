@@ -13,6 +13,7 @@ Achievement::Achievement()
     name = "Achievement Name";
     descr = "Achievement Description";
     type = atGENERAL;
+    counter.setLimit(0);
 
     tDescr.loadFont("font/atrox.ttf", 16);
     tDescr.setColour(Colour(WHITE)),
@@ -52,11 +53,13 @@ bool Achievement::check(const vector<Event>& checkEvents)
     }
 
     // checks for count change
-    changeCount(countEvents);
+    if (countEvents.size() > 0)
+        changeCount(countEvents);
 
     // returns true if achievemnt has been unlocked
     if (count >= limit && not unlocked)
     {
+        counter.stop();
         unlocked = true;
         return true;
     }
@@ -68,7 +71,7 @@ bool Achievement::check(const vector<Event>& checkEvents)
 void Achievement::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEvent(name,events))
+	if (not isEventSpecial(name,special,events))
 	{
 	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);

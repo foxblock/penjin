@@ -63,7 +63,7 @@ class Timer
             setMode(mode);
             return getScaledTicks();
         }
-        int getScaledTicks()              // Return the scaled elapsed time
+        int getScaledTicks() const              // Return the scaled elapsed time
         {
             #ifdef PENJIN_FIXED
                 return Fixed(getTicks()/scaler).intValue>>16;
@@ -71,7 +71,7 @@ class Timer
                 return (int)((float)getTicks() / scaler);
             #endif
         }
-        int getTicks()
+        int getTicks() const
         {
             //If the timer is running
             if(is_Started)

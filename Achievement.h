@@ -16,6 +16,7 @@
 #include <string>
 #include "StringUtility.h"
 #include "PenjinTypes.h"
+#include "CountDown.h"
 
 #include "Rectangle.h"
 #include "AnimatedSprite.h"
@@ -54,7 +55,9 @@ class Achievement
         virtual int getLimit() const {return limit;};
         virtual void setLimit(CRint value) {limit = value;};
         virtual int getCount() const {return count;};
-        virtual void setCount(CRint c){count = c;}
+        virtual void setCount(CRint c){count = c; if (count >= limit) unlocked = true;};
+        virtual int getTimeLimit() const {return counter.getLimit();};
+        virtual void setTimeLimit(int newTime) {counter.setLimit(newTime);};
         virtual int eventCount() const {return events.size();}
 
         virtual int getType() const {return type;};
@@ -98,6 +101,7 @@ class Achievement
         int limit;
         bool unlocked;
         int type;
+        CountDown counter;
 };
 
 #endif // ACHIEVEMENT_H

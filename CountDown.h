@@ -17,10 +17,10 @@ class CountDown : public Timer
         CountDown();
         void init(const int& newLimit, const TimerScalers& newMode=MILLI_SECONDS, void* object=NULL, void (*newCallback)(void*)=NULL);
 
-        int getLimit(){return limit;}
-        int getTimeLeft(){return limit - getScaledTicks();}
-        RewindModes getRewind(){return rewind;}
-        bool hasFinished(){return getTimeLeft() <= 0;}
+        int getLimit() const {return limit;}
+        int getTimeLeft() const {return limit - getScaledTicks();}
+        RewindModes getRewind() const {return rewind;}
+        bool hasFinished() const {return getTimeLeft() <= 0;}
         void setCallback(void* object, void (*newCallback)(void*)){obj = object; callback = newCallback;}
         void setLimit(const int& newLimit){limit = newLimit;}
         void setRewind(const RewindModes& rew){rewind = rew;}

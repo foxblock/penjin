@@ -41,6 +41,18 @@ void AchievementCount::addEventSpecial(CRstring name, const vector<SpecialProper
 
 void AchievementCount::changeCount(const vector<Event>& changeEvents)
 {
+    // reset counter
+    if (counter.getLimit() > 0)
+    {
+        if (not counter.isStarted())
+            counter.start();
+        else if (counter.hasFinished())
+        {
+            counter.start();
+            count = 0;
+        }
+    }
+
     vector<Event>::const_iterator I;
 
     // go through events and change count accordingly
