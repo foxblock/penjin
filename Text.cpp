@@ -94,10 +94,27 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
         //  no text, no render
         if(!text.size())
             return;
+
         //  Run through the text chars
+        position = startPos;
         for(int i = 0; i < text.size(); ++i)
         {
             char c = text[i];
+            //  check for newLine
+            if(c == '\n')
+            {
+                //  Render a dummy glyph to NULL
+                Glyph g;
+                g.setFontSize(fontSize);
+                g.setFont(font);
+                g.setCharacter('H');    // picked because a nice square char to give us a "standard surface height"
+                g.setPosition(&position);
+                g.render(NULL);
+                position.y+=g.getHeight();
+                position.x = startPos.x;
+                continue;
+            }
+
             //  create more glyphs as needed
             while(glyphs.size() <= c)
             {
@@ -130,6 +147,7 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
 
             //  if everything up to date we can render the glyph
             glyphs.at(c)->render(screen);
+            position.x += glyphs.at(c)->getWidth();
         }
     }
     void Text::print(SDL_Surface* screen, CRstring text)

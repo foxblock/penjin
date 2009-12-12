@@ -1,14 +1,8 @@
 #ifndef GLYPH_H
 #define GLYPH_H
 
-#include <SDL/SDL.h>
-#ifdef PENJIN_GL
-    #include <SDL/SDL_opengl.h>
-    #include <SDL/SDL_ttf.h>
-    #include "Texture.h"
-#else
-    #include <SDL/SDL_ttf.h>
-#endif
+#include "Image.h"
+#include <SDL/SDL_ttf.h>
 #include "PenjinTypes.h"
 #include "Colour.h"
 class Glyph
@@ -32,18 +26,16 @@ class Glyph
         Colour getColour()const{return colour;}
         uint getFontSize()const{return fontSize;}
         char getCharacter()const{return character;}
+        uint getWidth()const{return glyph.getWidth();}      //  return character width
+        uint getHeight()const{return glyph.getHeight();}    //  return chracter height.
 
     private:
-        // Disabled to revent double freed pointers.
+        // Disabled to prevent double freed pointers.
         Glyph(const Glyph& noCopy);
         Glyph& operator=(const Glyph& noCopy);
 
-        #ifdef PENJIN_SDL
-            SDL_Surface* glyph;
-            SDL_Surface* screen;
-        #else
-            Texture glyph;
-        #endif
+        Image glyph;
+
         //  We can check the below params to see if glyph needs to be recreated.
         char character;
         uint fontSize;
