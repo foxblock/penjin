@@ -4,6 +4,8 @@ Glyph::Glyph()
 {
     //ctor
     fontSize = 0;       // no font.
+    position = NULL;
+    character = '\0';
 }
 
 Glyph::~Glyph()
@@ -15,12 +17,18 @@ Glyph::~Glyph()
 #ifdef PENJIN_SDL
 void Glyph::render(SDL_Surface* scr)
 {
-    if(glyph.size())
+    /*
+    if(glyph.size() && position != NULL)
     {
         glyph.renderImage(scr,*position);
     }
-    else if((character != NULL) && fontSize > 0)  //  if there is a character to render, render it.
+    else if((character != '\0') && fontSize > 0)  //  if there is a character to render, render it.
+    {
         refresh();
+        render(scr);
+    }
+    */
+    glyph.renderImage(scr,*position);
 }
 #endif
 
@@ -41,6 +49,6 @@ void Glyph::render()
     {
         glyph.renderImage(*position);
     }
-    else if((character != NULL) && fontSize > 0)  //  if there is a character to render, render it.
+    else if((character != '\n') && fontSize > 0)  //  if there is a character to render, render it.
         refresh();
 }
