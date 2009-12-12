@@ -5,6 +5,7 @@
 #include "Glyph.h"
 #include <string>
 #include <vector>
+#include <ctype.h>
 using namespace std;
 #include "PenjinTypes.h"
 #include "Colour.h"

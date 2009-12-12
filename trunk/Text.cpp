@@ -100,8 +100,13 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
         for(int i = 0; i < text.size(); ++i)
         {
             char c = text[i];
+            // check for NULL terminator
+            if(c == '\0')
+            {
+                break;
+            }
             //  check for newLine
-            if(c == '\n')
+            else if(c == '\n')
             {
                 //  Render a dummy glyph to NULL
                 Glyph g;
@@ -112,6 +117,24 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
                 g.render(NULL);
                 position.y+=g.getHeight();
                 position.x = startPos.x;
+                continue;
+            }
+            // check for space char
+            else if(c == ' ')
+            {
+                //  Render a dummy glyph to NULL
+                Glyph g;
+                g.setFontSize(fontSize);
+                g.setFont(font);
+                g.setCharacter('H');    // picked because a nice square char to give us a "standard surface height"
+                g.setPosition(&position);
+                g.render(NULL);
+                position.x+=g.getWidth();
+                continue;
+            }
+            // check for other unprintables
+            else if(!isprint(c))
+            {
                 continue;
             }
 
