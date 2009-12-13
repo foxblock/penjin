@@ -17,7 +17,7 @@ class AchievementBoolean : public Achievement
 {
     public:
         AchievementBoolean();
-        ~AchievementBoolean();
+        virtual ~AchievementBoolean();
 
     protected:
         // increase or decrease achievement count

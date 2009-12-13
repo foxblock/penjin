@@ -224,3 +224,18 @@ void StringUtility::reverse(char* s)
     swap(s[begin++], s[end--]);
 }
 
+string StringUtility::substrReplace(string text, CRstring oldSubstr, CRstring newSubstr)
+{
+    string::size_type found = text.find(oldSubstr,0);
+
+    while(found != string::npos)
+    {
+        text = text.erase(found,oldSubstr.length());
+        text = text.insert(found,newSubstr);
+        found = text.find(oldSubstr,found+newSubstr.length()+1);
+    }
+
+    return text;
+
+}
+

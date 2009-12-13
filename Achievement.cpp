@@ -46,7 +46,7 @@ bool Achievement::check(const vector<Event>& checkEvents)
             if (I->name == K->name && compare(K->count,I->count,K->comparison) && checkSpecial(K->special,I->special))
             {
                 // add necessary information to a temporary vector which will be passed to the changeCount function
-                Event ev = {K->name,emptySpecial(),I->count,0,I->action};
+                Event ev = {K->name,emptySpecial(),I->count,0,K->action};
                 countEvents.push_back(ev);
             }
         }
@@ -114,9 +114,12 @@ void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
     else
     {
         tName.print(screen,name);
-        tDescr.print(screen,descr);
+        string temp = descr;
+        temp = StringUtility::substrReplace(temp,"%c",StringUtility::intToString(count));
+        temp = StringUtility::substrReplace(temp,"%l",StringUtility::intToString(limit));
+        tDescr.print(screen,temp);
         tName.setPosition(xPos+260,yPos+55);
-        string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
+        temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
         tName.print(screen,temp);
     }
 }
@@ -167,6 +170,18 @@ void Achievement::render(int xPos, int yPos)
 
 void Achievement::changeCount(const vector<Event>& changeEvents)
 {
+    // reset counter
+    if (counter.getLimit() > 0)
+    {
+        if (not counter.isStarted())
+            counter.start();
+        else if (counter.hasFinished())
+        {
+            counter.start();
+            count = 0;
+        }
+    }
+
     vector<Event>::const_iterator I;
 
     // go through events and change count accordingly

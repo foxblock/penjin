@@ -16,7 +16,7 @@ class AchievementCount : public Achievement
 {
     public:
         AchievementCount();
-        ~AchievementCount();
+        virtual ~AchievementCount();
 
         void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0);
 
@@ -25,5 +25,5 @@ class AchievementCount : public Achievement
         void changeCount(const vector<Event>& changeEvents);
 };
 
-#endif // ACHIEVEMENT_H
+#endif // ACHIEVEMENTCOUNT_H
 

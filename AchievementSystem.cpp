@@ -76,6 +76,11 @@ void AchievementSystem::setPopupPosition(PopupPos pos)
         popupX = screen->w - ACHIEVEMENT_WIDTH;
 }
 
+int AchievementSystem::getListSize() const
+{
+    SDL_Surface* screen = SDL_GetVideoSurface();
+    return floor(screen->h / ACHIEVEMENT_HEIGHT);
+}
 
 #ifdef PENJIN_SDL
 void AchievementSystem::render(SDL_Surface* screen)
@@ -105,6 +110,25 @@ void AchievementSystem::render(SDL_Surface* screen)
         }
 
         count++;
+    }
+}
+
+void AchievementSystem::renderList(SDL_Surface* screen, int offset)
+{
+    if (offset < 0 || offset >= achievements.size())
+    {
+        return;
+        #ifdef DEBUG
+        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset!" << endl;
+        #endif
+    }
+
+    vector<Achievement*>::iterator I;
+    int count = 0;
+    for (I = achievements.begin()+offset; I < achievements.end(); ++I)
+    {
+        (**I).render(screen,offsetX,offsetY+(ACHIEVEMENT_HEIGHT*count));
+        ++count;
     }
 }
 

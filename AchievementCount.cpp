@@ -30,7 +30,7 @@ void AchievementCount::addEventSpecial(CRstring name, const vector<SpecialProper
 	}
     #ifdef _DEBUG
 	else
-        cout << "[Achievements] Error: Can't add multiple events to an AchievementCount (" << name << ")" << endl;
+        cout << "[Achievements] Error: Can't add multiple events to an AchievementCount (" << this->name << ")" << endl;
 	#endif
 }
 

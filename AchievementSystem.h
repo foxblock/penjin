@@ -16,6 +16,8 @@
 #include "Achievement.h"
 #include "AchievementBoolean.h"
 #include "AchievementCount.h"
+#include "AchievementTime.h"
+#include "AchievementReset.h"
 #include "Text.h"
 #include "Timer.h"
 
@@ -69,8 +71,11 @@ class AchievementSystem
         void setPopupShowTime(int newShow) {showTime = newShow;};
 
         // general functions
+        int achievementCount() const {return achievements.size();};
+        int getListSize() const;
         #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);
+        void renderList(SDL_Surface* screen, int offset);
         #else
         void render();
         #endif

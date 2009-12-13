@@ -42,7 +42,7 @@ class Achievement
 {
     public:
         Achievement();
-        ~Achievement();
+        virtual ~Achievement();
 
         // different wrapper functions for adding events
         virtual void addEvent(Event newE){events.push_back(newE);}

@@ -17,7 +17,7 @@ class AchievementTime : public Achievement
 {
     public:
         AchievementTime();
-        ~AchievementTime();
+        virtual ~AchievementTime();
 
         void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0);
 
