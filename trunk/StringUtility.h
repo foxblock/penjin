@@ -61,5 +61,8 @@ namespace StringUtility
         ///  Formatting
         string leadingZero(CRint value);     //  prepends a 0 if necessary
         void reverse(char* s);
+
+        /// Additional
+        string substrReplace(string text, CRstring oldSubstr, CRstring newSubstr); // replaces all occurrences of oldSubstr in text with newSubstr
 }
 #endif	//	STRINGUTILITY_H
