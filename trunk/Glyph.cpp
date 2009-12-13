@@ -35,11 +35,14 @@ void Glyph::render(SDL_Surface* scr)
 void Glyph::refresh()
 {
     #ifdef PENJIN_SDL
-        if(position == NULL)        //  No cursor position is invalid usage.
+        if(position == NULL || !isprint(character) || fontSize == 0)        //  No cursor position is invalid usage.
             return;
         if(glyph.size())
             glyph.clear();
-        glyph.loadImage( TTF_RenderText_Blended(font, &character, colour.getSDL_Colour()) );
+        char t[2];
+        t[0] = character;
+        t[1] = '\0';
+        glyph.loadImage( TTF_RenderText_Blended(font, t, colour.getSDL_Colour()) );
     #endif
 }
 
@@ -49,6 +52,6 @@ void Glyph::render()
     {
         glyph.renderImage(*position);
     }
-    else if((character != '\n') && fontSize > 0)  //  if there is a character to render, render it.
+    else if((isprint(character)) && fontSize > 0)  //  if there is a character to render, render it.
         refresh();
 }

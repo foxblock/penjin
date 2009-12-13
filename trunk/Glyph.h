@@ -5,6 +5,7 @@
 #include <SDL/SDL_ttf.h>
 #include "PenjinTypes.h"
 #include "Colour.h"
+#include <ctype.h>
 class Glyph
 {
     public:
