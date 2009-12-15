@@ -66,6 +66,8 @@ class Menu
         void setHorizontalOffset(CRint offset);
         void setHorizontalOffset(CRuint index, CRint offset);
 
+        void setTextCenteringCorrection(CRint numPix){correction = numPix;}
+
         /// Adding menu items
         void addItem(CRint type);         //  Add a specific menu item
 
@@ -135,6 +137,7 @@ class Menu
         Text* text;                  //  Shared Text. Only created if needed
         Colour textSelectionColour;
         int currentSelection;               //  Stores the current selection of the menu
+        int correction;
 };
 
 #endif // MENU_H_INCLUDED

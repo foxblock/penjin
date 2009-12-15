@@ -20,10 +20,16 @@ class DoubleVector
         :data(rows, std::vector<T>(cols))
         {;}
 
-        std::vector<T> & operator[](CRuint i){return data[i];}
-
+        /// ARRAY ACCESS
+        std::vector<T> & operator[](CRuint i){return data[i];}                  // return vector of T
         const std::vector<T> & operator[] (CRuint i) const{return data[i];}
+        std::vector<T> & at(CRuint i){return data[i];}
+        const std::vector<T> & at(CRuint i) const{return data[i];}
+        T & at(CRuint i, CRuint j){return data[i][j];}                          // return T
+        T & at(CRuint i, CRuint j) const{return data[i][j];}
 
+        /// RESIZE
+        void resize(CRuint rows){data.resize(rows);}
         void resize(CRuint rows,CRuint cols)		//	Change the vectorInVector dimensions
         {
             data.resize(rows);
@@ -31,6 +37,7 @@ class DoubleVector
                 data[i].resize(cols);
         }
 
+        /// Clear
         void clear()					//	Clears all the vectorInVector contents
         {
             //	clear all sub entries
@@ -41,12 +48,13 @@ class DoubleVector
             //	clear top level
             data.clear();
         }
+        void clear(CRuint index){data[index].clear();}
 
-        uint size(){return data.size();}
-
-        uint size(CRuint index)			//	Return the number of data elements stored in a specific vector
+        /// SIZE
+        size_t size()const{return data.size();}
+        size_t size(CRuint index)			//	Return the number of data elements stored in a specific vector
         {
-            uint mySize = 0;
+            size_t mySize = 0;
 
             //	Check if the index value is valid
             if (index >= 0 && index < data.size())

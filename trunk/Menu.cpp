@@ -4,6 +4,7 @@ Menu::Menu()
 {
     text = NULL;
     currentSelection = 0;
+    correction = 0;
     #ifdef PENJIN3D
         menu3D = false;
         angle = 0.0f;
@@ -380,9 +381,9 @@ void Menu::centreText()
     {
         MENU_TYPES type = menuItems[s]->getType();
         if (type == MENU_ANIM_STRING_ITEM)
-            ((AnimationStringMenuItem*)menuItems[s])->centreText();
+            ((AnimationStringMenuItem*)menuItems[s])->centreText(correction);
         else if (type == MENU_IMAGE_STRING_ITEM)
-            ((ImageStringMenuItem*)menuItems[s])->centreText();
+            ((ImageStringMenuItem*)menuItems[s])->centreText(correction);
     }
 }
 #ifdef PENJIN3D

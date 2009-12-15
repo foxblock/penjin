@@ -81,11 +81,11 @@ Vector2di ImageStringMenuItem::getDimensions()
     }
 #endif
 
-void ImageStringMenuItem::centreText()
+void ImageStringMenuItem::centreText(CRint corr)
 {
     /// Get the difference of the text and the animFrame
     #ifndef PENJIN3D
-        Vector2di diff = text.getDimensions()-menuImage.getDimensions();
+        Vector2di diff = menuImage.getDimensions()-text.getDimensions();
     #else
         Vector3df temp;
         Vector2di iTemp = text.getDimensions();
@@ -100,6 +100,6 @@ void ImageStringMenuItem::centreText()
 
     diff.x *= 0.5f;
     diff.y *= 0.5f;
-    diff.x+=25;
-    text.setPosition(position - diff);
+    diff.x+=corr;
+    text.setPosition(position + diff);
 }

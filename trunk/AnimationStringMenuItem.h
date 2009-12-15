@@ -41,7 +41,7 @@ class AnimationStringMenuItem : public MenuItem
         void setMenuItemText(CRstring txt){text.setMenuItemText(txt);}
         void setSelectionIndicator(CRchar c){text.setSelectionIndicator(c);}
         void setTextSelectionColour(const Colour& colour){text.setTextSelectionColour(colour);}
-        void centreText();
+        void centreText(CRint corr);
 
     protected:
         virtual void init();

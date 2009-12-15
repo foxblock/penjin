@@ -221,6 +221,7 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
                 //  break out since we are finished with this achievement
                 break;
             }
+            ++i;
         }
     }
 	return PENJIN_OK;

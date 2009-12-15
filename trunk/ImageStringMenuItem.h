@@ -38,7 +38,7 @@ class ImageStringMenuItem : public MenuItem
         #ifdef PENJIN_SDL
             void setUseHardware(CRbool shouldUse){menuImage.setUseHardware(shouldUse);}
         #endif
-        void centreText();
+        void centreText(CRint corr);
     protected:
         virtual void init();
 
