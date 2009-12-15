@@ -18,6 +18,7 @@
 #include "AchievementCount.h"
 #include "AchievementTime.h"
 #include "AchievementReset.h"
+#include "AchievementReset2.h"
 #include "Text.h"
 #include "Timer.h"
 
