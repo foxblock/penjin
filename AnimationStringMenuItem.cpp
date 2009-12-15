@@ -88,15 +88,15 @@ PENJIN_ERRORS AnimationStringMenuItem::loadSelectionFrame(CRstring fileName){ret
     }
 #endif
 
-void AnimationStringMenuItem::centreText()
+void AnimationStringMenuItem::centreText(CRint corr)
 {
     /// Get the difference of the text and the animFrame
     Vector2di diff = text.getDimensions()-anim.getDimensions();
     diff = diff*0.5f;
     #ifdef PENJIN3D
-        text.setPosition(Vector3df(diff.x,diff.y,0.0f));
+        text.setPosition(Vector3df(diff.x+corr,diff.y,0.0f));
     #else
-        text.setPosition(Vector2df(diff.x,diff.y));
+        text.setPosition(Vector2df(diff.x+corr,diff.y));
     #endif
 }
 

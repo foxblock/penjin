@@ -70,10 +70,11 @@ void ScoreScreen::init()
         SDL_Surface* scr = SDL_GetVideoSurface();
     #endif
     float t = 0.2f;
+    text.setBoundaries(bounds);
     for(int i = 3; i >= 0; --i)
     {
         #ifdef PENJIN_SDL
-            text.print(scr, textStrings[i]);
+            text.print(NULL, textStrings[i]);
         #else
             text.print(textStrings[i]);
         #endif
