@@ -78,7 +78,9 @@ void Raycast::init(int x, int y, int w, int h)
 	planeY = 0.74; //the 2d raycaster version of camera plane
 
     drawSurface.loadBackground("images/DarkTreasure/Surface.png");
+    #ifdef PENJIN_SDL
     drawSurface.setUseHardware(true);
+    #endif
     drawSurface.setPosition(Vector2di(screenX,screenY));
 
     time = 0;
@@ -223,6 +225,10 @@ void Raycast::render(SDL_Surface* screen)
     renderPixels(screen);
 	fps.print(screen,frameTime);
 }
+#else
+void Raycast::render()
+{
+}
 #endif
 void Raycast::userInput(SimpleJoy* input)
 {
@@ -283,7 +289,9 @@ void Raycast::setPixel(const Vector2di& v, const Colour& c)
 void Raycast::renderPixels(SDL_Surface* screen)
 {
     // Run through the horizontal parts of the Pixelcache
+    #ifdef PENJIN_SDL
     GFX::lockSurface(screen);
+    #endif
     for(int x = pixelCache.size()-1; x>=0;--x)
     {
         int startI=pixelCache[x].size()-1;
@@ -337,7 +345,9 @@ void Raycast::renderPixels(SDL_Surface* screen)
             }
         }
     }
-    GFX::lockSurface(screen);
+    #ifdef PENJIN_SDL
+    GFX::unlockSurface(screen);
+    #endif
 }
 
 void Raycast::loadTexture(CRstring imageName)

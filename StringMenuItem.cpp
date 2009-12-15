@@ -85,13 +85,7 @@ void StringMenuItem::update()
 
 Vector2di StringMenuItem::getDimensions()
 {
-    #ifdef PENJIN_SDL
-        text->print(NULL, menuItemText);    //  render
-    #else
-        text->print(menuItemText);
-    #endif
-    dimensions.x = text->getWidth();//  Obtain dimensions
-    dimensions.y = text->getHeight();
+    dimensions = text->getDimensions(menuItemText);
     return dimensions;
 }
 
