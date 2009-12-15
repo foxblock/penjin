@@ -2,12 +2,14 @@
 
 Text::Text()
 {
+    initialise();   // auto init font library if needed.
 	font = NULL;
 	fontSize = 0;
 	position.x = 0;
 	position.y = 0;
 	startPos.x = 0;
 	startPos.y = 0;
+	dimensions.x = dimensions.y = 0;
 	#ifdef PENJIN3D
         #ifdef PENJIN_FIXED
                 position.z = startPos.z = 0;
@@ -18,39 +20,36 @@ Text::Text()
         clipBoundary.h = 768;
         lastPrint = "NULL";
     #else
-        clipBoundary.w = 320;
-        clipBoundary.h = 240;
         #ifdef PENJIN_SDL
             screen = SDL_GetVideoSurface();
+            clipBoundary.w = screen->w;
+            clipBoundary.h = screen->h;
         #endif
 	#endif
-    clipBoundary.x = 0;
-    clipBoundary.y = 0;
-    IsInitialised = false;
     centreText = false;
     relativePos = false;
 }
 
-int Text::initialise()
+PENJIN_ERRORS Text::initialise()
 {
+    if(isInitialised())
+        return PENJIN_OK;
     int result = TTF_Init();
     if(result != 0)
     {
-        IsInitialised = false;
         result = PENJIN_ERROR;
     }
     else
     {
-        IsInitialised = true;
         result = PENJIN_OK;
     }
-    return result;
+    return (PENJIN_ERRORS)result;
 }
 
 void Text::deInitialise()
 {
-    TTF_Quit();
-    IsInitialised = false;
+    if(isInitialised())
+        TTF_Quit();
 }
 
 void Text::clear()
@@ -83,20 +82,45 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
 	if(font)
 	{
 	    this->fontSize = fontSize;
+        //  create Dummy Char for spacing calcs
+        glyphs.push_back(NULL);
+        glyphs[glyphs.size()-1] = new Glyph();
+        glyphs[0]->setFontSize(fontSize);
+        glyphs[0]->setFont(font);
+        glyphs[0]->setCharacter('-');    // picked because a nice square char to give us a "standard surface width"
+        glyphs[0]->setPosition(&position);
+        glyphs[0]->refresh();
 		return PENJIN_OK;
 	}
 	return PENJIN_TTF_UNABLE_TO_OPEN;
 }
 
 #ifdef PENJIN_SDL
-    void Text::glyphPrint(SDL_Surface* screen, CRstring text)
+    void Text::print(SDL_Surface* screen, CRstring text)
     {
         //  no text, no render
         if(!text.size())
             return;
 
+        // make text advance cursor position
+        if(!relativePos)
+            position = startPos;
+        //  Check if any of the string has had to be recreated
+        bool isRefreshed = false;
+        // make a guess to dimensions using the Dummy char
+        Vector2di guess;
+        TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
+        if(position.x + guess.x >= clipBoundary.w)
+            newLine();
+        if(centreText)
+        {
+            Vector2df b(clipBoundary.w,clipBoundary.h);
+            b-= (position + guess);
+            b*=0.5f;
+            //position.x = startPos.x;
+            position.x += b.x;
+        }
         //  Run through the text chars
-        position = startPos;
         for(int i = 0; i < text.size(); ++i)
         {
             char c = text[i];
@@ -108,28 +132,14 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
             //  check for newLine
             else if(c == '\n')
             {
-                //  Render a dummy glyph to NULL
-                Glyph g;
-                g.setFontSize(fontSize);
-                g.setFont(font);
-                g.setCharacter('H');    // picked because a nice square char to give us a "standard surface height"
-                g.setPosition(&position);
-                g.render(NULL);
-                position.y+=g.getHeight();
-                position.x = startPos.x;
+                newLine();
                 continue;
             }
             // check for space char
             else if(c == ' ')
             {
-                //  Render a dummy glyph to NULL
-                Glyph g;
-                g.setFontSize(fontSize);
-                g.setFont(font);
-                g.setCharacter('H');    // picked because a nice square char to give us a "standard surface height"
-                g.setPosition(&position);
-                g.render(NULL);
-                position.x+=g.getWidth();
+                //  use dummy for spacing
+                position.x+=glyphs[0]->getWidth();
                 continue;
             }
             // check for other unprintables
@@ -162,28 +172,32 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
                 glyphs.at(c)->setCharacter(c);
                 changed = true;
             }
+            if(glyphs.at(c)->getRenderMode() != glyphs.front()->getRenderMode())
+            {
+                glyphs.at(c)->setRenderMode(glyphs.front()->getRenderMode());
+                changed = true;
+            }
             //  set common glyph properties
             glyphs.at(c)->setFont(font);
             glyphs.at(c)->setPosition(&position);
             if(changed)
+            {
                 glyphs.at(c)->refresh();
+                isRefreshed = true;
+            }
 
             //  if everything up to date we can render the glyph
             glyphs.at(c)->render(screen);
+            //  Advance cursor
             position.x += glyphs.at(c)->getWidth();
         }
-    }
-    void Text::print(SDL_Surface* screen, CRstring text)
-    {
-        if(!text.size())
-            return;
-
-        print(screen,(char*)text.c_str());
+        if(isRefreshed)
+            calcDimensions();
     }
 
     void Text::print(SDL_Surface* screen, char* text)
     {
-        const char* t = text;
+        string t = text;
         print(screen,t);
     }
 
@@ -193,190 +207,118 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
     void Text::print(char* text){print(screen,text);}
     void Text::print(SDL_Surface* screen,const char* text)
     {
-        if(centreText)
-            centralise();
-        uint CRcount = countCRs((string)text);
-        if(CRcount) //  if we span several lines
-        {
-            string tString;
-            tString = stripCRs((string)text).c_str();
-            SDL_Surface* textSurface =  TTF_RenderText_Blended(font, tString.c_str(), colour.getSDL_Colour());
-            #ifdef PENJIN_FIXED
-                SDL_Rect textLocation = {fixedpoint::fix2int(position.x), fixedpoint::fix2int(position.y), 0, 0 };
-            #else
-                SDL_Rect textLocation = { position.x, position.y, 0, 0 };
-            #endif
-            SDL_BlitSurface(textSurface, NULL, screen, &textLocation);
-            dimensions.y = textSurface->h;
-            dimensions.x = textSurface->w;
-            /// The cursor position depends on the previous word's ending position
-            if(relativePos)
-            {
-                if(position.x + textSurface->w > clipBoundary.w)   //  Text wrapping onto newline
-                    newLine(textSurface);
-                else if(CRcount)                        //  forced newline by /n
-                    for(int i=CRcount-1; i >= 0; --i)
-                        newLine(textSurface);
-                else
-                    position.x += textSurface->w;       //  text added after last word
-            }
-            SDL_FreeSurface(textSurface);
-        }
-        else
-        {
-            SDL_Surface* textSurface =  TTF_RenderText_Blended(font, text, colour.getSDL_Colour());
-            #ifdef PENJIN_FIXED
-                SDL_Rect textLocation = {fixedpoint::fix2int(position.x), fixedpoint::fix2int(position.y), 0, 0 };
-            #else
-                SDL_Rect textLocation = { position.x, position.y, 0, 0 };
-            #endif
-            SDL_BlitSurface(textSurface, NULL, screen, &textLocation);
-            dimensions.y = textSurface->h;
-            dimensions.x = textSurface->w;
-            if(relativePos)
-            {
-                if(position.x + textSurface->w > clipBoundary.w)
-                    newLine(textSurface);
-                else
-                    position.x += textSurface->w;
-            }
-            SDL_FreeSurface(textSurface);
-        }
+        string t = text;
+        print( screen,t);
     }
 #else
     void Text::print(CRstring text)
     {
+        //  no text, no render
         if(!text.size())
             return;
-        print(text.c_str());
+
+        // make text advance cursor position
+        if(!relativePos)
+            position = startPos;
+        //  Check if any of the string has had to be recreated
+        bool isRefreshed = false;
+        // make a guess to dimensions using the Dummy char
+        Vector2di guess;
+        TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
+        if(position.x + guess.x >= clipBoundary.w)
+            newLine();
+        if(centreText)
+        {
+            Vector2df b(clipBoundary.w,clipBoundary.h);
+            b-= (position + guess);
+            b*=0.5f;
+            //position.x = startPos.x;
+            position.x += b.x;
+        }
+        //  Run through the text chars
+        for(int i = 0; i < text.size(); ++i)
+        {
+            char c = text[i];
+            // check for NULL terminator
+            if(c == '\0')
+            {
+                break;
+            }
+            //  check for newLine
+            else if(c == '\n')
+            {
+                newLine();
+                continue;
+            }
+            // check for space char
+            else if(c == ' ')
+            {
+                //  use dummy for spacing
+                position.x+=glyphs[0]->getWidth();
+                continue;
+            }
+            // check for other unprintables
+            else if(!isprint(c))
+            {
+                continue;
+            }
+
+            //  create more glyphs as needed
+            while(glyphs.size() <= c)
+            {
+                glyphs.push_back(NULL);
+                glyphs[glyphs.size()-1] = new Glyph();
+            }
+
+            //  check properties of glyph if they differ from what we want to render.
+            bool changed = false;
+            if(glyphs.at(c)->getColour() != colour)
+            {
+                glyphs.at(c)->setColour(colour);
+                changed = true;
+            }
+            if(glyphs.at(c)->getFontSize() != fontSize)
+            {
+                glyphs.at(c)->setFontSize(fontSize);
+                changed = true;
+            }
+            if(glyphs.at(c)->getCharacter() != c)
+            {
+                glyphs.at(c)->setCharacter(c);
+                changed = true;
+            }
+            if(glyphs.at(c)->getRenderMode() != glyphs.front()->getRenderMode())
+            {
+                glyphs.at(c)->setRenderMode(glyphs.front()->getRenderMode());
+                changed = true;
+            }
+            //  set common glyph properties
+            glyphs.at(c)->setFont(font);
+            glyphs.at(c)->setPosition(&position);
+            if(changed)
+            {
+                glyphs.at(c)->refresh();
+                isRefreshed = true;
+            }
+
+            //  if everything up to date we can render the glyph
+            glyphs.at(c)->render();
+            //  Advance cursor
+            position.x += glyphs.at(c)->getWidth();
+        }
+        if(isRefreshed)
+            calcDimensions();
     }
     void Text::print(char* text)
     {
-        const char* t = text;
+        string t = text;
         print(t);
     }
 
     void Text::print(const char* text)
     {
-        uint CRcount = countCRs((string)text);
-        if(CRcount) //  if we spand several lines
-        {
-            string tString;
-            tString = stripCRs((string)text).c_str();
-            SDL_Surface* textSurface = NULL;
-            textSurface =  TTF_RenderText_Blended(font, tString.c_str(), colour.getSDL_Colour());
-
-             //  Convert the surface to a texture if the text is different from last render.
-            if(text != lastPrint.c_str())
-            {
-                lastPrint = text;
-                dimensions.y = textSurface->h;
-                dimensions.x = textSurface->w;
-                texture.loadSurface(textSurface);
-
-            }
-
-            //  With the surface now converted to a texture we can render it to a quad
-            glColor4f(1.0f, 1.0f, 1.0f, colour.alpha);
-            glBindTexture (GL_TEXTURE_2D, texture.getTextureID());
-            glEnable(GL_TEXTURE_2D);
-            glBegin(GL_QUADS);
-                glTexCoord2f (0.0f, 0.0f);
-                #ifdef PENJIN3D
-                    glVertex3f(position.x, position.y, position.z);
-                #else
-                    glVertex2f(position.x,position.y);
-                #endif
-                glTexCoord2f (1.0f, 0.0f);
-                #ifdef PENJIN3D
-                    glVertex3f(position.x + texture.getWidth(), position.y, position.z);
-                #else
-                    glVertex2f(position.x + texture.getWidth(), position.y);
-                #endif
-                glTexCoord2f (1.0f,  1.0f);
-                #ifdef PENJIN3D
-                    glVertex3f(position.x + texture.getWidth(), position.y + texture.getHeight(), position.z);
-                #else
-                    glVertex2f(position.x + texture.getWidth(), position.y + texture.getHeight());
-                #endif
-                glTexCoord2f (0.0f, 1.0f);
-                #ifdef PENJIN3D
-                    glVertex3f(position.x, position.y + texture.getHeight(), position.z);
-                #else
-                    glVertex2f(position.x, position.y + texture.getHeight());
-                #endif
-            glEnd();
-            glDisable(GL_TEXTURE_2D);
-
-
-            /// The cursor position depends on the previous word's ending position
-            if(relativePos)
-            {
-                if(position.x + dimensions.y > clipBoundary.w)   //  Text wrapping onto newline
-                    newLine(textSurface);
-                else if(CRcount)                        //  forced newline by /n
-                    for(int i=CRcount-1; i >= 0; --i)
-                        newLine(textSurface);
-                else
-                    position.x += dimensions.x;       //  text added after last word
-            }
-            if(textSurface)
-                SDL_FreeSurface(textSurface);
-        }
-        else
-        {
-            SDL_Surface* textSurface = NULL;
-            textSurface =  TTF_RenderText_Blended(font, text, colour.getSDL_Colour());
-
-             //  Convert the surface to a texture if the text is different from last render.
-            if(text != lastPrint.c_str())
-            {
-                dimensions.y = textSurface->h;
-                dimensions.x = textSurface->w;
-                texture.loadSurface(textSurface);
-            }
-            if(relativePos)
-            {
-                if(position.x + textSurface->w > clipBoundary.w)
-                    newLine(textSurface);
-                else
-                    position.x += textSurface->w;
-            }
-            glColor3f(1.0f, 1.0f, 1.0f);
-            glBindTexture (GL_TEXTURE_2D, texture.getTextureID());
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_BLEND);
-                glEnable(GL_TEXTURE_2D);
-                    glBegin(GL_QUADS);
-                        glTexCoord2f (0.0f, 0.0f);
-                        #ifdef PENJIN3D
-                            glVertex3f(position.x, position.y, position.z);
-                        #else
-                            glVertex2f(position.x,position.y);
-                        #endif
-                        glTexCoord2f (1.0f, 0.0f);
-                        #ifdef PENJIN3D
-                            glVertex3f(position.x + texture.getRawWidth(), position.y, position.z);
-                        #else
-                            glVertex2f(position.x + texture.getRawWidth(), position.y);
-                        #endif
-                        glTexCoord2f (1.0f,  1.0f);
-                        #ifdef PENJIN3D
-                            glVertex3f(position.x + texture.getRawWidth(),position.y + texture.getRawHeight(), position.z);
-                        #else
-                            glVertex2f(position.x + texture.getRawWidth(),position.y + texture.getRawHeight());
-                        #endif
-                        glTexCoord2f (0.0f, 1.0f);
-                        #ifdef PENJIN3D
-                            glVertex3f(position.x, position.y + texture.getRawHeight(), position.z);
-                        #else
-                            glVertex2f(position.x, position.y + texture.getRawHeight());
-                        #endif
-                    glEnd();
-                glDisable(GL_TEXTURE_2D);
-            glDisable(GL_BLEND);
-        }
+        string t = text;
+        print(t);
     }
 #endif
 #ifndef PENJIN3D
@@ -405,32 +347,10 @@ void Text::setColour(const uchar& red,const uchar& green,const uchar& blue)
 	colour.blue = blue;
 }
 
-uint Text::countCRs(CRstring line)
-{
-	uint CRcount = 0;
-	//	run through the string
-	for(int i = line.size()-1; i >= 0; --i)
-	{
-		//	check for CR and increase CRcount if found
-		if(line[i] == '\n')
-			++CRcount;
-	}
-	return CRcount;
-}
-
-string Text::stripCRs(string line)
-{
-	for(int i = line.size()-1; i >= 0; --i)
-		if(line[i] == '\n')
-			line[i] = 0;
-
-	return line;
-}
-
-void Text::newLine(SDL_Surface* textSurface)
+void Text::newLine()
 {
     position.x =  startPos.x;
-    position.y += textSurface->h;
+    position.y += TTF_FontLineSkip(font);
 }
 
 void Text::centralise()
@@ -447,5 +367,18 @@ void Text::centralise()
         b*=0.5f;
         //position.x = startPos.x;
         position.x += b.x;
-#endif
+    #endif
+}
+
+void Text::calcDimensions()
+{
+    dimensions.x = position.x - startPos.x + glyphs[0]->getWidth();
+    dimensions.y = TTF_FontLineSkip(font);
+}
+
+Vector2di Text::getDimensions(CRstring str)
+{
+    Vector2di guess;
+    TTF_SizeText(font, str.c_str(), &guess.x, &guess.y );
+    return guess;
 }

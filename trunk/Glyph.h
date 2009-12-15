@@ -6,6 +6,18 @@
 #include "PenjinTypes.h"
 #include "Colour.h"
 #include <ctype.h>
+#include "GFX.h"
+
+namespace GlyphClass
+{
+    enum RENDER_MODES
+    {
+        QUICK,  //  fast with colourkey
+        BOXED,  //  antialiased against bg box.
+        NICE    //  anitaliased fully with alpha channel SLOW
+    };
+}
+using namespace GlyphClass;
 class Glyph
 {
     public:
@@ -20,6 +32,7 @@ class Glyph
 
         void setFont(TTF_Font* f){font = f;}            //  Set the pointer to the loaded Font object
         void setPosition(Vector2di* p){position = p;}
+        void setRenderMode(RENDER_MODES m){renderMode = m;}
         void setCharacter(CRchar c){character = c;}
         void setColour(const Colour& c){colour = c;}
         void setFontSize(CRuint s){fontSize = s;}
@@ -29,20 +42,24 @@ class Glyph
         char getCharacter()const{return character;}
         uint getWidth()const{return glyph.getWidth();}      //  return character width
         uint getHeight()const{return glyph.getHeight();}    //  return chracter height.
+        RENDER_MODES getRenderMode()const{return renderMode;}
 
     private:
         // Disabled to prevent double freed pointers.
         Glyph(const Glyph& noCopy);
         Glyph& operator=(const Glyph& noCopy);
 
-        Image glyph;
-
+        #ifdef PENJIN_GL
+            Texture glyph;
+        #else
+            Image glyph;
+        #endif
         //  We can check the below params to see if glyph needs to be recreated.
         char character;
         uint fontSize;
         Colour colour;
         TTF_Font* font;
-
+        GlyphClass::RENDER_MODES renderMode;
         //  This is just a position we move around
         Vector2di* position;
 };

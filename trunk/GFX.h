@@ -65,6 +65,7 @@ namespace GFX
         Colour getPixel(SDL_Surface* screen,CRint x, CRint y);
         void clearScreen();
         void setClearColour(const Colour& c);
+        Colour getClearColour();
     #ifdef PENJIN_SDL
         void setPixel(SDL_Surface* screen, CRint x, CRint y, Colour c);
 

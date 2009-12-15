@@ -10,6 +10,7 @@ using namespace std;
 #include "PenjinTypes.h"
 #include "Colour.h"
 #include "StringUtility.h"
+#include "NumberUtility.h"
 #include "PenjinErrors.h"
 using namespace PenjinErrors;
 using namespace StringUtility;
@@ -19,21 +20,22 @@ using namespace StringUtility;
 ////////////////////////////////////////////////////////////////////////////////////
 ///text.print(screen, "To be or not to be, that is the question Whether tis noble");
 
+
 class Text
 {
     public:
         Text();		//	Initialise font handling
         ~Text();	//	Shutdown font handling
 
-        int initialise();                          //  Must be called once before any Text objects are used.
+        PENJIN_ERRORS initialise();                          //  Must be called once before any Text objects are used.
         void deInitialise();                        //  Must be called once before program termination.
-        bool getIsInitialised(){return IsInitialised;}
+        bool isInitialised()const{return TTF_WasInit();}
         PENJIN_ERRORS loadFont(CRstring fontName,CRuint fontSize);		//	Loads a TTF
 
         //  Sets the starting position of the text
         template <class T>
-        void setPosition(const T& pos){position = pos;}
-        void setPosition(const Vector2di& p){position.x = p.x;position.y = p.y;}
+        void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
+
         #ifndef PENJIN3D
 
             void setPosition(CRfloat x,CRfloat y);						//	Sets the starting position of the text
@@ -54,11 +56,17 @@ class Text
         void setColour(const Colour& colour){this->colour = colour;}
         void setColour(const uchar& red,const uchar& green,const uchar& blue);		//	Sets the font colour
         Colour getColour()const{return colour;}
+        void setStyle(CRint style){TTF_SetFontStyle(font, style);}
+        int getStyle()const{return TTF_GetFontStyle(font);}
+        bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
+        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs.front()->setRenderMode(m);}
+        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs.front()->getRenderMode();}
 
         #ifndef PENJIN3D
             Vector2df getStartPosition()const{return startPos;}
             Vector2df getPosition()const{return position;}
             Vector2di getDimensions()const{return dimensions;}
+            Vector2di getDimensions(CRstring str);
         #else
             Vector3df getStartPosition()const{return startPos;}
             Vector3df getPosition()const{return position;}
@@ -79,7 +87,6 @@ class Text
         //	write a float number to the screen
         void print(CRfloat number){print(StringUtility::floatToString(number));}
         #ifdef PENJIN_SDL
-            void glyphPrint(SDL_Surface* screen , CRstring text);   /// WIP glyph rendering
             void print(SDL_Surface* screen, char* text);		//	write a char* string to the screen
             void print(SDL_Surface* screen, const char* text);
             void print(SDL_Surface* screen, CRstring text);       //	write a string to the screen
@@ -109,9 +116,8 @@ class Text
         void setBoundaries(const SDL_Rect& boundaries){clipBoundary = boundaries;}
     private:
         void centralise();
-        uint countCRs(CRstring line);	    //	Counts the number of carriage return symbols that are in the string.
-        string stripCRs(string line);	//	Removes carriage returns from an input string
-        void newLine(SDL_Surface* textSurface);                 //  Causes the cursor to be moved to the next line.
+        void calcDimensions();
+        void newLine();
         TTF_Font* font;
         uint fontSize;
         #ifndef PENJIN3D
@@ -123,17 +129,12 @@ class Text
             Vector3df startPos;
             Vector3df dimensions;
         #endif
-        #ifdef PENJIN_GL
-            Texture texture;
-            Texture* numbersCache;  //  Stores numbers as textures to avoid recreation.
-        #elif PENJIN_SDL
+        #ifdef PENJIN_SDL
             SDL_Surface* screen;
         #endif
         vector<Glyph*> glyphs;  //  stores each individual charactor for printing.
-            string lastPrint;
 
         bool relativePos;
-        bool IsInitialised;
         bool centreText;
         Colour colour;
         SDL_Rect clipBoundary;      //  The area that the particle is allowed to exist within

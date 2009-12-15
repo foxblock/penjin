@@ -2,12 +2,17 @@
 
 namespace GFX
 {
-#ifdef PENJIN_SDL
     Colour clear(BLACK);
+#ifdef PENJIN_SDL
     SDL_Surface* screen;
 #elif PENJIN_ASCII
 
 #endif
+}
+
+Colour GFX::getClearColour()
+{
+    return clear;
 }
 
 // Force to blit to screen now!
