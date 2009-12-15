@@ -36,9 +36,11 @@ bool AchievementUtility::checkSpecial(const vector<SpecialProperty>& sp1, const 
 {
     if (sp1.size() == 0)
         return true;
+    if (sp1.size() > sp2.size())
+        return false;
 
     vector<SpecialProperty>::const_iterator I;
-    for (I = sp1.begin(); I < sp2.end(); I++)
+    for (I = sp1.begin(); I < sp1.end(); I++)
     {
         // searches for same property name
         bool found = false;
