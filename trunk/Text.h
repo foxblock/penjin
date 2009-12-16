@@ -4,7 +4,7 @@
 /// TODO:  Finish glyph creation.
 #include "Glyph.h"
 #include <string>
-#include <vector>
+#include "DoubleVector.h"
 #include <ctype.h>
 using namespace std;
 #include "PenjinTypes.h"
@@ -20,6 +20,17 @@ using namespace StringUtility;
 ////////////////////////////////////////////////////////////////////////////////////
 ///text.print(screen, "To be or not to be, that is the question Whether tis noble");
 
+namespace TextClass
+{
+    enum ALIGNMENT
+    {
+        LEFT_JUSTIFIED,
+        CENTRED,
+        RIGHT_JUSTIFIED
+    };
+}
+
+using namespace TextClass;
 
 class Text
 {
@@ -30,8 +41,12 @@ class Text
         PENJIN_ERRORS initialise();                          //  Must be called once before any Text objects are used.
         void deInitialise();                        //  Must be called once before program termination.
         bool isInitialised()const{return TTF_WasInit();}
-        PENJIN_ERRORS loadFont(CRstring fontName,CRuint fontSize);		//	Loads a TTF
 
+        PENJIN_ERRORS loadFont(CRstring fontName,CRuint fontSize);		//	Loads a TTF
+        PENJIN_ERRORS loadFont(CRstring fontName);  // Load a TTF without changing size
+
+        PENJIN_ERRORS setFontSize(CRuint s);
+        uint getFontSize()const{return fontSize;}
         //  Sets the starting position of the text
         template <class T>
         void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
@@ -56,11 +71,13 @@ class Text
         void setColour(const Colour& colour){this->colour = colour;}
         void setColour(const uchar& red,const uchar& green,const uchar& blue);		//	Sets the font colour
         Colour getColour()const{return colour;}
+        void setAlignment(const ALIGNMENT& align){alignment = align;}
+        ALIGNMENT getAlignment()const{return alignment;}
         void setStyle(CRint style){TTF_SetFontStyle(font, style);}
         int getStyle()const{return TTF_GetFontStyle(font);}
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
-        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs.front()->setRenderMode(m);}
-        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs.front()->getRenderMode();}
+        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs[fontSize][0]->setRenderMode(m);}
+        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs[fontSize][0]->getRenderMode();}
 
         #ifndef PENJIN3D
             Vector2df getStartPosition()const{return startPos;}
@@ -76,7 +93,7 @@ class Text
         int getHeight()const{return dimensions.y;}
 
         void setRelativity(CRbool rel){relativePos = rel;}
-        void setCentreText(CRbool centre){centreText = centre;} /// WARNING needs some work!
+        //void setCentreText(CRbool centre){centreText = centre;} /// WARNING needs some work!
 
         ///	You must have used the above functions in order to use the following print functions
         void print(char* text);		//	write a char* string to the screen
@@ -114,11 +131,14 @@ class Text
             setDownBoundary(lowBound);
         }
         void setBoundaries(const SDL_Rect& boundaries){clipBoundary = boundaries;}
+
+        void clearGlyphs();
     private:
-        void centralise();
+        void align(const Vector2di& dims);
         void calcDimensions();
         void newLine();
         TTF_Font* font;
+        string fontName;
         uint fontSize;
         #ifndef PENJIN3D
             Vector2di position;
@@ -132,10 +152,10 @@ class Text
         #ifdef PENJIN_SDL
             SDL_Surface* screen;
         #endif
-        vector<Glyph*> glyphs;  //  stores each individual charactor for printing.
+        DoubleVector<Glyph*> glyphs;  //  stores each individual charactor for printing.
 
         bool relativePos;
-        bool centreText;
+        ALIGNMENT alignment;
         Colour colour;
         SDL_Rect clipBoundary;      //  The area that the particle is allowed to exist within
 };

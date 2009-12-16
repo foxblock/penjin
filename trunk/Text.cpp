@@ -4,7 +4,8 @@ Text::Text()
 {
     initialise();   // auto init font library if needed.
 	font = NULL;
-	fontSize = 0;
+	fontName = "NULL";
+	fontSize = 12;  // default to 12 point font
 	position.x = 0;
 	position.y = 0;
 	startPos.x = 0;
@@ -18,7 +19,6 @@ Text::Text()
         #endif
         clipBoundary.w = 1024;
         clipBoundary.h = 768;
-        lastPrint = "NULL";
     #else
         #ifdef PENJIN_SDL
             screen = SDL_GetVideoSurface();
@@ -26,7 +26,7 @@ Text::Text()
             clipBoundary.h = screen->h;
         #endif
 	#endif
-    centreText = false;
+    alignment = LEFT_JUSTIFIED;
     relativePos = false;
 }
 
@@ -59,40 +59,80 @@ void Text::clear()
         TTF_CloseFont(font);			// Release the font object
         font = NULL;
     }
-    #ifdef PENJIN3D
-        lastPrint = "NULL";
-    #endif
+}
+
+void Text::clearGlyphs()
+{
+    //  run through all sizes of chars
+    for(int i = glyphs.size()-1; i >=0; --i)
+    {
+        for(int j = glyphs[i].size()-1; j>=0; --j)
+        {
+            delete glyphs[i][j];
+            glyphs[i][j] = NULL;
+        }
+    }
 }
 
 Text::~Text()
 {
+    // close font
 	clear();
-//
-    for(int i = glyphs.size()-1; i >=0; --i)
-    {
-        delete glyphs[i];
-        glyphs[i] = NULL;
-    }
+	// clear Glyphs
+	clearGlyphs();
 }
 
-PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
+PENJIN_ERRORS Text::loadFont(CRstring name,CRuint fontSize)
 {
-	clear();
-	font = TTF_OpenFont(fontName.c_str(), fontSize);
+    //  check if fontSize is not the same as loaded font
+    if(this->fontSize != fontSize || name != fontName)
+    {
+        clear();
+        font = TTF_OpenFont(name.c_str(), fontSize);
+    }
 	if(font)
 	{
-	    this->fontSize = fontSize;
+	    // check if we already have Glyphs for this fontSize
+	    if(glyphs.size() >= fontSize)
+	    {
+	        if(glyphs.at(fontSize-1).size())
+	        {
+                // if the fontSize checks out...
+                if(glyphs.at(fontSize-1)[0]->getFontSize() == fontSize)
+                {
+                    this->fontSize = fontSize;
+                    return PENJIN_OK;
+                }
+	        }
+	    }
+        else
+        {
+            //Setup enough glyphs for fontSize
+            glyphs.resize(fontSize);
+        }
         //  create Dummy Char for spacing calcs
-        glyphs.push_back(NULL);
-        glyphs[glyphs.size()-1] = new Glyph();
-        glyphs[0]->setFontSize(fontSize);
-        glyphs[0]->setFont(font);
-        glyphs[0]->setCharacter('-');    // picked because a nice square char to give us a "standard surface width"
-        glyphs[0]->setPosition(&position);
-        glyphs[0]->refresh();
+        glyphs[fontSize-1].push_back(NULL);
+        glyphs[fontSize-1][0] = new Glyph();
+        glyphs[fontSize-1][0]->setFontSize(fontSize);
+        glyphs[fontSize-1][0]->setFont(font);
+        glyphs[fontSize-1][0]->setCharacter('-');    // picked because a nice square char to give us a "standard surface width"
+        glyphs[fontSize-1][0]->setPosition(&position);
+        glyphs[fontSize-1][0]->refresh();
+        fontName = name;
+        this->fontSize = fontSize;
 		return PENJIN_OK;
 	}
 	return PENJIN_TTF_UNABLE_TO_OPEN;
+}
+
+PENJIN_ERRORS Text::loadFont(CRstring name)
+{
+    return loadFont(name,fontSize);
+}
+
+PENJIN_ERRORS Text::setFontSize(CRuint s)
+{
+    return loadFont(fontName, s);
 }
 
 #ifdef PENJIN_SDL
@@ -112,13 +152,9 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
         TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
         if(position.x + guess.x >= clipBoundary.w)
             newLine();
-        if(centreText)
+        if(alignment != LEFT_JUSTIFIED)
         {
-            Vector2df b(clipBoundary.w,clipBoundary.h);
-            b-= (position + guess);
-            b*=0.5f;
-            //position.x = startPos.x;
-            position.x += b.x;
+            align(guess);
         }
         //  Run through the text chars
         for(int i = 0; i < text.size(); ++i)
@@ -139,7 +175,14 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
             else if(c == ' ')
             {
                 //  use dummy for spacing
-                position.x+=glyphs[0]->getWidth();
+                position.x+=glyphs[fontSize-1][0]->getWidth();
+                continue;
+            }
+            //  check for tab
+            else if(c == '\t')
+            {
+                //  use dummy for spacing
+                position.x+=glyphs[fontSize-1][0]->getWidth()*3;
                 continue;
             }
             // check for other unprintables
@@ -148,48 +191,48 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
                 continue;
             }
 
-            //  create more glyphs as needed
-            while(glyphs.size() <= c)
+            //  create more glyphs as needed - shifted 19 indices
+            while(glyphs[fontSize-1].size() <= c -19)
             {
-                glyphs.push_back(NULL);
-                glyphs[glyphs.size()-1] = new Glyph();
+                glyphs[fontSize-1].push_back(NULL);
+                glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
             }
 
             //  check properties of glyph if they differ from what we want to render.
             bool changed = false;
-            if(glyphs.at(c)->getColour() != colour)
+            if(glyphs[fontSize-1].at(c-19)->getColour() != colour)
             {
-                glyphs.at(c)->setColour(colour);
+                glyphs[fontSize-1].at(c-19)->setColour(colour);
                 changed = true;
             }
-            if(glyphs.at(c)->getFontSize() != fontSize)
+            if(glyphs[fontSize-1].at(c-19)->getFontSize() != fontSize)
             {
-                glyphs.at(c)->setFontSize(fontSize);
+                glyphs[fontSize-1].at(c-19)->setFontSize(fontSize);
                 changed = true;
             }
-            if(glyphs.at(c)->getCharacter() != c)
+            if(glyphs[fontSize-1].at(c-19)->getCharacter() != c)
             {
-                glyphs.at(c)->setCharacter(c);
+                glyphs[fontSize-1].at(c-19)->setCharacter(c);
                 changed = true;
             }
-            if(glyphs.at(c)->getRenderMode() != glyphs.front()->getRenderMode())
+            if(glyphs[fontSize-1].at(c-19)->getRenderMode() != glyphs[fontSize-1].front()->getRenderMode())
             {
-                glyphs.at(c)->setRenderMode(glyphs.front()->getRenderMode());
+                glyphs[fontSize-1].at(c-19)->setRenderMode(glyphs[fontSize-1].front()->getRenderMode());
                 changed = true;
             }
             //  set common glyph properties
-            glyphs.at(c)->setFont(font);
-            glyphs.at(c)->setPosition(&position);
+            glyphs[fontSize-1].at(c-19)->setFont(font);
+            glyphs[fontSize-1].at(c-19)->setPosition(&position);
             if(changed)
             {
-                glyphs.at(c)->refresh();
+                glyphs[fontSize-1].at(c-19)->refresh();
                 isRefreshed = true;
             }
 
             //  if everything up to date we can render the glyph
-            glyphs.at(c)->render(screen);
+            glyphs[fontSize-1].at(c-19)->render(screen);
             //  Advance cursor
-            position.x += glyphs.at(c)->getWidth();
+            position.x += glyphs[fontSize-1].at(c-19)->getWidth();
         }
         if(isRefreshed)
             calcDimensions();
@@ -254,7 +297,7 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
             else if(c == ' ')
             {
                 //  use dummy for spacing
-                position.x+=glyphs[0]->getWidth();
+                position.x+=glyphs[fontSize-1][0]->getWidth();
                 continue;
             }
             // check for other unprintables
@@ -264,47 +307,48 @@ PENJIN_ERRORS Text::loadFont(CRstring fontName,CRuint fontSize)
             }
 
             //  create more glyphs as needed
-            while(glyphs.size() <= c)
+            while(glyphs[fontSize-1].size() <= c)
             {
-                glyphs.push_back(NULL);
-                glyphs[glyphs.size()-1] = new Glyph();
+                glyphs[fontSize-1].push_back(NULL);
+                glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
             }
 
             //  check properties of glyph if they differ from what we want to render.
             bool changed = false;
-            if(glyphs.at(c)->getColour() != colour)
+            if(glyphs[fontSize-1].at(c)->getColour() != colour)
             {
-                glyphs.at(c)->setColour(colour);
+                glyphs[fontSize-1].at(c)->setColour(colour);
                 changed = true;
             }
-            if(glyphs.at(c)->getFontSize() != fontSize)
+            if(glyphs[fontSize-1].at(c)->getFontSize() != fontSize)
             {
-                glyphs.at(c)->setFontSize(fontSize);
+                glyphs[fontSize-1].at(c)->setFontSize(fontSize);
                 changed = true;
             }
-            if(glyphs.at(c)->getCharacter() != c)
+            if(glyphs[fontSize-1].at(c)->getCharacter() != c)
             {
-                glyphs.at(c)->setCharacter(c);
+                glyphs[fontSize-1].at(c)->setCharacter(c);
                 changed = true;
             }
-            if(glyphs.at(c)->getRenderMode() != glyphs.front()->getRenderMode())
+            if(glyphs[fontSize-1].at(c)->getRenderMode() != glyphs[fontSize-1].front()->getRenderMode())
             {
-                glyphs.at(c)->setRenderMode(glyphs.front()->getRenderMode());
+                glyphs[fontSize-1].at(c)->setRenderMode(glyphs[fontSize-1].front()->getRenderMode());
                 changed = true;
             }
             //  set common glyph properties
-            glyphs.at(c)->setFont(font);
-            glyphs.at(c)->setPosition(&position);
+            glyphs[fontSize-1].at(c)->setFont(font);
+            glyphs[fontSize-1].at(c)->setPosition(&position);
             if(changed)
             {
-                glyphs.at(c)->refresh();
+                glyphs[fontSize-1].at(c)->refresh();
                 isRefreshed = true;
             }
 
             //  if everything up to date we can render the glyph
-            glyphs.at(c)->render();
+            glyphs[fontSize-1].at(c)->render();
             //  Advance cursor
-            position.x += glyphs.at(c)->getWidth();
+            if(i<text.size())
+                position.x += glyphs[fontSize-1].at(c)->getWidth();
         }
         if(isRefreshed)
             calcDimensions();
@@ -353,26 +397,34 @@ void Text::newLine()
     position.y += TTF_FontLineSkip(font);
 }
 
-void Text::centralise()
+void Text::align(const Vector2di& guess)
 {
+    if(alignment == CENTRED)
+    {
     #ifndef PENJIN3D
         Vector2df b(clipBoundary.w,clipBoundary.h);
-        b-= (position + dimensions);
+        b-= (position + guess);
         b*=0.5f;
         //position.x = startPos.x;
         position.x += b.x;
     #else
         Vector3df b = Vector3df(clipBoundary.w,clipBoundary.h,0);
-        b-= (position + dimensions);
+        b-= (position + guess);
         b*=0.5f;
         //position.x = startPos.x;
         position.x += b.x;
     #endif
+    }
+    else if(alignment == RIGHT_JUSTIFIED)
+    {
+        position.x = clipBoundary.w - guess.x;
+    }
+    // Otherwise text is LEFT_JUSTIFIED so do nothing.
 }
 
 void Text::calcDimensions()
 {
-    dimensions.x = position.x - startPos.x + glyphs[0]->getWidth();
+    dimensions.x = position.x - startPos.x + glyphs[fontSize-1][0]->getWidth();
     dimensions.y = TTF_FontLineSkip(font);
 }
 
