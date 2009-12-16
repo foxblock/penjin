@@ -87,6 +87,7 @@ class Menu
         PENJIN_ERRORS loadFont(CRstring fontName,CRint fontSize);   //  Load a font into the shared Text
         void setTextColour(const Colour& colour);              //  Set the colour of the text
         void setTextSelectionColour(const Colour& colour){textSelectionColour = colour;}
+        void setTextBgColour(const Colour& col){text->setBgColour(col);}
         void setMenuItemText(CRstring text);              //  Set the topmost menu item text properties
         void setMenuItemText(CRuint index,CRstring text);  //  Set the display text of the menu item
         void setSelectionIndicator(CRchar c);             //  Set the character acting as a selection indicator GLOBAL

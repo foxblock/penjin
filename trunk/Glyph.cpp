@@ -41,7 +41,7 @@ void Glyph::refresh()
     if(renderMode == QUICK)
         tS = TTF_RenderText_Solid(font,t,colour.getSDL_Colour());
     else if(renderMode == BOXED)    // render with Clear Colour as BG
-        tS = TTF_RenderText_Shaded(font,t,colour.getSDL_Colour(),GFX::getClearColour().getSDL_Colour());
+        tS = TTF_RenderText_Shaded(font,t,colour.getSDL_Colour(),bgColour.getSDL_Colour());
     else
         tS = TTF_RenderText_Blended(font,t,colour.getSDL_Colour());
 #ifndef PENJIN_GL

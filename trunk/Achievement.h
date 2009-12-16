@@ -90,8 +90,10 @@ class Achievement
         string name;
         string descr;
         AnimatedSprite icon;
-        Text tDescr;
+        /*Text tDescr;
         Text tName;
+        */
+        Text text;
         Rectangle bgBox;
         bool secret;
 

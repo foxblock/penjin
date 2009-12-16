@@ -28,6 +28,10 @@ namespace TextClass
         CENTRED,
         RIGHT_JUSTIFIED
     };
+
+        PENJIN_ERRORS init();                          //  Must be called once before any Text objects are used.
+        void deInit();                        //  Must be called once before program termination.
+        bool isInitialised();
 }
 
 using namespace TextClass;
@@ -37,10 +41,6 @@ class Text
     public:
         Text();		//	Initialise font handling
         ~Text();	//	Shutdown font handling
-
-        PENJIN_ERRORS initialise();                          //  Must be called once before any Text objects are used.
-        void deInitialise();                        //  Must be called once before program termination.
-        bool isInitialised()const{return TTF_WasInit();}
 
         PENJIN_ERRORS loadFont(CRstring fontName,CRuint fontSize);		//	Loads a TTF
         PENJIN_ERRORS loadFont(CRstring fontName);  // Load a TTF without changing size
@@ -71,13 +71,16 @@ class Text
         void setColour(const Colour& colour){this->colour = colour;}
         void setColour(const uchar& red,const uchar& green,const uchar& blue);		//	Sets the font colour
         Colour getColour()const{return colour;}
+        void setBgColour(const Colour& col){bgColour = col;setRenderMode(GlyphClass::BOXED);}
+        Colour getBgColour()const{return bgColour;}
+
         void setAlignment(const ALIGNMENT& align){alignment = align;}
         ALIGNMENT getAlignment()const{return alignment;}
         void setStyle(CRint style){TTF_SetFontStyle(font, style);}
         int getStyle()const{return TTF_GetFontStyle(font);}
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
-        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs[fontSize][0]->setRenderMode(m);}
-        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs[fontSize][0]->getRenderMode();}
+        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs[fontSize-1][0]->setRenderMode(m);}
+        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs[fontSize-1][0]->getRenderMode();}
 
         #ifndef PENJIN3D
             Vector2df getStartPosition()const{return startPos;}
@@ -157,6 +160,7 @@ class Text
         bool relativePos;
         ALIGNMENT alignment;
         Colour colour;
+        Colour bgColour;
         SDL_Rect clipBoundary;      //  The area that the particle is allowed to exist within
 };
 
