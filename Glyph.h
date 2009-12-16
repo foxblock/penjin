@@ -6,7 +6,6 @@
 #include "PenjinTypes.h"
 #include "Colour.h"
 #include <ctype.h>
-#include "GFX.h"
 
 namespace GlyphClass
 {
@@ -35,9 +34,11 @@ class Glyph
         void setRenderMode(RENDER_MODES m){renderMode = m;}
         void setCharacter(CRchar c){character = c;}
         void setColour(const Colour& c){colour = c;}
+        void setBgColour(const Colour& c){bgColour = c;}
         void setFontSize(CRuint s){fontSize = s;}
 
         Colour getColour()const{return colour;}
+        Colour getBgColour()const{return bgColour;}
         uint getFontSize()const{return fontSize;}
         char getCharacter()const{return character;}
         uint getWidth()const{return glyph.getWidth();}      //  return character width
@@ -58,6 +59,7 @@ class Glyph
         char character;
         uint fontSize;
         Colour colour;
+        Colour  bgColour;
         TTF_Font* font;
         GlyphClass::RENDER_MODES renderMode;
         //  This is just a position we move around

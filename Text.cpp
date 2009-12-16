@@ -1,8 +1,32 @@
 #include "Text.h"
 
+PENJIN_ERRORS TextClass::init()
+{
+    if(isInitialised())
+        return PENJIN_OK;
+    int result = TTF_Init();
+    if(result != 0)
+    {
+        result = PENJIN_ERROR;
+    }
+    else
+    {
+        result = PENJIN_OK;
+    }
+    return (PENJIN_ERRORS)result;
+}
+
+bool TextClass::isInitialised(){return TTF_WasInit();}
+
+void TextClass::deInit()
+{
+    if(isInitialised())
+        TTF_Quit();
+}
+
 Text::Text()
 {
-    initialise();   // auto init font library if needed.
+    TextClass::init();// auto init font library if needed.
 	font = NULL;
 	fontName = "NULL";
 	fontSize = 12;  // default to 12 point font
@@ -27,29 +51,8 @@ Text::Text()
         #endif
 	#endif
     alignment = LEFT_JUSTIFIED;
+    bgColour = BLACK;
     relativePos = false;
-}
-
-PENJIN_ERRORS Text::initialise()
-{
-    if(isInitialised())
-        return PENJIN_OK;
-    int result = TTF_Init();
-    if(result != 0)
-    {
-        result = PENJIN_ERROR;
-    }
-    else
-    {
-        result = PENJIN_OK;
-    }
-    return (PENJIN_ERRORS)result;
-}
-
-void Text::deInitialise()
-{
-    if(isInitialised())
-        TTF_Quit();
 }
 
 void Text::clear()
@@ -203,6 +206,11 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             if(glyphs[fontSize-1].at(c-19)->getColour() != colour)
             {
                 glyphs[fontSize-1].at(c-19)->setColour(colour);
+                changed = true;
+            }
+            if(glyphs[fontSize-1].at(c-19)->getBgColour() != bgColour)
+            {
+                glyphs[fontSize-1].at(c-19)->setBgColour(bgColour);
                 changed = true;
             }
             if(glyphs[fontSize-1].at(c-19)->getFontSize() != fontSize)

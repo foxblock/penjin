@@ -15,10 +15,15 @@ Achievement::Achievement()
     type = atGENERAL;
     counter.setLimit(0);
 
+    text.loadFont("font/atrox.ttf",16);
+    //text.setRenderMode(GlyphClass::BOXED);
+    text.setBgColour(DARK_GREY);
+    text.setRelativity(true);
+/*
     tDescr.loadFont("font/atrox.ttf", 16);
     tDescr.setColour(Colour(WHITE)),
     tName.loadFont("font/atrox.ttf", 24);
-    tName.setColour(Colour(WHITE));
+    tName.setColour(Colour(WHITE));*/
 }
 
 Achievement::~Achievement()
@@ -89,10 +94,18 @@ void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
     // background box
     bgBox.setPosition(xPos,yPos);
     bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
+    text.setPosition(xPos+80,yPos+5);
+    text.setBoundaries(Vector2di(xPos+80,yPos+5),Vector2di(xPos+ACHIEVEMENT_WIDTH-5,yPos+ACHIEVEMENT_HEIGHT-5));
     if (unlocked)
+    {
         bgBox.setColour(LIGHT_GREY);
+        text.setBgColour(LIGHT_GREY);
+    }
     else
+    {
         bgBox.setColour(DARK_GREY);
+        text.setBgColour(DARK_GREY);
+    }
     bgBox.render(screen);
 
     // icon
@@ -104,23 +117,35 @@ void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
     icon.render(screen);
 
     // text
-    tName.setPosition(xPos+80,yPos+5);
-    tDescr.setPosition(xPos+80,yPos+30);
+    //tName.setPosition(xPos+80,yPos+5);
+    //tDescr.setPosition(xPos+80,yPos+30);
+    text.setAlignment(TextClass::LEFT_JUSTIFIED);
+    text.setFontSize(24);
     if (secret && not unlocked)
     {
-        tName.print(screen,getSecretName());
-        tDescr.print(screen,getSecretDescription());
+        text.print(screen,getSecretName()+"\n");
+        text.setAlignment(TextClass::RIGHT_JUSTIFIED);
+        text.setFontSize(16);
+        text.print(screen, getSecretDescription());
+        //tName.print(screen,getSecretName());
+        //tDescr.print(screen,getSecretDescription());
     }
     else
     {
-        tName.print(screen,name);
+        text.print(screen,name+"\n");
+        //tName.print(screen,name);
         string temp = descr;
         temp = StringUtility::substrReplace(temp,"%c",StringUtility::intToString(count));
         temp = StringUtility::substrReplace(temp,"%l",StringUtility::intToString(limit));
-        tDescr.print(screen,temp);
-        tName.setPosition(xPos+260,yPos+55);
+        text.setAlignment(TextClass::RIGHT_JUSTIFIED);
+        text.setFontSize(16);
+        text.print(screen,temp+"\n");
+        //tDescr.print(screen,temp);
+        //tName.setPosition(xPos+260,yPos+55);
+        text.setFontSize(24);
         temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
-        tName.print(screen,temp);
+        //tName.print(screen,temp);
+        text.print(screen,temp);
     }
 }
 
