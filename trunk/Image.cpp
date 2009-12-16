@@ -15,11 +15,7 @@ Image::Image()
     #ifdef PENJIN_SDL
         //  Get the screen pointer
         screen = SDL_GetVideoSurface();
-        //	By default we don't want to process rotation since these are slower
-        //useRotation = false;
-        useHardware = false;    //  and HW doesn't support alpha (need colour masking for transparencies)
     #endif
-
     sheetMode = false;      //  Stores if we use a spritesheet or if we use separate surfaces.
 }
 
@@ -88,7 +84,6 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
             images.pop_back();
             return PENJIN_IMG_UNABLE_TO_OPEN;
         }
-        isConverted.push_back(false);
     #else
         textures.resize(textures.size()+1);
         PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTextureNoKey(name);
@@ -232,10 +227,9 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
         dst.x = destx;
         dst.y = desty;
 
-        // Check if we need to alpha blend
-        if(alpha != SDL_ALPHA_OPAQUE)   //  We check SDL_ALPHA_TRANSPARENT earlier.
-            SDL_SetAlpha(images[i], SDL_SRCALPHA|SDL_RLEACCEL, alpha);
-        if((angle == 0 && scale.x == 1 && scale.y == 1) && !useHardware)
+        // try to set surface alpha - depends on surface type.
+        SDL_SetAlpha(images[i], SDL_SRCALPHA|SDL_RLEACCEL, alpha);
+        if((angle == 0 && scale.x == 1 && scale.y == 1))
             SDL_BlitSurface(images[i], &src, dstimg, &dst);
 
         else if(angle != 0 || scale.x!= 1 || scale.y!= 1)
@@ -272,20 +266,6 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
             }
             SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
             SDL_FreeSurface(tempImage);
-        }
-        else	//	The only other option is to use HW surfaces
-        {
-            //	Check if we have converted the current image to a HW Surface already
-            if(!isConverted[i])
-            {
-                //	convert current image
-                SDL_Surface* temp = images[i];
-                images[i] = SDL_ConvertSurface(images[i], dstimg->format, SDL_HWSURFACE);
-                SDL_FreeSurface(temp);
-                isConverted[i] = true;
-            }
-            // Now we blit
-            SDL_BlitSurface(images[i], &src, dstimg, &dst);
         }
     }
     //void Image::renderImage(SDL_Surface* dstimg, const Vector2di& pos){renderImage(0, dstimg, pos.x, pos.y);}
@@ -562,4 +542,14 @@ uint Image::getWidth()const
     #else
         return textures.front().getWidth();
     #endif
+}
+
+void Image::convertToHW()
+{
+    for(int i = images.size()-1; i>= 0; --i)
+    {
+        SDL_Surface* temp = images.at(i);
+        images.at(i) = SDL_ConvertSurface(images.at(i), screen->format, SDL_HWSURFACE);
+        SDL_FreeSurface(temp);
+    }
 }

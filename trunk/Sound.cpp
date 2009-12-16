@@ -14,7 +14,7 @@ void Sound::init()
     #elif PLATFORM_PC
 		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);		// Initialize SDL_mixer for PC, buffer is set higher
     #elif PLATFORM_PANDORA
-        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 256);
+        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);
 	#else
         Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 256);		// default
 	#endif

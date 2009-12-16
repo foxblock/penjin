@@ -30,7 +30,6 @@ class Image
             void loadImage(SDL_Surface* s)
             {
                 images.push_back(s);
-                isConverted.push_back(false);
                 sheetMode = false;
             }
             void disableTransparentColour(CRuint i)
@@ -124,7 +123,8 @@ class Image
         #endif
         #ifdef PENJIN_SDL
             //	Set if to use a HW surface to blit
-            void setUseHardware(CRbool useHW){useHardware = useHW;}
+            void setUseHardware(CRbool useHW){if(useHW){convertToHW();}}
+            void setUseHardWare(){convertToHW();}
             /// Pixel manipulation functions
             // check and lock screen
             void screenLock();
@@ -186,9 +186,8 @@ class Image
 
 
 		#ifdef PENJIN_SDL
-            bool useHardware;           //  To know if the images should be converted to hardware surfaces
+            void convertToHW();
             vector<SDL_Surface*>images; //  Stores surfaces
-            vector<bool>isConverted;    //  Determines if a surface has been converted to hardware
             SDL_Surface* screen;        //  The pointer to the screen;
 		#elif PENJIN_GL
             vector<Texture> textures;   //  Stores Textures for image
