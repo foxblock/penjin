@@ -9,7 +9,6 @@ AnimatedSprite::AnimatedSprite()
 	position.x = 0;
 	position.y = 0;
 	#ifdef PENJIN_SDL
-        setUseHardware(false);	//	Disable HW support by default since it introduces transparency issues (alpha not supported)
         screen = SDL_GetVideoSurface();
     #endif
     #ifdef PENJIN3D
@@ -26,7 +25,6 @@ AnimatedSprite::AnimatedSprite()
         animationTimer.setMode(THIRTY_FRAMES);
         numLoops = firstLoops = -1;
         animationTimer.start();
-        setUseHardware(false);	//	Disable HW support by default since it introduces transparency issues (alpha not supported)
         playReversed = false;
         reachedEnd = false;
         screen = SDL_GetVideoSurface();

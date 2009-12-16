@@ -44,25 +44,9 @@ PENJIN_ERRORS Animation::setTransparentColour(const Vector2di& v)
     return PENJIN_OK;
 }
 
-PENJIN_ERRORS Animation::loadFrame(CRstring fileName)
-{
-    PENJIN_ERRORS result = image.loadImageNoKey(fileName);
-    #ifdef PENJIN_SDL
-    if(result == PENJIN_OK)
-        image.setUseHardware(true);
-    #endif
-    return result;
-}
+PENJIN_ERRORS Animation::loadFrame(CRstring fileName){return image.loadImageNoKey(fileName);}
 
-PENJIN_ERRORS Animation::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles)
-{
-    PENJIN_ERRORS t = image.loadImageSheetNoKey(fileName, xTiles, yTiles);
-    #ifdef PENJIN_SDL
-    if(t == PENJIN_OK)
-        image.setUseHardware(true);
-    #endif
-    return t;
-}
+PENJIN_ERRORS Animation::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){return image.loadImageSheetNoKey(fileName, xTiles, yTiles);}
 
 
 void Animation::update()

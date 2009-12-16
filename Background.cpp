@@ -16,12 +16,7 @@ Background::~Background(){};
 PENJIN_ERRORS Background::loadBackground(CRstring file)
 {
     PENJIN_ERRORS t;
-    t = img.loadImageNoKey(file);
-    #ifdef PENJIN_SDL
-    if(t == PENJIN_OK)
-        img.setUseHardware(true);
-    #endif
-    return t;
+    return img.loadImageNoKey(file);
 }
 #ifdef PENJIN_SDL
     void Background::render(SDL_Surface *scr){img.renderImage(bg,scr,position.x,position.y);}
