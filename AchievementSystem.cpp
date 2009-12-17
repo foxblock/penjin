@@ -10,6 +10,7 @@ AchievementSystem::AchievementSystem()
 {
     offsetX = 0;
     offsetY = 0;
+    spacing = 0;
     popupX = 0;
     popupY = 0;
     fadeTime = 1000;
@@ -79,7 +80,7 @@ void AchievementSystem::setPopupPosition(PopupPos pos)
 int AchievementSystem::getListSize() const
 {
     SDL_Surface* screen = SDL_GetVideoSurface();
-    return floor(screen->h / ACHIEVEMENT_HEIGHT);
+    return floor(screen->h / (ACHIEVEMENT_HEIGHT+spacing));
 }
 
 #ifdef PENJIN_SDL
@@ -125,9 +126,9 @@ void AchievementSystem::renderList(SDL_Surface* screen, int offset)
 
     vector<Achievement*>::iterator I;
     int count = 0;
-    for (I = achievements.begin()+offset; I < achievements.end(); ++I)
+    for (I = achievements.begin()+offset; I < min(achievements.begin()+offset+getListSize(),achievements.end()); ++I)
     {
-        (**I).render(screen,offsetX,offsetY+(ACHIEVEMENT_HEIGHT*count));
+        (**I).render(screen,offsetX,offsetY+((ACHIEVEMENT_HEIGHT+spacing)*count));
         ++count;
     }
 }
