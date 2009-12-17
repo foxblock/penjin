@@ -21,6 +21,8 @@ Engine::Engine()
         xRes = 320;
         yRes = 240;
         fullScreen = true;
+        loadMenu = false;
+        MMUHack::init();
     #else // Penjin 2D project
         xRes = 1024;
         yRes = 768;
@@ -60,6 +62,14 @@ Engine::~Engine()
     #elif PENJIN_ASCII
         endwin();
 	#endif
+	#ifdef PLATFORM_GP2X
+        MMUHack::deInit();
+        if(loadMenu)	//	Quit to GP2X menu if required to do so by commandline.
+		{
+			chdir("/usr/gp2x");
+			execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);
+		}
+	#endif
 }
 
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
@@ -98,6 +108,14 @@ PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
                         yRes = cStringToInt(argv[arg+1]);
 					    break;
 					}
+					#ifdef PLATFORM_GP2X
+                    case 'M':
+                    case 'm':
+				    {
+				        loadMenu = true;
+				        break;
+                    }
+					#endif
 					default:
 					{
 						return PENJIN_INVALID_COMMANDLINE;
@@ -249,7 +267,7 @@ bool Engine::stateLoop()
                 state->pauseScreen();
                 //	Flush the cache on GP2X just before the screen is flipped
                 #ifdef PLATFORM_GP2X
-                    hack.flushCache(screen->pixels, (char*)screen->pixels + *xRes * *yRes);
+                    MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
                 #endif
                 GFX::forceBlit();
                 gameTimer.start();
@@ -280,7 +298,7 @@ bool Engine::stateLoop()
             #endif
 
             #ifdef PLATFORM_GP2X
-                hack.flushCache(screen->pixels, (char*)screen->pixels + *xRes * *yRes);
+                MMUHack::flushCache(screen->pixels, (char*)screen->pixels + (xRes * yRes));
             #endif
             GFX::forceBlit();
             #ifdef _DEBUG

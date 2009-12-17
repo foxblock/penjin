@@ -10,7 +10,9 @@
     #include "AchievementSystem.h"
     #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
 #endif
-
+#ifdef PLATFORM_GP2X
+#include "MMUHack.h"
+#endif
 
 using namespace StringUtility;
 
@@ -64,6 +66,9 @@ class Engine
 		#ifdef PENJIN_CACA
             cucul_canvas_t *canvas;
             caca_display_t *display;
+		#endif
+		#ifdef PLATFORM_GP2X
+            bool loadMenu;
 		#endif
 		vector<Variable> variables;		//	Variable storage for transfer between states
 		Timer gameTimer;				//	Timer for frame regulation and event scheduling.

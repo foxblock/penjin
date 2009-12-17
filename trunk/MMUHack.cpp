@@ -1,16 +1,8 @@
 #include "MMUHack.h"
 
 #ifdef PLATFORM_GP2X
-MMUHack::MMUHack()
-{
-}
 
-MMUHack::~MMUHack()
-{
-}
-
-
-bool MMUHack::initHack()
+PenjinErrors::PENJIN_ERRORS MMUHack::init()
 {
 	system("/sbin/rmmod mmuhack");
 	system("/sbin/insmod mmuhack.o");
@@ -19,18 +11,18 @@ bool MMUHack::initHack()
 	if(mmufd < 0)
 	{
 		printf("MMU hack failed");
-		return false;
+		return PenjinErrors::PENJIN_ERROR;
 	}
 	else
 	{
 		printf("MMU hack loaded");
 		close(mmufd);
-		return true;
+		return PenjinErrors::PENJIN_OK;
 	}
-	return false;
+	return PenjinErrors::PENJIN_ERROR;
 }
 
-void MMUHack::closeHack()
+void MMUHack::deInit()
 {
 	system("/sbin/rmmod mmuhack");
 }
