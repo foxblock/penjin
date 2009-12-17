@@ -31,7 +31,7 @@ MyGame::MyGame(CRstring appName, CRint xRes, CRint yRes, CRbool fullScreen)
 
 MyGame::~MyGame()
 {
-    TTF_Quit();
+    TextClass::deInit();
 	//Mix_CloseAudio();							// sutdown SDL_mixer
 	if(state)
 	{
@@ -43,15 +43,6 @@ MyGame::~MyGame()
         delete input;
         input = NULL;
 	}
-	#ifdef PLATFORM_GP2X
-		MMUHack hack;
-		hack.closeHack();
-		if(loadMenu)	//	Quit to GP2X menu if required to do so by commandline.
-		{
-			chdir("/usr/gp2x");
-			execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);
-		}
-	#endif
 }
 
 PENJIN_ERRORS MyGame::init()
@@ -113,7 +104,6 @@ PENJIN_ERRORS MyGame::init()
 
 	SDL_JoystickEventState(SDL_ENABLE);
 
-	TTF_Init();
 	//Sound().init();
 	setInitialState(STATE_TITLE);
 	gameTimer.start();
@@ -133,7 +123,7 @@ PENJIN_ERRORS MyGame::init()
             GFX::init2DRendering(xRes,yRes);
         #endif
 	#endif
-	Text().initialise();
+	TextClass::init();
 	return PENJIN_OK;
 }
 

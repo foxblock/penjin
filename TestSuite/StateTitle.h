@@ -4,7 +4,7 @@
 #include "PenjinStates.h"
 
 #include "Menu.h"
-
+#include "GFX.h"
 class StateTitle : public BaseState
 {
     public:
