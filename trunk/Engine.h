@@ -61,7 +61,7 @@ class Engine
         #if defined(PENJIN_SDL) || defined(PENJIN_GL)
             SDL_Surface* screen;
 		#endif
-		#ifdef PENJIN_ASCII
+		#ifdef PENJIN_CACA
             cucul_canvas_t *canvas;
             caca_display_t *display;
 		#endif

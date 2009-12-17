@@ -8,9 +8,11 @@
     #include <SDL/SDL.h>
 #elif PENJIN_GL
     #include <SDL/SDL_opengl.h>
-#elif PENJIN_ASCII
+#elif PENJIN_CACA
     #include <cucul.h>
     #include <caca.h>
+#elif PENJIN_ASCII
+    #include <ncurses.h>
 #endif
 
 #include "version.h"    //  Application version info

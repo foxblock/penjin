@@ -7,7 +7,7 @@ Sound::Sound()
 	loops = 0;
 }
 
-void Sound::init()
+void SoundClass::init()
 {
 	#ifdef PLATFORM_GP2X
 		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 128);			// Initialize SDL_mixer for GP2X, buffer is set lower than PC
@@ -20,7 +20,7 @@ void Sound::init()
 	#endif
 }
 
-void Sound::shutdown()
+void SoundClass::deInit()
 {
 	Mix_CloseAudio();																// Close SDL_Mixer Audio
 }

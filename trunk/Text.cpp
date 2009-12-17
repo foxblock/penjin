@@ -153,8 +153,6 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
         // make a guess to dimensions using the Dummy char
         Vector2di guess;
         TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
-        if(position.x + guess.x >= clipBoundary.w)
-            newLine();
         if(alignment != LEFT_JUSTIFIED)
         {
             align(guess);
@@ -179,6 +177,23 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             {
                 //  use dummy for spacing
                 position.x+=glyphs[fontSize-1][0]->getWidth();
+                // we get a substring that is from here to the end of the string.
+                if(i+1<text.size())
+                {
+                    string subString = text.substr(i+1);
+                    // we search this substring for the next space
+                    uint x = 0;
+                    for(x = 0; x<subString.size();++x)
+                    {
+                        if(subString[x] == ' ')
+                            break;
+                    }
+                    subString = subString.substr(0,x);
+                    TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
+                }
+
+                if(position.x + guess.x >= clipBoundary.w)
+                    newLine();
                 continue;
             }
             //  check for tab

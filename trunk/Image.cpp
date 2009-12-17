@@ -543,7 +543,7 @@ uint Image::getWidth()const
         return textures.front().getWidth();
     #endif
 }
-
+#ifdef PENJIN_SDL
 void Image::convertToHW()
 {
     for(int i = images.size()-1; i>= 0; --i)
@@ -553,3 +553,4 @@ void Image::convertToHW()
         SDL_FreeSurface(temp);
     }
 }
+#endif

@@ -54,9 +54,11 @@ Engine::~Engine()
         delete input;
         input = NULL;
 	}
-	#ifdef PENJIN_ASCII
+	#ifdef PENJIN_CACA
         caca_free_display(display);
         cucul_free_canvas(canvas);
+    #elif PENJIN_ASCII
+        endwin();
 	#endif
 }
 
@@ -155,9 +157,11 @@ PENJIN_ERRORS Engine::init()
 	{
 		return PENJIN_SDL_VIDEO_QUERY_FAILED;
     }
-#elif PENJIN_ASCII
+#elif PENJIN_CACA
     canvas = cucul_create_canvas(xRes, yRes);
     display = caca_create_display(canvas);
+#elif PENJIN_ASCII
+    initscr();
 #endif
 #ifdef PENJIN_GL
         //Setup OpenGL window attributes
@@ -198,7 +202,7 @@ PENJIN_ERRORS Engine::init()
         #if defined(PENJIN_SDL) || defined(PENJIN_GL)
             SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str(), NULL);
         #endif
-        #ifdef PENJIN_ASCII
+        #ifdef PENJIN_CACA
             caca_set_display_title(display, (appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str());
         #endif
     #endif
