@@ -91,6 +91,7 @@ class Text
             Vector3df getStartPosition()const{return startPos;}
             Vector3df getPosition()const{return position;}
             Vector3df getDimensions()const{return dimensions;}
+            Vector3df getDimensions(CRstring str);
         #endif
         int getWidth()const{return dimensions.x;}
         int getHeight()const{return dimensions.y;}

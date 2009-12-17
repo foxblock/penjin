@@ -9,12 +9,17 @@
 using namespace PenjinErrors;
 using namespace std;
 
+namespace SoundClass
+{
+    void init();
+    void deInit();
+}
+
 class Sound
 {
     public:
         Sound();
         ~Sound();
-        void init();
 
         PENJIN_ERRORS loadSound(CRstring soundName);
         void setLoops(CRint loops){this->loops = loops;}
@@ -32,7 +37,6 @@ class Sound
         void stop();
         void stopAll();
 
-        void shutdown();
         void freeAll();
     private:
         Mix_Chunk *sound;

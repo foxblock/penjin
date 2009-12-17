@@ -22,7 +22,7 @@ void GFX::forceBlit()
         SDL_GL_SwapBuffers();
     #elif PENJIN_SDL
         SDL_Flip(screen);
-    #elif PENJIN_ASCII
+    #elif PENJIN_CACA
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
     #endif
