@@ -67,6 +67,7 @@ class AchievementSystem
 
         // display and layout functions
         void setOffset(int newX, int newY) {offsetX = newX; offsetY = newY;};
+        void setSpacing(int newS) {spacing = newS;};
         void setPopupPosition(PopupPos pos);
         void setPopupFadeTime(int newFade) {fadeTime = newFade;};
         void setPopupShowTime(int newShow) {showTime = newShow;};
@@ -94,6 +95,7 @@ class AchievementSystem
 
         int offsetX;
         int offsetY;
+        int spacing;
         int popupX;
         int popupY;
         int fadeTime;
