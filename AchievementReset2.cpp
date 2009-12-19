@@ -7,6 +7,7 @@
 AchievementReset2::AchievementReset2() : Achievement()
 {
     type = atRESET;
+    showProgress = false;
 }
 
 AchievementReset2::~AchievementReset2()

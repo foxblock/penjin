@@ -7,6 +7,7 @@
 AchievementTime::AchievementTime() : Achievement()
 {
     type = atTIME;
+    showProgress = false;
 }
 
 AchievementTime::~AchievementTime()
