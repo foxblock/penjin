@@ -15,10 +15,12 @@ Achievement::Achievement()
     type = atGENERAL;
     counter.setLimit(0);
 
-    text.loadFont("font/atrox.ttf",16);
+    showProgress = true;
+    text.loadFont("font/modernaBold.ttf");
     //text.setRenderMode(GlyphClass::BOXED);
-    text.setBgColour(DARK_GREY);
+    //text.setBgColour(DARK_GREY);
     text.setRelativity(true);
+    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
 }
 
 Achievement::~Achievement()
@@ -82,43 +84,45 @@ void Achievement::addEventSpecial(CRstring name, const vector<SpecialProperty>& 
     #endif
 }
 
+void Achievement::setPosition(const Vector2di &newPos)
+{
+    position = newPos;
+    bgBox.setPosition(newPos.x,newPos.y);
+    icon.setPosition(newPos.x+5,newPos.y+5);
+}
+
 
 #ifdef PENJIN_SDL
-void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
+void Achievement::render(SDL_Surface* screen)
 {
     // background box
-    bgBox.setPosition(xPos,yPos);
-    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
-    text.setPosition(xPos+80,yPos+5);
-    text.setBoundaries(Vector2di(xPos+80,yPos+5),Vector2di(xPos+ACHIEVEMENT_WIDTH-5,yPos+ACHIEVEMENT_HEIGHT-5));
     if (unlocked)
     {
         bgBox.setColour(Colour(160,160,160));
-        text.setBgColour(Colour(160,160,160));
+        //text.setBgColour(Colour(160,160,160));
     }
     else
     {
         bgBox.setColour(DARK_GREY);
-        text.setBgColour(DARK_GREY);
+        //text.setBgColour(DARK_GREY);
     }
+    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
     bgBox.render(screen);
 
-    // icon
-    icon.setPosition(xPos+5,yPos+5);
-    if (unlocked)
-        icon.setCurrentFrame(1);
-    else
-        icon.setCurrentFrame(0);
-    icon.render(screen);
+    // progress background and text
+    if (not secret || unlocked)
+        renderProgress(screen);
 
     // text
+    text.setBoundaries(Vector2di(position.x+80,position.y+5),Vector2di(position.x+ACHIEVEMENT_WIDTH-5,position.y+ACHIEVEMENT_HEIGHT-5));
+    text.setPosition(position.x+80,position.y+5);
     text.setAlignment(TextClass::LEFT_JUSTIFIED);
-    text.setFontSize(24);
+    text.setFontSize(18);
     text.setColour(40,40,100);
     if (secret && not unlocked)
     {
         text.print(screen,getSecretName()+"\n");
-        text.setFontSize(16);
+        text.setFontSize(12);
         text.setColour(WHITE);
         text.print(screen, getSecretDescription());
     }
@@ -128,20 +132,22 @@ void Achievement::render(SDL_Surface* screen, int xPos, int yPos)
         string temp = descr;
         temp = StringUtility::substrReplace(temp,"%c",StringUtility::intToString(count));
         temp = StringUtility::substrReplace(temp,"%l",StringUtility::intToString(limit));
-        text.setFontSize(16);
+        text.setFontSize(12);
         text.setColour(WHITE);
-        text.print(screen,temp);
-        text.setBoundaries(Vector2di(xPos+80,yPos+54),Vector2di(xPos+ACHIEVEMENT_WIDTH-5,yPos+ACHIEVEMENT_HEIGHT));
-        text.setPosition(xPos+80,yPos+54);
-        text.setAlignment(TextClass::RIGHT_JUSTIFIED);
-        text.setFontSize(24);
-        temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
-        text.print(screen,temp);
+        text.print(screen,temp+"\n");
     }
+
+    // icon
+    if (unlocked)
+        icon.setCurrentFrame(1);
+    else
+        icon.setCurrentFrame(0);
+    icon.render(screen);
 }
 
 #else
-void Achievement::render(int xPos, int yPos)
+
+void Achievement::render()
 {
 
 }
@@ -184,3 +190,32 @@ void Achievement::changeCount(const vector<Event>& changeEvents)
             count += I->count;
     }
 }
+
+#ifdef PENJIN_SDL
+void Achievement::renderProgress(SDL_Surface* screen)
+{
+    if (showProgress)
+    {
+        if (not unlocked)
+        {
+            bgBox.setDimensions(round(ACHIEVEMENT_WIDTH*float(count)/limit),float(ACHIEVEMENT_HEIGHT));
+            bgBox.setColour(Colour(160,160,160));
+            bgBox.render(screen);
+
+        }
+        text.setBoundaries(Vector2di(position.x+80,position.y+56),Vector2di(position.x+ACHIEVEMENT_WIDTH-5,position.y+ACHIEVEMENT_HEIGHT));
+        text.setPosition(position.x+80,position.y+56);
+        text.setAlignment(TextClass::RIGHT_JUSTIFIED);
+        text.setFontSize(18);
+        string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
+        text.print(screen,temp);
+    }
+}
+
+#else
+
+void Achievement::renderProgress()
+{
+
+}
+#endif

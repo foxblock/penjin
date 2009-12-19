@@ -97,17 +97,20 @@ void AchievementSystem::render(SDL_Surface* screen)
         if (diff <= fadeTime)
         {
             // this is: general popup Y position + fade offset - count offset (depending on how many popups are on screen at once)
-            I->a->render(screen,popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->render(screen);
         }
         // show
         else if (diff <= (fadeTime + showTime) - (ACHIEVEMENT_HEIGHT * count))
         {
-            I->a->render(screen,popupX,popupY);
+            I->a->setPosition(popupX,popupY);
+            I->a->render(screen);
         }
         // fade out
         else
         {
-            I->a->render(screen,popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->render(screen);
         }
 
         count++;
@@ -119,7 +122,7 @@ void AchievementSystem::renderList(SDL_Surface* screen, int offset)
     if (offset < 0 || offset >= achievements.size())
     {
         #ifdef DEBUG
-        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset!" << endl;
+        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset (" << offset << ")!" << endl;
         #endif
         return;
     }
@@ -128,7 +131,8 @@ void AchievementSystem::renderList(SDL_Surface* screen, int offset)
     int count = 0;
     for (I = achievements.begin()+offset; I < min(achievements.begin()+offset+getListSize(),achievements.end()); ++I)
     {
-        (**I).render(screen,offsetX,offsetY+((ACHIEVEMENT_HEIGHT+spacing)*count));
+        (**I).setPosition(offsetX,offsetY+((ACHIEVEMENT_HEIGHT+spacing)*count));
+        (**I).render(screen);
         ++count;
     }
 }
@@ -147,17 +151,20 @@ void AchievementSystem::render()
         if (diff <= fadeTime)
         {
             // this is: general popup Y position + fade offset - count offset (depending on how many popups are on screen at once)
-            I->a->render(popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->render();
         }
         // show
         else if (diff <= (fadeTime + showTime) - (ACHIEVEMENT_HEIGHT * count))
         {
-            I->a->render(popupX,popupY);
+            I->a->setPosition(popupX,popupY);
+            I->a->render();
         }
         // fade out
         else
         {
-            I->a->render(popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
+            I->a->render();
         }
 
         count++;

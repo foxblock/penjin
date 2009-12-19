@@ -18,6 +18,7 @@
 #include "PenjinTypes.h"
 #include "CountDown.h"
 
+#include "Vector2di.h"
 #include "Rectangle.h"
 #include "AnimatedSprite.h"
 #include "Text.h"
@@ -71,12 +72,16 @@ class Achievement
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};
         virtual bool getStatus() const {return unlocked;};
+        virtual Vector2di getPosition() const {return position;};
+        virtual void setPosition(CRint newX, CRint newY) {setPosition(Vector2di(newX,newY));};
+        virtual void setPosition(const Vector2di &newPos);
+        virtual void setShowProgress(CRbool newShow) {showProgress = newShow;};
 
         // display and layout
         #ifdef PENJIN_SDL
-        virtual void render(SDL_Surface* screen, int xPos, int yPos);
+        virtual void render(SDL_Surface* screen);
         #else
-        virtual void render(int xPos, int yPos);
+        virtual void render();
         #endif
 
         // compare log with achievement events
@@ -85,15 +90,22 @@ class Achievement
     protected:
         // increase or decrease achievement count
         virtual void changeCount(const vector<Event>& changeEvents);
+        #ifdef PENJIN_SDL
+        virtual void renderProgress(SDL_Surface* screen);
+        #else
+        virtual void renderProgress();
+        #endif
 
         // display
         string name;
         string descr;
         AnimatedSprite icon;
 
+        Vector2di position;
         Text text;
         Rectangle bgBox;
         bool secret;
+        bool showProgress;
 
         // data
         vector<Event> events;

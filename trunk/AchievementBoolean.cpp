@@ -7,6 +7,7 @@
 AchievementBoolean::AchievementBoolean() : Achievement()
 {
     type = atBOOLEAN;
+    showProgress = false;
 }
 
 AchievementBoolean::~AchievementBoolean()
