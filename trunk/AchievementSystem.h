@@ -10,17 +10,18 @@
 ///------------------------------
 
 
-#define ACHIEVEMENT_HEIGHT 80
-#define ACHIEVEMENT_WIDTH 300
+#define DEFAULT_ACHIEVEMENT_HEIGHT 74
+#define DEFAULT_ACHIEVEMENT_WIDTH 300
 
 #include "Achievement.h"
 #include "AchievementBoolean.h"
 #include "AchievementCount.h"
 #include "AchievementTime.h"
 #include "AchievementReset.h"
-#include "AchievementReset2.h"
+#include "AchievementList.h"
 #include "Text.h"
 #include "Timer.h"
+#include "Vector2di.h"
 
 #include "TextDoc.h"
 #include "Encryption.h"
@@ -66,20 +67,28 @@ class AchievementSystem
         void logEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1);
 
         // display and layout functions
-        void setOffset(int newX, int newY) {offsetX = newX; offsetY = newY;};
+        void setOffset(CRint newX, CRint newY) {setOffset(Vector2di(newX,newY));};
+        void setOffset(const Vector2di& newOffset) {offset = newOffset;};
+        Vector2di getAchievementSize() const {return achievementSize;};
+        void setAchievementSize(CRint newW, CRint newH) {setAchievementSize(Vector2di(newW,newH));};
+        void setAchievementSize(const Vector2di& newSize) {achievementSize = newSize;};
+        void setPopupSize(CRint newW, CRint newH) {setPopupSize(Vector2di(newW,newH));};
+        void setPopupSize(const Vector2di& newSize) {popupSize = newSize;};
         void setSpacing(int newS) {spacing = newS;};
         void setPopupPosition(PopupPos pos);
-        void setPopupFadeTime(int newFade) {fadeTime = newFade;};
-        void setPopupShowTime(int newShow) {showTime = newShow;};
+        void setPopupFadeTime(CRint newFade) {fadeTime = newFade;};
+        void setPopupShowTime(CRint newShow) {showTime = newShow;};
 
         // general functions
         int achievementCount() const {return achievements.size();};
+        int unlockedCount() const;
         int getListSize() const;
         #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);
-        void renderList(SDL_Surface* screen, int offset);
+        void renderList(SDL_Surface* screen, int numOffset);
         #else
         void render();
+        void renderList(int numOffset)
         #endif
         void update();
 
@@ -93,11 +102,11 @@ class AchievementSystem
         Encryption crypt;
         TextDoc doc;
 
-        int offsetX;
-        int offsetY;
+        Vector2di offset;
+        Vector2di achievementSize;
+        Vector2di popupSize;
         int spacing;
-        int popupX;
-        int popupY;
+        Vector2di popup;
         int fadeTime;
         int showTime;
         Timer popupTimer;

@@ -9,8 +9,9 @@
 /// You could use this class, but it's better to create a child class and change at least the changeCount function
 ///------------------------------
 
-#define ACHIEVEMENT_HEIGHT 80
-#define ACHIEVEMENT_WIDTH 300
+#define DEFAULT_HEIGHT 74
+#define DEFAULT_WIDTH 300
+#define BORDER 5
 
 #include <vector>
 #include <string>
@@ -69,12 +70,16 @@ class Achievement
         virtual void setDescription(CRstring newDescr) {if (newDescr.size() > 0) descr = newDescr;};
         virtual const AnimatedSprite* getIcon() const {return &icon;};
         virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1);};
+
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};
         virtual bool getStatus() const {return unlocked;};
         virtual Vector2di getPosition() const {return position;};
         virtual void setPosition(CRint newX, CRint newY) {setPosition(Vector2di(newX,newY));};
-        virtual void setPosition(const Vector2di &newPos);
+        virtual void setPosition(const Vector2di& newPos);
+        virtual Vector2di getSize() const {return size;};
+        virtual void setSize(CRint newW, CRint newH) {setSize(Vector2di(newW,newH));};
+        virtual void setSize(const Vector2di& newSize) {size = newSize;};
         virtual void setShowProgress(CRbool newShow) {showProgress = newShow;};
 
         // display and layout
@@ -102,6 +107,7 @@ class Achievement
         AnimatedSprite icon;
 
         Vector2di position;
+        Vector2di size;
         Text text;
         Rectangle bgBox;
         bool secret;

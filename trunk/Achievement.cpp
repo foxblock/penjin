@@ -14,13 +14,14 @@ Achievement::Achievement()
     descr = "Achievement Description";
     type = atGENERAL;
     counter.setLimit(0);
+    position = Vector2di(0,0);
+    size = Vector2di(DEFAULT_WIDTH,DEFAULT_HEIGHT);
 
     showProgress = true;
     text.loadFont("font/modernaBold.ttf");
     //text.setRenderMode(GlyphClass::BOXED);
     //text.setBgColour(DARK_GREY);
     text.setRelativity(true);
-    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
 }
 
 Achievement::~Achievement()
@@ -106,7 +107,7 @@ void Achievement::render(SDL_Surface* screen)
         bgBox.setColour(DARK_GREY);
         //text.setBgColour(DARK_GREY);
     }
-    bgBox.setDimensions(ACHIEVEMENT_WIDTH,ACHIEVEMENT_HEIGHT);
+    bgBox.setDimensions(size.x,size.y);
     bgBox.render(screen);
 
     // progress background and text
@@ -114,8 +115,8 @@ void Achievement::render(SDL_Surface* screen)
         renderProgress(screen);
 
     // text
-    text.setBoundaries(Vector2di(position.x+80,position.y+5),Vector2di(position.x+ACHIEVEMENT_WIDTH-5,position.y+ACHIEVEMENT_HEIGHT-5));
-    text.setPosition(position.x+80,position.y+5);
+    text.setBoundaries(Vector2di(position.x+size.y,position.y+BORDER),Vector2di(position.x+size.x-5,position.y+size.y-BORDER));
+    text.setPosition(position.x+size.y,position.y+BORDER);
     text.setAlignment(TextClass::LEFT_JUSTIFIED);
     text.setFontSize(18);
     text.setColour(40,40,100);
@@ -198,13 +199,13 @@ void Achievement::renderProgress(SDL_Surface* screen)
     {
         if (not unlocked)
         {
-            bgBox.setDimensions(round(ACHIEVEMENT_WIDTH*float(count)/limit),float(ACHIEVEMENT_HEIGHT));
+            bgBox.setDimensions(round(size.x*float(count)/limit),size.y);
             bgBox.setColour(Colour(160,160,160));
             bgBox.render(screen);
 
         }
-        text.setBoundaries(Vector2di(position.x+80,position.y+56),Vector2di(position.x+ACHIEVEMENT_WIDTH-5,position.y+ACHIEVEMENT_HEIGHT));
-        text.setPosition(position.x+80,position.y+56);
+        text.setBoundaries(Vector2di(position.x+size.y,position.y+round(0.7*size.y)),Vector2di(position.x+size.x-BORDER,position.y+size.y));
+        text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
         text.setAlignment(TextClass::RIGHT_JUSTIFIED);
         text.setFontSize(18);
         string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);

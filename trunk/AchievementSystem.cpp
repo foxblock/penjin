@@ -8,11 +8,11 @@ AchievementSystem* AchievementSystem::m_self = NULL;
 
 AchievementSystem::AchievementSystem()
 {
-    offsetX = 0;
-    offsetY = 0;
+    offset = Vector2di(0,0);
+    achievementSize = Vector2di(DEFAULT_ACHIEVEMENT_WIDTH,DEFAULT_ACHIEVEMENT_HEIGHT);
+    popupSize = achievementSize;
     spacing = 0;
-    popupX = 0;
-    popupY = 0;
+    popup = Vector2di(0,0);
     fadeTime = 1000;
     showTime = 3000;
     popupTimer.start();
@@ -65,22 +65,34 @@ void AchievementSystem::setPopupPosition(PopupPos pos)
 {
     SDL_Surface* screen = SDL_GetVideoSurface();
     if (pos == ppTOPLEFT || pos == ppTOPCENTER || pos == ppTOPRIGHT)
-        popupY = 0;
+        popup.y = 0;
     else
-        popupY = screen->h - ACHIEVEMENT_HEIGHT;
+        popup.y = screen->h - achievementSize.y;
 
     if (pos == ppTOPLEFT || pos == ppBOTTOMLEFT)
-        popupX = 0;
+        popup.x = 0;
     else if (pos == ppTOPCENTER || pos == ppBOTTOMCENTER)
-        popupX = round((screen->w - ACHIEVEMENT_WIDTH) / 2);
+        popup.x = round((screen->w - achievementSize.x) / 2);
     else
-        popupX = screen->w - ACHIEVEMENT_WIDTH;
+        popup.x = screen->w - achievementSize.x;
+}
+
+int AchievementSystem::unlockedCount() const
+{
+    vector<Achievement*>::const_iterator I;
+    int count = 0;
+    for (I = achievements.begin(); I < achievements.end(); ++I)
+    {
+        if ((**I).getStatus())
+            ++count;
+    }
+    return count;
 }
 
 int AchievementSystem::getListSize() const
 {
     SDL_Surface* screen = SDL_GetVideoSurface();
-    return floor(screen->h / (ACHIEVEMENT_HEIGHT+spacing));
+    return floor((screen->h - offset.y) / (achievementSize.y+spacing));
 }
 
 #ifdef PENJIN_SDL
@@ -94,44 +106,37 @@ void AchievementSystem::render(SDL_Surface* screen)
         int diff = popupTimer.getScaledTicks() - I->time;
 
         // fade in
+        I->a->setSize(popupSize);
+
         if (diff <= fadeTime)
-        {
             // this is: general popup Y position + fade offset - count offset (depending on how many popups are on screen at once)
-            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
-            I->a->render(screen);
-        }
+            I->a->setPosition(popup.x, popup.y + (achievementSize.y * (fadeTime - diff) / fadeTime) - (achievementSize.y * count));
         // show
-        else if (diff <= (fadeTime + showTime) - (ACHIEVEMENT_HEIGHT * count))
-        {
-            I->a->setPosition(popupX,popupY);
-            I->a->render(screen);
-        }
+        else if (diff <= (fadeTime + showTime) - (achievementSize.y * count))
+            I->a->setPosition(popup.x,popup.y);
         // fade out
         else
-        {
-            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
-            I->a->render(screen);
-        }
+            I->a->setPosition(popup.x, popup.y + (achievementSize.y * (diff - (fadeTime + showTime)) / fadeTime) - (achievementSize.y * count));
 
+        I->a->render(screen);
         count++;
     }
 }
 
-void AchievementSystem::renderList(SDL_Surface* screen, int offset)
+void AchievementSystem::renderList(SDL_Surface* screen, int numOffset)
 {
-    if (offset < 0 || offset >= achievements.size())
-    {
+    if (numOffset < 0 || numOffset >= achievements.size())    {
         #ifdef DEBUG
-        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset (" << offset << ")!" << endl;
+        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset (" << numOffset << ")!" << endl;
         #endif
         return;
     }
 
     vector<Achievement*>::iterator I;
     int count = 0;
-    for (I = achievements.begin()+offset; I < min(achievements.begin()+offset+getListSize(),achievements.end()); ++I)
+    for (I = achievements.begin()+numOffset; I < min(achievements.begin()+numOffset+getListSize(),achievements.end()); ++I)
     {
-        (**I).setPosition(offsetX,offsetY+((ACHIEVEMENT_HEIGHT+spacing)*count));
+        (**I).setPosition(offset.x,offset.y+((achievementSize.y+spacing)*count));
         (**I).render(screen);
         ++count;
     }
@@ -148,26 +153,40 @@ void AchievementSystem::render()
         int diff = popupTimer.getScaledTicks() - I->time;
 
         // fade in
+        I->a->setSize(achievementSize);
+
         if (diff <= fadeTime)
-        {
             // this is: general popup Y position + fade offset - count offset (depending on how many popups are on screen at once)
-            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (fadeTime - diff) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
-            I->a->render();
-        }
+            I->a->setPosition(popup.x, popup.y + (achievementSize.y * (fadeTime - diff) / fadeTime) - (achievementSize.y * count));
         // show
-        else if (diff <= (fadeTime + showTime) - (ACHIEVEMENT_HEIGHT * count))
-        {
-            I->a->setPosition(popupX,popupY);
-            I->a->render();
-        }
+        else if (diff <= (fadeTime + showTime) - (achievementSize.y * count))
+            I->a->setPosition(popup.x,popup.y);
         // fade out
         else
-        {
-            I->a->setPosition(popupX, popupY + (ACHIEVEMENT_HEIGHT * (diff - (fadeTime + showTime)) / fadeTime) - (ACHIEVEMENT_HEIGHT * count));
-            I->a->render();
-        }
+            I->a->setPosition(popup.x, popup.y + (achievementSize.y * (diff - (fadeTime + showTime)) / fadeTime) - (achievementSize.y * count));
 
+        I->a->render();
         count++;
+    }
+}
+
+void AchievementSystem::renderList(int numOffset)
+{
+    if (numOffset < 0 || numOffset >= achievements.size())    {
+        #ifdef DEBUG
+        cout << "[Achievements] Error: Trying to render list with out-of-bounds offset (" << numOffset << ")!" << endl;
+        #endif
+        return;
+    }
+
+    vector<Achievement*>::iterator I;
+    int count = 0;
+    for (I = achievements.begin()+numOffset; I < min(achievements.begin()+numOffset+getListSize(),achievements.end()); ++I)
+    {
+        (**I).setSize(achievementSize);
+        (**I).setPosition(offset.x,offset.y+((achievementSize.y+spacing)*count));
+        (**I).render();
+        ++count;
     }
 }
 #endif
