@@ -42,11 +42,15 @@ void AchievementList::addEventSpecial(CRstring name, const vector<SpecialPropert
 #ifdef PENJIN_SDL
 void AchievementList::renderProgress(SDL_Surface* screen)
 {
+    int useCount = count;
+    if (limit == 1)
+        useCount = doneCount;
+
     if (showProgress)
     {
         if (not unlocked)
         {
-            bgBox.setDimensions(round(size.x*float(doneCount)/limit),size.y);
+            bgBox.setDimensions(round(size.x*float(useCount)/limit),size.y);
             bgBox.setColour(Colour(160,160,160));
             bgBox.render(screen);
 
@@ -55,18 +59,22 @@ void AchievementList::renderProgress(SDL_Surface* screen)
         text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
         text.setAlignment(TextClass::RIGHT_JUSTIFIED);
         text.setFontSize(18);
-        string temp = StringUtility::intToString(min(doneCount,limit))+"/"+StringUtility::intToString(limit);
+        string temp = StringUtility::intToString(min(useCount,limit))+"/"+StringUtility::intToString(limit);
         text.print(screen,temp);
     }
 }
 #else
 void AchievementList::renderProgress()
 {
+    int useCount = count;
+    if (limit == 1)
+        useCount = doneCount;
+
     if (showProgress)
     {
         if (not unlocked)
         {
-            bgBox.setDimensions(round(size.x*float(doneCount)/limit),size.y);
+            bgBox.setDimensions(round(size.x*float(useCount)/limit),size.y);
             bgBox.setColour(Colour(160,160,160));
             bgBox.render();
 
@@ -75,7 +83,7 @@ void AchievementList::renderProgress()
         text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
         text.setAlignment(TextClass::RIGHT_JUSTIFIED);
         text.setFontSize(18);
-        string temp = StringUtility::intToString(min(doneCount,limit))+"/"+StringUtility::intToString(limit);
+        string temp = StringUtility::intToString(min(useCount,limit))+"/"+StringUtility::intToString(limit);
         text.print(temp);
     }
 }

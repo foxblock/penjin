@@ -55,7 +55,7 @@ class Achievement
 
         // getters and setters
         virtual int getLimit() const {return limit;};
-        virtual void setLimit(CRint value) {limit = value;};
+        virtual void setLimit(CRint value) {limit = value; if (limit > 1) showProgress = true;};
         virtual int getCount() const {return count;};
         virtual void setCount(CRint c){count = c; if (count >= limit) unlocked = true;};
         virtual int getTimeLimit() const {return counter.getLimit();};
@@ -69,7 +69,7 @@ class Achievement
         virtual string getDescription() const {return descr;};
         virtual void setDescription(CRstring newDescr) {if (newDescr.size() > 0) descr = newDescr;};
         virtual const AnimatedSprite* getIcon() const {return &icon;};
-        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1);};
+        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1); icon.setTransparentColour(MAGENTA);};
 
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};
