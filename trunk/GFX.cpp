@@ -1,13 +1,46 @@
 #include "GFX.h"
-
 namespace GFX
 {
     Colour clear(BLACK);
-#ifdef PENJIN_SDL
-    SDL_Surface* screen;
+	#ifdef PLATFORM_PC
+        uint xRes = 1024;
+        uint yRes = 768;
+        bool fullscreen = false;
+    #elif PLATFORM_WII
+        uint xRes = 640;
+        uint yRes = 480;
+        bool fullscreen = true;
+    #elif PLATFORM_PANDORA
+        uint xRes = 800;
+        uint yRes = 480;
+        bool fullscreen = true;
+    #elif PLATFORM_GP2X
+        uint xRes = 320;
+        uint yRes = 240;
+        bool fullscreen = true;
+        bool useHack = false;
+    #else // Penjin 2D project
+        uint xRes = 1024;
+        uint yRes = 768;
+        bool fullscreen = false;
+    #endif
+#if defined (PENJIN_SDL) || defined(PENJIN_GL)
+    SDL_Surface* screen = SDL_GetVideoSurface();
 #elif PENJIN_ASCII
 
 #endif
+}
+
+#ifdef PLATFORM_GP2X
+void GFX::useMMUHack(CRbool h)
+{
+    useHack = h;
+}
+#endif
+
+void GFX::setFullscreen(CRbool fs)
+{
+    fullscreen = fs;
 }
 
 Colour GFX::getClearColour()
@@ -26,10 +59,107 @@ void GFX::forceBlit()
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
     #endif
+    #ifdef PLATFORM_GP2X
+        if(useHack)
+            MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
+    #endif
 }
 
+void GFX::setResolution(uint x,uint y)
+{
+    xRes = x;
+    yRes = y;
+}
+
+void GFX::setResolution()
+{
+    // set an automatic(best fit?) resolution.
+    setResolution(0,0);
+}
+
+PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
+{
+    #ifdef PLATFORM_GP2X
+    if(xRes == 0)
+        xRes = 320;
+    if(yRes == 0)
+        yRes = 240;
+    #endif
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+	const SDL_VideoInfo* info = NULL;	//Information about the current video settings
+    int flags = 0;						//Flags for SDL_SetVideoMode
+    //Get some video information
+    info = SDL_GetVideoInfo();
+    if(!info)
+	{
+		return PENJIN_SDL_VIDEO_QUERY_FAILED;
+    }
+#elif PENJIN_CACA
+    canvas = cucul_create_canvas(xRes, yRes);
+    display = caca_create_display(canvas);
+#elif PENJIN_ASCII
+    initscr();
+#endif
+#ifdef PENJIN_GL
+        //Setup OpenGL window attributes
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    #ifdef __linux__
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    #else
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 16);
+    #endif
+        flags = SDL_OPENGL;
+        SDL_Surface* screen = NULL;
+#elif PENJIN_SDL
+    flags = SDL_HWSURFACE;
+#endif
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+	if(fullscreen)
+		flags = flags | SDL_FULLSCREEN;
+    #ifdef PLATFORM_GP2X
+        screen = SDL_SetVideoMode(xRes, yRes, 16, flags);
+    #else
+        screen = SDL_SetVideoMode(xRes, yRes, info->vfmt->BitsPerPixel, flags);
+	#endif
+	if(screen  == NULL )
+	{
+		return PENJIN_SDL_SETVIDEOMODE_FAILED;
+    }
+    else
+    {
+        xRes = screen->w;
+        yRes = screen->h;
+    }
+#endif
+#ifdef PENJIN3D
+    init3DRendering();
+#else
+    #ifdef PENJIN_GL
+        init2DRendering();
+    #endif
+#endif
+    #ifdef PLATFORM_GP2X
+        PENJIN_ERRORS e = MMUHack::init();
+        if(e == PENJIN_OK)
+            GFX::useMMUHack(true);
+    #endif
+    return PENJIN_OK;
+}
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+SDL_Surface* GFX::getVideoSurface(){return screen;}
+void GFX::showCursor(CRbool show)
+{
+    if(show)
+        SDL_ShowCursor(SDL_ENABLE);
+    else
+        SDL_ShowCursor(SDL_DISABLE);
+}
+#endif
 #ifdef PENJIN_SDL
-    void GFX::initVideoSurface(SDL_Surface* scr){screen = scr;}
     void GFX::setClearColour(const Colour& c){clear = c;}
     void GFX::borderColouring(CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour){borderColouring(screen,x,y,w,h,thick,baseColour);}
     void GFX::borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour)
@@ -131,8 +261,7 @@ void GFX::forceBlit()
     {
         // Check and lock the surface if necessary.
         if (SDL_MUSTLOCK(scr))
-            if (SDL_LockSurface(scr) < 0 )
-                return;
+            SDL_LockSurface(scr);
     }
 
     void GFX::lockSurface(){lockSurface(screen);}
@@ -140,7 +269,7 @@ void GFX::forceBlit()
 
     void GFX::unlockSurface(SDL_Surface* scr)
     {
-        // Check and unlock the durface if necessary
+        // Check and unlock the surface if necessary
         if ( SDL_MUSTLOCK(scr) )
             SDL_UnlockSurface(scr);
     }
@@ -186,7 +315,7 @@ void GFX::forceBlit()
 
     }
     void GFX::setClearColour(const Colour& c){glClearColor(c.red,c.green,c.blue,c.alpha);}
-    void GFX::init2DRendering(CRint x, CRint y)
+    void GFX::init2DRendering()
     {
         // Setup OpenGL
         //glDisable(GL_DEPTH_TEST);
@@ -194,12 +323,12 @@ void GFX::forceBlit()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         //Setup viewport
-        glViewport(0, 0, x, y);
+        glViewport(0, 0, xRes, yRes);
 
         //Setup world view
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, x, y, 0, 0, 1);
+        glOrtho(0, xRes, yRes, 0, 0, 1);
 
         //Setup texture matrix
         glMatrixMode(GL_TEXTURE);
@@ -217,7 +346,7 @@ void GFX::forceBlit()
     #endif
     );}
     #ifdef PENJIN3D
-        void GFX::init3DRendering(CRint x, CRint y)
+        void GFX::init3DRendering()
         {
             glShadeModel(GL_SMOOTH);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -225,7 +354,7 @@ void GFX::forceBlit()
             //Setup world view
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            gluPerspective(60.0f, (float)x/(float)y, 1.0f, x);
+            gluPerspective(60.0f, (float)xRes/(float)yRes, 1.0f, xRes);
             //Setup model view
             glMatrixMode( GL_MODELVIEW );
             glColor3f(1.0f,1.0f,1.0f);
@@ -235,7 +364,7 @@ void GFX::forceBlit()
 
 void GFX::showVideoInfo()
 {
-    SDL_Surface* screen = SDL_GetVideoSurface();
+    /*SDL_Surface* screen = SDL_GetVideoSurface();*/
     cout << "Screen Info" << endl;
     cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
     #ifdef PENJIN_GL
@@ -287,3 +416,14 @@ Colour GFX::getPixel(SDL_Surface* src, CRint x, CRint y)
     }
     return c;
 }
+
+uint GFX::getXResolution()
+{
+    return xRes;
+}
+
+uint GFX::getYResolution()
+{
+    return yRes;
+}
+

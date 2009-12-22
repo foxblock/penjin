@@ -21,6 +21,7 @@ public:
         PENJIN_ERRORS setTransparentColour(const Colour& c){return img.setTransparentColour(c);}
         void setBG(CRuint bg);	                //	Assigns a background ID
         uint getBG()const;			            //	Returns an assigned background ID
+        void toGreyScale();
         void clear(){img.clear();}              //  Clear out all images
         size_t size()const{return img.size();}  //  The number of stored backgrounds.
     private:

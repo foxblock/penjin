@@ -16,6 +16,7 @@ SimpleJoy::~SimpleJoy()
 
 SimpleJoy::SimpleJoy()
 {
+    SDL_JoystickEventState(SDL_ENABLE);
     mapLoaded = false;
    /* Check and open joystick device */
 	if (SDL_NumJoysticks() > 0) {

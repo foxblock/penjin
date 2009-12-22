@@ -4,44 +4,21 @@ Engine::Engine()
 {
 	///	Default constructor
 	appName = "Default Penjin Project";
-
-	#ifdef PLATFORM_PC
-        xRes = 1024;
-        yRes = 768;
-        fullScreen = false;
-    #elif PLATFORM_WII
-        xRes = 640;
-        yRes = 480;
-        fullScreen = true;
-    #elif PLATFORM_PANDORA
-        xRes = 800;
-        yRes = 480;
-        fullScreen = true;
-    #elif PLATFORM_GP2X
-        xRes = 320;
-        yRes = 240;
-        fullScreen = true;
+    #if PLATFORM_GP2X
         loadMenu = false;
-        MMUHack::init();
-    #else // Penjin 2D project
-        xRes = 1024;
-        yRes = 768;
-        fullScreen = false;
     #endif
 
 	gameTimer.setMode(SIXTY_FRAMES);
     input = NULL;
     now = SDL_GetTicks();
-}
-
-Engine::Engine(CRstring appName,CRint xRes,CRint yRes,CRbool fullScreen)
-{
-	this->appName = appName;
-	this->xRes = xRes;
-	this->yRes = yRes;
-	this->fullScreen = fullScreen;
-	gameTimer.setMode(SIXTY_FRAMES);
-	input = NULL;
+    state = NULL;
+	state = new BaseState;
+	setInitialState(STATE_BASE);
+	gameTimer.start();
+	Random::randSeed();
+    input = NULL;
+    input = new SimpleJoy();
+    customControlMap = "NULL";
 }
 
 Engine::~Engine()
@@ -56,6 +33,8 @@ Engine::~Engine()
         delete input;
         input = NULL;
 	}
+	SoundClass::deInit();
+	TextClass::deInit();
 	#ifdef PENJIN_CACA
         caca_free_display(display);
         cucul_free_canvas(canvas);
@@ -91,10 +70,10 @@ PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
 					//	Set Fullscreen
 					case 'F':
 					{
-						fullScreen = true;
+						GFX::setFullscreen(true);
 						break;
 					}
-					//	Set xRes
+/*					//	Set xRes
 					case 'x':
 					case 'X':
 					{
@@ -108,6 +87,7 @@ PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
                         yRes = cStringToInt(argv[arg+1]);
 					    break;
 					}
+*/
 					#ifdef PLATFORM_GP2X
                     case 'M':
                     case 'm':
@@ -153,68 +133,25 @@ void Engine::setVariables()
 
 PENJIN_ERRORS Engine::init()
 {
-    #ifdef PENJIN_GL
-        //	Clear Accumulation buffer to avoid garbage pixels
-        glClear(GL_ACCUM_BUFFER_BIT);
-    #endif
-    state = NULL;
-	state = new BaseState;
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
-	const SDL_VideoInfo* info = NULL;	//Information about the current video settings
-    int flags = 0;						//Flags for SDL_SetVideoMode
+    return GFX::resetScreen();
+}
 
-    //Initialize SDL's video subsystem.
-    if( SDL_Init(SDL_INIT_VIDEO) < 0 )
-	{
-		return PENJIN_SDL_VIDEO_INIT_FAILED;
-    }
-
-    //Get some video information
-    info = SDL_GetVideoInfo();
-    if(!info)
-	{
-		return PENJIN_SDL_VIDEO_QUERY_FAILED;
-    }
-#elif PENJIN_CACA
-    canvas = cucul_create_canvas(xRes, yRes);
-    display = caca_create_display(canvas);
-#elif PENJIN_ASCII
-    initscr();
+PENJIN_ERRORS Engine::penjinInit()
+{
+	GFX::setResolution();
+#if defined (PENJIN_SDL) || defined(PENJIN_GL)
+    //Initialize SDL's subsystems.
+    if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
+		return PENJIN_SDL_SOMETHING_FAILED;
 #endif
-#ifdef PENJIN_GL
-        //Setup OpenGL window attributes
-        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
-        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    #ifdef __linux__
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    #else
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 16);
-    #endif
-        flags = SDL_OPENGL;
-#elif PENJIN_SDL
-    flags = SDL_SWSURFACE;
-#endif
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
-	if(fullScreen)
-		flags = flags | SDL_FULLSCREEN;
-    screen = NULL;
-    screen = SDL_SetVideoMode(xRes, yRes, info->vfmt->BitsPerPixel, flags);
-	if(screen  == NULL )
-	{
-		return PENJIN_SDL_SETVIDEOMODE_FAILED;
-    }
-#endif
-#ifdef PENJIN_SDL
-    GFX::initVideoSurface(SDL_GetVideoSurface());
-#endif
-
+    PENJIN_ERRORS err = init();
+    if(err != PENJIN_OK)
+        return err;
+	#ifdef _DEBUG
+        GFX::showVideoInfo();
+	#endif
     //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
-	SDL_ShowCursor(SDL_DISABLE);
-#endif
+    GFX::showCursor(false);
     //  Can't display window title on a GP2X
     #ifndef PLATFORM_GP2X
         #if defined(PENJIN_SDL) || defined(PENJIN_GL)
@@ -224,14 +161,15 @@ PENJIN_ERRORS Engine::init()
             caca_set_display_title(display, (appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str());
         #endif
     #endif
+    #ifdef PENJIN_GL
+        //	Clear Accumulation buffer to avoid garbage pixels
+        glClear(GL_ACCUM_BUFFER_BIT);
+    #endif
+    if(customControlMap != "NULL")
+        input->loadControlMap(customControlMap);
 
-	setInitialState(STATE_BASE);
-	gameTimer.start();
-
-	#ifdef _DEBUG
-        GFX::showVideoInfo();
-	#endif
-
+    SoundClass::init();
+    TextClass::init();
 	return PENJIN_OK;
 }
 
@@ -266,9 +204,6 @@ bool Engine::stateLoop()
                 state->pauseUpdate();
                 state->pauseScreen();
                 //	Flush the cache on GP2X just before the screen is flipped
-                #ifdef PLATFORM_GP2X
-                    MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
-                #endif
                 GFX::forceBlit();
                 gameTimer.start();
             }
@@ -294,11 +229,7 @@ bool Engine::stateLoop()
 			//  Render objects
             state->render();
             #ifdef USE_ACHIEVEMENTS
-            ACHIEVEMENTS->render(screen);
-            #endif
-
-            #ifdef PLATFORM_GP2X
-                MMUHack::flushCache(screen->pixels, (char*)screen->pixels + (xRes * yRes));
+            ACHIEVEMENTS->render(GFX::getVideoSurface());
             #endif
             GFX::forceBlit();
             #ifdef _DEBUG
@@ -332,7 +263,6 @@ bool Engine::stateLoop()
 		setVariables();
 
 		// Initialise the changed state
-		state->setStateResolution(&xRes, &yRes);
 		state->init();
 		state->setNeedInit(false);  // Set that we have performed the init
 		return true;                  // Continue program execution

@@ -5,7 +5,8 @@
 #include "PenjinStates.h"		//	List all game states in this file
 #include "PenjinTypes.h"		//	All Penjin types listed here.
 #include "StringUtility.h"
-
+#include "Sound.h"
+#include "Text.h"
 #ifdef USE_ACHIEVEMENTS
     #include "AchievementSystem.h"
     #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
@@ -26,10 +27,10 @@ class Engine
 {
 	public:
 		Engine();
-		Engine(CRstring appName,CRint xRes,CRint yRes,CRbool fullScreen);
 		virtual ~Engine();
 
 		virtual PENJIN_ERRORS argHandler(int argc, char** argv);	//	Handle the command line.
+		PENJIN_ERRORS penjinInit();                                 // base init function for Penjin.
 		virtual PENJIN_ERRORS init();								//	Sets up the engine, can return an error.
 		virtual void stateManagement();					//	Setup next state if needed.
 
@@ -41,7 +42,6 @@ class Engine
 
 		//	Functions for engine setup
 		void setAppName(CRstring name){appName = name;}
-		void setScreenResolution(CRuint xRes,CRuint yRes){this->xRes = xRes;this->yRes = yRes;}
 		void setInitialState(CRuint nextState)
 		{
 			if(!state)
@@ -51,18 +51,12 @@ class Engine
 			}
 			state->setNextState(nextState);
 		}
-		void setFullScreen(CRbool fs){this->fullScreen = fs;}	//	true == fullscreen	false == windowed
 
 	protected:
+        string customControlMap;        //  filename for a controlmapping file
 		string appName;					//	The application's name
-		uint xRes;						//	Screen dimensions
-		uint yRes;
-		bool fullScreen;				//	Fullscreen == true, Windowed == false
 		bool paused;
 		BaseState* state;				//	The current game state
-        #if defined(PENJIN_SDL) || defined(PENJIN_GL)
-            SDL_Surface* screen;
-		#endif
 		#ifdef PENJIN_CACA
             cucul_canvas_t *canvas;
             caca_display_t *display;

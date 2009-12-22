@@ -27,4 +27,9 @@ uint Background::getBG()const{return bg;}
 
 void Background::setBG(CRuint bg){this->bg = bg;}
 
+void Background::toGreyScale()
+{
+    img.toGreyScale();
+}
+
 
