@@ -40,9 +40,9 @@ class  BaseState
 		//  These virtual functions will be overridden depending on use
 		#ifdef PENJIN_SDL
             virtual void render(SDL_Surface* screen);
-            virtual void render(){render(screen);}
+            virtual void render(){render(GFX::getVideoSurface());}
             virtual void pauseScreen(SDL_Surface* screen);
-            virtual void pauseScreen(){pauseScreen(screen);}
+            virtual void pauseScreen(){pauseScreen(GFX::getVideoSurface());}
 		#else
             virtual void render();		//	Draw all objects
             virtual void pauseScreen();
@@ -71,12 +71,6 @@ class  BaseState
 		void setNeedInit(CRbool init){needInit = init;}
 		bool getNullifyState()const{return nullify;}
 		void nullifyState(){nullify = true;nextState = STATE_NULL;}
-
-        /// Resolution
-		void setStateResolution(uint* xRes, uint* yRes){this->xRes = xRes;this->yRes = yRes;}
-		uint getStateXResolution()const{return *xRes;}
-		uint getStateYResolution()const{return *yRes;}
-
 		void setSimpleJoy(SimpleJoy* sj){input = sj;}
 
 		//	This is used to pass variables between states!
@@ -89,22 +83,9 @@ class  BaseState
 		uint nextState;
 		bool firstPaused;
         bool isPaused;
-
-		uint* xRes;		//	Points to the engines resolutions
-		uint* yRes;
 		SDL_Event event;
-
-        virtual void keyDown(const SDLKey& key);
-        virtual void keyUp(const SDLKey& key);
-        virtual void joyMotion(const Uint8& axis,const Sint16& value);
-        virtual void joyButtonDown(const Uint8& button);
-        virtual void joyButtonUp(const Uint8& button);
-        virtual void mouseButtonDown(const Uint16& x,const Uint16& y);
-        virtual void mouseButtonUp(const Uint16& x,const Uint16& y);
-        virtual void mouseMotion(const Uint16& x,const Uint16& y);
     #ifdef PENJIN_SDL
         virtual void pauseSymbol(SDL_Surface* screen);
-        SDL_Surface* screen;
     #else
         virtual void pauseSymbol();
     #endif

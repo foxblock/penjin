@@ -7,10 +7,14 @@
 #include "Random.h"
 #include "StringUtility.h"
 #include "Pixel.h"
+#include "ErrorHandler.h"
 #ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
 #elif PENJIN_SDL
     #include <SDL/SDL.h>
+#endif
+#ifdef PLATFORM_GP2X
+    #include "MMUHack.h"
 #endif
 //#include "LUT.h"
 
@@ -19,23 +23,28 @@ namespace GFX
 {
     /// Get display setting info
     void showVideoInfo();
+    void setResolution();    // set an automatic resolution
+    void setResolution(uint xRes,uint yRes);
+    void setFullscreen(CRbool full);
+    PenjinErrors::PENJIN_ERRORS resetScreen();            // Applies the current settings to the screen.
+
+    uint getXResolution();
+    uint getYResolution();
+
     // Force to blit to screen now!
     void forceBlit();
 
-    #if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks */
-        const int RED_MASK =    0x000000FF;
-        const int GREEN_MASK =  0x0000FF00;
-        const int BLUE_MASK =   0x00FF0000;
-        const int ALPHA_MASK =  0xFF000000;
-    #else
-        const int RED_MASK =    0xFF000000;
-        const int GREEN_MASK =  0x00FF0000;
-        const int BLUE_MASK =   0x0000FF00;
-        const int ALPHA_MASK =  0x000000FF;
+    // PLATFORM SPECIFIC FUNCTIONS
+    #ifdef PLATFORM_GP2X
+        void useMMUHack(CRbool useHack);
     #endif
+
     //SPECIAL EFFECTS
+    #if defined(PENJIN_SDL) || defined(PENJIN_GL)
+        SDL_Surface* getVideoSurface();
+        void showCursor(CRbool show);
+    #endif
     #ifdef PENJIN_SDL
-        void initVideoSurface(SDL_Surface* scr);
         void borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour);
         void borderColouring(CRint x, CRint y,CRint w,CRint h,CRint thick,Colour baseColour);
     #else
@@ -76,10 +85,10 @@ namespace GFX
         SDL_Surface* cropSurface(SDL_Surface* in, SDL_Rect* crop);    //  crop a surface
         void clearScreen(SDL_Surface* screen);      //  blank the surface
     #elif PENJIN_GL
-        void init2DRendering(CRint xRes, CRint yRes);   //  Setup a 2D rendering mode.
+        void init2DRendering();   //  Setup a 2D rendering mode.
                                                         //  Also enables blending.
         #ifdef PENJIN3D
-            void init3DRendering(CRint xRes, CRint yRes);                     //  Setup a standard 3D rendering mode
+            void init3DRendering();                     //  Setup a standard 3D rendering mode
         #endif
     #endif
 }

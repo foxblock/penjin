@@ -7,9 +7,6 @@ BaseState::BaseState()
     nullify = false;
     needInit = true;
     nextState = 0;
-    #ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
-    #endif
 }
 
 BaseState::~BaseState()
@@ -113,83 +110,10 @@ void BaseState::init()
 
 void BaseState::userInput()
 {
-    // Perform input handling here - This template should be suitable for most needs.
-    /// Only override if you need to do some strange stuff! :)
-    //	run through all events
-    while(SDL_PollEvent(&event))
-	{
-        switch(event.type)
-		{
-		case SDL_KEYDOWN:
-			keyDown(event.key.keysym.sym);
-		break;
-		case SDL_KEYUP:
-			keyUp(event.key.keysym.sym);
-		break;
-		case SDL_JOYAXISMOTION:
-			joyMotion(event.jaxis.axis, event.jaxis.value);
-		break;
-		case SDL_JOYBUTTONDOWN:
-			joyButtonDown(event.jbutton.button);
-		break;
-		case SDL_JOYBUTTONUP:
-			joyButtonUp(event.jbutton.button);
-		break;
-		case SDL_MOUSEBUTTONDOWN:
-			mouseButtonDown(event.button.x, event.button.y);
-		break;
-		case SDL_MOUSEBUTTONUP:
-            mouseButtonUp(event.button.x, event.button.y);
-		case SDL_MOUSEMOTION:
-            mouseMotion(event.motion.xrel, event.motion.yrel);
-        break;
-        case SDL_QUIT:
-			nullifyState();
-        break;
-        }
-	}
+
 }
 
 void BaseState::pauseInput()
 {
     userInput();
-}
-
-void BaseState::joyButtonDown(const Uint8& button)
-{
-}
-
-void BaseState::joyButtonUp(const Uint8& button)
-{
-}
-
-void BaseState::joyMotion(const Uint8& axis, const Sint16& value)
-{
-
-}
-
-void BaseState::keyDown(const SDLKey& key)
-{
-    switch(key)
-    {
-        case SDLK_ESCAPE: nullifyState(); break;
-        case SDLK_PAUSE: isPaused = !isPaused;  break;
-    }
-}
-
-void BaseState::keyUp(const SDLKey&  key)
-{
-}
-
-void BaseState::mouseButtonDown(const Uint16& x,const Uint16& y)
-{
-
-}
-
-void BaseState::mouseButtonUp(const Uint16& x,const Uint16& y)
-{
-}
-
-void BaseState::mouseMotion(const Uint16& x, const Uint16& y)
-{
 }

@@ -554,3 +554,26 @@ void Image::convertToHW()
     }
 }
 #endif
+
+void Image::toGreyScale()
+{
+    #ifdef PENJIN_SDL
+        for(int i = images.size()-1; i>= 0; --i)
+        {
+            Colour t;
+            GFX::lockSurface(images.at(i));
+            for(int x = images.at(i)->w-1; x>=0; --x)
+            {
+                for(int y = images.at(i)->h-1; y >= 0; --y)
+                {
+                    t = GFX::getPixel(images.at(i),x,y);
+                    t.toGreyScale();
+                    GFX::setPixel(images.at(i),x,y,t);
+                }
+            }
+            GFX::unlockSurface(images.at(i));
+        }
+    #else
+
+    #endif
+}

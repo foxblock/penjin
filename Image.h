@@ -178,7 +178,7 @@ class Image
             Colour getPixel(float x, float y, float z);
             uint* getPixelArray(float x, float y, float z);*/
         #endif
-
+        void toGreyScale(); // convert this image to greyscale
     private:
         // Disabled to revent double freed pointers.
         Image(const Image& BlingRef);
