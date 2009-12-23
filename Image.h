@@ -10,6 +10,10 @@
     #include <SDL/SDL_image.h>
 #endif
 
+#ifdef PLATFORM_WII
+    #include "Penjin.h"
+#endif
+
 #include <string>
 #include <vector>
 using namespace std;

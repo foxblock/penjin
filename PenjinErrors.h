@@ -9,6 +9,7 @@ namespace PenjinErrors
 {
     enum PENJIN_ERRORS
     {
+        //  General Errors
         PENJIN_ERROR = -1,
         PENJIN_OK,
         PENJIN_PARSE_ERROR,
@@ -22,23 +23,28 @@ namespace PenjinErrors
         PENJIN_UNDEFINED_STATE,
         PENJIN_FUNCTION_IS_STUB,
 
+        //  SDL_image
         PENJIN_IMG_UNABLE_TO_OPEN,
-
+        //  SDL_ttf
         PENJIN_TTF_UNABLE_TO_OPEN,
-
+        //  SDL misc stuff
         PENJIN_SDL_SOMETHING_FAILED,
         PENJIN_SDL_VIDEO_INIT_FAILED,
         PENJIN_SDL_VIDEO_QUERY_FAILED,
         PENJIN_SDL_SETVIDEOMODE_FAILED,
         PENJIN_SDL_INVALID_COLORKEY,
-
+        //  devkitpro libFAT
+        PENJIN_FAT_INIT_FAILED,
+        PENJIN_FAT_GET_ROOT_FAILED,
+        PENJIN_FAT_ACCESS_ROOT_FAILED,
+        //  Penjin status
         PENJIN_SHUTDOWN,
         PENJIN_GOODBYE
     };
 #ifndef GUARD_PENJIN_ERROR_STRINGS
 #define GUARD_PENJIN_ERROR_STRINGS
     #ifdef PLATFORM_WII
-    char* PENJIN_ERROR_STRINGS[] =
+    static char* PENJIN_ERROR_STRINGS[] =
     #else
     static string PENJIN_ERROR_STRINGS[] =
     #endif
@@ -65,6 +71,10 @@ namespace PenjinErrors
         "SDL video query failed.",
         "SDL_SetVideoMode failed.",
         "SDL_SetColorKey failed.",
+
+        "FATlib Initialisation Error.",
+        "FATlib Get root filesystem failed.",
+        "FATlib Change Directory to root failed.",
 
         "Shutting Down.",
         "Goodbye! ^_^"

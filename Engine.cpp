@@ -3,7 +3,7 @@
 Engine::Engine()
 {
 	///	Default constructor
-	appName = "Default Penjin Project";
+	Penjin::setApplicationName("Penjin");
     #if PLATFORM_GP2X
         loadMenu = false;
     #endif
@@ -48,6 +48,8 @@ Engine::~Engine()
 			chdir("/usr/gp2x");
 			execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);
 		}
+    #elif   PLATFORM_WII
+        Penjin::deInitFileSystem(); // shutdown FAT
 	#endif
 }
 
@@ -154,6 +156,7 @@ PENJIN_ERRORS Engine::penjinInit()
     GFX::showCursor(false);
     //  Can't display window title on a GP2X
     #ifndef PLATFORM_GP2X
+        string appName = Penjin::getApplicationName();
         #if defined(PENJIN_SDL) || defined(PENJIN_GL)
             SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str(), NULL);
         #endif
@@ -168,6 +171,18 @@ PENJIN_ERRORS Engine::penjinInit()
     if(customControlMap != "NULL")
         input->loadControlMap(customControlMap);
 
+    #ifdef PLATFORM_WII
+        PENJIN_ERRORS e = Penjin::initFileSystem();
+        if(e != PENJIN_OK)
+        {
+            //  Tidy up if we didn't fully mount FAT
+            Penjin::deInitFileSystem();
+            ErrorHandler().killApp(e);
+        }
+        Penjin::setWorkingDirectory("sd:/" + Penjin::getApplicationName() + "/");
+    #endif
+
+    /// TODO: add error handling for other intialisation.
     SoundClass::init();
     TextClass::init();
 	return PENJIN_OK;
@@ -202,7 +217,9 @@ bool Engine::stateLoop()
             {
                 state->pauseInput();
                 state->pauseUpdate();
+                GFX::lockSurface();
                 state->pauseScreen();
+                GFX::unlockSurface();
                 //	Flush the cache on GP2X just before the screen is flipped
                 GFX::forceBlit();
                 gameTimer.start();
@@ -227,17 +244,19 @@ bool Engine::stateLoop()
 			if(state->getNeedInit())
                 return true;
 			//  Render objects
+			GFX::lockSurface();
             state->render();
             #ifdef USE_ACHIEVEMENTS
             ACHIEVEMENTS->render(GFX::getVideoSurface());
             #endif
+            GFX::unlockSurface();
             GFX::forceBlit();
             #ifdef _DEBUG
                 int frameCount = calcFPS();
                 if(frameCount>=20)//only update if there are a reasonable number of redundant updates
                 {
                     //  This code seems to slow down Linux builds majorly.
-                    SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING
+                    SDL_WM_SetCaption((Penjin::getApplicationName() + " V" + AutoVersion::FULLVERSION_STRING
                     + AutoVersion::STATUS_SHORT
                     + " "
                     + intToString(frameCount)
@@ -251,7 +270,7 @@ bool Engine::stateLoop()
 		}
 		else
 		{
-            SDL_Delay(/*timeRemaining((uint)gameTimer.getScaler())*/1);  // Release CPU briefly
+            SDL_Delay(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
 		}
 		return true;   // Continue program execution
 	}

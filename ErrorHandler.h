@@ -7,6 +7,8 @@
 
 #include <string>
 using std::string;
+#include <iostream>
+using std::cout;
 
 #include "PenjinErrors.h"
 using namespace PenjinErrors;
@@ -17,6 +19,11 @@ class ErrorHandler
 	public:
 		ErrorHandler(){errorPrefix = "Penjin says: ";shouldGetTTF = false;}
 		void setShouldGetTTF(CRbool check){shouldGetTTF = check;}
+		void killApp(const PENJIN_ERRORS& e)
+		{
+		    std::cout << getErrorString(e);
+		    exit(e);
+        }
 		string getErrorString(CRint errorCode)
 		{
 		    string temp1;

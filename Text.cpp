@@ -91,7 +91,11 @@ PENJIN_ERRORS Text::loadFont(CRstring name,CRuint fontSize)
     if(this->fontSize != fontSize || name != fontName)
     {
         clear();
-        font = TTF_OpenFont(name.c_str(), fontSize);
+        #ifdef PLATFORM_WII
+            font = TTF_OpenFont((Penjin::getWorkingDirectory() + name).c_str(), fontSize);
+        #else
+            font = TTF_OpenFont(name.c_str(), fontSize);
+        #endif
     }
 	if(font)
 	{
@@ -331,7 +335,9 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
                 }
 
                 if(position.x + guess.x >= clipBoundary.w)
+                {
                     newLine();
+                }
                 continue;
             }
             //  check for tab

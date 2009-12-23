@@ -163,7 +163,7 @@ void KeyMapper::defaultMap()
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyButton(8,"R",0);
     keys.push_back(NULL);
-    //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons. 
+    //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons.
     //  These do not exist physically on a standard Pandora and for this reason are ommited.
     keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
     keys.push_back(NULL);
@@ -172,6 +172,35 @@ void KeyMapper::defaultMap()
     keys[keys.size()-1] = new KeyMapJoyAxis(2,"RIGHTSTICK_X",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapJoyAxis(3,"RIGHTSTICK_Y",0);
+#elif PLATFORM_WII
+    #ifdef PENJIN_SDL_INPUT
+        int i = -1;
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"A",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"B",0);
+        /*keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"1",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"2",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"+",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"-",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapJoyButton(++i,"HOME",0);*/
+
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapHat("UP","UP",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapHat("DOWN","DOWN",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapHat("LEFT","LEFT",0);
+        keys.push_back(NULL);
+        keys[keys.size()-1] = new KeyMapHat("RIGHT","RIGHT",0);
+    #else
+        // Use the Wii controls directly.
+    #endif
 #endif
 }
 
