@@ -29,55 +29,102 @@ void TextDoc::clear()
 
 PENJIN_ERRORS TextDoc::load(CRstring file)
 {
-	ifstream ifile(file.c_str());//load infile
-	if(!ifile.is_open())
-	{
-		return PENJIN_FILE_NOT_FOUND;
-	}
+    #if defined (PLATFORM_WII)
+        FILE *f = fopen ((Penjin::getWorkingDirectory() + file).c_str(), "rb");
+        // can't find file
+        if (f == NULL)
+           return PENJIN_FILE_NOT_FOUND;
+        else
+        { // Otherwise if it was fine, we can continue.
+            char temp [1024];
+            string t2 = "NULL";
+            int line = 0;
+            clear();
+            while (fgets (temp, 1024, f))
+            {
+                t2=temp;
+                t2+="\n";
+                if(temp == "\n")
+                    break;
+                docData.push_back(t2);
+                ++line;
+            }
+            fclose(f);
+            return PENJIN_OK;
+        }
+        return PENJIN_ERROR;
+	#else
+        ifstream ifile(file.c_str());//load infile
 
-    clear();
+        if(!ifile.is_open())
+        {
+            return PENJIN_FILE_NOT_FOUND;
+        }
 
-    string temp = "NULL";
-	vector <string> tStrings;
-	while(ifile.good())
-	{
-	    getline(ifile,temp);
-	    temp+="\n";
-	    if(temp == "\n")
-            break;
-		docData.push_back(temp);
-	}
-	if(ifile.is_open())
-	{
-		ifile.close();
-		return PENJIN_OK;
-	}
-	return PENJIN_ERROR;
+        clear();
+
+        string temp = "NULL";
+        vector <string> tStrings;
+        while(ifile.good())
+        {
+            getline(ifile,temp);
+            temp+="\n";
+            if(temp == "\n")
+                break;
+            docData.push_back(temp);
+        }
+        if(ifile.is_open())
+        {
+            ifile.close();
+            return PENJIN_OK;
+        }
+        return PENJIN_ERROR;
+    #endif
 }
 
 PENJIN_ERRORS TextDoc::save(CRstring file)
 {
-	ofstream ofile(file.c_str());//save ofile
-	if(!ofile.is_open())
-	{
-		return PENJIN_UNABLE_TO_SAVE;
-	}
-	size_t size = docData.size();
-	for (size_t i = 0; i < size; ++i)
-	{
-			ofile << docData[i];
+    #if defined(PLATFORM_WII)
+        FILE *f = fopen ((Penjin::getWorkingDirectory() + file).c_str(), "wb");
+        if (f == NULL)
+          return PENJIN_UNABLE_TO_SAVE;
+        else
+        {
+            size_t size = docData.size();
+            for (size_t i = 0; i < size; ++i)
+            {
+                if(i < size-1)
+                    fputs ((docData.at(i) + "/n").c_str() ,f);
+                else
+                    fputs (docData.at(i).c_str() ,f);
+            }
+           fclose(f);
+           return PENJIN_OK;
+        }
+        return PENJIN_ERROR;
+    #else
+        ofstream ofile(file.c_str());//save ofile
+        if(!ofile.is_open())
+        {
+            return PENJIN_UNABLE_TO_SAVE;
+        }
+        size_t size = docData.size();
+        for (size_t i = 0; i < size; ++i)
+        {
+                ofile << docData[i];
 
-			if(i < docData.size()-1)
-			{
-				ofile << "\n";
-			}
-	}
-	if(ofile.is_open())
-	{
-		ofile.close();
-		return PENJIN_OK;
-	}
-	return PENJIN_ERROR;
+                if(i < docData.size()-1)
+                {
+                    ofile << "\n";
+                }
+        }
+        if(ofile.is_open())
+        {
+            ofile.close();
+            return PENJIN_OK;
+        }
+        return PENJIN_ERROR;
+	#endif
 }
 
 string TextDoc::getLine(CRint line)

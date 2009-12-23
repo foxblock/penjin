@@ -6,6 +6,9 @@
 #include <string>
 #include "DoubleVector.h"
 #include <ctype.h>
+#ifdef PLATFORM_WII
+    #include "Penjin.h"
+#endif
 using namespace std;
 #include "PenjinTypes.h"
 #include "Colour.h"

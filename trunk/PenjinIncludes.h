@@ -1,6 +1,8 @@
 #ifndef INCLUDES_H
 #define INCLUDES_H
 
+#include "Penjin.h"
+
 #ifdef PLATFORM_WII
     #include <gccore.h>
 #endif

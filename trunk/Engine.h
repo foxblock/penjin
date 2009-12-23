@@ -41,7 +41,6 @@ class Engine
 		void getVariables();
 
 		//	Functions for engine setup
-		void setAppName(CRstring name){appName = name;}
 		void setInitialState(CRuint nextState)
 		{
 			if(!state)
@@ -54,7 +53,6 @@ class Engine
 
 	protected:
         string customControlMap;        //  filename for a controlmapping file
-		string appName;					//	The application's name
 		bool paused;
 		BaseState* state;				//	The current game state
 		#ifdef PENJIN_CACA

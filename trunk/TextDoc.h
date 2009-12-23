@@ -3,22 +3,25 @@
 
 #include <string>
 #include <vector>
-#include <fstream>
+#ifdef PLATFORM_WII
+    #include "Penjin.h"
+#else
+    #include <fstream>
+#endif
 #include <iostream>
 using namespace std;
 
 #include "ErrorHandler.h"
 #include "PenjinTypes.h"
 
-#ifdef MEMWATCH
-    #include "Memwatch.h"
-#endif
-
 
 class TextDoc
 {
     public:
-        TextDoc(){clear();}
+        TextDoc()
+        {
+            clear();
+        }
         ~TextDoc(){clear();}
         uint size(){return docData.size();}
         PENJIN_ERRORS load(CRstring file);					//	Load a plain text file

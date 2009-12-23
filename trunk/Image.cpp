@@ -78,7 +78,11 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
     #ifdef PENJIN_SDL
         uint currentI = (uint)images.size();
         images.push_back(NULL);
-        images[currentI] = IMG_Load(name.c_str());
+        #ifdef PLATFORM_WII
+            images[currentI] = IMG_Load((Penjin::getWorkingDirectory() + name).c_str());
+        #else
+            images[currentI] = IMG_Load(name.c_str());
+        #endif
         if (!images[currentI])
         {
             images.pop_back();

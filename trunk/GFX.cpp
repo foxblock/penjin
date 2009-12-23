@@ -115,16 +115,16 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_OPENGL;
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
-    flags = SDL_HWSURFACE;
+    #ifdef PLATFORM_GP2X
+        flags = SDL_SWSURFACE;
+    #else
+        flags = SDL_HWSURFACE;
+    #endif
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
-	if(fullscreen)
-		flags = flags | SDL_FULLSCREEN;
-    #ifdef PLATFORM_GP2X
-        screen = SDL_SetVideoMode(xRes, yRes, 16, flags);
-    #else
-        screen = SDL_SetVideoMode(xRes, yRes, info->vfmt->BitsPerPixel, flags);
-	#endif
+    if(fullscreen)
+        flags = flags | SDL_FULLSCREEN;
+    screen = SDL_SetVideoMode(xRes, yRes, info->vfmt->BitsPerPixel, flags);
 	if(screen  == NULL )
 	{
 		return PENJIN_SDL_SETVIDEOMODE_FAILED;
