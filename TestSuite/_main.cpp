@@ -6,10 +6,10 @@ int main(int argc, char** argv)
 	ErrorHandler error;
 
 	//	Setup game engine
-	game = new MyGame("Penjin - TestSuite", 800, 480, false);
+	game = new MyGame;
 
 	cout << error.getErrorString(game->argHandler(argc,argv));
-	cout << error.getErrorString(game->init());
+	cout << error.getErrorString(game->penjinInit());
 
 	while(game->stateLoop());	//	Perform main loop until shutdown
 	cout << error.getErrorString(PENJIN_SHUTDOWN);

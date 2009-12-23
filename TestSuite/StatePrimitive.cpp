@@ -33,11 +33,11 @@ void StatePrimitive::render()
         Random::setLimits(0,255);
         c.setColour((uchar)Random::nextInt(),Random::nextInt(),Random::nextInt(),Random::nextInt());
         Point2di p;
-        p.x = Random::nextInt(0,getStateXResolution());
-        p.y = Random::nextInt(0,getStateYResolution());
+        p.x = Random::nextInt(0,GFX::getXResolution());
+        p.y = Random::nextInt(0,GFX::getYResolution());
         Point2di d;
-        d.x = Random::nextInt(1,getStateXResolution()*0.1f);
-        d.y = Random::nextInt(1,getStateYResolution()*0.1f);
+        d.x = Random::nextInt(1,GFX::getXResolution()*0.1f);
+        d.y = Random::nextInt(1,GFX::getYResolution()*0.1f);
         if(primMode == PIXEL)
         {
             pix.setPosition(p.x,p.y);

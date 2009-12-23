@@ -11,15 +11,12 @@ class MyGame : public Engine
 {
 	public:
 		MyGame();
-		MyGame(CRstring appName, CRint xRes, CRint yRes, CRbool fullScreen);
-		virtual ~MyGame();
 
-
-		virtual PENJIN_ERRORS argHandler(int argc, char** argv);
+		//virtual PENJIN_ERRORS argHandler(int argc, char** argv);
 		virtual PENJIN_ERRORS init();
 		virtual void stateManagement();
     private:
-        string customControlMap;
+
 };
 
 

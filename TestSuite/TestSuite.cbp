@@ -249,6 +249,7 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lz" />
 					<Add option="-lsmpeg" />
 					<Add option="-ljpeg" />
+					<Add option="-msoft-float" />
 					<Add directory="$(#gp2x_sdk.lib)" />
 				</Linker>
 			</Target>
@@ -279,6 +280,60 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lsmpeg" />
 					<Add option="-ljpeg" />
 					<Add directory="$(#gp2x_sdk.lib)" />
+				</Linker>
+			</Target>
+			<Target title="Wii Debug">
+				<Option output="bin/Wii/TestSuite_D.elf" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="built" />
+				<Option object_output="obj/Wii/Debug/" />
+				<Option type="1" />
+				<Option compiler="devkitppc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-mhard-float" />
+					<Add option="-meabi" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DPLATFORM_WII" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DPENJIN_SDL" />
+					<Add option="-DPENJIN_SDL_INPUT" />
+					<Add directory="$(#libogc.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-lSDL_mixer" />
+					<Add option="-lsmpeg" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDL_gfx" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL" />
+					<Add option="-lz -lwiiuse" />
+					<Add option="-lfat -lbte -logc" />
+					<Add option="-lwiikeyboard" />
+					<Add library="$(#libogc.lib)/libfreetype.a" />
+					<Add library="$(#libogc.lib)/libpng.a" />
+					<Add library="$(#libogc.lib)/libjpeg.a" />
+					<Add library="$(#libogc.lib)/wii/libz.a" />
+					<Add library="$(#libogc.lib)/libvorbisidec.a" />
+					<Add directory="$(#libogc.lib)/wii" />
+				</Linker>
+			</Target>
+			<Target title="Wii Release">
+				<Option output="bin/Wii/TestSuite_R.elf" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="built" />
+				<Option object_output="obj/Wii/Release/" />
+				<Option type="0" />
+				<Option compiler="devkitppc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DPLATFORM_WII" />
+					<Add option="-DPENJIN_SDL" />
+					<Add directory="$(#libogc.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lwiiuse -lbte -logc -lm" />
+					<Add directory="$(#libogc.lib)/wii" />
 				</Linker>
 			</Target>
 		</Build>
@@ -510,6 +565,10 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		</Unit>
 		<Unit filename="../PenjinBase/MMUHack.cpp">
 			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
+			<Option target="GP2X Debug" />
+			<Option target="GP2X Release" />
+			<Option target="Wii Debug" />
+			<Option target="Wii Release" />
 		</Unit>
 		<Unit filename="../PenjinBase/MMUHack.h">
 			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
@@ -568,6 +627,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/ParticleMirror.h">
 			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
+		<Unit filename="../PenjinBase/Penjin.cpp" />
+		<Unit filename="../PenjinBase/Penjin.h" />
 		<Unit filename="../PenjinBase/PenjinErrors.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
@@ -756,9 +817,15 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		</Unit>
 		<Unit filename="../PenjinBase/mmuhack/flush_uppermem_cache.h">
 			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
+			<Option target="GP2X Debug" />
+			<Option target="GP2X Release" />
+			<Option target="Wii Debug" />
+			<Option target="Wii Release" />
 		</Unit>
 		<Unit filename="../PenjinBase/mmuhack/flush_uppermem_cache.s">
 			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
+			<Option target="GP2X Debug" />
+			<Option target="GP2X Release" />
 		</Unit>
 		<Unit filename="../PenjinBase/trenki/fixed_class.h">
 			<Option virtualFolder="PenjinBase/Physics/Vectors/Trenki/" />

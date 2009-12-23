@@ -33,8 +33,8 @@ void StateAnimation::init()
 {
     GFX::setClearColour(BLACK);
     text.loadFont("font/unispace.ttf",15);
-    text.setPosition(40, getStateYResolution()-80);
-    text.setBoundaries(Vector2di(0,0),Vector2di(getStateXResolution(),getStateYResolution()));
+    text.setPosition(40, GFX::getYResolution()-80);
+    text.setBoundaries(Vector2di(0,0),Vector2di(GFX::getXResolution(),GFX::getYResolution()));
     text.setRelativity(true);
     changeAnimMode();
     setFPS();
@@ -44,7 +44,7 @@ void StateAnimation::init()
 void StateAnimation::render()
 {
     GFX::clearScreen();
-    text.setPosition(40, getStateYResolution()-80);
+    text.setPosition(40, GFX::getYResolution()-80);
     if(anim)
     {
         anim->render();
@@ -82,7 +82,7 @@ void StateAnimation::render()
     else
         text.print("No ReversePlay ");
 
-    text.setPosition(40, getStateYResolution()-120);
+    text.setPosition(40, GFX::getYResolution()-120);
     if(fpsMode == FIFTEEN_FRAMES)
         text.print("FIFTEEN_FRAMES");
     else if(fpsMode == THIRTY_FRAMES)

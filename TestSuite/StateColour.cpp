@@ -13,8 +13,8 @@ StateColour::StateColour()
 
 void StateColour::init()
 {
-    text.setBoundaries(Vector2di(0,0),Vector2di(getStateXResolution(),getStateYResolution()));
-    rect.setDimensions(getStateXResolution(),getStateYResolution());
+    text.setBoundaries(Vector2di(0,0),Vector2di(GFX::getXResolution(),GFX::getYResolution()));
+    rect.setDimensions(GFX::getXResolution(),GFX::getYResolution());
 }
 
 StateColour::~StateColour()
