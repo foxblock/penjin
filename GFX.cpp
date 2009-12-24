@@ -51,6 +51,11 @@ Colour GFX::getClearColour()
 // Force to blit to screen now!
 void GFX::forceBlit()
 {
+    #ifdef PLATFORM_GP2X
+        //  We do MMUHack BEFORE video flip!
+        if(useHack)
+            MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
+    #endif
     #ifdef PENJIN_GL
         SDL_GL_SwapBuffers();
     #elif PENJIN_SDL
@@ -58,10 +63,6 @@ void GFX::forceBlit()
     #elif PENJIN_CACA
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
-    #endif
-    #ifdef PLATFORM_GP2X
-        if(useHack)
-            MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
     #endif
 }
 
@@ -115,11 +116,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_OPENGL;
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
-    #ifdef PLATFORM_GP2X
-        flags = SDL_SWSURFACE;
-    #else
-        flags = SDL_HWSURFACE;
-    #endif
+    flags = SDL_HWSURFACE;
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
     if(fullscreen)
