@@ -16,8 +16,6 @@ Engine::Engine()
 	setInitialState(STATE_BASE);
 	gameTimer.start();
 	Random::randSeed();
-    input = NULL;
-    input = new SimpleJoy();
     customControlMap = "NULL";
 }
 
@@ -168,9 +166,6 @@ PENJIN_ERRORS Engine::penjinInit()
         //	Clear Accumulation buffer to avoid garbage pixels
         glClear(GL_ACCUM_BUFFER_BIT);
     #endif
-    if(customControlMap != "NULL")
-        input->loadControlMap(customControlMap);
-
     #ifdef PLATFORM_WII
         PENJIN_ERRORS e = Penjin::initFileSystem();
         if(e != PENJIN_OK)
@@ -185,6 +180,10 @@ PENJIN_ERRORS Engine::penjinInit()
     /// TODO: add error handling for other intialisation.
     SoundClass::init();
     TextClass::init();
+    input = NULL;
+    input = new SimpleJoy();
+    if(customControlMap != "NULL")
+        input->loadControlMap(customControlMap);
 	return PENJIN_OK;
 }
 
@@ -217,10 +216,7 @@ bool Engine::stateLoop()
             {
                 state->pauseInput();
                 state->pauseUpdate();
-                GFX::lockSurface();
                 state->pauseScreen();
-                GFX::unlockSurface();
-                //	Flush the cache on GP2X just before the screen is flipped
                 GFX::forceBlit();
                 gameTimer.start();
             }
@@ -244,12 +240,10 @@ bool Engine::stateLoop()
 			if(state->getNeedInit())
                 return true;
 			//  Render objects
-			GFX::lockSurface();
             state->render();
             #ifdef USE_ACHIEVEMENTS
             ACHIEVEMENTS->render(GFX::getVideoSurface());
             #endif
-            GFX::unlockSurface();
             GFX::forceBlit();
             #ifdef _DEBUG
                 int frameCount = calcFPS();
