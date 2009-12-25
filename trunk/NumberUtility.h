@@ -31,7 +31,7 @@ namespace NumberUtility
     //template<typename T>
     //T wrapValue(T val,const T& limit);
 
-    /// statistics
+    /// statistics / arrays
     template <class T, int length>
     T getGreatest(const T (&arr)[length]); // Returns the greatest number in an array
     template <class T, int length>

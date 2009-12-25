@@ -19,8 +19,8 @@ int NumberUtility::sign(const T& value)
 template <class T, int length>
 T NumberUtility::getGreatest(const T (&arr)[length])
 {
-    T result = arr[0];
-    for (int I = 1; I < length; I++)
+    T result = arr[length - 1];
+    for (int I = length - 2; I >= 0; --I)
     {
         if (arr[I] > result)
         {
@@ -33,8 +33,8 @@ T NumberUtility::getGreatest(const T (&arr)[length])
 template <class T, int length>
 int NumberUtility::getGreatestIndex(const T (&arr)[length])
 {
-    int result = 0;
-    for (int I = 1; I < length; I++)
+    int result = length - 1;
+    for (int I = length - 2; I >= 0; --I)
     {
         if (arr[I] > arr[result])
         {
@@ -47,7 +47,7 @@ int NumberUtility::getGreatestIndex(const T (&arr)[length])
 template <class T, int length>
 bool NumberUtility::isGreatest(const T (&arr)[length], CRuint index)
 {
-    for (int I = 0; I < length; I++)
+    for (int I = length - 1; I >= 0; --I)
     {
         if (arr[I] > arr[index])
         {
