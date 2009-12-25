@@ -67,7 +67,18 @@ bool Achievement::check(const vector<Event>& checkEvents)
         return true;
     }
     else
+    {
+        vector<int>::iterator I;
+        for (I = milestones.begin(); I < milestones.end(); ++I)
+        {
+            if (*I <= count)
+            {
+                milestones.erase(I);
+                return true;
+            }
+        }
         return false;
+    }
 }
 
 // the actual addEvent function, which all wrapper functions use
@@ -83,6 +94,25 @@ void Achievement::addEventSpecial(CRstring name, const vector<SpecialProperty>& 
     else
         cout << "[Achievements] Error: Duplicate event " << name << " on achievement " << this->name << " - ignored!" << endl;
     #endif
+}
+
+void Achievement::setCount(CRint value)
+{
+    count = value;
+
+
+    vector<int>::iterator I;
+    for (I = milestones.begin(); I < milestones.end(); ++I)
+    {
+        if ((*I) <= count)
+        {
+            milestones.erase(I);
+            --I;
+        }
+    }
+
+    if (count >= limit)
+        unlocked = true;
 }
 
 void Achievement::setPosition(const Vector2di &newPos)

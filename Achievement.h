@@ -57,10 +57,11 @@ class Achievement
         virtual int getLimit() const {return limit;};
         virtual void setLimit(CRint value) {limit = value; if (limit > 1) showProgress = true;};
         virtual int getCount() const {return count;};
-        virtual void setCount(CRint c){count = c; if (count >= limit) unlocked = true;};
+        virtual void setCount(CRint value);
         virtual int getTimeLimit() const {return counter.getLimit();};
-        virtual void setTimeLimit(int newTime) {counter.setLimit(newTime);};
-        virtual int eventCount() const {return events.size();}
+        virtual void setTimeLimit(int value) {counter.setLimit(value);};
+        virtual int eventCount() const {return events.size();};
+        virtual void addMilestone(CRint value) {milestones.push_back(value);};
 
         virtual int getType() const {return type;};
 
@@ -117,6 +118,7 @@ class Achievement
         vector<Event> events;
         int count;
         int limit;
+        vector<int> milestones;
         bool unlocked;
         int type;
         CountDown counter;
