@@ -39,6 +39,13 @@ void AchievementList::addEventSpecial(CRstring name, const vector<SpecialPropert
     #endif
 }
 
+void AchievementList::setTimeLimit(CRint value)
+{
+    #ifdef _DEBUG
+    cout << "[Achievements] Error: AchievementList does not use a timer ( " << this->name << ")!" << endl;
+    #endif
+}
+
 #ifdef PENJIN_SDL
 void AchievementList::renderProgress(SDL_Surface* screen)
 {

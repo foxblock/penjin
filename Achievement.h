@@ -59,7 +59,7 @@ class Achievement
         virtual int getCount() const {return count;};
         virtual void setCount(CRint value);
         virtual int getTimeLimit() const {return counter.getLimit();};
-        virtual void setTimeLimit(int value) {counter.setLimit(value);};
+        virtual void setTimeLimit(CRint value) {counter.setLimit(value);};
         virtual int eventCount() const {return events.size();};
         virtual void addMilestone(CRint value) {milestones.push_back(value);};
 

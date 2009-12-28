@@ -22,6 +22,9 @@ class AchievementList : public Achievement
 
         void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action);
 
+        virtual int getTimeLimit() const {return -1;};
+        virtual void setTimeLimit(CRint value);
+
         #ifdef PENJIN_SDL
         void renderProgress(SDL_Surface* screen);
         #else
