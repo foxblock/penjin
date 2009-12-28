@@ -9,9 +9,9 @@ class KeyMapDigitalJoyAxis : public KeyMap
         KeyMapDigitalJoyAxis();
         virtual ~KeyMapDigitalJoyAxis();
 
-        KeyMapDigitalJoyAxis(CRstring SJ,CRint axis,CRint tiggerVal,CRuchar devID);
+        KeyMapDigitalJoyAxis(CRstring SJ,CRint axis,CRint triggerVal,CRuchar devID);
 
-        void setBind(const SIMPLEJOY_MAP& t,CRint a,CRint tiggerVal,CRuchar devID){axis=a;target=t;deviceID = devID;}
+        void setBind(const SIMPLEJOY_MAP& t,CRint a,CRint triggerVal,CRuchar devID){axis=a;target=t;trigger=triggerVal;deviceID = devID;}
         int getAxis()const{return axis;}
         int getTrigger()const{return trigger;}
     private:

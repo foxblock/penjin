@@ -53,6 +53,7 @@ Text::Text()
     alignment = LEFT_JUSTIFIED;
     bgColour = BLACK;
     relativePos = false;
+    wrapText = true;
 }
 
 void Text::clear()
@@ -182,23 +183,26 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
                 //  use dummy for spacing
                 position.x+=glyphs[fontSize-1][0]->getWidth();
                 // we get a substring that is from here to the end of the string.
-                if(i+1<text.size())
+                if(wrapText)
                 {
-                    string subString = text.substr(i+1);
-                    // we search this substring for the next space
-                    uint x = 0;
-                    for(x = 0; x<subString.size();++x)
+                    if(i+1<text.size())
                     {
-                        if(subString[x] == ' ')
-                            break;
+                        string subString = text.substr(i+1);
+                        // we search this substring for the next space
+                        uint x = 0;
+                        for(x = 0; x<subString.size();++x)
+                        {
+                            if(subString[x] == ' ')
+                                break;
+                        }
+                        subString = subString.substr(0,x);
+                        TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
                     }
-                    subString = subString.substr(0,x);
-                    TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
-                }
 
-                if(position.x + guess.x >= clipBoundary.w)
-                    newLine();
-                continue;
+                    if(position.x + guess.x >= clipBoundary.w)
+                        newLine();
+                    continue;
+                }
             }
             //  check for tab
             else if(c == '\t')
