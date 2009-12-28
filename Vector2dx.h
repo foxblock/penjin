@@ -13,7 +13,8 @@ class Vector2dx : public vec2<fixed_point<16> >
     public:
         /// Constructors and Deconstructor.
         Vector2dx();
-        Vector2dx(const Vector2dx& v){*this = v;}
+        template <class T>
+        Vector2dx(const T& v){x=v.x; y=v.y;}
         Vector2dx(const fixed_point<16>& x,const fixed_point<16>& y)
         {
             this->x = x;

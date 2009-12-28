@@ -116,7 +116,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_OPENGL;
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
-    flags = SDL_HWSURFACE;
+    flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
     if(fullscreen)

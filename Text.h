@@ -77,6 +77,8 @@ class Text
         void setBgColour(const Colour& col){bgColour = col;setRenderMode(GlyphClass::BOXED);}
         Colour getBgColour()const{return bgColour;}
 
+        void setWrapping(CRbool shouldWrap){wrapText = shouldWrap;}
+        bool getWrapping()const{return wrapText;}
         void setAlignment(const ALIGNMENT& align){alignment = align;}
         ALIGNMENT getAlignment()const{return alignment;}
         void setStyle(CRint style){TTF_SetFontStyle(font, style);}
@@ -159,13 +161,14 @@ class Text
         #ifdef PENJIN_SDL
             SDL_Surface* screen;
         #endif
-        DoubleVector<Glyph*> glyphs;  //  stores each individual charactor for printing.
+        DoubleVector<Glyph*> glyphs;  //  stores each individual charactor for printing. [FONT_SIZE][CHARACTER]
 
         bool relativePos;
+        bool wrapText;
         ALIGNMENT alignment;
         Colour colour;
         Colour bgColour;
-        SDL_Rect clipBoundary;      //  The area that the particle is allowed to exist within
+        SDL_Rect clipBoundary;      //  The area that the Text is allowed to exist within
 };
 
 #endif	//	TEXT_H

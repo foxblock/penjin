@@ -197,6 +197,9 @@ void Emitter::setParticlesType(const PARTICLE_TYPES& type)
                 case ANIMATED_PARTICLE:
                     particles[i] = new AnimatedParticle;
                 break;
+                case MODEL3D_PARTICLE:
+                    cout << "unimplemented MODEL3D_PARTICLE" << endl;
+                break;
             }
         }
 
