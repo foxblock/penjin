@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include "PenjinTypes.h"
+#include "StringUtility.h"
 
 using namespace std;
 
@@ -64,7 +65,8 @@ namespace AchievementUtility
 
     // special property functions
     vector<SpecialProperty> emptySpecial();
-    SpecialProperty special(string name, int value, int comparison);
+    SpecialProperty special(CRstring name, CRint value, CRint comparison);
+    SpecialProperty special(CRint name, CRint value, CRint comparison);
 
     // checks whether an event is already present in an vector of events
     bool isEvent(CRstring name, const vector<Event>& events);

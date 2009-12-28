@@ -6,9 +6,15 @@ vector<SpecialProperty> AchievementUtility::emptySpecial()
     return prop;
 }
 
-SpecialProperty AchievementUtility::special(string name, int value, int comparison)
+SpecialProperty AchievementUtility::special(CRstring name, CRint value, CRint comparison)
 {
     SpecialProperty prop = {name,value,comparison};
+    return prop;
+}
+
+SpecialProperty AchievementUtility::special(CRint name, CRint value, CRint comparison)
+{
+    SpecialProperty prop = {StringUtility::intToString(name),value,comparison};
     return prop;
 }
 
