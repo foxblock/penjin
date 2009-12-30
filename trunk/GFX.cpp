@@ -54,7 +54,7 @@ void GFX::forceBlit()
     #ifdef PLATFORM_GP2X
         //  We do MMUHack BEFORE video flip!
         if(useHack)
-            MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (xRes * yRes));
+            MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (screen->w * screen->h));
     #endif
     #ifdef PENJIN_GL
         SDL_GL_SwapBuffers();
@@ -80,12 +80,14 @@ void GFX::setResolution()
 
 PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 {
+    /*
     #ifdef PLATFORM_GP2X
     if(xRes == 0)
         xRes = 320;
     if(yRes == 0)
         yRes = 240;
     #endif
+    */
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
 	const SDL_VideoInfo* info = NULL;	//Information about the current video settings
     int flags = 0;						//Flags for SDL_SetVideoMode
