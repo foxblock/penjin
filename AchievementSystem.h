@@ -88,7 +88,7 @@ class AchievementSystem
         void renderList(SDL_Surface* screen, int numOffset);
         #else
         void render();
-        void renderList(int numOffset)
+        void renderList(int numOffset);
         #endif
         void update();
 
