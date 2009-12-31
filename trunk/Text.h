@@ -1,8 +1,13 @@
 #ifndef TEXT_H
 #define TEXT_H
-
-/// TODO:  Finish glyph creation.
-#include "Glyph.h"
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+    #include "Glyph.h"
+#elif PENJIN_ASCII
+    #ifdef _WIN32
+        #include "Wincon.h"
+    #elif _LINUX
+    #endif
+#endif
 #include <string>
 #include "DoubleVector.h"
 #include <ctype.h>
@@ -55,7 +60,6 @@ class Text
         void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
 
         #ifndef PENJIN3D
-
             void setPosition(CRfloat x,CRfloat y);						//	Sets the starting position of the text
         #else
             #ifdef PENJIN_FIXED

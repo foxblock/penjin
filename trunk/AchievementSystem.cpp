@@ -228,12 +228,16 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
 	if(!doc.size())
 		return PENJIN_FILE_NOT_FOUND;
     int i = 0;
+    bool changed = true;
     while(i < doc.size())
     {
         // get a line
+        if(changed == false)
+            ++i;
         string line = crypt.decryptBuffer(doc.getLine(i));
         vector<Achievement*>::iterator I;
         // first look for the name of the achievement
+        changed = false;
         for (I=achievements.begin(); I < achievements.end(); ++I)
         {
             // when we find a name which matches an achievement
@@ -246,12 +250,11 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
                 //  move to the next line
                 ++i;
                 //  break out since we are finished with this achievement
+                changed = true;
                 break;
             }
-            //  we should only reach here if there was a problem loading an achievement from file.
-            if(I == achievements.end())
-                ++i;
         }
+
     }
 	return PENJIN_OK;
 }
