@@ -6,6 +6,7 @@
     #ifdef _WIN32
         #include "Wincon.h"
     #elif _LINUX
+        #include <ncurses.h>
     #endif
 #endif
 #include <string>
