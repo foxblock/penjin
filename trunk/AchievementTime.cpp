@@ -23,7 +23,7 @@ AchievementTime::~AchievementTime()
 void AchievementTime::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEvent(name,events))
+	if (not isEventSpecial(name,special,events))
 	{
 	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);

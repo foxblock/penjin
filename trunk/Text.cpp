@@ -203,6 +203,8 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
                         newLine();
                     continue;
                 }
+                else
+                    continue;
             }
             //  check for tab
             else if(c == '\t')

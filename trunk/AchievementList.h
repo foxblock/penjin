@@ -39,6 +39,7 @@ class AchievementList : public Achievement
 
         vector<bool> doneEvents;
         int doneCount;
+        int eCount;
 };
 
 #endif // ACHIEVEMENTRESETTWO_H
