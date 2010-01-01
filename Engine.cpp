@@ -8,14 +8,11 @@ Engine::Engine()
         loadMenu = false;
     #endif
 
-	gameTimer.setMode(SIXTY_FRAMES);
     input = NULL;
-    now = SDL_GetTicks();
     state = NULL;
 	state = new BaseState;
 	setInitialState(STATE_BASE);
-	gameTimer.start();
-	Random::randSeed();
+
     customControlMap = "NULL";
 }
 
@@ -184,6 +181,12 @@ PENJIN_ERRORS Engine::penjinInit()
     input = new SimpleJoy();
     if(customControlMap != "NULL")
         input->loadControlMap(customControlMap);
+
+    gameTimer.setMode(SIXTY_FRAMES);
+    now = SDL_GetTicks();
+	gameTimer.start();
+	Random::randSeed();
+
 	return PENJIN_OK;
 }
 
@@ -216,7 +219,13 @@ bool Engine::stateLoop()
             {
                 state->pauseInput();
                 state->pauseUpdate();
+                #ifdef PENJIN_SDL
+                //GFX::lockSurface();
+                #endif
                 state->pauseScreen();
+                #ifdef PENJIN_SDL
+                //GFX::unlockSurface();
+                #endif
                 GFX::forceBlit();
                 gameTimer.start();
             }
@@ -240,9 +249,15 @@ bool Engine::stateLoop()
 			if(state->getNeedInit())
                 return true;
 			//  Render objects
+            #ifdef PENJIN_SDL
+                //GFX::lockSurface();
+            #endif
             state->render();
             #ifdef USE_ACHIEVEMENTS
             ACHIEVEMENTS->render(GFX::getVideoSurface());
+            #endif
+            #ifdef PENJIN_SDL
+                //GFX::unlockSurface();
             #endif
             GFX::forceBlit();
             #ifdef _DEBUG

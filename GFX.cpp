@@ -17,7 +17,7 @@ namespace GFX
     #elif PLATFORM_GP2X
         uint xRes = 320;
         uint yRes = 240;
-        bool fullscreen = true;
+        bool fullscreen = false;    // Enabling crashes the HWScaler.
         bool useHack = false;
     #else // Penjin 2D project
         uint xRes = 1024;
@@ -118,7 +118,9 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_OPENGL;
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
-    flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+    #ifdef PLATFORM_GP2X
+        flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+    #endif
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
     if(fullscreen)
