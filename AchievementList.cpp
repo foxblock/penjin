@@ -9,6 +9,7 @@ AchievementList::AchievementList() : Achievement()
     type = atRESET;
     showProgress = false;
     doneCount = 0;
+    eCount = 0;
 }
 
 AchievementList::~AchievementList()
@@ -24,14 +25,17 @@ AchievementList::~AchievementList()
 void AchievementList::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEvent(name,events))
+	if (not isEventSpecial(name,special,events))
 	{
 	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);
 		if (action == acRESET || action == acDECREASE)
             doneEvents.push_back(true);
         else
+        {
             doneEvents.push_back(false);
+            ++eCount;
+        }
 	}
     #ifdef _DEBUG
     else
@@ -50,14 +54,18 @@ void AchievementList::setTimeLimit(CRint value)
 void AchievementList::renderProgress(SDL_Surface* screen)
 {
     int useCount = count;
+    int useLimit = limit;
     if (limit == 1)
+    {
         useCount = doneCount;
+        useLimit = eCount;
+    }
 
     if (showProgress)
     {
         if (not unlocked)
         {
-            bgBox.setDimensions(round(size.x*float(useCount)/limit),size.y);
+            bgBox.setDimensions(round(size.x*float(useCount)/useLimit),size.y);
             bgBox.setColour(Colour(160,160,160));
             bgBox.render(screen);
 
@@ -66,7 +74,7 @@ void AchievementList::renderProgress(SDL_Surface* screen)
         text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
         text.setAlignment(TextClass::RIGHT_JUSTIFIED);
         text.setFontSize(18);
-        string temp = StringUtility::intToString(min(useCount,limit))+"/"+StringUtility::intToString(limit);
+        string temp = StringUtility::intToString(min(useCount,useLimit))+"/"+StringUtility::intToString(useLimit);
         text.print(screen,temp);
     }
 }
@@ -74,14 +82,18 @@ void AchievementList::renderProgress(SDL_Surface* screen)
 void AchievementList::renderProgress()
 {
     int useCount = count;
+    int useLimit = limit;
     if (limit == 1)
+    {
         useCount = doneCount;
+        useLimit = eCount;
+    }
 
     if (showProgress)
     {
         if (not unlocked)
         {
-            bgBox.setDimensions(round(size.x*float(useCount)/limit),size.y);
+            bgBox.setDimensions(round(size.x*float(useCount)/useLimit),size.y);
             bgBox.setColour(Colour(160,160,160));
             bgBox.render();
 
@@ -90,7 +102,7 @@ void AchievementList::renderProgress()
         text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
         text.setAlignment(TextClass::RIGHT_JUSTIFIED);
         text.setFontSize(18);
-        string temp = StringUtility::intToString(min(useCount,limit))+"/"+StringUtility::intToString(limit);
+        string temp = StringUtility::intToString(min(useCount,useLimit))+"/"+StringUtility::intToString(useLimit);
         text.print(temp);
     }
 }
@@ -109,7 +121,7 @@ void AchievementList::changeCount(const vector<Event>& changeEvents)
         vector<bool>::iterator L = doneEvents.begin();
         for (K = events.begin(); K < events.end(); ++K)
         {
-            if (K->name == I->name)
+            if (K->name == I->name && checkSpecial(K->special,I->special))
             {
                 if (I->action == acRESET || I->action == acDECREASE)
                 {
@@ -126,14 +138,11 @@ void AchievementList::changeCount(const vector<Event>& changeEvents)
         }
     }
 
-    vector<bool>::const_iterator K;
-    for (K = doneEvents.begin(); K < doneEvents.end(); ++K)
+    if (doneCount >= eCount)
     {
-        if (*K == false)
-            return;
+        ++count;
+        resetDone();
     }
-    ++count;
-    resetDone();
 }
 
 void AchievementList::resetDone()

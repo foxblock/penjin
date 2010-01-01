@@ -49,7 +49,7 @@ bool Achievement::check(const vector<Event>& checkEvents)
             if (I->name == K->name && compare(K->count,I->count,K->comparison) && checkSpecial(K->special,I->special))
             {
                 // add necessary information to a temporary vector which will be passed to the changeCount function
-                Event ev = {K->name,emptySpecial(),I->count,0,K->action};
+                Event ev = {K->name,I->special,I->count,0,K->action};
                 countEvents.push_back(ev);
             }
         }
