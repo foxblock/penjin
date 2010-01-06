@@ -99,9 +99,17 @@ PENJIN_ERRORS AnimatedSprite::setTransparentColour(const Vector2di& v)
     return PENJIN_OK;
 }
 
+PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
+{
+    image.loadImage(s);
+    return PENJIN_OK;
+}
+
 PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}
 
 PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear();return image.loadImageSheet(fileName, xTiles, yTiles);}
+
+PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles){image.clear();return image.loadImageSheet(s, xTiles, yTiles, skipTiles, numTiles);}
 
 #ifdef PENJIN_SDL
     void AnimatedSprite::render(SDL_Surface *screen){image.renderImage(currentFrame,screen,position);}

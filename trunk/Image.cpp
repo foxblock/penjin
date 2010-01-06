@@ -107,39 +107,9 @@ PENJIN_ERRORS Image::loadImageSheet(CRstring name,CRuint xTiles,CRuint yTiles)
     PENJIN_ERRORS error = loadImage(name);
     if(error != PENJIN_OK)
         return error;
-    sheetMode = true;  //  succesful loading means we have a tilesheet
+    sheetMode = true;  //  successful loading means we have a tilesheet
 
-    //  now we have to build the clipping areas based on the tile info we have.
-    //first the width and height per tile needs to be calculated
-    #ifdef PENJIN_SDL
-        uint width = images[0]->w;
-        uint height = images[0]->h;
-    #else
-        uint width = textures[0].getWidth();
-        uint height = textures[0].getHeight();
-    #endif
-    uint xTileWidth = width/xTiles;
-    uint yTileWidth = height/yTiles;
-
-    //  Accomodate clip areas
-    clipAreas.resize(xTiles*yTiles);
-
-    uint currTile = 0;
-    //  Run along then down
-
-    for(uint y = 0; y < height; y+=yTileWidth)
-    {
-        for(uint x = 0; x < width; x+=xTileWidth)
-        {
-            //  and set the values for the clip plane
-            clipAreas[currTile].x = x;
-            clipAreas[currTile].y = y;
-            clipAreas[currTile].w = xTileWidth;
-            clipAreas[currTile].h = yTileWidth;
-            ++currTile;
-        }
-    }
-    return PENJIN_OK;
+    return assignClipAreas(xTiles, yTiles, 0, 0);
 }
 
 PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTiles)
@@ -148,8 +118,46 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     PENJIN_ERRORS error = loadImageNoKey(name);
     if(error != PENJIN_OK)
         return error;
-    sheetMode = true;  //  succesful loading means we have a tilesheet
+    sheetMode = true;  //  successful loading means we have a tilesheet
 
+    return assignClipAreas(xTiles, yTiles, 0, 0);
+}
+
+PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
+{
+    PENJIN_ERRORS error;
+    //  We load the image into the image vector
+    loadImage(surface);
+//    if(error != PENJIN_OK)
+//        return error;
+    sheetMode = true;  //  successful loading means we have a tilesheet
+
+    #ifdef PENJIN_SDL
+        //  Apply colour key
+        uint currentI = (uint)images.size()-1;
+        error = setTransparentColour(currentI,Vector2di(0,0));
+        if(error != PENJIN_OK)
+            return error;
+    #endif
+
+    return assignClipAreas(xTiles, yTiles, skipTiles, numTiles);
+}
+
+PENJIN_ERRORS Image::loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
+{
+    //  We load the image into the image vector
+    loadImage(surface);
+//    if(error != PENJIN_OK)
+//        return error;
+    sheetMode = true;  //  successful loading means we have a tilesheet
+
+    return assignClipAreas(xTiles, yTiles, skipTiles, numTiles);
+}
+
+// Build clipping areas - if numTiles is 0, it will be calculated automatically
+PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint p_numTiles)
+{
+    uint numTiles = p_numTiles;
     //  now we have to build the clipping areas based on the tile info we have.
     //first the width and height per tile needs to be calculated
     #ifdef PENJIN_SDL
@@ -162,8 +170,12 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     uint xTileWidth = width/xTiles;
     uint yTileWidth = height/yTiles;
 
+    if (numTiles == 0) {
+        numTiles = (xTiles * yTiles) - skipTiles;
+    }
+
     //  Accomodate clip areas
-    clipAreas.resize(xTiles*yTiles);
+    clipAreas.resize(numTiles);
 
     uint currTile = 0;
     //  Run along then down
@@ -172,11 +184,13 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     {
         for(uint x = 0; x < width; x+=xTileWidth)
         {
-            //  and set the values for the clip plane
-            clipAreas[currTile].x = x;
-            clipAreas[currTile].y = y;
-            clipAreas[currTile].w = xTileWidth;
-            clipAreas[currTile].h = yTileWidth;
+            if (currTile >= skipTiles && (currTile-skipTiles)<numTiles) {
+                //  and set the values for the clip plane
+                clipAreas[currTile-skipTiles].x = x;
+                clipAreas[currTile-skipTiles].y = y;
+                clipAreas[currTile-skipTiles].w = xTileWidth;
+                clipAreas[currTile-skipTiles].h = yTileWidth;
+            }
             ++currTile;
         }
     }
