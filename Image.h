@@ -59,6 +59,9 @@ class Image
         PENJIN_ERRORS loadImageNoKey(CRstring imageName);
         PENJIN_ERRORS loadImageSheet(CRstring imageName,CRuint xTiles,CRuint yTiles);  // store the separated images on the vector
         PENJIN_ERRORS loadImageSheetNoKey(CRstring imageName,CRuint xTiles,CRuint yTiles);
+        PENJIN_ERRORS loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data
+        PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data
+        PENJIN_ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
 
         #ifdef PENJIN3D
             void renderImage(uint i,CRfloat destX,CRfloat destY,CRfloat destZ);
@@ -96,20 +99,42 @@ class Image
         PENJIN_ERRORS setTransparentColour(CRuint i, const Vector2di& pixel);
         PENJIN_ERRORS setTransparentColour(const Vector2di& pixel)
         {
+            PENJIN_ERRORS error;
+            uint i;
             #ifdef PENJIN_SDL
-                return setTransparentColour(images.size()-1,pixel);
+            for (i=0;i<images.size();i++)
+            {
+                error = setTransparentColour(i,pixel);
+                if (error != PENJIN_OK) return error;
+            }
             #elif PENJIN_GL
-                return setTransparentColour(textures.size()-1,pixel);
+            for (i=0;i<textures.size();i++)
+            {
+                error = setTransparentColour(i,pixel);
+                if (error != PENJIN_OK) return error;
+            }
             #endif
+            return error;
         }
         PENJIN_ERRORS setTransparentColour(CRuint i, const Colour& c);
         PENJIN_ERRORS setTransparentColour(const Colour& c)
         {
+            PENJIN_ERRORS error;
+            uint i;
             #ifdef PENJIN_SDL
-                return setTransparentColour(images.size()-1,c);
-            #elif PENJIN_GL
-                return setTransparentColour(textures.size()-1,c);
+            for (i=0;i<images.size();i++)
+            {
+                error = setTransparentColour(i,c);
+                if (error != PENJIN_OK) return error;
+            }
+            #else
+            for (i=0;i<textures.size();i++)
+            {
+                error = setTransparentColour(i,c);
+                if (error != PENJIN_OK) return error;
+            }
             #endif
+            return error;
         }
 
         size_t size()const;                  // Returns the number of images in the vector

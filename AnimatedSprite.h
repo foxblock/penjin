@@ -17,8 +17,10 @@ class AnimatedSprite
             AnimatedSprite(CRint x,CRint y);
         #endif
 
+        PENJIN_ERRORS loadFrame(SDL_Surface* s);
         PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
         PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
+        PENJIN_ERRORS loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // loads a spritesheet from a shared image
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v);
