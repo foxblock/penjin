@@ -254,6 +254,8 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         {
             SDL_Surface* tempImage = NULL;
             SDL_Surface* subSprite = NULL; // Need to use this for animated sprites to get the subsprite isolated.
+            if(StringUtility::charToInt(images.at(i)->format->BitsPerPixel) == 32)
+                SDL_SetColorKey(images.at(i), 0, images.at(i)->format->colorkey);
             if(sheetMode)
             {
                 subSprite = GFX::cropSurface(images[i],&src);

@@ -2,7 +2,9 @@
 
 Menu::Menu()
 {
-    text = NULL;
+    #ifndef PENJIN_ASCII
+        text = NULL;
+    #endif
     currentSelection = 0;
     correction = 0;
     #ifdef PENJIN3D
@@ -17,11 +19,13 @@ Menu::Menu()
 
 Menu::~Menu()
 {
-    if(text)
-    {
-        delete text;
-        text = NULL;
-    }
+    #ifndef PENJIN_ASCII
+        if(text)
+        {
+            delete text;
+            text = NULL;
+        }
+    #endif
     clear();
 }
 
@@ -53,13 +57,15 @@ void Menu::update()
                 menuItems[i]->setMenu3D(false);
             #endif
         }
-        int type = menuItems[i]->getType();
-        if(type == MENU_STRING_ITEM)
-            ((StringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
-        else if (type == MENU_IMAGE_STRING_ITEM)
-            ((ImageStringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
-        else if (type == MENU_ANIM_STRING_ITEM)
-            ((AnimationStringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
+        #ifndef PENJIN_ASCII
+            int type = menuItems[i]->getType();
+            if(type == MENU_STRING_ITEM)
+                ((StringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
+            else if (type == MENU_IMAGE_STRING_ITEM)
+                ((ImageStringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
+            else if (type == MENU_ANIM_STRING_ITEM)
+                ((AnimationStringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
+        #endif
         menuItems[i]->update();
     }
 }
@@ -73,8 +79,17 @@ void Menu::update()
 #else
     void Menu::render()
     {
-        for(int i = menuItems.size()-1; i >= 0; --i)
-            menuItems[i]->render();
+        #ifdef PENJIN_ASCII
+            for(int i = 0; i< menuItems.size(); ++i)
+            {
+                if(menuItems[i]->getIsSelectable())
+                    cout << "#" << i << " ";
+                menuItems[i]->render();
+            }
+        #else
+            for(int i = menuItems.size()-1; i >= 0; --i)
+                menuItems[i]->render();
+        #endif
     }
 #endif
 
@@ -116,22 +131,26 @@ void Menu::addItem(CRint type)
     if (type == MENU_STRING_ITEM)
     {
         menuItems[s] = new StringMenuItem;
-        ((StringMenuItem*)menuItems[s])->setTextHandler(text);
+        #ifndef PENJIN_ASCII
+            ((StringMenuItem*)menuItems[s])->setTextHandler(text);
+        #endif
     }
-    else if (type == MENU_IMAGE_ITEM)
-        menuItems[s] = new ImageMenuItem;
-    else if (type == MENU_ANIM_ITEM)
-        menuItems[s] = new AnimationMenuItem;
-    else if (type == MENU_ANIM_STRING_ITEM)
-    {
-        menuItems[s] = new AnimationStringMenuItem;
-        ((AnimationStringMenuItem*)menuItems[s])->setTextHandler(text);
-    }
-    else if (type == MENU_IMAGE_STRING_ITEM)
-    {
-        menuItems[s] = new ImageStringMenuItem;
-        ((ImageStringMenuItem*)menuItems[menuItems.size()-1])->setTextHandler(text);
-    }
+    #ifndef PENJIN_ASCII
+        else if (type == MENU_IMAGE_ITEM)
+            menuItems[s] = new ImageMenuItem;
+        else if (type == MENU_ANIM_ITEM)
+            menuItems[s] = new AnimationMenuItem;
+        else if (type == MENU_ANIM_STRING_ITEM)
+        {
+            menuItems[s] = new AnimationStringMenuItem;
+            ((AnimationStringMenuItem*)menuItems[s])->setTextHandler(text);
+        }
+        else if (type == MENU_IMAGE_STRING_ITEM)
+        {
+            menuItems[s] = new ImageStringMenuItem;
+            ((ImageStringMenuItem*)menuItems[menuItems.size()-1])->setTextHandler(text);
+        }
+    #endif
     else if(type == MENU_ITEM)
         menuItems[s] = new MenuItem;
     updatePositions();
@@ -186,28 +205,127 @@ void Menu::removeItem()
         removeItem(size-1);
 }
 
-PENJIN_ERRORS Menu::loadFont(CRstring fontName,CRint fontSize)
-{
-    //  Check for the existence of the Text
-    if(text)
+#ifndef PENJIN_ASCII
+    PENJIN_ERRORS Menu::loadFont(CRstring fontName,CRint fontSize)
     {
-        text->clear();
-        delete text;
+        //  Check for the existence of the Text
+        if(text)
+        {
+            text->clear();
+            delete text;
+        }
+        text = NULL;
+        text = new Text;
+
+        //  we want to control the absolute position of the text at all times.
+        text->setRelativity(false);
+
+        return text->loadFont(fontName, fontSize);
     }
-    text = NULL;
-    text = new Text;
+    void Menu::setTextColour(const Colour& col)
+    {
+        //  Text not init'd
+        if(!text)
+            return;
+        text->setColour(col);
+    }
+    PENJIN_ERRORS Menu::loadImage(CRstring fileName){return loadImage(menuItems.size()-1, fileName);}
+    PENJIN_ERRORS Menu::loadImage(CRuint index,CRstring fileName)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_IMAGE_ITEM)
+            return ((ImageMenuItem*)menuItems[index])->loadImage(fileName);
+        else if(type == MENU_IMAGE_STRING_ITEM)
+            return ((ImageStringMenuItem*)menuItems[index])->loadImage(fileName);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
 
-    //  we want to control the absolute position of the text at all times.
-    text->setRelativity(false);
+    PENJIN_ERRORS Menu::loadFrame(CRuint index,CRstring fileName)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_ANIM_ITEM)
+            return ((AnimationMenuItem*)menuItems[index])->loadFrame(fileName);
+        else if(type == MENU_ANIM_STRING_ITEM)
+            return ((AnimationStringMenuItem*)menuItems[index])->loadFrame(fileName);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
 
-    return text->loadFont(fontName, fontSize);
-}
+    PENJIN_ERRORS Menu::loadFrame(CRstring fileName){return loadFrame(menuItems.size()-1, fileName);}
 
+    PENJIN_ERRORS Menu::loadFrames(CRuint index,CRstring fileName,CRuint xTiles,CRuint yTiles)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_ANIM_ITEM)
+            return ((AnimationMenuItem*)menuItems[index])->loadFrames(fileName, xTiles, yTiles);
+        else if(type == MENU_ANIM_STRING_ITEM)
+            return ((AnimationStringMenuItem*)menuItems[index])->loadFrames(fileName, xTiles, yTiles);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
+
+    PENJIN_ERRORS Menu::loadFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles){return loadFrames(menuItems.size()-1,tileSheet, xTiles, yTiles);}
+    PENJIN_ERRORS Menu::loadSelectionFrame(CRstring fileName){return loadSelectionFrame(menuItems.size()-1, fileName);}
+    PENJIN_ERRORS Menu::loadSelectionFrame(CRuint index,CRstring fileName)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_ANIM_ITEM)
+            return ((AnimationMenuItem*)menuItems[index])->loadSelectionFrame(fileName);
+        else if(type == MENU_ANIM_STRING_ITEM)
+            return ((AnimationStringMenuItem*)menuItems[index])->loadSelectionFrame(fileName);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
+
+    PENJIN_ERRORS Menu::loadSelectionImage(CRuint index,CRstring fileName)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_IMAGE_ITEM)
+            return ((ImageMenuItem*)menuItems[index])->loadSelection(fileName);
+        else if(type == MENU_IMAGE_STRING_ITEM)
+            return ((ImageStringMenuItem*)menuItems[index])->loadSelection(fileName);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
+
+    PENJIN_ERRORS Menu::loadSelectionImage(CRstring fileName){return loadSelectionImage(menuItems.size()-1, fileName);}
+    PENJIN_ERRORS Menu::loadSelectionFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles){return loadSelectionFrames(menuItems.size()-1, tileSheet, xTiles, yTiles);}
+    PENJIN_ERRORS Menu::loadSelectionFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles)
+    {
+        if(index >= menuItems.size())
+            return PENJIN_INVALID_INDEX;
+        int type = menuItems[index]->getType();
+        if(type == MENU_ANIM_ITEM)
+            return ((AnimationMenuItem*)menuItems[index])->loadSelectionFrames(tileSheet,xTiles,yTiles);
+        else if(type == MENU_ANIM_STRING_ITEM)
+            return ((AnimationStringMenuItem*)menuItems[index])->loadSelectionFrames(tileSheet, xTiles, yTiles);
+        return PENJIN_INVALID_MENUITEM_TYPE;
+    }
+    void Menu::centreText()
+    {
+        for(int s = menuItems.size()-1; s>=0; --s)
+        {
+            MENU_TYPES type = menuItems[s]->getType();
+            if (type == MENU_ANIM_STRING_ITEM)
+                ((AnimationStringMenuItem*)menuItems[s])->centreText(correction);
+            else if (type == MENU_IMAGE_STRING_ITEM)
+                ((ImageStringMenuItem*)menuItems[s])->centreText(correction);
+        }
+    }
+#endif
 void Menu::setMenuItemText(CRuint item,CRstring txt)
 {
-    //  Text not init'd
-    if(!text)
-        return;
+    #ifndef PENJIN_ASCII
+        //  Text not init'd
+        if(!text)
+            return;
+    #endif
     //  MenuItem out of array boundary
     if(item >= menuItems.size())
         return;
@@ -215,21 +333,15 @@ void Menu::setMenuItemText(CRuint item,CRstring txt)
     int type = menuItems[item]->getType();
     if(type == MENU_STRING_ITEM)
         ((StringMenuItem*)menuItems[item])->setMenuItemText(txt);
+#ifndef PENJIN_ASCII
     else if(type == MENU_ANIM_STRING_ITEM)
         ((AnimationStringMenuItem*)menuItems[item])->setMenuItemText(txt);
     else if (type == MENU_IMAGE_STRING_ITEM)
         ((ImageStringMenuItem*)menuItems[item])->setMenuItemText(txt);
+#endif
 }
 
 void Menu::setMenuItemText(CRstring itemText){setMenuItemText(menuItems.size()-1, itemText);}
-
-void Menu::setTextColour(const Colour& col)
-{
-    //  Text not init'd
-    if(!text)
-        return;
-    text->setColour(col);
-}
 
 void Menu::setIsSelectable(CRuint item,CRbool selectable)
 {
@@ -266,10 +378,12 @@ void Menu::setSelectionIndicator(CRuint index,CRchar c)
     int type = menuItems[index]->getType();
     if(type == MENU_STRING_ITEM)
         ((StringMenuItem*)menuItems[index])->setSelectionIndicator(c);
+#ifndef PENJIN_ASCII
     else if (type == MENU_ANIM_STRING_ITEM)
         ((AnimationStringMenuItem*)menuItems[index])->setSelectionIndicator(c);
     else if (type == MENU_IMAGE_STRING_ITEM)
         ((ImageStringMenuItem*)menuItems[index])->setSelectionIndicator(c);
+#endif
 }
 
 void Menu::setSelectionIndicator(CRchar c)
@@ -296,96 +410,6 @@ void Menu::setSelectionIndicator(CRchar c)
     }
 #endif
 
-PENJIN_ERRORS Menu::loadImage(CRstring fileName){return loadImage(menuItems.size()-1, fileName);}
-PENJIN_ERRORS Menu::loadImage(CRuint index,CRstring fileName)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_IMAGE_ITEM)
-        return ((ImageMenuItem*)menuItems[index])->loadImage(fileName);
-    else if(type == MENU_IMAGE_STRING_ITEM)
-        return ((ImageStringMenuItem*)menuItems[index])->loadImage(fileName);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-PENJIN_ERRORS Menu::loadFrame(CRuint index,CRstring fileName)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_ANIM_ITEM)
-        return ((AnimationMenuItem*)menuItems[index])->loadFrame(fileName);
-    else if(type == MENU_ANIM_STRING_ITEM)
-        return ((AnimationStringMenuItem*)menuItems[index])->loadFrame(fileName);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-PENJIN_ERRORS Menu::loadFrame(CRstring fileName){return loadFrame(menuItems.size()-1, fileName);}
-
-PENJIN_ERRORS Menu::loadFrames(CRuint index,CRstring fileName,CRuint xTiles,CRuint yTiles)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_ANIM_ITEM)
-        return ((AnimationMenuItem*)menuItems[index])->loadFrames(fileName, xTiles, yTiles);
-    else if(type == MENU_ANIM_STRING_ITEM)
-        return ((AnimationStringMenuItem*)menuItems[index])->loadFrames(fileName, xTiles, yTiles);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-PENJIN_ERRORS Menu::loadFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles){return loadFrames(menuItems.size()-1,tileSheet, xTiles, yTiles);}
-PENJIN_ERRORS Menu::loadSelectionFrame(CRstring fileName){return loadSelectionFrame(menuItems.size()-1, fileName);}
-PENJIN_ERRORS Menu::loadSelectionFrame(CRuint index,CRstring fileName)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_ANIM_ITEM)
-        return ((AnimationMenuItem*)menuItems[index])->loadSelectionFrame(fileName);
-    else if(type == MENU_ANIM_STRING_ITEM)
-        return ((AnimationStringMenuItem*)menuItems[index])->loadSelectionFrame(fileName);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-PENJIN_ERRORS Menu::loadSelectionImage(CRuint index,CRstring fileName)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_IMAGE_ITEM)
-        return ((ImageMenuItem*)menuItems[index])->loadSelection(fileName);
-    else if(type == MENU_IMAGE_STRING_ITEM)
-        return ((ImageStringMenuItem*)menuItems[index])->loadSelection(fileName);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-PENJIN_ERRORS Menu::loadSelectionImage(CRstring fileName){return loadSelectionImage(menuItems.size()-1, fileName);}
-PENJIN_ERRORS Menu::loadSelectionFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles){return loadSelectionFrames(menuItems.size()-1, tileSheet, xTiles, yTiles);}
-PENJIN_ERRORS Menu::loadSelectionFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles)
-{
-    if(index >= menuItems.size())
-        return PENJIN_INVALID_INDEX;
-    int type = menuItems[index]->getType();
-    if(type == MENU_ANIM_ITEM)
-        return ((AnimationMenuItem*)menuItems[index])->loadSelectionFrames(tileSheet,xTiles,yTiles);
-    else if(type == MENU_ANIM_STRING_ITEM)
-        return ((AnimationStringMenuItem*)menuItems[index])->loadSelectionFrames(tileSheet, xTiles, yTiles);
-    return PENJIN_INVALID_MENUITEM_TYPE;
-}
-
-void Menu::centreText()
-{
-    for(int s = menuItems.size()-1; s>=0; --s)
-    {
-        MENU_TYPES type = menuItems[s]->getType();
-        if (type == MENU_ANIM_STRING_ITEM)
-            ((AnimationStringMenuItem*)menuItems[s])->centreText(correction);
-        else if (type == MENU_IMAGE_STRING_ITEM)
-            ((ImageStringMenuItem*)menuItems[s])->centreText(correction);
-    }
-}
 #ifdef PENJIN3D
  void Menu::setMenuItemDimensions(CRuint i,const Vector2di& dims){menuItems[i]->setDimensions(dims);}
 #endif

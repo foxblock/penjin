@@ -5,8 +5,12 @@
 #include "PenjinStates.h"		//	List all game states in this file
 #include "PenjinTypes.h"		//	All Penjin types listed here.
 #include "StringUtility.h"
-#include "Sound.h"
-#include "Text.h"
+#ifndef PENJIN_ASCII
+    #include "Sound.h"
+    #include "Text.h"
+#else
+    #include "Random.h"
+#endif
 #ifdef USE_ACHIEVEMENTS
     #include "AchievementSystem.h"
     #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
@@ -52,7 +56,10 @@ class Engine
 		}
 
 	protected:
-        string customControlMap;        //  filename for a controlmapping file
+        #ifndef PENJIN_ASCII
+            string customControlMap;        //  filename for a controlmapping file
+            SimpleJoy* input;
+        #endif
 		bool paused;
 		BaseState* state;				//	The current game state
 		#ifdef PENJIN_CACA
@@ -65,13 +72,16 @@ class Engine
 		vector<Variable> variables;		//	Variable storage for transfer between states
 		Timer gameTimer;				//	Timer for frame regulation and event scheduling.
 		uint now;
-		SimpleJoy* input;
 		#ifdef _DEBUG
             float calcFPS()
             {
                 static float fps = 0.0f;
                 static float lastTime = 0.0f;
-                float currentTime = SDL_GetTicks();
+                #ifndef PENJIN_SYS_TIMER
+                    float currentTime = SDL_GetTicks();
+                #else
+                    float currentTime = clock();
+                #endif
                 fps = fps*0.9f+(100.0f/(currentTime - lastTime));
                 lastTime = currentTime;
                 return fps;
@@ -81,7 +91,11 @@ class Engine
         uint timeRemaining(CRuint x)
         {
             static uint nextTime = 0;
-            now = SDL_GetTicks();
+            #ifndef PENJIN_SYS_TIMER
+                now = SDL_GetTicks();
+            #else
+                now = clock();
+            #endif
             if (nextTime <= now)
             {
                 nextTime = now + x;
@@ -89,8 +103,6 @@ class Engine
             }
             return(nextTime - now);
         }
-
-
 };
 
 #endif	//	ENGINE_H

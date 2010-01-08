@@ -38,7 +38,7 @@ class Image
             }
             void disableTransparentColour(CRuint i)
             {
-                SDL_SetColorKey(images.at(i), 0, SDL_MapRGB(images.at(i)->format,0,0,0));
+                SDL_SetColorKey(images.at(i), 0, images.at(i)->format->colorkey);
             }
             void disableTransparentColour(){disableTransparentColour(images.size()-1);}
         #elif PENJIN_GL

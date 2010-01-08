@@ -20,6 +20,7 @@ class Sprite
         PENJIN_ERRORS loadSprite(CRstring fileName);     // Loads an image for this sprite
 
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
+        PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(Colour(c));}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v){return image.setTransparentColour(v);}
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
         uchar getAlpha()const{return image.getAlpha();}

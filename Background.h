@@ -19,6 +19,7 @@ public:
         void render();
     #endif
         PENJIN_ERRORS setTransparentColour(const Colour& c){return img.setTransparentColour(c);}
+        PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(c);}
         void setBG(CRuint bg);	                //	Assigns a background ID
         uint getBG()const;			            //	Returns an assigned background ID
         void toGreyScale();

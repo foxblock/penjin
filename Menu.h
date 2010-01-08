@@ -2,15 +2,19 @@
 #define MENU_H_INCLUDED
 
 #include <vector>
-using namespace std;
+using std::vector;
 
+#include "PenjinErrors.h"
 #include "MenuItem.h"
 #include "StringMenuItem.h"
-#include "AnimationStringMenuItem.h"
-#include "AnimationMenuItem.h"
-#include "ImageMenuItem.h"
-#include "ImageStringMenuItem.h"
-#include "PenjinErrors.h"
+
+#ifndef PENJIN_ASCII
+    #include "AnimationStringMenuItem.h"
+    #include "AnimationMenuItem.h"
+    #include "ImageMenuItem.h"
+    #include "ImageStringMenuItem.h"
+#endif
+
 
 class Menu
 {
@@ -35,7 +39,15 @@ class Menu
         void menuDown();
 
         /// Report active selection
-        int getSelection(){return currentSelection;}
+        int getSelection()
+        {
+            #ifdef PENJIN_ASCII
+                cout << "Enter Selection:";
+                cin >> currentSelection;
+            #endif
+            return currentSelection;
+        }
+
         void setSelection(CRint curr){currentSelection = curr;}
         bool setMouseSelection(const Vector2di& mousePos){return setMouseSelection(mousePos.x, mousePos.y);}
         bool setMouseSelection(CRint x,CRint y);   //  Returns true if mouse is hovering over a section false otherwise
@@ -84,42 +96,41 @@ class Menu
         void setIsSelectable(CRbool isSelectable);        //  Set the last menu item's selectability
 
         /// StringMenuItem functions
-        PENJIN_ERRORS loadFont(CRstring fontName,CRint fontSize);   //  Load a font into the shared Text
-        void setTextColour(const Colour& colour);              //  Set the colour of the text
-        void setTextSelectionColour(const Colour& colour){textSelectionColour = colour;}
-        void setTextBgColour(const Colour& col){text->setBgColour(col);}
+        #ifndef PENJIN_ASCII
+            PENJIN_ERRORS loadFont(CRstring fontName,CRint fontSize);   //  Load a font into the shared Text
+            void setTextColour(const Colour& colour);              //  Set the colour of the text
+            void setTextSelectionColour(const Colour& colour){textSelectionColour = colour;}
+            void setTextBgColour(const Colour& col){text->setBgColour(col);}
+            void setTransparentColour(Colour c);
+            #ifdef PENJIN_SDL
+                void setUseHardware(CRbool use);
+            #endif
+            /// ImageMenuItem functions
+            PENJIN_ERRORS loadImage(CRuint item,CRstring fileName);      //  Load an image for a specific menu item
+            PENJIN_ERRORS loadImage(CRstring fileName);                //  Load an Image for the last MenuItem
+            PENJIN_ERRORS loadSelectionImage(CRstring fileName);       //  Load an selection image into the last MenuItem
+            PENJIN_ERRORS loadSelectionImage(CRuint item,CRstring fileName);//  Load selection image for a specific MenuItem
+
+            /// AnimationMenuItem functions
+            PENJIN_ERRORS loadFrame(CRuint index,CRstring fileName);    //  Load an individual frame of animation in a specific menu item
+            PENJIN_ERRORS loadFrame(CRstring fileName);                //
+            PENJIN_ERRORS loadFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles);    //  load a tilesheet animation for this menu item
+            PENJIN_ERRORS loadFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles);
+            PENJIN_ERRORS loadSelectionFrame(CRstring fileName);   //  Load a shared image for selections
+            PENJIN_ERRORS loadSelectionFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles);
+            PENJIN_ERRORS loadSelectionFrame(CRuint index,CRstring fileName);
+            PENJIN_ERRORS loadSelectionFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles);
+
+            void setFrameRate(CRuint fps);                    //  Set the animation frame rate
+            void setLooping(CRint numLoops);                  //  set num loops, -1 is infinite.
+            void setLooping(CRbool shouldLoop);               // true == infinite looping, false == no looping
+            void setReversePlay(CRbool reverse);              //  Reverse playback on last frame?
+        #endif
         void setMenuItemText(CRstring text);              //  Set the topmost menu item text properties
         void setMenuItemText(CRuint index,CRstring text);  //  Set the display text of the menu item
         void setSelectionIndicator(CRchar c);             //  Set the character acting as a selection indicator GLOBAL
         void setSelectionIndicator(CRuint index,CRchar c); //  Set the character indicating a selection for a specific menu item
         void centreText();
-
-        #ifdef PENJIN_SDL
-            void setUseHardware(CRbool use);
-        #endif
-
-        void setTransparentColour(Colour c);
-
-        /// ImageMenuItem functions
-        PENJIN_ERRORS loadImage(CRuint item,CRstring fileName);      //  Load an image for a specific menu item
-        PENJIN_ERRORS loadImage(CRstring fileName);                //  Load an Image for the last MenuItem
-        PENJIN_ERRORS loadSelectionImage(CRstring fileName);       //  Load an selection image into the last MenuItem
-        PENJIN_ERRORS loadSelectionImage(CRuint item,CRstring fileName);//  Load selection image for a specific MenuItem
-
-        /// AnimationMenuItem functions
-        PENJIN_ERRORS loadFrame(CRuint index,CRstring fileName);    //  Load an individual frame of animation in a specific menu item
-        PENJIN_ERRORS loadFrame(CRstring fileName);                //
-        PENJIN_ERRORS loadFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles);    //  load a tilesheet animation for this menu item
-        PENJIN_ERRORS loadFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles);
-        PENJIN_ERRORS loadSelectionFrame(CRstring fileName);   //  Load a shared image for selections
-        PENJIN_ERRORS loadSelectionFrames(CRstring tileSheet,CRuint xTiles,CRuint yTiles);
-        PENJIN_ERRORS loadSelectionFrame(CRuint index,CRstring fileName);
-        PENJIN_ERRORS loadSelectionFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles);
-
-        void setFrameRate(CRuint fps);                    //  Set the animation frame rate
-        void setLooping(CRint numLoops);                  //  set num loops, -1 is infinite.
-        void setLooping(CRbool shouldLoop);               // true == infinite looping, false == no looping
-        void setReversePlay(CRbool reverse);              //  Reverse playback on last frame?
 
     private:
         void updatePositions();
@@ -135,8 +146,11 @@ class Menu
         #ifdef PENJIN_SDL
             SDL_Surface* screen;
         #endif
-        Text* text;                  //  Shared Text. Only created if needed
-        Colour textSelectionColour;
+        #ifndef PENJIN_ASCII
+            Text* text;                  //  Shared Text. Only created if needed
+            Colour textSelectionColour;
+        #endif
+
         int currentSelection;               //  Stores the current selection of the menu
         int correction;
 };

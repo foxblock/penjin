@@ -13,7 +13,8 @@ class Vector2di : public vec2<int>
     public:
         /// Constructors and Deconstructor.
         Vector2di(){;}
-        Vector2di(const Vector2di& v){*this = v;}
+        template <class T>
+        Vector2di(const T& v){x = v.x;y = v.y;}
         Vector2di(const fixed_point<16>& x, const fixed_point<16>& y)
         {
             this->x = fixedpoint::fix2int(x);

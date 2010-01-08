@@ -1,8 +1,11 @@
 #ifndef TIMER_H_INCLUDED
 #define TIMER_H_INCLUDED
 
-
-#include <SDL/SDL.h>
+#ifndef PENJIN_SYS_TIMER
+    #include <SDL/SDL.h>
+#else
+    #include <ctime>
+#endif
 
 
 #include "PenjinTypes.h"
@@ -23,8 +26,11 @@ enum TimerScalers
     CUSTOM
 };
 
-const static int MY_CLOCKS = 1000 ;
-
+#ifndef PENJIN_SYS_TIMER
+    const static int MY_CLOCKS = 1000 ;
+#else
+    const static int MY_CLOCKS = CLOCKS_PER_SEC;
+#endif
 class Timer
 {
     public:
@@ -85,7 +91,11 @@ class Timer
                 else
                 {
                     //Return the current time minus the start time
-                    return SDL_GetTicks() - startTicks;
+                    #ifndef PENJIN_SYS_TIMER
+                        return SDL_GetTicks() - startTicks;
+                    #else
+                        return clock() - startTicks;
+                    #endif
                 }
             }
             //If the timer isn't running
@@ -99,7 +109,11 @@ class Timer
             //Unpause the timer
             is_Paused = false;
             //Get the current clock time
-            startTicks = SDL_GetTicks();
+            #ifndef PENJIN_SYS_TIMER
+                startTicks = SDL_GetTicks();
+            #else
+                startTicks = clock();
+            #endif
         }
         void stop()
         {
@@ -114,7 +128,11 @@ class Timer
                 //Pause the timer
                 is_Paused = true;
                 //Calculate the paused ticks
-                pausedTicks = SDL_GetTicks() - startTicks;
+                #ifndef PENJIN_SYS_TIMER
+                    pausedTicks = SDL_GetTicks() - startTicks;
+                #else
+                    pausedTicks = clock() -startTicks;
+                #endif
             }
         }
         void unpause()
@@ -125,7 +143,11 @@ class Timer
                 //Unpause the timer
                 is_Paused = false;
                 //Reset the starting ticks
-                startTicks = SDL_GetTicks() - pausedTicks;
+                #ifndef PENJIN_SYS_TIMER
+                    startTicks = SDL_GetTicks() - pausedTicks;
+                #else
+                    startTicks = clock() - pausedTicks;
+                #endif
                 //Reset the paused ticks
                 pausedTicks = 0;
             }

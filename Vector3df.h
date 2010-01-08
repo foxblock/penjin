@@ -12,7 +12,8 @@ class Vector3df : public vec3<float>
 {
     public:
         Vector3df();
-        Vector3df(const Vector3df& v){*this = v;}
+        template <class T>
+        Vector3df(const T& v){x = v.x;y = v.y;z = v.z;}
 
         template <class T>
         Vector3df(const T& x,const T& y, const T& z)
