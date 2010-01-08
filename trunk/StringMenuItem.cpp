@@ -65,8 +65,11 @@ void StringMenuItem::render(SDL_Surface* screen)
 #else
 void StringMenuItem::render()
 {
+    #ifndef PENJIN_ASCII
     text->setPosition(position+ Vector3df(horizontalOffset,0.0f,0.0f));
+    #endif
     string out;
+    #ifndef PENJIN_ASCII
     if(isSelected)
     {
         out = selectionIndicator;
@@ -76,16 +79,17 @@ void StringMenuItem::render()
         out = menuItemText;
 
     text->print(out);
+    #else
+    cout << menuItemText << endl;
+    #endif
 }
 #endif
-void StringMenuItem::update()
-{
-    return;
-}
 
-Vector2di StringMenuItem::getDimensions()
-{
-    dimensions = text->getDimensions(menuItemText);
-    return dimensions;
-}
+#ifndef PENJIN_ASCII
+    Vector2di StringMenuItem::getDimensions()
+    {
+        dimensions = text->getDimensions(menuItemText);
+        return dimensions;
+    }
+#endif
 

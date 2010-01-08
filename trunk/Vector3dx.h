@@ -12,7 +12,8 @@ class Vector3dx : public vec3<fixed_point<16> >
 {
     public:
         Vector3dx();
-        Vector3dx(const Vector3dx& v){*this = v;}
+        template <class T>
+        Vector3dx(const T& v){x = v.x;y = v.y; z = v.z;}
 
         template <class T>
         Vector3dx(const T& x,const T& y, const T& z)

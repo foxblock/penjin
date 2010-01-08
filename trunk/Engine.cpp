@@ -8,12 +8,14 @@ Engine::Engine()
         loadMenu = false;
     #endif
 
-    input = NULL;
     state = NULL;
 	state = new BaseState;
 	setInitialState(STATE_BASE);
 
+#ifndef PENJIN_ASCII
+    input = NULL;
     customControlMap = "NULL";
+#endif
 }
 
 Engine::~Engine()
@@ -23,13 +25,15 @@ Engine::~Engine()
         delete state;
         state = NULL;
     }
-    if(input)
-	{
-        delete input;
-        input = NULL;
-	}
-	SoundClass::deInit();
-	TextClass::deInit();
+    #ifndef PENJIN_ASCII
+        if(input)
+        {
+            delete input;
+            input = NULL;
+        }
+        SoundClass::deInit();
+        TextClass::deInit();
+	#endif
 	#ifdef PENJIN_CACA
         caca_free_display(display);
         cucul_free_canvas(canvas);
@@ -65,11 +69,14 @@ PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
 				switch(argv[arg][1])
 				{
 					//	Set Fullscreen
+					#ifndef PENJIN_ASCII
 					case 'F':
 					{
+
 						GFX::setFullscreen(true);
 						break;
 					}
+					#endif
 /*					//	Set xRes
 					case 'x':
 					case 'X':
@@ -124,31 +131,43 @@ void Engine::setVariables()
         uint iMax = (uint)variables.size();
         for(uint i = 0; i < iMax;++i)
             state->variables.push_back(variables[i]);
-        state->setSimpleJoy(input);
+        #ifndef PENJIN_ASCII
+            state->setSimpleJoy(input);
+        #endif
     }
 }
 
 PENJIN_ERRORS Engine::init()
 {
-    return GFX::resetScreen();
+    #ifndef PENJIN_ASCII
+        return GFX::resetScreen();
+    #else
+        return PENJIN_OK;
+    #endif
 }
 
 PENJIN_ERRORS Engine::penjinInit()
 {
-	GFX::setResolution();
-#if defined (PENJIN_SDL) || defined(PENJIN_GL)
-    //Initialize SDL's subsystems.
-    if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
-		return PENJIN_SDL_SOMETHING_FAILED;
-#endif
+    #ifndef PENJIN_ASCII
+        GFX::setResolution();
+	#endif
+    #if defined (PENJIN_SDL) || defined(PENJIN_GL)
+        //Initialize SDL's subsystems.
+        if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
+            return PENJIN_SDL_SOMETHING_FAILED;
+    #endif
     PENJIN_ERRORS err = init();
     if(err != PENJIN_OK)
         return err;
 	#ifdef _DEBUG
-        GFX::showVideoInfo();
+        #ifndef PENJIN_ASCII
+            GFX::showVideoInfo();
+        #endif
 	#endif
     //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-    GFX::showCursor(false);
+    #ifndef PENJIN_ASCII
+        GFX::showCursor(false);
+    #endif
     //  Can't display window title on a GP2X
     #ifndef PLATFORM_GP2X
         string appName = Penjin::getApplicationName();
@@ -175,15 +194,20 @@ PENJIN_ERRORS Engine::penjinInit()
     #endif
 
     /// TODO: add error handling for other intialisation.
-    SoundClass::init();
-    TextClass::init();
-    input = NULL;
-    input = new SimpleJoy();
-    if(customControlMap != "NULL")
-        input->loadControlMap(customControlMap);
-
+    #ifndef PENJIN_ASCII
+        SoundClass::init();
+        TextClass::init();
+        input = NULL;
+        input = new SimpleJoy();
+        if(customControlMap != "NULL")
+            input->loadControlMap(customControlMap);
+    #endif
     gameTimer.setMode(SIXTY_FRAMES);
-    now = SDL_GetTicks();
+    #ifndef PENJIN_SYS_TIMER
+        now = SDL_GetTicks();
+    #else
+        now = clock();
+	#endif
 	gameTimer.start();
 	Random::randSeed();
 
@@ -226,11 +250,17 @@ bool Engine::stateLoop()
                 #ifdef PENJIN_SDL
                 //GFX::unlockSurface();
                 #endif
-                GFX::forceBlit();
+                #ifndef PENJIN_ASCII
+                    GFX::forceBlit();
+                #endif
                 gameTimer.start();
             }
             else
+            #ifndef PENJIN_SYS_TIMER
                 SDL_Delay(50);
+            #else
+                sleep(50);
+            #endif
         }
         else if(!state->getIsPaused() && state->getFirstPaused())
         {
@@ -259,28 +289,39 @@ bool Engine::stateLoop()
             #ifdef PENJIN_SDL
                 //GFX::unlockSurface();
             #endif
-            GFX::forceBlit();
+            #ifndef PENJIN_ASCII
+                GFX::forceBlit();
+            #endif
             #ifdef _DEBUG
                 int frameCount = calcFPS();
-                if(frameCount>=20)//only update if there are a reasonable number of redundant updates
-                {
-                    //  This code seems to slow down Linux builds majorly.
-                    SDL_WM_SetCaption((Penjin::getApplicationName() + " V" + AutoVersion::FULLVERSION_STRING
-                    + AutoVersion::STATUS_SHORT
-                    + " "
-                    + intToString(frameCount)
-                    + " DEBUG "
-                    + AutoVersion::DATE + "-"
-                    + AutoVersion::MONTH + "-"
-                    + AutoVersion::YEAR).c_str(), NULL );
-                    //frameCount = 0;
-                }
+                #ifdef PENJIN_SDL
+                    if(frameCount>=20)//only update if there are a reasonable number of redundant updates
+                    {
+                        //  This code seems to slow down Linux builds majorly.
+                        SDL_WM_SetCaption((Penjin::getApplicationName() + " V" + AutoVersion::FULLVERSION_STRING
+                        + AutoVersion::STATUS_SHORT
+                        + " "
+                        + intToString(frameCount)
+                        + " DEBUG "
+                        + AutoVersion::DATE + "-"
+                        + AutoVersion::MONTH + "-"
+                        + AutoVersion::YEAR).c_str(), NULL );
+                        //frameCount = 0;
+                    }
+                #endif
 			#endif
 		}
+		#ifndef PENJIN_SYS_TIMER
 		else
 		{
-            SDL_Delay(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
+		    SDL_Delay(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
 		}
+		#else
+        /*else
+		{
+		    sleep(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
+		}*/
+		#endif
 		return true;   // Continue program execution
 	}
 	else

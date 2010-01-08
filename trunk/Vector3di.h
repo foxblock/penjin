@@ -12,7 +12,8 @@ class Vector3di : public vec3<int>
 {
     public:
         Vector3di();
-        Vector3di(const Vector3di& v){*this = v;}
+        template <class T>
+        Vector3di(const T& v){x = v.x;y = v.y;z = v.z;}
 
         template <class T>
         Vector3di(const T& x,const T& y, const T& z)

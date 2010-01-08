@@ -69,7 +69,9 @@ void BaseState::pauseUpdate()
     void BaseState::render()
     {
         //	Clear Screen
-        GFX::clearScreen();
+        #ifndef PENJIN_ASCII
+            GFX::clearScreen();
+        #endif
 
 /*
         //	Draw objects

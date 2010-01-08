@@ -9,8 +9,11 @@ through inheritence
 #include <vector>
 using std::vector;
 #include "PenjinTypes.h"
-#include "SimpleJoy.h"
-#include "GFX.h"
+
+#ifndef PENJIN_ASCII
+    #include "SimpleJoy.h"
+    #include "GFX.h"
+#endif
 
 #ifdef PENJIN_SDL
     #include <SDL/SDL.h>
@@ -71,19 +74,22 @@ class  BaseState
 		void setNeedInit(CRbool init){needInit = init;}
 		bool getNullifyState()const{return nullify;}
 		void nullifyState(){nullify = true;nextState = STATE_NULL;}
-		void setSimpleJoy(SimpleJoy* sj){input = sj;}
-
+		#ifndef PENJIN_ASCII
+            void setSimpleJoy(SimpleJoy* sj){input = sj;}
+        #endif
 		//	This is used to pass variables between states!
 		vector<Variable> variables;
 
 	protected:
-        SimpleJoy* input;
+        #ifndef PENJIN_ASCII
+            SimpleJoy* input;
+            SDL_Event event;
+        #endif
 		bool nullify;
 		bool needInit;
 		uint nextState;
 		bool firstPaused;
         bool isPaused;
-		SDL_Event event;
     #ifdef PENJIN_SDL
         virtual void pauseSymbol(SDL_Surface* screen);
     #else

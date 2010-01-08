@@ -1,8 +1,13 @@
 #ifndef STRINGMENUITEM_H_INCLUDED
 #define STRINGMENUITEM_H_INCLUDED
 
-
-#include "Text.h"
+#ifndef PENJIN_ASCII
+    #include "Text.h"
+#else
+    #include <iostream>
+    using std::cout;
+    using std::endl;
+#endif
 #include "MenuItem.h"
 
 class StringMenuItem : public MenuItem
@@ -10,12 +15,14 @@ class StringMenuItem : public MenuItem
     public:
         StringMenuItem(){init();}
         StringMenuItem(CRstring menuItemText){init(); this->menuItemText = menuItemText;}
-        StringMenuItem(Text* pointer){init(); setTextHandler(pointer);}
-
+        #ifndef PENJIN_ASCII
+            StringMenuItem(Text* pointer){init(); setTextHandler(pointer);}
+        virtual Vector2di getDimensions();                   // renderstoa null surfaxe in order to get the dims
+        #endif
         virtual ~StringMenuItem();
 
-        virtual void update();                          //  We just return since there is nothing to update for this type
-        virtual Vector2di getDimensions();                   // renderstoa null surfaxe in order to get the dims
+        virtual void update(){;}                          //  We just return since there is nothing to update for this type
+
 
         virtual void render();
         #ifdef PENJIN_SDL
@@ -23,9 +30,11 @@ class StringMenuItem : public MenuItem
         #endif
 
         /// Set text properties - inherited from the text handler passed in
-        void setTextHandler(Text* pointer){text = pointer;}
+        #ifndef PENJIN_ASCII
+            void setTextHandler(Text* pointer){text = pointer;}
+            void setTextSelectionColour(const Colour& c){selectedColour = c;}
+        #endif
         void setMenuItemText(CRstring text){menuItemText = text;}
-        void setTextSelectionColour(const Colour& c){selectedColour = c;}
         void setSelectionIndicator(CRchar c){selectionIndicator = c;}
 
     protected:
@@ -33,8 +42,10 @@ class StringMenuItem : public MenuItem
 
     private:
         string menuItemText;
-        Text* text;             //   Pointer to a Text the actual Text is shared through the menu items
-        Colour selectedColour;
+        #ifndef PENJIN_ASCII
+            Text* text;             //   Pointer to a Text the actual Text is shared through the menu items
+            Colour selectedColour;
+        #endif
         char selectionIndicator;
 };
 

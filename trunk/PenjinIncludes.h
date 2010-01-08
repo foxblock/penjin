@@ -19,8 +19,11 @@
 
 #include "version.h"    //  Application version info
 #include "ErrorHandler.h"	// Will report various errors depending on where called.
-#include "GFX.h"
-#include "SimpleJoy.h"
+
+#ifndef PENJIN_ASCII
+    #include "GFX.h"
+    #include "SimpleJoy.h"
+#endif
 
 #include <string>
 #include <iostream>

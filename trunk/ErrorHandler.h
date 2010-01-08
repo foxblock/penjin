@@ -26,24 +26,28 @@ class ErrorHandler
         }
 		string getErrorString(CRint errorCode)
 		{
-		    string temp1;
-		    temp1 = checkSDL(errorCode);
-		    string temp2;
-		    temp2 = checkIMG(errorCode);
-		    string temp3;
-		    if(shouldGetTTF)
-                temp3 = checkTTF(errorCode);
-		    string out = errorPrefix + PENJIN_ERROR_STRINGS[errorCode+1] +
-		    (temp1.size()>1? temp1 : "") +
-		    (temp2.size()>1? temp2 : "");
+		    #ifndef PENJIN_ASCII
+                string temp1;
+                temp1 = checkSDL(errorCode);
+                string temp2;
+                temp2 = checkIMG(errorCode);
+                string temp3;
+                if(shouldGetTTF)
+                    temp3 = checkTTF(errorCode);
+                string out = errorPrefix + PENJIN_ERROR_STRINGS[errorCode+1] +
+                (temp1.size()>1? temp1 : "") +
+                (temp2.size()>1? temp2 : "");
 
-            if(shouldGetTTF)
-                (temp3.size()>1? temp3 : "");
-
+                if(shouldGetTTF)
+                    (temp3.size()>1? temp3 : "");
+            #else
+                string out = errorPrefix + PENJIN_ERROR_STRINGS[errorCode+1];
+            #endif
 		    return out + "\n";
 		}
 		void setErrorPrefix(CRstring prefix){errorPrefix = prefix;}
 	private:
+	#ifndef PENJIN_ASCII
         string checkSDL(CRint errorCode)
         {
             if(errorCode == PENJIN_SDL_SOMETHING_FAILED || errorCode == PENJIN_SDL_INVALID_COLORKEY ||errorCode == PENJIN_SDL_SETVIDEOMODE_FAILED ||errorCode == PENJIN_SDL_VIDEO_INIT_FAILED ||errorCode == PENJIN_SDL_VIDEO_QUERY_FAILED)
@@ -62,7 +66,7 @@ class ErrorHandler
                 return (string)" " + (string)TTF_GetError();
             return " ";
         }
-
+    #endif
 		string errorPrefix;
 		bool shouldGetTTF;
 };

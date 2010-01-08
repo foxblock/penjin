@@ -2,18 +2,21 @@
 #define MENUITEM_H_INCLUDED
 
 #include "PenjinTypes.h"
-#include <SDL/SDL.h>
-
+#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+    #include <SDL/SDL.h>
+#endif
 namespace MenuItems
 {
     enum MENU_TYPES
     {
         MENU_ITEM = 0,
         MENU_STRING_ITEM,
+        #ifndef PENJIN_ASCII
         MENU_IMAGE_ITEM,
         MENU_ANIM_ITEM,
         MENU_IMAGE_STRING_ITEM,
         MENU_ANIM_STRING_ITEM
+        #endif
     };
 }
 
@@ -41,6 +44,7 @@ class MenuItem
             virtual void render(SDL_Surface* screen);
         #endif
         void setIsSelectable(CRbool isSelectable){this->isSelectable = isSelectable;}
+        bool getIsSelectable()const{return isSelectable;}
         void setIsSelected(CRbool isSelected){this->isSelected = isSelected;}
         bool isMouseSelected(CRint x,CRint y);
         void setDimensions(const Vector2di& dim){dimensions = dim;}
@@ -57,7 +61,6 @@ class MenuItem
         int getHorizontalOffset()const{return horizontalOffset;}
         void setSpacing(CRint spacing){verticalSpacing = spacing;}
         int getSpacing()const{return verticalSpacing;}
-        bool getIsSelectable()const{return isSelectable;}
         MENU_TYPES getType()const{return type;}
         void setType(const MENU_TYPES& type){this->type = type;}
         virtual void init();
