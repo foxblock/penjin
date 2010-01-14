@@ -4,11 +4,6 @@ MyGame::MyGame()
 {
 	//	Default constructor
 	Penjin::setApplicationName("TestSuite");
-#if defined (PLATFORM_PANDORA) || defined(PLATFORM_GP2X)
-	GFX::setFullscreen(true);
-#else
-    GFX::setFullscreen(false);
-#endif
 }
 
 
@@ -45,6 +40,8 @@ void MyGame::stateManagement()
         state = new StateColour;
     else if(next == STATE_TITLE)
 		state = new StateTitle;
+    else if(next == STATE_FILE_LIST)
+		state = new StateFileList;
 	/* EXAMPLE OF STATE CHECKING
 	else if(next == STATE_TITLE)
 		state = new StateTitle;*/

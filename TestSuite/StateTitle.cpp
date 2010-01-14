@@ -60,6 +60,11 @@ void StateTitle::initMenu()
 
     menu.addItem(MENU_STRING_ITEM);
     menu.setIsSelectable(true);
+    menu.setMenuItemText("FileLister");
+    menu.setSpacing(spacing);
+
+    menu.addItem(MENU_STRING_ITEM);
+    menu.setIsSelectable(true);
     menu.setMenuItemText("Quit!");
     menu.setSpacing(spacing);
     menu.centreText();
@@ -124,6 +129,8 @@ void StateTitle::menuLogic()
         setNextState(STATE_PRIMITIVE);
     else if(choice == 4)
         setNextState(STATE_RAYCAST);
-    else if(choice == 5)    //  Quit
+    else if(choice == 5)
+        setNextState(STATE_FILE_LIST);
+    else if(choice == 6)    //  Quit
         nullifyState();
 }

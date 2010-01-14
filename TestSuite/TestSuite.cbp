@@ -422,6 +422,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/Command.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
+		<Unit filename="../PenjinBase/DirMenuItem.cpp" />
+		<Unit filename="../PenjinBase/DirMenuItem.h" />
 		<Unit filename="../PenjinBase/DoubleVector.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
@@ -446,6 +448,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/ErrorHandler.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
+		<Unit filename="../PenjinBase/FileLister.cpp" />
+		<Unit filename="../PenjinBase/FileLister.h" />
 		<Unit filename="../PenjinBase/GFX.cpp">
 			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
@@ -858,6 +862,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="StateColour.h">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
+		<Unit filename="StateFileList.cpp" />
+		<Unit filename="StateFileList.h" />
 		<Unit filename="StatePrimitive.cpp">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
