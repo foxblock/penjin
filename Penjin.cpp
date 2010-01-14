@@ -4,8 +4,32 @@ namespace Penjin
 {
     string appName = "Penjin";
     #ifdef PLATFORM_WII
-        string workingDir = "sd:/" + appName +"/";
+        string workingDir = "sd/" + appName +"/";
     #endif
+}
+
+PenjinErrors::PENJIN_ERRORS Penjin::canOpenRoot()
+{
+    #ifdef PLATFORM_WII
+        DIR_ITER *root = diropen("sd/");
+    #elif _WIN32
+        DIR *root = open("C:\\");
+    #else // _LINUX
+        DIR *root = opendir("/");
+    #endif
+    if (root)
+    {
+        #ifdef PLATFORM_WII
+            dirclose(root);
+        #elif _WIN32
+            closedir(root);
+        #else // _LINUX
+            closedir(root);
+        #endif
+
+       return PenjinErrors::PENJIN_OK;
+    }
+    return PenjinErrors::PENJIN_FAT_GET_ROOT_FAILED;
 }
 
 #ifdef PLATFORM_WII
@@ -17,21 +41,11 @@ PenjinErrors::PENJIN_ERRORS Penjin::initFileSystem()
     e = canOpenRoot();
     if (e!= PenjinErrors::PENJIN_OK)
         return e;
-    /*if (chdir("sd:/"))
+    /*if (chdir("sd/"))
         return PenjinErrors::PENJIN_FAT_ACCESS_ROOT_FAILED;*/
     return PenjinErrors::PENJIN_OK;
 }
 
-PenjinErrors::PENJIN_ERRORS Penjin::canOpenRoot()
-{
-    DIR_ITER *root = diropen("sd:/");
-    if (root)
-    {
-       dirclose(root);
-       return PenjinErrors::PENJIN_OK;
-    }
-    return PenjinErrors::PENJIN_FAT_GET_ROOT_FAILED;
-}
 void Penjin::setWorkingDirectory(CRstring dir)
 {
     workingDir = dir;

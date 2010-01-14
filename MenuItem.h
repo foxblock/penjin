@@ -15,8 +15,9 @@ namespace MenuItems
         MENU_IMAGE_ITEM,
         MENU_ANIM_ITEM,
         MENU_IMAGE_STRING_ITEM,
-        MENU_ANIM_STRING_ITEM
+        MENU_ANIM_STRING_ITEM,
         #endif
+        MENU_DIR_ITEM
     };
 }
 
@@ -28,6 +29,7 @@ class MenuItem
         MenuItem()
         {
             type = MENU_ITEM;
+            verticalSpacing = horizontalOffset = 0;
         }
         virtual ~MenuItem();
 
