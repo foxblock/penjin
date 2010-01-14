@@ -88,6 +88,8 @@ void StringMenuItem::render()
 #ifndef PENJIN_ASCII
     Vector2di StringMenuItem::getDimensions()
     {
+        if(menuItemText.empty())
+            return Vector2di(0,0);
         dimensions = text->getDimensions(menuItemText);
         return dimensions;
     }

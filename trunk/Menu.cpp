@@ -15,6 +15,7 @@ Menu::Menu()
     #ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
     #endif
+    menuStart = Vector2di(0,0);
 }
 
 Menu::~Menu()
@@ -61,6 +62,8 @@ void Menu::update()
             int type = menuItems[i]->getType();
             if(type == MENU_STRING_ITEM)
                 ((StringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
+            else if (type == MENU_DIR_ITEM)
+                ((DirMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
             else if (type == MENU_IMAGE_STRING_ITEM)
                 ((ImageStringMenuItem*)menuItems[i])->setTextSelectionColour(textSelectionColour);
             else if (type == MENU_ANIM_STRING_ITEM)
@@ -133,6 +136,13 @@ void Menu::addItem(CRint type)
         menuItems[s] = new StringMenuItem;
         #ifndef PENJIN_ASCII
             ((StringMenuItem*)menuItems[s])->setTextHandler(text);
+        #endif
+    }
+    else if (type == MENU_DIR_ITEM)
+    {
+        menuItems[s] = new DirMenuItem;
+        #ifndef PENJIN_ASCII
+            ((DirMenuItem*)menuItems[s])->setTextHandler(text);
         #endif
     }
     #ifndef PENJIN_ASCII
@@ -333,6 +343,8 @@ void Menu::setMenuItemText(CRuint item,CRstring txt)
     int type = menuItems[item]->getType();
     if(type == MENU_STRING_ITEM)
         ((StringMenuItem*)menuItems[item])->setMenuItemText(txt);
+    else if(type == MENU_DIR_ITEM)
+        ((DirMenuItem*)menuItems[item])->setMenuItemText(txt);
 #ifndef PENJIN_ASCII
     else if(type == MENU_ANIM_STRING_ITEM)
         ((AnimationStringMenuItem*)menuItems[item])->setMenuItemText(txt);

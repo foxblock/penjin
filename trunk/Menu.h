@@ -7,6 +7,7 @@ using std::vector;
 #include "PenjinErrors.h"
 #include "MenuItem.h"
 #include "StringMenuItem.h"
+#include "DirMenuItem.h"
 
 #ifndef PENJIN_ASCII
     #include "AnimationStringMenuItem.h"
@@ -21,7 +22,7 @@ class Menu
     public:
 
         Menu();
-        ~Menu();
+        virtual ~Menu();
 
         /// process menu operations and draw to screen respectively.
         void update();
@@ -90,6 +91,7 @@ class Menu
 
         /// Size operations
         size_t size()const{return menuItems.size();}
+        bool empty()const{return !size();}
 
         /// MenuItem functions
         void setIsSelectable(CRuint item,CRbool isSelectable);
@@ -132,9 +134,12 @@ class Menu
         void setSelectionIndicator(CRuint index,CRchar c); //  Set the character indicating a selection for a specific menu item
         void centreText();
 
+    protected:
+        vector <MenuItem*>   menuItems;     //  Stores the individual menu entries
+
     private:
         void updatePositions();
-        vector <MenuItem*>   menuItems;     //  Stores the individual menu entries
+
         #ifndef PENJIN3D
             Vector2df   menuStart;              //  Stores the topleft coord of the menu
         #else
