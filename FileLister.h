@@ -7,8 +7,13 @@ Parses directory and gives strings so you can load needed files.
 */
 
 #ifdef _WIN32
-    #include <direct.h>
+    //#include <direct.h>
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #include <dirent.h>
     #include <stdlib.h>
+    #define DT_DIR _S_IFDIR
+    #define DT_REG _S_IFREG
 #else
     #include <dirent.h>
     #include <unistd.h>

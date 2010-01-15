@@ -8,12 +8,11 @@ Also provides some quick init functions
 
 #include "ErrorHandler.h"
 #include <dirent.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #ifdef PLATFORM_WII
     #include <fat.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
 #else
 
 #endif
