@@ -26,46 +26,42 @@ FileLister::~FileLister()
 
 void FileLister::createListing()
 {
-   // #ifdef _WIN32
+    DIR* dir = NULL;
+    dirent* dirEnt;
+    dir = opendir(workingDir.c_str());
+    if(!dir)
+        return;
 
-    //#else
-        DIR* dir = NULL;
-        dirent* dirEnt;
-        dir = opendir(workingDir.c_str());
-        if(!dir)
-            return;
+    listing.clear();
+    listingTypes.clear();
+    listing.push_back(workingDir);
+    listingTypes.push_back(PATH);
+    while(dirEnt = readdir(dir))
+    {
+        listing.push_back(dirEnt->d_name);
+        #ifdef _DEBUG
+        cout << dirEnt->d_name << endl;
+        #endif
 
-        listing.clear();
-        listingTypes.clear();
-        listing.push_back(workingDir);
-        listingTypes.push_back(PATH);
-        while(dirEnt = readdir(dir))
-        {
-            listing.push_back(dirEnt->d_name);
-            #ifdef _DEBUG
-            cout << dirEnt->d_name << endl;
-            #endif
-
-            #ifdef _WIN32
-                struct stat fileStat;
-                stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
-                if(fileStat.st_mode == DIRECTORY)
-                    listingTypes.push_back(DIRECTORY);
-                else if(fileStat.st_mode == FILE)
-                    listingTypes.push_back(FILE);
-                else
-                    listingTypes.push_back(UNKNOWN);
-            #else
-                if(dirEnt->d_type == DIRECTORY)
-                    listingTypes.push_back(DIRECTORY);
-                else if(dirEnt->d_type == FILE)
-                    listingTypes.push_back(FILE);
-                else
-                    listingTypes.push_back(UNKNOWN);
-            #endif
-        }
-        closedir(dir);
-   // #endif
+        #ifdef _WIN32
+            struct stat fileStat;
+            stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
+            if(fileStat.st_mode || DT_DIR)
+                listingTypes.push_back(DT_DIR);
+            else if(fileStat.st_mode || DT_REG)
+                listingTypes.push_back(DT_REG);
+            else
+                listingTypes.push_back(UNKNOWN);
+        #else
+            if(dirEnt->d_type == DT_DIR)
+                listingTypes.push_back(DT_DIR);
+            else if(dirEnt->d_type == DT_REG)
+                listingTypes.push_back(DT_REG);
+            else
+                listingTypes.push_back(UNKNOWN);
+        #endif
+    }
+    closedir(dir);
 }
 
 void FileLister::createDisplay()
@@ -107,9 +103,13 @@ string FileLister::enter()
         goUp();
     else if(t == ".")   //  This directory.
         return t;
-    else if(((DirMenuItem*)menuItems.at(getSelection()))->getDirType() == DIRECTORY)
+    else if(((DirMenuItem*)menuItems.at(getSelection()))->getDirType() == DT_DIR)
     {
-        workingDir+= ("/" + t);
+        #ifdef _WIN32
+            workingDir+= ("\\" + t);
+        #else
+            workingDir+= ("/" + t);
+        #endif
         createListing();
         clear();
         ++folderDepth;
@@ -126,7 +126,7 @@ void FileLister::goUp()
     {
         workingDir = Parser().getParentDirectory(workingDir);
         size_t back = workingDir.size()-1;
-        if(workingDir.at(back) == '/')
+        if(workingDir.at(back) == '/' || workingDir.at(back) == '\\')
             workingDir.resize(back);
         createListing();
         clear();

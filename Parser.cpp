@@ -238,7 +238,7 @@ string Parser::getParentDirectory(string fileName)
 	uint x = (uint)strlen(fileName.c_str()) ;
 	while( x > 0)
 	{
-		if(fileName[x] == '/')	//Check for furthest forwardslash
+		if(fileName[x] == '/' || fileName[x] == '\\')	//Check for furthest forwardslash
 		{
 			//fileName[x+1] = 0;	//chop off the filename
 			break;

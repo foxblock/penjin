@@ -52,12 +52,10 @@ class FileLister : public Menu
         vector<string> filters;
         enum DIR_TYPES
         {
-            UNKNOWN=-1,
-            DIRECTORY = DT_DIR,
-            FILE = DT_REG,
+            UNKNOWN=0,
             PATH
         };
-        vector<DIR_TYPES> listingTypes;
+        vector<int> listingTypes;
 
 };
 
