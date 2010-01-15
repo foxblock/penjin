@@ -13,7 +13,7 @@ PenjinErrors::PENJIN_ERRORS Penjin::canOpenRoot()
     #ifdef PLATFORM_WII
         DIR_ITER *root = diropen("sd/");
     #elif _WIN32
-        DIR *root = open("C:\\");
+        DIR *root = opendir("C:\\");
     #else // _LINUX
         DIR *root = opendir("/");
     #endif
