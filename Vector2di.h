@@ -7,6 +7,8 @@
 
 using namespace vmath;
 using namespace fixedpoint;
+#include "Vector2dx.h"
+
 
 class Vector2di : public vec2<int>
 {
@@ -15,6 +17,17 @@ class Vector2di : public vec2<int>
         Vector2di(){;}
         template <class T>
         Vector2di(const T& v){x = v.x;y = v.y;}
+        Vector2di(const vec2<fixed_point<16> >& v)
+        {
+            this->x = fixedpoint::fix2int(v.x);
+            this->y = fixedpoint::fix2int(v.y);
+        }
+        Vector2di(const Vector2dx& v)
+        {
+            vec2<fixed_point<16> > t = v;
+            this->x = fixedpoint::fix2int(t.x);
+            this->y = fixedpoint::fix2int(t.y);
+        }
         Vector2di(const fixed_point<16>& x, const fixed_point<16>& y)
         {
             this->x = fixedpoint::fix2int(x);
@@ -75,7 +88,18 @@ class Vector2di : public vec2<int>
             y-=v.y;
             return *this;
         }
-
+        Vector2di& operator-=(const vec2<fixed_point<16> >& v)
+        {
+            x-=fixedpoint::fix2int(v.x);
+            y-=fixedpoint::fix2int(v.y);
+            return *this;
+        }
+        Vector2di& operator-=(const Vector2dx& v)
+        {
+            x-=fixedpoint::fix2int(v.x);
+            y-=fixedpoint::fix2int(v.y);
+            return *this;
+        }
         template <class T>
         Vector2di& operator*=(const T& v)
         {

@@ -68,6 +68,12 @@ PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
 				//	Look for arguements
 				switch(argv[arg][1])
 				{
+                    //  Load CMF - Custom controls
+				    case 'C':
+				    {
+				        customControlMap = argv[arg+1];
+				        break;
+                    }
 					//	Set Fullscreen
 					#ifndef PENJIN_ASCII
 					case 'F':

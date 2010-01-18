@@ -69,7 +69,26 @@ void DirMenuItem::render(SDL_Surface* screen)
     text->print(screen,out);
 }
 #else
+void DirMenuItem::render()
+{
+    text->setPosition(position/*+ Vector2di(horizontalOffset,0)*/);
+    string out;
+    if(isSelected)
+    {
+        Colour temp = text->getColour();
+        if(temp != selectedColour)
+            text->setColour(selectedColour);
+        out = selectionIndicator;
+        out += " " + menuItemText;
+        text->print(out);
+        text->setColour(temp);
+        return;
+    }
+    else
+        out = menuItemText;
 
+    text->print(out);
+}
 #endif
 
 
