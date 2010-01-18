@@ -100,9 +100,9 @@ void BaseState::init()
 {
     #ifdef PENJIN_GL
         #ifdef PENJIN3D
-            GFX::init3DRendering(*xRes,*yRes);
+            GFX::init3DRendering();
         #else
-            GFX::init2DRendering(*xRes,*yRes);
+            GFX::init2DRendering();
         #endif
 
 	#else

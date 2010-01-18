@@ -86,7 +86,7 @@ namespace GFX
         void clearScreen(SDL_Surface* screen);      //  blank the surface
     #elif PENJIN_GL
         void init2DRendering();   //  Setup a 2D rendering mode.
-                                                        //  Also enables blending.
+                                //  Also enables blending.
         #ifdef PENJIN3D
             void init3DRendering();                     //  Setup a standard 3D rendering mode
         #endif

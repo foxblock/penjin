@@ -20,6 +20,10 @@ Parses directory and gives strings so you can load needed files.
     //#include <sys/stat.h>
     #include <limits.h>
     #define _MAX_PATH PATH_MAX
+    #ifdef PLATFORM_WII
+        #define DT_DIR 4
+        #define DT_REG 8
+    #endif
 #endif
 #include "Menu.h"
 #include "Parser.h"
@@ -35,6 +39,7 @@ class FileLister : public Menu
         virtual void update();
 
         string getPath()const{return workingDir;}
+        void setPath(CRstring path){workingDir = path;}
         string getSelected();      //  Return the string of selected item
         vector<string> getListing();//  Return entire director listing as a vector of strings.
         string enter();             //  Enter the selected item(if directory) and return string of item.

@@ -48,7 +48,9 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface, CRbool keyed)
 	GLenum textureFormat = NULL;
 	int numColours = surface->format->BytesPerPixel;
     intermediary = SDL_CreateRGBSurface(SDL_SWSURFACE, rawDimensions.x, rawDimensions.y, surface->format->BitsPerPixel,
-    GFX::RED_MASK, GFX::GREEN_MASK, GFX::BLUE_MASK, GFX::ALPHA_MASK);
+   0, 0, 0, 0);
+    /*
+    TODO Fix color keyed textures!
     if(keyed)
     {
         transparent = GFX::getPixel(surface,0,0);
@@ -56,7 +58,7 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface, CRbool keyed)
         SDL_FillRect(intermediary, NULL, SDL_MapRGBA(intermediary->format,transparent.red,transparent.green,transparent.blue,0));
         SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(intermediary->format,transparent.red,transparent.green,transparent.blue));
         transparent.alpha = 1;  //  We use this as a flag that a tranparent key is set.
-    }
+    }*/
     SDL_SetAlpha(surface,0,SDL_ALPHA_OPAQUE);
     SDL_BlitSurface(surface, 0 , intermediary, 0);
     textureFormat = getTextureFormat(intermediary);
@@ -111,6 +113,8 @@ GLenum Texture::getTextureFormat(SDL_Surface* surface)
         else
             return GL_BGR;
     }
+
+//  TODO in image is palleted, convert to a truecolour surface
 //    else if (numColours == 2)
 //    {
 //    }

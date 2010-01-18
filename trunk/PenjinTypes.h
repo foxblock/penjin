@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 //  VECTORS - Have length() operations and such
 #include "trenki/vector_math.h"
 #include "Vector2df.h"
-#include "Vector2dx.h"
+//#include "Vector2dx.h"
 #include "Vector2di.h"
 #include "Vector3df.h"
 #include "Vector3dx.h"

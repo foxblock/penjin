@@ -365,7 +365,9 @@ void GFX::showCursor(CRbool show)
 
 void GFX::showVideoInfo()
 {
-    /*SDL_Surface* screen = SDL_GetVideoSurface();*/
+    //#ifdef PENJIN_GL
+    SDL_Surface* screen = SDL_GetVideoSurface();
+    //#endif
     cout << "Screen Info" << endl;
     cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
     #ifdef PENJIN_GL

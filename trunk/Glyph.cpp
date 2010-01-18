@@ -40,7 +40,7 @@ void Glyph::refresh()
     SDL_Surface* tS;
     if(renderMode == QUICK)
         tS = TTF_RenderText_Solid(font,t,colour.getSDL_Colour());
-    else if(renderMode == BOXED)    // render with Clear Colour as BG
+    else if(renderMode == BOXED)
         tS = TTF_RenderText_Shaded(font,t,colour.getSDL_Colour(),bgColour.getSDL_Colour());
     else
         tS = TTF_RenderText_Blended(font,t,colour.getSDL_Colour());
