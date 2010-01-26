@@ -94,9 +94,8 @@ class Pixel
     #else
         void setPosition(CRfloat x, CRfloat y){position.x=x+0.5f;position.y=y+0.5f;}
     #endif
-        void setPosition(const Vector2di& p){position = p;}
-        void setPosition(const Vector2df& p){setPosition(p.x,p.y);}
-
+        template <class T>
+        void setPosition(const T& p){position.x = p.x;position.y=p.y;}
 
     #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);   //  Blit to a specific surface

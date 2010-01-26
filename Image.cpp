@@ -17,6 +17,7 @@ Image::Image()
         screen = SDL_GetVideoSurface();
     #endif
     sheetMode = false;      //  Stores if we use a spritesheet or if we use separate surfaces.
+    colourKey.alpha = 0;    //  Disable colourkey until ready.
 }
 
 Image::~Image()
@@ -27,25 +28,27 @@ Image::~Image()
 
 PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
 {
-#ifdef PENJIN_SDL
     if((size_t)i >= images.size())
         return PENJIN_INVALID_INDEX;
+    if(images.at(i)->flags & SDL_SRCALPHA)
+    {
+        disableTransparentColour(i);
+        return PENJIN_OK;
+    }
     if(SDL_SetColorKey(images[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i]->format,c.red,c.green,c.blue)) == -1)
             return PENJIN_SDL_INVALID_COLORKEY;
-    return PENJIN_OK;
-#endif
+    colourKey = c;
+    colourKey.alpha = 255;
     return PENJIN_OK;
 }
 
 PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2di& v)
 {
-#ifdef PENJIN_SDL
     if((size_t)i >= images.size())
         return PENJIN_INVALID_INDEX;
+
     Colour c = GFX::getPixel(images[i],v.x,v.y);
     return setTransparentColour(i,c);
-#endif
-    return PENJIN_OK;
 }
 
 PENJIN_ERRORS Image::loadImage(CRstring name)
@@ -60,6 +63,18 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
         //  Apply colour key
         uint currentI = (uint)images.size()-1;
         error = setTransparentColour(currentI,Vector2di(0,0));
+        //  check current blend mode.
+        SDL_Surface* t = images.at(currentI);
+        if(images.at(currentI)->flags & SDL_SRCALPHA)
+        {
+            images[currentI] = SDL_DisplayFormatAlpha(t);
+        }
+        else
+        {
+            images[currentI] = SDL_DisplayFormat(t);
+            setTransparentColour(currentI,colourKey);
+        }
+        SDL_FreeSurface(t);
     #else
         textures.resize(textures.size()+1);
         error = (PENJIN_ERRORS)textures[textures.size()-1].loadTexture(name);
@@ -246,16 +261,23 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         dst.y = desty;
 
         // try to set surface alpha - depends on surface type.
-        SDL_SetAlpha(images[i], SDL_SRCALPHA|SDL_RLEACCEL, alpha);
+        SDL_SetAlpha(images[i], SDL_SRCALPHA, alpha);
         if((angle == 0 && scale.x == 1 && scale.y == 1))
+        {
             SDL_BlitSurface(images[i], &src, dstimg, &dst);
+        }
 
         else if(angle != 0 || scale.x!= 1 || scale.y!= 1)
         {
             SDL_Surface* tempImage = NULL;
             SDL_Surface* subSprite = NULL; // Need to use this for animated sprites to get the subsprite isolated.
-            if(StringUtility::charToInt(images.at(i)->format->BitsPerPixel) == 32)
-                SDL_SetColorKey(images.at(i), 0, images.at(i)->format->colorkey);
+
+           /* //  Make sure color key is disabled for alpha blended images
+            if(images.at(i)->flags & SDL_SRCALPHA)
+                disableTransparentColour(i);
+            else
+                setTransparentColour(i,colourKey);*/
+
             if(sheetMode)
             {
                 subSprite = GFX::cropSurface(images[i],&src);
@@ -265,7 +287,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                     fixedpoint::fix2float(scale.x),
                     fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
                 #else
-                    tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_ON);
+                    tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_OFF);
                 #endif
                 dst.x += (subSprite->w - tempImage->w)*0.5f;
                 dst.y += (subSprite->h - tempImage->h)*0.5f;
@@ -279,12 +301,25 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                     fixedpoint::fix2float(scale.x),
                     fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
                 #else
-                    tempImage = rotozoomSurfaceXY(images[i], angle, scale.x, scale.y, SMOOTHING_ON);
+                    tempImage = rotozoomSurfaceXY(images[i], angle, scale.x, scale.y, SMOOTHING_OFF);
                 #endif
                 dst.x += (images[i]->w - tempImage->w)*0.5f;
                 dst.y += (images[i]->h - tempImage->h)*0.5f;
             }
-            SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
+            if(colourKey.alpha)
+            {
+                SDL_Surface* another = SDL_CreateRGBSurface(images[i]->flags,tempImage->w, tempImage->h,images[i]->format->BitsPerPixel, 0, 0, 0, 0);
+                SDL_FillRect(another, NULL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+
+                SDL_BlitSurface(tempImage,NULL, another, NULL);
+                SDL_SetColorKey(another, SDL_SRCCOLORKEY, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+                SDL_BlitSurface(another,NULL, dstimg, &dst);
+                SDL_FreeSurface(another);
+            }
+            else
+            {
+                SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
+            }
             SDL_FreeSurface(tempImage);
         }
     }
@@ -565,13 +600,13 @@ uint Image::getWidth()const
 }
 #ifdef PENJIN_SDL
 void Image::convertToHW()
-{
+{/*
     for(int i = images.size()-1; i>= 0; --i)
     {
         SDL_Surface* temp = images.at(i);
         images.at(i) = SDL_ConvertSurface(images.at(i), screen->format, SDL_HWSURFACE);
         SDL_FreeSurface(temp);
-    }
+    }*/
 }
 #endif
 

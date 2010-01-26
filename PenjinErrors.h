@@ -33,6 +33,7 @@ namespace PenjinErrors
         PENJIN_SDL_VIDEO_QUERY_FAILED,
         PENJIN_SDL_SETVIDEOMODE_FAILED,
         PENJIN_SDL_INVALID_COLORKEY,
+        PENJIN_SDL_HAS_ALPHA_CHANNEL,
         //  devkitpro libFAT
         PENJIN_FAT_INIT_FAILED,
         PENJIN_FAT_GET_ROOT_FAILED,
@@ -71,6 +72,7 @@ namespace PenjinErrors
         "SDL video query failed.",
         "SDL_SetVideoMode failed.",
         "SDL_SetColorKey failed.",
+        "SDL_SetColorKey failed - Image has full alpha channel.",
 
         "FATlib Initialisation Error.",
         "FATlib Get root filesystem failed.",

@@ -39,6 +39,7 @@ class Image
             void disableTransparentColour(CRuint i)
             {
                 SDL_SetColorKey(images.at(i), 0, images.at(i)->format->colorkey);
+                colourKey.alpha = 0;
             }
             void disableTransparentColour(){disableTransparentColour(images.size()-1);}
         #elif PENJIN_GL
@@ -213,8 +214,9 @@ class Image
         Image(const Image& BlingRef);
         Image& operator=(const Image& BlingRef);
 
+        Colour colourKey;
 
-		#ifdef PENJIN_SDL
+        #ifdef PENJIN_SDL
             void convertToHW();
             vector<SDL_Surface*>images; //  Stores surfaces
             SDL_Surface* screen;        //  The pointer to the screen;

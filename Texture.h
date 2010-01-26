@@ -7,7 +7,6 @@
 #include "NumberUtility.h"
 #include "PenjinTypes.h"
 #include "PenjinErrors.h"
-//#include "Colour.h"
 #include "GFX.h"
 using namespace PenjinErrors;
 
