@@ -4,6 +4,7 @@ Music::Music()
 {
 	music = NULL;
 	numLoops = -1;	// default loop forever;
+	playPos = 0;
 }
 
 Music::~Music()
@@ -49,6 +50,7 @@ void Music::pause()
 {
 	if(isPlaying())
 		Mix_PauseMusic();
+    timer.pause();
 }
 
 void Music::playPause()
@@ -65,12 +67,14 @@ void Music::play()
 		Mix_PlayMusic(music, numLoops);	// Play the music
 	else
 		Mix_ResumeMusic();
+    timer.unpause();
 }
 
 void Music::stop()
 {
     if(isPlaying())
         Mix_HaltMusic();
+    timer.stop();
 }
 
 void Music::fade(CRint ms)
@@ -94,4 +98,11 @@ void Music::setLooping(CRint numLoops)
 void Music::setVolume(CRuint volume)
 {
 	Mix_VolumeMusic(volume);
+}
+
+void Music::setPlayPosition(CRint ms)
+{
+    rewind();
+    Mix_SetMusicPosition(ms*0.001f);
+    playPos = ms;
 }
