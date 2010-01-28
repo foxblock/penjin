@@ -46,9 +46,9 @@ void FileLister::createListing()
         #ifdef _WIN32
             struct stat fileStat;
             stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
-            if(fileStat.st_mode || DT_DIR)
+            if(fileStat.st_mode & DT_DIR)
                 listingTypes.push_back(DT_DIR);
-            else if(fileStat.st_mode || DT_REG)
+            else if(fileStat.st_mode & DT_REG)
                 listingTypes.push_back(DT_REG);
             else
                 listingTypes.push_back(UNKNOWN);
