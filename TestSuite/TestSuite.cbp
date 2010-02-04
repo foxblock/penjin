@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option default_target="Lin Release" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="MyGame\;MyGame\States\;PenjinBase\;PenjinBase\Sprite\;PenjinBase\Particle\;PenjinBase\Menu\;PenjinBase\PlatformSpecific\;PenjinBase\PlatformSpecific\GP2X\;PenjinBase\PlatformSpecific\Wii\;PenjinBase\PlatformSpecific\Pandora\;PenjinBase\Input\;PenjinBase\Scoring\;PenjinBase\Input\KeyMapper\;PenjinBase\Draw\;PenjinBase\Particle\Collidables\;PenjinBase\Particle\Effects\;PenjinBase\3D\;PenjinBase\Sound\;PenjinBase\Particle\Particles\;PenjinBase\Menu\MenuItems\;PenjinBase\Draw\Primitives\;PenjinBase\Physics\;PenjinBase\Draw\Primitives\Trenki\;PenjinBase\Draw\3D\;PenjinBase\Physics\Vectors\old\;PenjinBase\Physics\Vectors\;PenjinBase\Physics\Vectors\Trenki\;" />
+		<Option virtualFolders="MyGame/;MyGame/States/;PenjinBase/;PenjinBase/Sprite/;PenjinBase/Particle/;PenjinBase/Menu/;PenjinBase/PlatformSpecific/;PenjinBase/PlatformSpecific/GP2X/;PenjinBase/PlatformSpecific/Wii/;PenjinBase/PlatformSpecific/Pandora/;PenjinBase/Input/;PenjinBase/Scoring/;PenjinBase/Input/KeyMapper/;PenjinBase/Draw/;PenjinBase/Particle/Collidables/;PenjinBase/Particle/Effects/;PenjinBase/3D/;PenjinBase/Sound/;PenjinBase/Particle/Particles/;PenjinBase/Menu/MenuItems/;PenjinBase/Draw/Primitives/;PenjinBase/Physics/;PenjinBase/Draw/Primitives/Trenki/;PenjinBase/Draw/3D/;PenjinBase/Physics/Vectors/old/;PenjinBase/Physics/Vectors/;PenjinBase/Physics/Vectors/Trenki/;" />
 		<Option show_notes="1">
 			<notes>
 				<![CDATA[Penjin Test Suite Project
@@ -28,9 +28,9 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Build>
 			<Target title="W32 Debug">
 				<Option platforms="Windows;" />
-				<Option output="bin\W32\TestSuite_D" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/W32/TestSuite_D" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="built" />
-				<Option object_output="obj\W32\Debug\" />
+				<Option object_output="obj/W32/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -43,23 +43,23 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 				</Compiler>
 				<Linker>
 					<Add option="`sdl-config --libs`" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libmingw32.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libSDLmain.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libSDL.dll.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libopengl32.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\sdlgfx.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_image.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_mixer.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_ttf.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libglu32.a" />
-					<Add directory="..\PenjinBase\obj\W32\Debug" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libmingw32.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libSDLmain.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libSDL.dll.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libopengl32.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/sdlgfx.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_image.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_mixer.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_ttf.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libglu32.a" />
+					<Add directory="../PenjinBase/obj/W32/Debug" />
 				</Linker>
 			</Target>
 			<Target title="W32 Release">
 				<Option platforms="Windows;" />
-				<Option output="bin\W32\TestSuite_R" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/W32/TestSuite_R" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="built" />
-				<Option object_output="obj\W32\Release\" />
+				<Option object_output="obj/W32/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -68,32 +68,28 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-DPLATFORM_PC" />
 					<Add option="-D_WIN32" />
 					<Add option="-DPENJIN_SDL" />
-					<Add directory="C:\MinGW\include" />
-					<Add directory="include\wiiuse" />
-					<Add directory="C:\MinGW\include\GL" />
-					<Add directory="C:\MinGW\include\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add option="-ming32" />
 					<Add option="`sdl-config --libs`" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libmingw32.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libSDLmain.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\libSDL.dll.a" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\sdlgfx.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_image.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_mixer.lib" />
-					<Add library="C:\Program Files\CodeBlocks\MinGW\lib\SDL_ttf.lib" />
-					<Add directory="..\PenjinBase\obj\W32\Release" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libmingw32.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libSDLmain.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/libSDL.dll.a" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/sdlgfx.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_image.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_mixer.lib" />
+					<Add library="C:/Program Files/CodeBlocks/MinGW/lib/SDL_ttf.lib" />
+					<Add directory="../PenjinBase/obj/W32/Release" />
 				</Linker>
 			</Target>
 			<Target title="Lin Debug">
 				<Option platforms="Unix;" />
-				<Option output="bin\Linux\TestSuite_D" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuite_D" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\lin\Debug\" />
+				<Option object_output="obj/lin/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="linux" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DPLATFORM_PC" />
@@ -108,16 +104,16 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lSDL_image" />
 					<Add option="-lSDL_mixer" />
 					<Add option="-lSDL_gfx" />
-					<Add directory="..\PenjinBase\obj\lin\Debug" />
+					<Add directory="../PenjinBase/obj/lin/Debug" />
 				</Linker>
 			</Target>
 			<Target title="Lin Release">
 				<Option platforms="Unix;" />
-				<Option output="bin\Linux\TestSuite_R" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuite_R" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\lin\Release\" />
+				<Option object_output="obj/lin/Release/" />
 				<Option type="0" />
-				<Option compiler="gcc" />
+				<Option compiler="linux" />
 				<Option parameters="-C scripts/gcn.cmf" />
 				<Compiler>
 					<Add option="-O2" />
@@ -133,44 +129,45 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lSDL_image" />
 					<Add option="-lSDL_mixer" />
 					<Add option="-lSDL_gfx" />
-					<Add directory="..\PenjinBase\obj\lin\Release" />
+					<Add directory="../PenjinBase/obj/lin/Release" />
 				</Linker>
 			</Target>
 			<Target title="Pandora Debug">
-				<Option output="bin\Pandora\TestSuite_D.pxf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Pandora/TestSuite_D.pxf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\Pandora\Debug\" />
+				<Option object_output="obj/Pandora/Debug/" />
 				<Option type="1" />
 				<Option compiler="pandora" />
 				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-msoft-float" />
+					<Add option="-g" />
 					<Add option="-DPLATFORM_PANDORA" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DPENJIN_SDL" />
-					<Add directory="\usr\local\pandora\arm-2007q3\usr\include\" />
+					<Add directory="$(#pandora_sdk.include)" />
 				</Compiler>
 				<Linker>
-					<Add option="-ldl -lpthread" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_mixer.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_ttf.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libfreetype.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libvorbisidec.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_gfx.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_image.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDLmain.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libts.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libpng12.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libpng.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libz.a" />
+					<Add option="-ldl" />
+					<Add option="-lpthread" />
+					<Add option="-lSDL_mixer" />
+					<Add option="-lSDL" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lfreetype" />
+					<Add option="-lvorbisidec" />
+					<Add option="-lSDL_gfx" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDLmain" />
+					<Add option="-lts" />
+					<Add option="-lpng" />
+					<Add option="-lz" />
+					<Add directory="$(#pandora_sdk.lib)" />
 				</Linker>
 			</Target>
 			<Target title="Pandora Release">
-				<Option output="bin\Pandora\TestSuite_R.pxf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Pandora/TestSuite_R.pxf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\Pandora\Release\" />
+				<Option object_output="obj/Pandora/Release/" />
 				<Option type="0" />
 				<Option compiler="pandora" />
 				<Compiler>
@@ -178,32 +175,33 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-O2" />
 					<Add option="-DPLATFORM_PANDORA" />
 					<Add option="-DPENJIN_SDL" />
-					<Add directory="\usr\local\pandora\arm-2007q3\usr\include\" />
+					<Add directory="$(#pandora_sdk.include)" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-ldl -lpthread" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_mixer.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_ttf.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libfreetype.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libvorbisidec.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_gfx.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDL_image.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libSDLmain.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libts.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libpng12.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libpng.a" />
-					<Add library="\usr\local\pandora\arm-2007q3\usr\lib\libz.a" />
+					<Add option="-ldl" />
+					<Add option="-lpthread" />
+					<Add option="-lSDL_mixer" />
+					<Add option="-lSDL" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lfreetype" />
+					<Add option="-lvorbisidec" />
+					<Add option="-lSDL_gfx" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDLmain" />
+					<Add option="-lts" />
+					<Add option="-lpng" />
+					<Add option="-lz" />
+					<Add directory="$(#pandora_sdk.lib)" />
 				</Linker>
 			</Target>
 			<Target title="LinGL Debug">
 				<Option platforms="Unix;" />
-				<Option output="bin\Linux\TestSuiteGL_D" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Linux/TestSuiteGL_D" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\lin\DebugGL\" />
+				<Option object_output="obj/lin/DebugGL/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="linux" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DPLATFORM_PC" />
@@ -219,17 +217,18 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lSDL_image" />
 					<Add option="-lSDL_mixer" />
 					<Add option="-lSDL_gfx" />
-					<Add directory="..\PenjinBase\obj\lin\Debug" />
+					<Add directory="../PenjinBase/obj/lin/Debug" />
 				</Linker>
 			</Target>
 			<Target title="GP2X Debug">
-				<Option output="bin\GP2X\TestSuite_D.gpe" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/GP2X/TestSuite_D.gpe" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\GP2X\Debug\" />
+				<Option object_output="obj/GP2X/Debug/" />
 				<Option type="1" />
 				<Option compiler="gp2x" />
 				<Option use_console_runner="0" />
 				<Compiler>
+					<Add option="-msoft-float" />
 					<Add option="-g" />
 					<Add option="`$(#gp2x_sdk)/bin/sdl-config --cflags`" />
 					<Add option="-DPLATFORM_GP2X" />
@@ -249,14 +248,13 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lz" />
 					<Add option="-lsmpeg" />
 					<Add option="-ljpeg" />
-					<Add option="-msoft-float" />
 					<Add directory="$(#gp2x_sdk.lib)" />
 				</Linker>
 			</Target>
 			<Target title="GP2X Release">
-				<Option output="bin\GP2X\TestSuite_R.gpe" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/GP2X/TestSuite_R.gpe" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\GP2X\Release\" />
+				<Option object_output="obj/GP2X/Release/" />
 				<Option type="0" />
 				<Option compiler="gp2x" />
 				<Compiler>
@@ -283,9 +281,9 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 				</Linker>
 			</Target>
 			<Target title="Wii Debug">
-				<Option output="bin\Wii\TestSuite_D.elf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Wii/TestSuite_D.elf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\Wii\Debug\" />
+				<Option object_output="obj/Wii/Debug/" />
 				<Option type="1" />
 				<Option compiler="devkitppc" />
 				<Option use_console_runner="0" />
@@ -310,18 +308,18 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 					<Add option="-lz -lwiiuse" />
 					<Add option="-lfat -lbte -logc" />
 					<Add option="-lwiikeyboard" />
-					<Add library="$(#libogc.lib)\libfreetype.a" />
-					<Add library="$(#libogc.lib)\libpng.a" />
-					<Add library="$(#libogc.lib)\libjpeg.a" />
-					<Add library="$(#libogc.lib)\wii\libz.a" />
-					<Add library="$(#libogc.lib)\libvorbisidec.a" />
-					<Add directory="$(#libogc.lib)\wii" />
+					<Add library="$(#libogc.lib)/libfreetype.a" />
+					<Add library="$(#libogc.lib)/libpng.a" />
+					<Add library="$(#libogc.lib)/libjpeg.a" />
+					<Add library="$(#libogc.lib)/wii/libz.a" />
+					<Add library="$(#libogc.lib)/libvorbisidec.a" />
+					<Add directory="$(#libogc.lib)/wii" />
 				</Linker>
 			</Target>
 			<Target title="Wii Release">
-				<Option output="bin\Wii\TestSuite_R.elf" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Wii/TestSuite_R.elf" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="built" />
-				<Option object_output="obj\Wii\Release\" />
+				<Option object_output="obj/Wii/Release/" />
 				<Option type="0" />
 				<Option compiler="devkitppc" />
 				<Compiler>
@@ -333,557 +331,556 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lwiiuse -lbte -logc -lm" />
-					<Add directory="$(#libogc.lib)\wii" />
+					<Add directory="$(#libogc.lib)/wii" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="`sdl-config --cflags`" />
-			<Add directory="..\TestSuite" />
-			<Add directory="..\PenjinBase\include" />
-			<Add directory="..\PenjinBase" />
+			<Add directory="./" />
+			<Add directory="../PenjinBase" />
 		</Compiler>
-		<Unit filename="..\PenjinBase\AnimatedParticle.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/AnimatedParticle.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimatedParticle.h">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/AnimatedParticle.h">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimatedSprite.cpp">
-			<Option virtualFolder="PenjinBase\Sprite\" />
+		<Unit filename="../PenjinBase/AnimatedSprite.cpp">
+			<Option virtualFolder="PenjinBase/Sprite/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimatedSprite.h">
-			<Option virtualFolder="PenjinBase\Sprite\" />
+		<Unit filename="../PenjinBase/AnimatedSprite.h">
+			<Option virtualFolder="PenjinBase/Sprite/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Animation.cpp">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Animation.cpp">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Animation.h">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Animation.h">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimationMenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/AnimationMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimationMenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/AnimationMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimationStringMenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/AnimationStringMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\AnimationStringMenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/AnimationStringMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\BackBuffer.cpp">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/BackBuffer.cpp">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\BackBuffer.h">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/BackBuffer.h">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Background.cpp">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Background.cpp">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Background.h">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Background.h">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\BaseState.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/BaseState.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\BaseState.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/BaseState.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\CollisionMap.cpp">
-			<Option virtualFolder="PenjinBase\Physics\" />
+		<Unit filename="../PenjinBase/CollisionMap.cpp">
+			<Option virtualFolder="PenjinBase/Physics/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\CollisionMap.h">
-			<Option virtualFolder="PenjinBase\Physics\" />
+		<Unit filename="../PenjinBase/CollisionMap.h">
+			<Option virtualFolder="PenjinBase/Physics/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Colour.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Colour.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Colour.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Colour.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ColourHSL.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/ColourHSL.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ColourHSL.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/ColourHSL.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Command.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Command.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Command.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Command.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\DirMenuItem.cpp" />
-		<Unit filename="..\PenjinBase\DirMenuItem.h" />
-		<Unit filename="..\PenjinBase\DoubleVector.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/DirMenuItem.cpp" />
+		<Unit filename="../PenjinBase/DirMenuItem.h" />
+		<Unit filename="../PenjinBase/DoubleVector.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Emitter.cpp">
-			<Option virtualFolder="PenjinBase\Particle\" />
+		<Unit filename="../PenjinBase/Emitter.cpp">
+			<Option virtualFolder="PenjinBase/Particle/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Emitter.h">
-			<Option virtualFolder="PenjinBase\Particle\" />
+		<Unit filename="../PenjinBase/Emitter.h">
+			<Option virtualFolder="PenjinBase/Particle/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Encryption.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Encryption.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Encryption.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Encryption.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Engine.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Engine.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Engine.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Engine.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ErrorHandler.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/ErrorHandler.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\FileLister.cpp" />
-		<Unit filename="..\PenjinBase\FileLister.h" />
-		<Unit filename="..\PenjinBase\GFX.cpp">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/FileLister.cpp" />
+		<Unit filename="../PenjinBase/FileLister.h" />
+		<Unit filename="../PenjinBase/GFX.cpp">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\GFX.h">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/GFX.h">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Glyph.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Glyph.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Glyph.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Glyph.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\HiScore.cpp">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/HiScore.cpp">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\HiScore.h">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/HiScore.h">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Image.cpp">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Image.cpp">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Image.h">
-			<Option virtualFolder="PenjinBase\Draw\" />
+		<Unit filename="../PenjinBase/Image.h">
+			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ImageMenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/ImageMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ImageMenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/ImageMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ImageStringMenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/ImageStringMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ImageStringMenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/ImageStringMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\IntVector2d.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\old\" />
+		<Unit filename="../PenjinBase/IntVector2d.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/old/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\IntVector2d.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\old\" />
+		<Unit filename="../PenjinBase/IntVector2d.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/old/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyDefines.h">
-			<Option virtualFolder="PenjinBase\Input\" />
+		<Unit filename="../PenjinBase/KeyDefines.h">
+			<Option virtualFolder="PenjinBase/Input/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMap.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMap.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMap.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMap.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapDigitalJoyAxis.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapDigitalJoyAxis.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapDigitalJoyAxis.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapDigitalJoyAxis.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapHat.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapHat.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapHat.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapHat.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapJoyAxis.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapJoyAxis.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapJoyAxis.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapJoyAxis.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapJoyButton.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapJoyButton.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapJoyButton.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapJoyButton.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapMouseAxis.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapMouseAxis.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapMouseAxis.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapMouseAxis.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapMouseButton.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapMouseButton.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapMouseButton.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapMouseButton.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapSDLKey.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapSDLKey.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapSDLKey.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapSDLKey.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapper.cpp">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapper.cpp">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyMapper.h">
-			<Option virtualFolder="PenjinBase\Input\KeyMapper\" />
+		<Unit filename="../PenjinBase/KeyMapper.h">
+			<Option virtualFolder="PenjinBase/Input/KeyMapper/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyWord.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/KeyWord.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\KeyboardDefines.h">
-			<Option virtualFolder="PenjinBase\Input\" />
+		<Unit filename="../PenjinBase/KeyboardDefines.h">
+			<Option virtualFolder="PenjinBase/Input/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\LUT.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/LUT.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\LUT.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/LUT.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Line.cpp">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Line.cpp">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Line.h">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Line.h">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\MMUHack.cpp">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\GP2X\" />
+		<Unit filename="../PenjinBase/MMUHack.cpp">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
 			<Option target="GP2X Debug" />
 			<Option target="GP2X Release" />
 			<Option target="Wii Debug" />
 			<Option target="Wii Release" />
 		</Unit>
-		<Unit filename="..\PenjinBase\MMUHack.h">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\GP2X\" />
+		<Unit filename="../PenjinBase/MMUHack.h">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Menu.cpp">
-			<Option virtualFolder="PenjinBase\Menu\" />
+		<Unit filename="../PenjinBase/Menu.cpp">
+			<Option virtualFolder="PenjinBase/Menu/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Menu.h">
-			<Option virtualFolder="PenjinBase\Menu\" />
+		<Unit filename="../PenjinBase/Menu.h">
+			<Option virtualFolder="PenjinBase/Menu/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\MenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/MenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\MenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/MenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Music.cpp">
-			<Option virtualFolder="PenjinBase\Sound\" />
+		<Unit filename="../PenjinBase/Music.cpp">
+			<Option virtualFolder="PenjinBase/Sound/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Music.h">
-			<Option virtualFolder="PenjinBase\Sound\" />
+		<Unit filename="../PenjinBase/Music.h">
+			<Option virtualFolder="PenjinBase/Sound/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\NumberUtility.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/NumberUtility.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\NumberUtility.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/NumberUtility.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Parser.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Parser.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Parser.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Parser.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Particle.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/Particle.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Particle.h">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/Particle.h">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleCollider.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleCollider.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleCollider.h">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleCollider.h">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleKiller.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleKiller.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleKiller.h">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleKiller.h">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleMirror.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleMirror.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ParticleMirror.h">
-			<Option virtualFolder="PenjinBase\Particle\Collidables\" />
+		<Unit filename="../PenjinBase/ParticleMirror.h">
+			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Penjin.cpp" />
-		<Unit filename="..\PenjinBase\Penjin.h" />
-		<Unit filename="..\PenjinBase\PenjinErrors.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Penjin.cpp" />
+		<Unit filename="../PenjinBase/Penjin.h" />
+		<Unit filename="../PenjinBase/PenjinErrors.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\PenjinFixedFunc.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/PenjinFixedFunc.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\PenjinFixedFunc.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/PenjinFixedFunc.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\PenjinIncludes.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/PenjinIncludes.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\PenjinStates.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/PenjinStates.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\PenjinTypes.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/PenjinTypes.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Pixel.cpp">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Pixel.cpp">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Pixel.h">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Pixel.h">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Random.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Random.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Random.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Random.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Raycast.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Raycast.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Raycast.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Raycast.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Rectangle.cpp">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Rectangle.cpp">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Rectangle.h">
-			<Option virtualFolder="PenjinBase\Draw\Primitives\" />
+		<Unit filename="../PenjinBase/Rectangle.h">
+			<Option virtualFolder="PenjinBase/Draw/Primitives/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Score.cpp">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/Score.cpp">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Score.h">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/Score.h">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ScoreScreen.cpp">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/ScoreScreen.cpp">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ScoreScreen.h">
-			<Option virtualFolder="PenjinBase\Scoring\" />
+		<Unit filename="../PenjinBase/ScoreScreen.h">
+			<Option virtualFolder="PenjinBase/Scoring/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ScreenPartition.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/ScreenPartition.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\ScreenPartition.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/ScreenPartition.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\SimpleJoy.cpp">
-			<Option virtualFolder="PenjinBase\Input\" />
+		<Unit filename="../PenjinBase/SimpleJoy.cpp">
+			<Option virtualFolder="PenjinBase/Input/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\SimpleJoy.h">
-			<Option virtualFolder="PenjinBase\Input\" />
+		<Unit filename="../PenjinBase/SimpleJoy.h">
+			<Option virtualFolder="PenjinBase/Input/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Sound.cpp">
-			<Option virtualFolder="PenjinBase\Sound\" />
+		<Unit filename="../PenjinBase/Sound.cpp">
+			<Option virtualFolder="PenjinBase/Sound/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Sound.h">
-			<Option virtualFolder="PenjinBase\Sound\" />
+		<Unit filename="../PenjinBase/Sound.h">
+			<Option virtualFolder="PenjinBase/Sound/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Sprite.cpp">
-			<Option virtualFolder="PenjinBase\Sprite\" />
+		<Unit filename="../PenjinBase/Sprite.cpp">
+			<Option virtualFolder="PenjinBase/Sprite/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Sprite.h">
-			<Option virtualFolder="PenjinBase\Sprite\" />
+		<Unit filename="../PenjinBase/Sprite.h">
+			<Option virtualFolder="PenjinBase/Sprite/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\SpriteParticle.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/SpriteParticle.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\SpriteParticle.h">
-			<Option virtualFolder="PenjinBase\Particle\Particles\" />
+		<Unit filename="../PenjinBase/SpriteParticle.h">
+			<Option virtualFolder="PenjinBase/Particle/Particles/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StarField.cpp">
-			<Option virtualFolder="PenjinBase\Particle\Effects\" />
+		<Unit filename="../PenjinBase/StarField.cpp">
+			<Option virtualFolder="PenjinBase/Particle/Effects/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StarField.h">
-			<Option virtualFolder="PenjinBase\Particle\Effects\" />
+		<Unit filename="../PenjinBase/StarField.h">
+			<Option virtualFolder="PenjinBase/Particle/Effects/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StringMenuItem.cpp">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/StringMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StringMenuItem.h">
-			<Option virtualFolder="PenjinBase\Menu\MenuItems\" />
+		<Unit filename="../PenjinBase/StringMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StringUtility.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/StringUtility.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\StringUtility.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/StringUtility.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Text.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Text.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Text.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Text.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\TextDoc.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/TextDoc.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\TextDoc.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/TextDoc.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Texture.cpp">
-			<Option virtualFolder="PenjinBase\Draw\3D\" />
+		<Unit filename="../PenjinBase/Texture.cpp">
+			<Option virtualFolder="PenjinBase/Draw/3D/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Texture.h">
-			<Option virtualFolder="PenjinBase\Draw\3D\" />
+		<Unit filename="../PenjinBase/Texture.h">
+			<Option virtualFolder="PenjinBase/Draw/3D/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\TileMap.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/TileMap.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\TileMap.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/TileMap.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Timer.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Timer.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Timer.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Timer.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Variable.cpp">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Variable.cpp">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Variable.h">
-			<Option virtualFolder="PenjinBase\" />
+		<Unit filename="../PenjinBase/Variable.h">
+			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2df.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2df.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2df.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2df.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2di.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2di.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2di.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2di.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2dx.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2dx.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector2dx.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector2dx.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3d.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\old\" />
+		<Unit filename="../PenjinBase/Vector3d.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/old/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3d.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\old\" />
+		<Unit filename="../PenjinBase/Vector3d.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/old/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3df.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3df.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3df.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3df.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3di.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3di.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3di.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3di.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3dx.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3dx.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\Vector3dx.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\" />
+		<Unit filename="../PenjinBase/Vector3dx.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\WiiJoy.cpp">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\Wii\" />
+		<Unit filename="../PenjinBase/WiiJoy.cpp">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/Wii/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\WiiJoy.h">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\Wii\" />
+		<Unit filename="../PenjinBase/WiiJoy.h">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/Wii/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\mmuhack\flush_uppermem_cache.h">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\GP2X\" />
+		<Unit filename="../PenjinBase/mmuhack/flush_uppermem_cache.h">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
 			<Option target="GP2X Debug" />
 			<Option target="GP2X Release" />
 			<Option target="Wii Debug" />
 			<Option target="Wii Release" />
 		</Unit>
-		<Unit filename="..\PenjinBase\mmuhack\flush_uppermem_cache.s">
-			<Option virtualFolder="PenjinBase\PlatformSpecific\GP2X\" />
+		<Unit filename="../PenjinBase/mmuhack/flush_uppermem_cache.s">
+			<Option virtualFolder="PenjinBase/PlatformSpecific/GP2X/" />
 			<Option target="GP2X Debug" />
 			<Option target="GP2X Release" />
 		</Unit>
-		<Unit filename="..\PenjinBase\trenki\fixed_class.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\Trenki\" />
+		<Unit filename="../PenjinBase/trenki/fixed_class.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/Trenki/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\trenki\fixed_func.cpp">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\Trenki\" />
+		<Unit filename="../PenjinBase/trenki/fixed_func.cpp">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/Trenki/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\trenki\fixed_func.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\Trenki\" />
+		<Unit filename="../PenjinBase/trenki/fixed_func.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/Trenki/" />
 		</Unit>
-		<Unit filename="..\PenjinBase\trenki\vector_math.h">
-			<Option virtualFolder="PenjinBase\Physics\Vectors\Trenki\" />
+		<Unit filename="../PenjinBase/trenki/vector_math.h">
+			<Option virtualFolder="PenjinBase/Physics/Vectors/Trenki/" />
 		</Unit>
 		<Unit filename="MyGame.cpp">
 			<Option weight="60" />
-			<Option virtualFolder="MyGame\" />
+			<Option virtualFolder="MyGame/" />
 		</Unit>
 		<Unit filename="MyGame.h">
-			<Option virtualFolder="MyGame\" />
+			<Option virtualFolder="MyGame/" />
 		</Unit>
 		<Unit filename="StateAnimation.cpp">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateAnimation.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateColour.cpp">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateColour.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateFileList.cpp" />
 		<Unit filename="StateFileList.h" />
 		<Unit filename="StatePrimitive.cpp">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StatePrimitive.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateRaycast.cpp">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateRaycast.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateTitle.cpp">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="StateTitle.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="_main.cpp">
-			<Option virtualFolder="MyGame\" />
+			<Option virtualFolder="MyGame/" />
 		</Unit>
 		<Unit filename="userStates.h">
-			<Option virtualFolder="MyGame\States\" />
+			<Option virtualFolder="MyGame/States/" />
 		</Unit>
 		<Unit filename="version.h">
-			<Option virtualFolder="MyGame\" />
+			<Option virtualFolder="MyGame/" />
 		</Unit>
 		<Extensions>
 			<envvars />
