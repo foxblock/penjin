@@ -29,7 +29,7 @@ class ScreenPartition
         //	check which partition the position is in
         uint getPartition(const Vector2di& position);
         uint getPartition(CRint x,CRint y);
-        uint getPartition(const Vector2dx& position){return getPartition(position.x.intValue >> 16,position.y.intValue >> 16);};
+        //uint getPartition(const Vector2df& position){return getPartition(position.x.intValue >> 16,position.y.intValue >> 16);};
     private:
         Vector2di midPoint;
 };

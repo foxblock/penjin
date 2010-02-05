@@ -62,6 +62,7 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
 
         //  Apply colour key
         uint currentI = (uint)images.size()-1;
+        colourKey.alpha = 0;
         error = setTransparentColour(currentI,Vector2di(0,0));
         //  check current blend mode.
         SDL_Surface* t = images.at(currentI);
@@ -272,11 +273,6 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             SDL_Surface* tempImage = NULL;
             SDL_Surface* subSprite = NULL; // Need to use this for animated sprites to get the subsprite isolated.
 
-           /* //  Make sure color key is disabled for alpha blended images
-            if(images.at(i)->flags & SDL_SRCALPHA)
-                disableTransparentColour(i);
-            else
-                setTransparentColour(i,colourKey);*/
 
             if(sheetMode)
             {
@@ -308,11 +304,15 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             }
             if(colourKey.alpha)
             {
-                SDL_Surface* another = SDL_CreateRGBSurface(images[i]->flags,tempImage->w, tempImage->h,images[i]->format->BitsPerPixel, 0, 0, 0, 0);
+                SDL_Surface* another = SDL_CreateRGBSurface(images[i]->flags,tempImage->w, tempImage->h,images[i]->format->BitsPerPixel, tempImage->format->Rmask, tempImage->format->Gmask, tempImage->format->Bmask, tempImage->format->Amask);
                 SDL_FillRect(another, NULL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+                //
+                    SDL_SetColorKey(tempImage, SDL_SRCCOLORKEY, SDL_MapRGB(tempImage->format,0,0,0));
+                //
 
                 SDL_BlitSurface(tempImage,NULL, another, NULL);
                 SDL_SetColorKey(another, SDL_SRCCOLORKEY, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+
                 SDL_BlitSurface(another,NULL, dstimg, &dst);
                 SDL_FreeSurface(another);
             }
