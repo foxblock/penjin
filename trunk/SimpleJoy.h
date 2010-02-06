@@ -1,7 +1,6 @@
 #ifndef SIMPLEJOY_H
 #define SIMPLEJOY_H
 
-//#include "KeyboardDefines.h"
 #include "PenjinTypes.h"
 #include "KeyMapper.h"
 
@@ -20,6 +19,12 @@ TODO: Add Wii Controls/GBA/NDS etc
 class SimpleJoy
 {
     public:
+        enum sjSTATUS
+        {
+            sjRELEASED = 0,
+            sjPRESSED = 1,
+            sjHELD=2
+        };
         SimpleJoy();
         ~SimpleJoy();
 
@@ -33,37 +38,44 @@ class SimpleJoy
 
         void update();					//	Get current status of keyboard
 
-        bool isStart()const{return Start;}
-        bool isSelect()const{return Select;}
-        bool isUp()const{return Up;}
-        bool isDown()const{return Down;}
-        bool isLeft()const{return Left;}
-        bool isRight()const{return Right;}
-        bool isA()const{return A;}
-        bool isB()const{return B;}
-        bool isX()const{return X;}
-        bool isY()const{return Y;}
-        bool isL()const{return L;}
-        bool isR()const{return R;}
+        sjSTATUS isStart()const{return Start;}
+        sjSTATUS isSelect()const{return Select;}
+        sjSTATUS isUp()const{return Up;}
+        sjSTATUS isDown()const{return Down;}
+        sjSTATUS isLeft()const{return Left;}
+        sjSTATUS isRight()const{return Right;}
+        sjSTATUS isA()const{return A;}
+        sjSTATUS isB()const{return B;}
+        sjSTATUS isX()const{return X;}
+        sjSTATUS isY()const{return Y;}
+        sjSTATUS isL()const{return L;}
+        sjSTATUS isR()const{return R;}
         /// The fabled ANY button.
-        bool isAny()const{return (A || B || X || Y || L || R || Start || Select);}
+        sjSTATUS isAny()const
+        {
+            if((A || B || X || Y || L || R || Start || Select) == sjPRESSED)
+                return sjPRESSED;
+            else if((A || B || X || Y || L || R || Start || Select) == sjHELD)
+                return sjHELD;
+            return sjRELEASED;
+        }
     #ifdef PLATFORM_PC
-        bool isQuit()const{return Quit;}
+        sjSTATUS isQuit()const{return Quit;}
     #endif
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
         /// GP2X Buttons
-        bool isClick()const{return Click;}
-        bool isVolumeUp()const{return VolumeUp;}
-        bool isVolumeDown()const{return VolumeDown;}
-        bool isUpLeft()const{return UpLeft;}
-        bool isUpRight()const{return UpRight;}
-        bool isDownLeft()const{return DownLeft;}
-        bool isDownRight()const{return DownRight;}
+        sjSTATUS isClick()const{return Click;}
+        sjSTATUS isVolumeUp()const{return VolumeUp;}
+        sjSTATUS isVolumeDown()const{return VolumeDown;}
+        sjSTATUS isUpLeft()const{return UpLeft;}
+        sjSTATUS isUpRight()const{return UpRight;}
+        sjSTATUS isDownLeft()const{return DownLeft;}
+        sjSTATUS isDownRight()const{return DownRight;}
     #else
-        bool isUpLeft()const{return false;}
-        bool isUpRight()const{return false;}
-        bool isDownLeft()const{return false;}
-        bool isDownRight()const{return false;}
+        sjSTATUS isUpLeft()const{return sjRELEASED;}
+        sjSTATUS isUpRight()const{return sjRELEASED;}
+        sjSTATUS isDownLeft()const{return sjRELEASED;}
+        sjSTATUS isDownRight()const{return sjRELEASED;}
     #endif
 
         /// Joystick
@@ -79,28 +91,83 @@ class SimpleJoy
         int getRightStickY()const{return rightStick.y;}
 
         /// Joystick logical
-        bool isLeftStick()const{return(isLeftStickDown() || isLeftStickLeft() || isLeftStickRight() || isLeftStickUp());}
-        bool isLeftStickUp()const{return (getLeftStickY() < -deadZone.y);}
-        bool isLeftStickDown()const{return (getLeftStickY() > deadZone.y);}
-        bool isLeftStickLeft()const{return (getLeftStickX() < -deadZone.x);}
-        bool isLeftStickRight()const{return (getLeftStickX() > deadZone.x);}
-        bool isRightStick()const{return(isRightStickDown() || isRightStickLeft() || isRightStickRight() || isRightStickUp());}
-        bool isRightStickUp()const{return (getRightStickY() < -deadZone.y);}
-        bool isRightStickDown()const{return (getRightStickY() > deadZone.y);}
-        bool isRightStickLeft()const{return (getRightStickX() < -deadZone.x);}
-        bool isRightStickRight()const{return (getRightStickX() > deadZone.x);}
+        sjSTATUS isLeftStick()const
+        {
+            if((isLeftStickDown() || isLeftStickLeft() || isLeftStickRight() || isLeftStickUp())==sjHELD)
+                return sjHELD;
+            else if((isLeftStickDown() || isLeftStickLeft() || isLeftStickRight() || isLeftStickUp())==sjPRESSED)
+                return sjPRESSED;
+            return sjRELEASED;
+        }
+        sjSTATUS isLeftStickUp()const
+        {
+            if(getLeftStickY() < -deadZone.y)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isLeftStickDown()const
+        {
+            if(getLeftStickY() > deadZone.y)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isLeftStickLeft()const
+        {
+            if(getLeftStickX() < -deadZone.x)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isLeftStickRight()const
+        {
+            if(getLeftStickX() > deadZone.x)
+                return sjHELD;
+            return sjRELEASED;
+        }
+
+        sjSTATUS isRightStick()const
+        {
+            if((isRightStickDown() || isRightStickLeft() || isRightStickRight() || isRightStickUp())==sjHELD)
+                return sjHELD;
+            else if((isRightStickDown() || isRightStickLeft() || isRightStickRight() || isRightStickUp())==sjPRESSED)
+                return sjPRESSED;
+            return sjRELEASED;
+        }
+        sjSTATUS isRightStickUp()const
+        {
+            if(getRightStickY() < -deadZone.y)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isRightStickDown()const
+        {
+            if(getRightStickY() > deadZone.y)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isRightStickLeft()const
+        {
+            if(getRightStickX() < -deadZone.x)
+                return sjHELD;
+            return sjRELEASED;
+        }
+        sjSTATUS isRightStickRight()const
+        {
+            if(getRightStickX() > deadZone.x)
+                return sjHELD;
+            return sjRELEASED;
+        }
 
         /// Mouse
         Vector2di getMouse()const{return mouse;}
         int getMouseX()const{return mouse.x;}
         int getMouseY()const{return mouse.y;}
-        bool isLeftClick()const{return leftClick;}
-        bool isRightClick()const{return rightClick;}
+        sjSTATUS isLeftClick()const{return leftClick;}
+        sjSTATUS isRightClick()const{return rightClick;}
         /// TouchScreen - Just a wrapper to mouse
         Vector2di getTouch()const{return mouse;}
         int getTouchX()const{return mouse.x;}
         int getTouchY()const{return mouse.y;}
-        bool isTouch()const{return leftClick;}
+        sjSTATUS isTouch()const{return leftClick;}
 
 #if defined(PLATFORM_PANDORA)
         /// Nub's
@@ -124,9 +191,9 @@ class SimpleJoy
 
         SDL_Joystick *Joy;		//	SDL joystick
         SDL_Event Event;
-        bool Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
+        sjSTATUS Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
     #ifdef PLATFORM_PC
-        bool Quit;
+        sjSTATUS Quit;
     #endif
         Vector2di deadZone;
         float scaler;
@@ -134,10 +201,10 @@ class SimpleJoy
         Vector2di rightStick;
         Vector2di mouse;
         Vector2di oldMouse;
-        bool leftClick, rightClick;
+        sjSTATUS leftClick, rightClick;
 
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        bool Click, VolumeUp, VolumeDown,UpLeft, UpRight, DownLeft, DownRight;
+        sjSTATUS Click, VolumeUp, VolumeDown,UpLeft, UpRight, DownLeft, DownRight;
     #endif
         KeyMapper mapper;
         bool mapLoaded;
