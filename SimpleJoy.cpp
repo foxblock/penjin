@@ -57,7 +57,12 @@ void SimpleJoy::update()
     {
         #ifdef PLATFORM_PC
         if(Event.type == SDL_QUIT)
-           Quit = true;
+        {
+            if(Quit == sjRELEASED)
+                Quit = sjPRESSED;
+            else
+                Quit = sjHELD;
+        }
         #endif
         for(int b = mapper.size()-1; b>=0;--b)
         {
@@ -214,27 +219,103 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        case SJ_UP:             Up = true;break;
-        case SJ_DOWN:           Down = true;break;
-        case SJ_LEFT:           Left = true;break;
-        case SJ_RIGHT:          Right = true;break;
+        case SJ_UP:             if(Up == sjRELEASED)
+                                    Up = sjPRESSED;
+                                else
+                                    Up = sjHELD;
+        break;
+        case SJ_DOWN:           if(Down == sjRELEASED)
+                                    Down = sjPRESSED;
+                                else
+                                    Down = sjHELD;
+        break;
+        case SJ_LEFT:           if(Left == sjRELEASED)
+                                    Left = sjPRESSED;
+                                else
+                                    Left = sjHELD;
+        break;
+        case SJ_RIGHT:          if(Right == sjRELEASED)
+                                    Right = sjPRESSED;
+                                else
+                                    Right = sjHELD;
+        break;
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        case SJ_UPLEFT:         UpLeft = true;break;
-        case SJ_UPRIGHT:        UpRight = true;break;
-        case SJ_DOWNLEFT:       DownLeft = true;break;
-        case SJ_DOWNRIGHT:      DownRight = true;break;
-        case SJ_VOLUP:          VolumeUp = true;break;
-        case SJ_VOLDOWN:        VolumeDown = true;break;
-        case SJ_CLICK:          Click = true;break;
+        case SJ_UPLEFT:         if(UpLeft == sjRELEASED)
+                                    UpLeft = sjPRESSED;
+                                else
+                                    UpLeft = sjHELD;
+        break;
+        case SJ_UPRIGHT:        if(UpRight == sjRELEASED)
+                                    UpRight = sjPRESSED;
+                                else
+                                    UpLeft = sjHELD;
+        break;
+        case SJ_DOWNLEFT:       if(DownLeft == sjRELEASED)
+                                    DownLeft = sjPRESSED;
+                                else
+                                    DownLeft = sjHELD;
+        break;
+        case SJ_DOWNRIGHT:      if(DownRight == sjRELEASED)
+                                    DownRight = sjPRESSED;
+                                else
+                                    DownRight = sjHELD;
+        break;
+        case SJ_VOLUP:          if(VolumeUp == sjRELEASED)
+                                    VolumeUp = sjPRESSED;
+                                else
+                                    VolumeUp = sjHELD;
+        break;
+        case SJ_VOLDOWN:        if(VolumeDown == sjRELEASED)
+                                    VolumeDown = sjPRESSED;
+                                else
+                                    VolumeDown = sjHELD;
+        break;
+        case SJ_CLICK:          if(Click == sjRELEASED)
+                                    Click = sjPRESSED;
+                                else
+                                    Click = sjHELD;
+        break;
         #endif
-        case SJ_A:              A = true;break;
-        case SJ_B:              B = true;break;
-        case SJ_X:              X = true;break;
-        case SJ_Y:              Y = true;break;
-        case SJ_L:              L = true;break;
-        case SJ_R:              R = true;break;
-        case SJ_START:          Start = true;break;
-        case SJ_SELECT:         Select = true;break;
+        case SJ_A:              if(A == sjRELEASED)
+                                    A = sjPRESSED;
+                                else
+                                    A = sjHELD;
+        break;
+        case SJ_B:              if(B == sjRELEASED)
+                                    B = sjPRESSED;
+                                else
+                                    B = sjHELD;
+        break;
+        case SJ_X:              if(X == sjRELEASED)
+                                    X = sjPRESSED;
+                                else
+                                    X = sjHELD;
+        break;
+        case SJ_Y:              if(Y == sjRELEASED)
+                                    Y = sjPRESSED;
+                                else
+                                    Y = sjHELD;
+        break;
+        case SJ_L:              if(L == sjRELEASED)
+                                    L = sjPRESSED;
+                                else
+                                    L= sjHELD;
+        break;
+        case SJ_R:              if(R == sjRELEASED)
+                                    R = sjPRESSED;
+                                else
+                                    R = sjHELD;
+        break;
+        case SJ_START:          if(Start == sjRELEASED)
+                                    Start = sjPRESSED;
+                                else
+                                    Start = sjHELD;
+        break;
+        case SJ_SELECT:         if(Select == sjRELEASED)
+                                    Select = sjPRESSED;
+                                else
+                                    Select = sjHELD;
+        break;
 
         /*case SJ_LID:          Lid = true;break;
         case SJ_LEFTSTICK_X:    = true;break;
@@ -243,9 +324,17 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = true;break;
         case SJ_MOUSE_X:         = true;break;
         case SJ_MOUSE_Y:         = true;break;*/
-        case SJ_MOUSE_LEFT:     leftClick = true;break;
+        case SJ_MOUSE_LEFT:     if(leftClick == sjRELEASED)
+                                    leftClick = sjPRESSED;
+                                else
+                                    leftClick = sjHELD;
+        break;
         //case SJ_MOUSE_CENTRE: = true;break;
-        case SJ_MOUSE_RIGHT:    rightClick = true;break;
+        case SJ_MOUSE_RIGHT:    if(rightClick == sjRELEASED)
+                                    rightClick = sjPRESSED;
+                                else
+                                    rightClick = sjHELD;
+        break;
     }
 }
 
@@ -253,39 +342,39 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        case SJ_UP:             Up = false;break;
-        case SJ_DOWN:           Down = false;break;
-        case SJ_LEFT:           Left = false;break;
-        case SJ_RIGHT:          Right = false;break;
+        case SJ_UP:             Up = sjRELEASED;break;
+        case SJ_DOWN:           Down = sjRELEASED;break;
+        case SJ_LEFT:           Left = sjRELEASED;break;
+        case SJ_RIGHT:          Right = sjRELEASED;break;
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        case SJ_UPLEFT:         UpLeft = false;break;
-        case SJ_UPRIGHT:        UpRight = false;break;
-        case SJ_DOWNLEFT:       DownLeft = false;break;
-        case SJ_DOWNRIGHT:      DownRight = false;break;
-        case SJ_VOLUP:          VolumeUp = false;break;
-        case SJ_VOLDOWN:        VolumeDown = false;break;
-        case SJ_CLICK:          Click = false;break;
+        case SJ_UPLEFT:         UpLeft = sjRELEASED;break;
+        case SJ_UPRIGHT:        UpRight = sjRELEASED;break;
+        case SJ_DOWNLEFT:       DownLeft = sjRELEASED;break;
+        case SJ_DOWNRIGHT:      DownRight = sjRELEASED;break;
+        case SJ_VOLUP:          VolumeUp = sjRELEASED;break;
+        case SJ_VOLDOWN:        VolumeDown = sjRELEASED;break;
+        case SJ_CLICK:          Click = sjRELEASED;break;
         #endif
-        case SJ_A:              A = false;break;
-        case SJ_B:              B = false;break;
-        case SJ_X:              X = false;break;
-        case SJ_Y:              Y = false;break;
-        case SJ_L:              L = false;break;
-        case SJ_R:              R = false;break;
+        case SJ_A:              A = sjRELEASED;break;
+        case SJ_B:              B = sjRELEASED;break;
+        case SJ_X:              X = sjRELEASED;break;
+        case SJ_Y:              Y = sjRELEASED;break;
+        case SJ_L:              L = sjRELEASED;break;
+        case SJ_R:              R = sjRELEASED;break;
 
-        case SJ_START:          Start = false;break;
-        case SJ_SELECT:         Select = false;break;
+        case SJ_START:          Start = sjRELEASED;break;
+        case SJ_SELECT:         Select = sjRELEASED;break;
 
-        /*case SJ_LID:          Lid = false;break;
-        case SJ_LEFTSTICK_X:    = false;break;
-        case SJ_LEFTSTICK_Y:    = false;break;
-        case SJ_RIGHTSTICK_X:   = false;break;
-        case SJ_RIGHTSTICK_Y:   = false;break;
-        case SJ_MOUSE_X:         = false;break;
-        case SJ_MOUSE_Y:         = false;break;*/
-        case SJ_MOUSE_LEFT:     leftClick = false;break;
-        //case SJ_MOUSE_CENTRE: = false;break;
-        case SJ_MOUSE_RIGHT:    rightClick = false;break;
+        /*case SJ_LID:          Lid = sjRELEASED;break;
+        case SJ_LEFTSTICK_X:    = sjRELEASED;break;
+        case SJ_LEFTSTICK_Y:    = sjRELEASED;break;
+        case SJ_RIGHTSTICK_X:   = sjRELEASED;break;
+        case SJ_RIGHTSTICK_Y:   = sjRELEASED;break;
+        case SJ_MOUSE_X:         = sjRELEASED;break;
+        case SJ_MOUSE_Y:         = sjRELEASED;break;*/
+        case SJ_MOUSE_LEFT:     leftClick = sjRELEASED;break;
+        //case SJ_MOUSE_CENTRE: = sjRELEASED;break;
+        case SJ_MOUSE_RIGHT:    rightClick = sjRELEASED;break;
     }
 }
 
@@ -295,12 +384,12 @@ void SimpleJoy::resetKeys()
     SDL_Event event;
     while(SDL_PollEvent(&event));   //  Clears the event queue
 
-    Start=Select=Up=Down=Left=Right=A=B=X=Y=L=R=false;
+    Start=Select=Up=Down=Left=Right=A=B=X=Y=L=R=sjRELEASED;
     #ifdef PLATFORM_PC
-        Quit = false;
+        Quit = sjRELEASED;
     #endif
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        VolumeUp=VolumeDown=Click=UpLeft=UpRight=DownLeft=DownRight=false;
+        VolumeUp=VolumeDown=Click=UpLeft=UpRight=DownLeft=DownRight=sjRELEASED;
     #endif
         leftStick.x = 0;
         leftStick.y = 0;
@@ -308,7 +397,7 @@ void SimpleJoy::resetKeys()
         rightStick.y = 0;
         mouse.x = 0;
         mouse.y = 0;
-        leftClick=rightClick=false;
+        leftClick=rightClick=sjRELEASED;
 
     #if defined(PLATFORM_PANDORA)
         nubL.x = 0;
