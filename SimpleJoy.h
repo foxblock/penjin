@@ -23,7 +23,7 @@ class SimpleJoy
         {
             sjRELEASED = 0,
             sjPRESSED = 1,
-            sjHELD=2
+            sjHELD = 2
         };
         SimpleJoy();
         ~SimpleJoy();
@@ -37,6 +37,11 @@ class SimpleJoy
         }
 
         void update();					//	Get current status of keyboard
+
+        // Check button states
+        bool isHeld(const sjSTATUS& bstat)const{return (bstat == sjHELD);}
+        bool isPressed(const sjSTATUS& bstat)const{return (bstat == sjPRESSED);}
+        bool isReleased(const sjSTATUS& bstat)const{return (bstat == sjRELEASED);}
 
         sjSTATUS isStart()const{return Start;}
         sjSTATUS isSelect()const{return Select;}
