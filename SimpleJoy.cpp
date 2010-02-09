@@ -378,11 +378,14 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
     }
 }
 
-
-void SimpleJoy::resetKeys()
+void SimpleJoy::clearSDLEventQueue()
 {
     SDL_Event event;
-    while(SDL_PollEvent(&event));   //  Clears the event queue
+    while(SDL_PollEvent(&event));	//  Clears the event queue
+}
+void SimpleJoy::resetKeys()
+{
+	clearSDLEventQueue();
 
     Start=Select=Up=Down=Left=Right=A=B=X=Y=L=R=sjRELEASED;
     #ifdef PLATFORM_PC
@@ -405,6 +408,46 @@ void SimpleJoy::resetKeys()
         nubR.x = 0;
         nubR.y = 0;
     #endif
+}
+void SimpleJoy::resetDpad()
+{
+    SDL_Event event;
+    while(SDL_PollEvent(&event));   //  Clears the event queue
+
+    Up=Down=Left=Right=sjRELEASED;
+    #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
+        UpLeft=UpRight=DownLeft=DownRight=sjRELEASED;
+    #endif
+}
+void SimpleJoy::resetA()
+{
+    clearSDLEventQueue();
+    A=sjRELEASED;
+}
+void SimpleJoy::resetB()
+{
+    clearSDLEventQueue();
+    B=sjRELEASED;
+}
+void SimpleJoy::resetX()
+{
+	clearSDLEventQueue();
+    X=sjRELEASED;
+}
+void SimpleJoy::resetY()
+{
+	clearSDLEventQueue();
+    Y=sjRELEASED;
+}
+void SimpleJoy::resetL()
+{
+	clearSDLEventQueue();
+    L=sjRELEASED;
+}
+void SimpleJoy::resetR()
+{
+	clearSDLEventQueue();
+    R=sjRELEASED;
 }
 
 void SimpleJoy::joystickStatus()

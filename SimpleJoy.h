@@ -184,7 +184,15 @@ class SimpleJoy
         int getNubRightY()const{return nubR.y;}
 #endif
 
+		void clearSDLEventQueue();
         void resetKeys();
+        void resetDpad();
+        void resetA();
+        void resetB();
+        void resetX();
+        void resetY();
+        void resetL();
+        void resetR();
 
         /// Status
         void joystickStatus();
