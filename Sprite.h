@@ -22,6 +22,7 @@ class Sprite
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(Colour(c));}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v){return image.setTransparentColour(v);}
+        void disableTransparentColour(){image.disableTransparentColour();}
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
         uchar getAlpha()const{return image.getAlpha();}
         #ifdef PENJIN_SDL

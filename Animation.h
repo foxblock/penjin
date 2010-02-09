@@ -23,6 +23,7 @@ class Animation
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(Colour(c));}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v);
+        void disableTransparentColour(){image.disableTransparentColour();}
         uchar getAlpha(){return image.getAlpha();}
 
         void setFrameRate(const TimerScalers& fps){animationTimer.setMode(fps);}

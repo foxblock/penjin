@@ -632,3 +632,95 @@ void Image::toGreyScale()
 
     #endif
 }
+
+void Image::toNegative()
+{
+    #ifdef PENJIN_SDL
+        for(int i = images.size()-1; i>= 0; --i)
+        {
+            Colour t;
+            GFX::lockSurface(images.at(i));
+            for(int x = images.at(i)->w-1; x>=0; --x)
+            {
+                for(int y = images.at(i)->h-1; y >= 0; --y)
+                {
+                    t = GFX::getPixel(images.at(i),x,y);
+                    t = -t;
+                    GFX::setPixel(images.at(i),x,y,t);
+                }
+            }
+            GFX::unlockSurface(images.at(i));
+        }
+    #else
+
+    #endif
+}
+
+void Image::swapGB()
+{
+    #ifdef PENJIN_SDL
+        for(int i = images.size()-1; i>= 0; --i)
+        {
+            Colour t;
+            GFX::lockSurface(images.at(i));
+            for(int x = images.at(i)->w-1; x>=0; --x)
+            {
+                for(int y = images.at(i)->h-1; y >= 0; --y)
+                {
+                    t = GFX::getPixel(images.at(i),x,y);
+                    t.swapGB();
+                    GFX::setPixel(images.at(i),x,y,t);
+                }
+            }
+            GFX::unlockSurface(images.at(i));
+        }
+    #else
+
+    #endif
+}
+
+void Image::swapRB()
+{
+    #ifdef PENJIN_SDL
+        for(int i = images.size()-1; i>= 0; --i)
+        {
+            Colour t;
+            GFX::lockSurface(images.at(i));
+            for(int x = images.at(i)->w-1; x>=0; --x)
+            {
+                for(int y = images.at(i)->h-1; y >= 0; --y)
+                {
+                    t = GFX::getPixel(images.at(i),x,y);
+                    t.swapRB();
+                    GFX::setPixel(images.at(i),x,y,t);
+                }
+            }
+            GFX::unlockSurface(images.at(i));
+        }
+    #else
+
+    #endif
+}
+
+void Image::swapRG()
+{
+    #ifdef PENJIN_SDL
+        for(int i = images.size()-1; i>= 0; --i)
+        {
+            Colour t;
+            GFX::lockSurface(images.at(i));
+            for(int x = images.at(i)->w-1; x>=0; --x)
+            {
+                for(int y = images.at(i)->h-1; y >= 0; --y)
+                {
+                    t = GFX::getPixel(images.at(i),x,y);
+                    t.swapRG();
+                    GFX::setPixel(images.at(i),x,y,t);
+                }
+            }
+            GFX::unlockSurface(images.at(i));
+        }
+    #else
+
+    #endif
+}
