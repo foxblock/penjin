@@ -208,7 +208,13 @@ class Image
             Colour getPixel(float x, float y, float z);
             uint* getPixelArray(float x, float y, float z);*/
         #endif
-        void toGreyScale(); // convert this image to greyscale
+
+        //  Effects
+        void toGreyScale(); //  convert this image to greyscale
+        void toNegative();  //  convert to an inverse image
+        void swapRG();      //  Swap the red and green channels
+        void swapGB();      //  Swap the green and blue channels
+        void swapRB();      //  Swap the red and blue channels
     private:
         // Disabled to revent double freed pointers.
         Image(const Image& BlingRef);
