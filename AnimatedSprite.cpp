@@ -129,8 +129,10 @@ void AnimatedSprite::update()
         int size = image.size()-1;
         if((int)currentFrame > size)
         {
-            if(numLoops == -1)
+            if(numLoops == -1) {
                 currentFrame = 0;
+                reachedEnd = true;
+            }
             else if( numLoops > 0)
             {
                 currentFrame = 0;

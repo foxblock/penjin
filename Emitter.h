@@ -61,9 +61,9 @@ class Emitter
         void setAcceleration(const Vector3df& accel){acceleration = accel;}
     #else
         Vector2df getPosition()const{return position;}
-        Vector2df getPosition(CRuint i)const{if(i<=max-1){return particles[i]->getPosition();}}
-        Vector2df getVelocity(CRuint i)const{if(i<=max-1){return particles[i]->getVelocity();}}
-        Vector2df getAcceleration(CRuint i)const{if(i<=max-1){return particles[i]->getAcceleration();}}
+        Vector2df getPosition(CRuint i)const{if(i<=max-1){return particles[i]->getPosition();} return Vector2df(0,0);}
+        Vector2df getVelocity(CRuint i)const{if(i<=max-1){return particles[i]->getVelocity();} return Vector2df(0,0);}
+        Vector2df getAcceleration(CRuint i)const{if(i<=max-1){return particles[i]->getAcceleration();} return Vector2df(0,0);}
         void setPosition(CRuint i, const Vector2df& pos)const{if(i<=max-1){particles[i]->setPosition(pos);}}
         void setVelocity(CRuint i, const Vector2df& vel)const{if(i<=max-1){particles[i]->setVelocity(vel);}}
         void setAcceleration(CRuint i, const Vector2df& accel)const{if(i<=max-1){particles[i]->setAcceleration(accel);}}
