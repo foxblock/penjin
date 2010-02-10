@@ -163,9 +163,9 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             align(guess);
         }
         //  Run through the text chars
-        for(int i = 0; i < text.size(); ++i)
+        for(uint i = 0; i < text.size(); ++i)
         {
-            char c = text[i];
+            uchar c = text[i];
             // check for NULL terminator
             if(c == '\0')
             {
@@ -220,7 +220,7 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             }
 
             //  create more glyphs as needed - shifted 19 indices
-            while(glyphs[fontSize-1].size() <= c -19)
+            while(glyphs[fontSize-1].size() <= c-19)
             {
                 glyphs[fontSize-1].push_back(NULL);
                 glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();

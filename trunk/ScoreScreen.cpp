@@ -66,9 +66,9 @@ void ScoreScreen::init()
     textStrings[0] = "   ";
     textStrings[2] = "OK?";
     textStrings[3] = "Game Over!";
-    #ifdef PENJIN_SDL
-        SDL_Surface* scr = SDL_GetVideoSurface();
-    #endif
+//   #ifdef PENJIN_SDL
+//        SDL_Surface* scr = SDL_GetVideoSurface();
+//    #endif
     float t = 0.2f;
     text.setBoundaries(bounds);
     for(int i = 3; i >= 0; --i)
