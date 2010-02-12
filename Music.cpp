@@ -70,6 +70,15 @@ void Music::play()
     timer.unpause();
 }
 
+void Music::playFadeIn(CRuint milliseconds)
+{
+    if(!isPaused())
+        Mix_FadeInMusic(music, numLoops, milliseconds);
+    else
+        Mix_ResumeMusic();
+    timer.unpause();
+}
+
 void Music::stop()
 {
     if(isPlaying())

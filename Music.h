@@ -23,6 +23,7 @@ public:
 	bool isPaused()const;
 
 	void play();
+    void playFadeIn(CRuint milliseconds);
 	void pause();
 	void playPause();
 	void stop();
