@@ -119,7 +119,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
     #ifdef PLATFORM_GP2X
-        flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+        flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
     #endif
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)

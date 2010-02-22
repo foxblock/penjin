@@ -1,7 +1,7 @@
 #include "Encryption.h"
 //	Shouldn't have to change these values.
-#define LIMIT 255
-#define RANDLIM 127
+#define LIMIT 256
+#define RANDLIM 128
 
 Encryption::Encryption()
 {

@@ -23,6 +23,7 @@ using namespace std;
 using namespace PenjinErrors;
 #include "Colour.h"
 #include "GFX.h"
+#include "NumberUtility.h"
 
 class Image
 {
@@ -226,6 +227,18 @@ class Image
             void convertToHW();
             vector<SDL_Surface*>images; //  Stores surfaces
             SDL_Surface* screen;        //  The pointer to the screen;
+            //  Rotation Caching
+            struct ROT
+            {
+                SDL_Surface* surf;
+                uint useCount;
+            };
+            uint maxCached;             //  x>0:rotations are cached x is the number of angled that will be cached, 0: they are not.
+            uint currCached;            //  The current number of cahced rotations.
+            vector <ROT> rotCache;      //  Cached rotations
+            void setupCaching();        //  Auto config of rotation chaching
+            SDL_Surface* rotoZoom(SDL_Surface& in,SDL_Rect& src, SDL_Rect& dst);    // Rotozoom the passed in surface with the classes current params
+            void cacheRotation(uint angle, SDL_Surface* s);       //  add the rotation to the cache
 		#elif PENJIN_GL
             vector<Texture> textures;   //  Stores Textures for image
 		#endif

@@ -104,6 +104,7 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
             images.pop_back();
             return PENJIN_IMG_UNABLE_TO_OPEN;
         }
+        setupCaching();
     #else
         textures.resize(textures.size()+1);
         PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTextureNoKey(name);
@@ -227,6 +228,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         // Don't render if invisible or if there is no image!
         if(alpha == SDL_ALPHA_TRANSPARENT)
             return;
+
         if(!images.size() || i >= this->size())
         {
             if(sheetMode)   //  We have a spritesheet
@@ -271,56 +273,34 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         else if(angle != 0 || scale.x!= 1 || scale.y!= 1)
         {
             SDL_Surface* tempImage = NULL;
-            SDL_Surface* subSprite = NULL; // Need to use this for animated sprites to get the subsprite isolated.
-
-
-            if(sheetMode)
+            //  If not in a tilesheet we can do rotation caching
+            if(!sheetMode && scale.x == 1 && scale.y == 1)
             {
-                subSprite = GFX::cropSurface(images[i],&src);
-                #ifdef PENJIN_FIXED
-                    tempImage = rotozoomSurfaceXY(subSprite,
-                    fixedpoint::fix2float(angle),
-                    fixedpoint::fix2float(scale.x),
-                    fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
-                #else
-                    tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_OFF);
-                #endif
-                dst.x += (subSprite->w - tempImage->w)*0.5f;
-                dst.y += (subSprite->h - tempImage->h)*0.5f;
-                SDL_FreeSurface(subSprite);
+                uint myAngle = NumberUtility::wrapValue(angle,359);
+                if(myAngle == 0)
+                    SDL_BlitSurface(images.at(i), &src, dstimg, &dst);
+                else
+                {
+                    if(rotCache.size()>myAngle-1 && rotCache.at(myAngle-1).surf != NULL)
+                    {
+                        dst.x += (src.w - rotCache.at(myAngle-1).surf->w)*0.5f;
+                        dst.y += (src.h - rotCache.at(myAngle-1).surf->h)*0.5f;
+                        SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                        ++rotCache.at(myAngle-1).useCount;
+                    }
+                    else
+                    {
+                        cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
+                        SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                    }
+                }
             }
             else
             {
-                #ifdef PENJIN_FIXED
-                    tempImage = rotozoomSurfaceXY(images[i],
-                    fixedpoint::fix2float(angle),
-                    fixedpoint::fix2float(scale.x),
-                    fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
-                #else
-                    tempImage = rotozoomSurfaceXY(images[i], angle, scale.x, scale.y, SMOOTHING_OFF);
-                #endif
-                dst.x += (images[i]->w - tempImage->w)*0.5f;
-                dst.y += (images[i]->h - tempImage->h)*0.5f;
-            }
-            if(colourKey.alpha)
-            {
-                SDL_Surface* another = SDL_CreateRGBSurface(images[i]->flags,tempImage->w, tempImage->h,images[i]->format->BitsPerPixel, tempImage->format->Rmask, tempImage->format->Gmask, tempImage->format->Bmask, tempImage->format->Amask);
-                SDL_FillRect(another, NULL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
-                //
-                    SDL_SetColorKey(tempImage, SDL_SRCCOLORKEY, SDL_MapRGB(tempImage->format,0,0,0));
-                //
-
-                SDL_BlitSurface(tempImage,NULL, another, NULL);
-                SDL_SetColorKey(another, SDL_SRCCOLORKEY, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
-
-                SDL_BlitSurface(another,NULL, dstimg, &dst);
-                SDL_FreeSurface(another);
-            }
-            else
-            {
+                tempImage = rotoZoom(*images.at(i),src,dst);
                 SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
+                SDL_FreeSurface(tempImage);
             }
-            SDL_FreeSurface(tempImage);
         }
     }
     //void Image::renderImage(SDL_Surface* dstimg, const Vector2di& pos){renderImage(0, dstimg, pos.x, pos.y);}
@@ -563,6 +543,17 @@ void Image::clear()
             --i;
         }
         images.clear();
+        i = rotCache.size()-1;
+        while(i >= 0)
+        {
+            if(rotCache.at(i).surf != NULL)
+            {
+                SDL_FreeSurface(rotCache.at(i).surf);
+                rotCache.at(i).surf = NULL;
+            }
+            --i;
+        }
+        rotCache.clear();
     #else
         textures.clear();
     #endif
@@ -607,6 +598,107 @@ void Image::convertToHW()
         images.at(i) = SDL_ConvertSurface(images.at(i), screen->format, SDL_HWSURFACE);
         SDL_FreeSurface(temp);
     }*/
+}
+
+SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
+{
+    SDL_Surface* tempImage = NULL;
+    SDL_Surface* subSprite = NULL; // Need to use this for animated sprites to get the subsprite isolated.
+
+    if(sheetMode)
+    {
+        subSprite = GFX::cropSurface(&in,&src);
+        #ifdef PENJIN_FIXED
+            tempImage = rotozoomSurfaceXY(subSprite,
+            fixedpoint::fix2float(angle),
+            fixedpoint::fix2float(scale.x),
+            fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
+        #else
+            tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_OFF);
+        #endif
+        dst.x += (subSprite->w - tempImage->w)*0.5f;
+        dst.y += (subSprite->h - tempImage->h)*0.5f;
+        SDL_FreeSurface(subSprite);
+    }
+    else
+    {
+        //  first check if size has changed
+        //  If the size has change then we can't use the cached rotations
+
+        #ifdef PENJIN_FIXED
+            tempImage = rotozoomSurfaceXY(in,
+            fixedpoint::fix2float(angle),
+            fixedpoint::fix2float(scale.x),
+            fixedpoint::fix2float(scale.y),SMOOTHING_OFF);
+        #else
+            tempImage = rotozoomSurfaceXY(&in, angle, scale.x, scale.y, SMOOTHING_OFF);
+        #endif
+        dst.x += (src.w - tempImage->w)*0.5f;
+        dst.y += (src.h - tempImage->h)*0.5f;
+    }
+    if(colourKey.alpha)
+    {
+        SDL_Surface* another = SDL_CreateRGBSurface(in.flags,tempImage->w, tempImage->h,in.format->BitsPerPixel, tempImage->format->Rmask, tempImage->format->Gmask, tempImage->format->Bmask, tempImage->format->Amask);
+        SDL_FillRect(another, NULL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+        SDL_SetColorKey(tempImage, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(tempImage->format,0,0,0));
+        SDL_BlitSurface(tempImage,NULL, another, NULL);
+        SDL_SetColorKey(another, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
+        SDL_FreeSurface(tempImage);
+        return another;
+    }
+    return tempImage;
+}
+
+void Image::setupCaching()
+{
+    maxCached = currCached = 0;
+    Point2di dim;
+    dim.x = getWidth();
+    dim.y = getHeight();
+
+    // if the image is too big, it's not good to bloat out ram with all copies of rotations
+    if(dim.x > GFX::getXResolution() || dim.y > GFX::getYResolution())
+        return;
+    //  If the image is less than 5% of the screen dims then we cache all angles
+    else if(dim.x < GFX::getXResolution()*.05f || dim.y > GFX::getYResolution()*0.05f)
+        maxCached = 358;
+}
+
+void Image::cacheRotation(uint angle, SDL_Surface* s)
+{
+    //  Bring the angle into range
+    //angle = NumberUtility::wrapValue(angle, 359);
+    if(s == NULL)
+        return;
+
+    //  If the angle is 0 we don't actually need to rotate or cache
+    if(angle == 0)
+    {
+        if(s!=NULL)
+            SDL_FreeSurface(s);
+        return;
+    }
+
+    //  shift one place for the lack of 0 angle.
+    angle-=1;
+
+    ROT r;
+    r.surf = NULL;
+    r.useCount = 0;
+
+    //  Create enough space to store the rotation.
+    while(angle >= rotCache.size())
+    {
+        rotCache.push_back(r);
+    }
+
+    //  now check and store the surface
+    if(rotCache.at(angle).surf == NULL)
+    {
+        rotCache.at(angle).surf = s;
+    }
+    else
+        SDL_FreeSurface(s);
 }
 #endif
 
