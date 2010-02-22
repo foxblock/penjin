@@ -69,7 +69,7 @@ bool NumberUtility::isPrime(CRuint value)
 int NumberUtility::wrapValue(int val,CRint limit)
 {
     //  We need to keep going until it is within the required range.
-    while(val < 0 && val >limit)
+    while(val < 0 || val >limit)
     {
     //  We can't have it less than 0, as it causes problems.
         if(val < 0)
