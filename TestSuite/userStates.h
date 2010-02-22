@@ -19,13 +19,15 @@ enum STATE_MODES
     STATE_COLOUR,
     STATE_PRIMITIVE,
     STATE_RAYCAST,
-    STATE_FILE_LIST
+    STATE_FILE_LIST,
+    STATE_ROTATION
 };
 #include "StateTitle.h"
 #include "StateAnimation.h" //  Animation testing suite.
 #include "StateColour.h"    //  Colour class tests
 #include "StatePrimitive.h" //  Primitive tests.
 #include "StateRaycast.h"   //  Raycaster
-#include "StateFileList.h"
+#include "StateFileList.h"  //  File lister
+#include "StateRotation.h"  //  Rotations tester
 
 #endif	//	USERSTATES_H

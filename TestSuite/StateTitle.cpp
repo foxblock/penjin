@@ -12,10 +12,8 @@ StateTitle::~StateTitle()
 
 void StateTitle::init()
 {
+    input->resetKeys();
     initMenu();
-    test.loadFont("font/unispace.ttf");
-    test.setColour(RED);
-    test.setRelativity(true);
 }
 
 
@@ -61,6 +59,11 @@ void StateTitle::initMenu()
     menu.addItem(MENU_STRING_ITEM);
     menu.setIsSelectable(true);
     menu.setMenuItemText("FileLister");
+    menu.setSpacing(spacing);
+
+    menu.addItem(MENU_STRING_ITEM);
+    menu.setIsSelectable(true);
+    menu.setMenuItemText("Rotation Test");
     menu.setSpacing(spacing);
 
     menu.addItem(MENU_STRING_ITEM);
@@ -131,6 +134,8 @@ void StateTitle::menuLogic()
         setNextState(STATE_RAYCAST);
     else if(choice == 5)
         setNextState(STATE_FILE_LIST);
-    else if(choice == 6)    //  Quit
+    else if(choice == 6)
+        setNextState(STATE_ROTATION);
+    else if(choice == 7)    //  Quit
         nullifyState();
 }

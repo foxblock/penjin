@@ -42,6 +42,8 @@ void MyGame::stateManagement()
 		state = new StateTitle;
     else if(next == STATE_FILE_LIST)
 		state = new StateFileList;
+    else if(next == STATE_ROTATION)
+        state = new StateRotation;
 	/* EXAMPLE OF STATE CHECKING
 	else if(next == STATE_TITLE)
 		state = new StateTitle;*/

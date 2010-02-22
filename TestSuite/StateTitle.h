@@ -17,7 +17,6 @@ class StateTitle : public BaseState
         virtual void userInput();
 
     private:
-        Text test;
         Menu menu;
         int choice;
         void initMenu();

@@ -867,6 +867,8 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="StateRaycast.h">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
+		<Unit filename="StateRotation.cpp" />
+		<Unit filename="StateRotation.h" />
 		<Unit filename="StateTitle.cpp">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
