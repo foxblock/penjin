@@ -70,7 +70,7 @@ class Achievement
         virtual string getDescription() const {return descr;};
         virtual void setDescription(CRstring newDescr) {if (newDescr.size() > 0) descr = newDescr;};
         virtual const AnimatedSprite* getIcon() const {return &icon;};
-        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1); icon.setTransparentColour(MAGENTA);};
+        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1); icon.disableTransparentColour();};
 
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};

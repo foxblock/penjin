@@ -7,7 +7,7 @@
 ///
 /// Mix of Boolean, Reset and Time Achievements
 /// Several events, must be completed in no particular order and without time constraint
-/// Reset events, reset count and completed events
+/// Reset-events, reset count and completed events
 ///------------------------------
 
 #include "Achievement.h"

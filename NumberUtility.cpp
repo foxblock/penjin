@@ -1,7 +1,7 @@
 #include "NumberUtility.h"
 
 ///----------------------
-/// analysis
+/// Analysis
 ///----------------------
 
 #ifdef PENJIN_FIXED
@@ -111,7 +111,7 @@ int NumberUtility::wrapValue(int val,CRint limit)
 
 
 ///----------------------
-/// statistics
+/// Angles
 ///----------------------
 
 float NumberUtility::degToRad(CRfloat a)
