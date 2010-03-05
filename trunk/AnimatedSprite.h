@@ -90,6 +90,7 @@ class AnimatedSprite
         uint getCurrentFrame()const{return currentFrame;}
         bool hasFinished()const{return((size_t)currentFrame >= image.size()-1 && numLoops == 0);}
         bool hasReachedEnd() {return reachedEnd;}
+        void resetReachedEnd() {reachedEnd = false;}
         void setReversePlay(CRbool reverse){playReversed = reverse;}
         void rewind(){currentFrame = 0;numLoops = firstLoops;}
         void setCurrentFrame(CRint framenumber){currentFrame = framenumber;}
