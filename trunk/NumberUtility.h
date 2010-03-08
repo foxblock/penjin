@@ -3,8 +3,9 @@
 
 #include "PenjinTypes.h"
 
-#define M_PI 3.141592653f
-
+#ifndef M_PI
+    #define M_PI 3.141592653f
+#endif
 namespace NumberUtility
 {
     /// Analysis

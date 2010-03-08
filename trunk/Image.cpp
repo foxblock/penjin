@@ -290,8 +290,18 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                     }
                     else
                     {
-                        cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
-                        SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                        //  If the cache is not full we cache more images
+                        if(currCached < maxCached)
+                        {
+                            cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
+                            SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                        }
+                        else    //  We manually render (SLOW)
+                        {       //  TODO: FREE least used cache items
+                            SDL_Surface* t = rotoZoom(*images.at(i),src,dst);
+                            SDL_BlitSurface(t, NULL, dstimg,&dst);
+                            SDL_FreeSurface(t);
+                        }
                     }
                 }
             }
@@ -696,6 +706,7 @@ void Image::cacheRotation(uint angle, SDL_Surface* s)
     if(rotCache.at(angle).surf == NULL)
     {
         rotCache.at(angle).surf = s;
+        ++currCached;
     }
     else
         SDL_FreeSurface(s);
