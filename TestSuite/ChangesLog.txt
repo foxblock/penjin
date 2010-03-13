@@ -1,4 +1,10 @@
 13 March 2010
+   released version 0.2.852 of TestSuite
+
+     Change log:
+        -Added: Filtering system to FileLister
+
+13 March 2010
    released version 0.2.841 of TestSuite
 
      Change log:

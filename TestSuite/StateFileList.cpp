@@ -19,8 +19,8 @@ void StateFileList::init()
     list.setTextBgColour(BLACK);
     list.setTextColour(YELLOW);
     list.setTextSelectionColour(BLUE);
-    list.AddFilter("DIR");
-    list.addFilter("png");
+    list.addFilter("DIR");  // Adds the special case Directory filter.
+    list.addFilter("png");  // Adds a filter to show only png files
 }
 
 
