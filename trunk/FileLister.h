@@ -45,7 +45,8 @@ class FileLister : public Menu
         string enter();             //  Enter the selected item(if directory) and return full path string of item.
         void goUp();                //  Go up one level in the directory tree
 
-        void AddFilter(CRstring f){filters.push_back(f);}
+        void addFilter(CRstring f){filters.push_back(f);createListing();}
+        void clearFilters(){filters.clear();}
 
     private:
         void createListing();   //  creates strings for dir listing.
