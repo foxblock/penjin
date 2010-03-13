@@ -1,3 +1,15 @@
+13 March 2010
+   released version 0.2.841 of TestSuite
+
+     Change log:
+        -Added: enter() of DirLister now returns full path in native platform format.
+
+13 March 2010
+   released version 0.2.840 of TestSuite
+
+     Change log:
+        -Added: DIR indicator to DirMenuItems
+
 30 October 2009
    released version 0.0.80 of TestSuite
 

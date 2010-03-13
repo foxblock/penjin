@@ -19,6 +19,8 @@ void StateFileList::init()
     list.setTextBgColour(BLACK);
     list.setTextColour(YELLOW);
     list.setTextSelectionColour(BLUE);
+    list.AddFilter("DIR");
+    list.addFilter("png");
 }
 
 
@@ -57,7 +59,7 @@ void StateFileList::userInput()
         if(choice.find(".png") != choice.npos)
         {
             test.clear();
-            PENJIN_ERRORS t = test.loadSprite(list.getPath()+"/"+choice);
+            PENJIN_ERRORS t = test.loadSprite(choice);
             if(t == PENJIN_OK)
                 loaded = true;
         }

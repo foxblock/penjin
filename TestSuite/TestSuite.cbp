@@ -413,8 +413,12 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/Command.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="../PenjinBase/DirMenuItem.cpp" />
-		<Unit filename="../PenjinBase/DirMenuItem.h" />
+		<Unit filename="../PenjinBase/DirMenuItem.cpp">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
+		</Unit>
+		<Unit filename="../PenjinBase/DirMenuItem.h">
+			<Option virtualFolder="PenjinBase/Menu/MenuItems/" />
+		</Unit>
 		<Unit filename="../PenjinBase/DoubleVector.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
@@ -439,8 +443,12 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/ErrorHandler.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
-		<Unit filename="../PenjinBase/FileLister.cpp" />
-		<Unit filename="../PenjinBase/FileLister.h" />
+		<Unit filename="../PenjinBase/FileLister.cpp">
+			<Option virtualFolder="PenjinBase/Menu/" />
+		</Unit>
+		<Unit filename="../PenjinBase/FileLister.h">
+			<Option virtualFolder="PenjinBase/Menu/" />
+		</Unit>
 		<Unit filename="../PenjinBase/GFX.cpp">
 			<Option virtualFolder="PenjinBase/Draw/" />
 		</Unit>
@@ -622,8 +630,12 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="../PenjinBase/ParticleMirror.h">
 			<Option virtualFolder="PenjinBase/Particle/Collidables/" />
 		</Unit>
-		<Unit filename="../PenjinBase/Penjin.cpp" />
-		<Unit filename="../PenjinBase/Penjin.h" />
+		<Unit filename="../PenjinBase/Penjin.cpp">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
+		<Unit filename="../PenjinBase/Penjin.h">
+			<Option virtualFolder="PenjinBase/" />
+		</Unit>
 		<Unit filename="../PenjinBase/PenjinErrors.h">
 			<Option virtualFolder="PenjinBase/" />
 		</Unit>
@@ -853,8 +865,12 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="StateColour.h">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
-		<Unit filename="StateFileList.cpp" />
-		<Unit filename="StateFileList.h" />
+		<Unit filename="StateFileList.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateFileList.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
 		<Unit filename="StatePrimitive.cpp">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
@@ -867,8 +883,12 @@ Press START in any of the Test States to return to the TitleState Menu.]]>
 		<Unit filename="StateRaycast.h">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
-		<Unit filename="StateRotation.cpp" />
-		<Unit filename="StateRotation.h" />
+		<Unit filename="StateRotation.cpp">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
+		<Unit filename="StateRotation.h">
+			<Option virtualFolder="MyGame/States/" />
+		</Unit>
 		<Unit filename="StateTitle.cpp">
 			<Option virtualFolder="MyGame/States/" />
 		</Unit>
