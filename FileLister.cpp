@@ -38,28 +38,60 @@ void FileLister::createListing()
     listingTypes.push_back(PATH);
     while(dirEnt = readdir(dir))
     {
-        listing.push_back(dirEnt->d_name);
-        #ifdef _DEBUG
-        cout << dirEnt->d_name << endl;
-        #endif
-
-        #ifdef _WIN32
-            struct stat fileStat;
-            stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
-            if(fileStat.st_mode & DT_DIR)
-                listingTypes.push_back(DT_DIR);
-            else if(fileStat.st_mode & DT_REG)
-                listingTypes.push_back(DT_REG);
-            else
-                listingTypes.push_back(UNKNOWN);
-        #else
-            if(dirEnt->d_type == DT_DIR)
-                listingTypes.push_back(DT_DIR);
-            else if(dirEnt->d_type == DT_REG)
-                listingTypes.push_back(DT_REG);
-            else
-                listingTypes.push_back(UNKNOWN);
-        #endif
+        if(filters.size() == 0)
+        {
+            int type = -1;
+            string choice = dirEnt->d_name;
+            #ifdef _WIN32
+                struct stat fileStat;
+                stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
+                if(fileStat.st_mode & DT_DIR)
+                    type=DT_DIR;
+                else if(fileStat.st_mode & DT_REG)
+                    type=DT_REG;
+                else
+                    type=UNKNOWN;
+            #else
+                if(dirEnt->d_type == DT_DIR)
+                    type=DT_DIR;
+                else if(dirEnt->d_type == DT_REG)
+                    type=DT_REG;
+                else
+                    type=UNKNOWN;
+            #endif
+            listing.push_back(choice);
+            listingTypes.push_back(type);
+        }
+        else
+        {
+            for(int f = filters.size()-1; f>=0; --f)
+            {
+                int type = -1;
+                string choice = dirEnt->d_name;
+                #ifdef _WIN32
+                    struct stat fileStat;
+                    stat(string(workingDir + "/" + dirEnt->d_name).c_str(),&fileStat);
+                    if(fileStat.st_mode & DT_DIR)
+                        type=DT_DIR;
+                    else if(fileStat.st_mode & DT_REG)
+                        type=DT_REG;
+                    else
+                        type=UNKNOWN;
+                #else
+                    if(dirEnt->d_type == DT_DIR)
+                        type=DT_DIR;
+                    else if(dirEnt->d_type == DT_REG)
+                        type=DT_REG;
+                    else
+                        type=UNKNOWN;
+                #endif
+                if( (filters.at(f) == "DIR" && type == DT_DIR) || choice.find("." + filters.at(f)) != choice.npos)
+                {
+                    listing.push_back(choice);
+                    listingTypes.push_back(type);
+                }
+            }
+        }
     }
     closedir(dir);
 }
