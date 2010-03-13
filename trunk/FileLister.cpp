@@ -96,8 +96,6 @@ string FileLister::getSelected()
 
 string FileLister::enter()
 {
-   /* createListing();
-    createDisplay();*/
     string t = getSelected();
     if(t == "..")       //  Same as goUp()
         goUp();
@@ -117,7 +115,11 @@ string FileLister::enter()
         cout << "FD: " << folderDepth << endl;
         #endif
     }
-    return t;
+    #ifdef _WIN32
+        return getPath() + ("\\" + t);
+    #else
+        return getPath() + ("/" + t);
+    #endif
 }
 
 void FileLister::goUp()

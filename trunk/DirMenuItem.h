@@ -3,6 +3,26 @@
 
 #include "MenuItem.h"
 #include "Text.h"
+#ifdef _WIN32
+    //#include <direct.h>
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #include <dirent.h>
+    #include <stdlib.h>
+    #define DT_DIR _S_IFDIR
+    #define DT_REG _S_IFREG
+#else
+    #include <dirent.h>
+    #include <unistd.h>
+    //#include <sys/stat.h>
+    #include <limits.h>
+    #define _MAX_PATH PATH_MAX
+    #ifdef PLATFORM_WII
+        #define DT_DIR 4
+        #define DT_REG 8
+    #endif
+#endif
+
 
 class DirMenuItem : public MenuItem
 {

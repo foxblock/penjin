@@ -42,7 +42,7 @@ class FileLister : public Menu
         void setPath(CRstring path){workingDir = path;}
         string getSelected();      //  Return the string of selected item
         vector<string> getListing();//  Return entire director listing as a vector of strings.
-        string enter();             //  Enter the selected item(if directory) and return string of item.
+        string enter();             //  Enter the selected item(if directory) and return full path string of item.
         void goUp();                //  Go up one level in the directory tree
 
         void AddFilter(CRstring f){filters.push_back(f);}
