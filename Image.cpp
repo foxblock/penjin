@@ -669,9 +669,17 @@ void Image::setupCaching()
     // if the image is too big, it's not good to bloat out ram with all copies of rotations
     if(dim.x > GFX::getXResolution() || dim.y > GFX::getYResolution())
         return;
+    //  If the image is less than 2% of the screen dims then we will not see any noticeable benefit from caching
+    else if(dim.x < GFX::getXResolution()* 0.02f || dim.y < GFX::getYResolution()*0.02f)
+        return;
     //  If the image is less than 5% of the screen dims then we cache all angles
-    else if(dim.x < GFX::getXResolution()*.05f || dim.y > GFX::getYResolution()*0.05f)
+    else if(dim.x < GFX::getXResolution()* 0.05f || dim.y < GFX::getYResolution()*0.05f)
         maxCached = 358;
+    else
+    {
+        //  TODO scale caching relative to size of sprite and screen resolution
+        maxCached = 0;
+    }
 }
 
 void Image::cacheRotation(uint angle, SDL_Surface* s)

@@ -30,23 +30,8 @@ void DirMenuItem::init()
 #ifdef PENJIN_SDL
 void DirMenuItem::render()
 {
-    text->setPosition(position/*+ Vector2di(horizontalOffset,0)*/);
-    string out;
-    if(isSelected)
-    {
-        Colour temp = text->getColour();
-        if(temp != selectedColour)
-            text->setColour(selectedColour);
-        out = selectionIndicator;
-        out += " " + menuItemText;
-        text->print(out);
-        text->setColour(temp);
-        return;
-    }
-    else
-        out = menuItemText;
-
-    text->print(out);
+    SDL_Surface* scr = GFX::getVideoSurface();
+    render(scr);
 }
 void DirMenuItem::render(SDL_Surface* screen)
 {
@@ -59,13 +44,18 @@ void DirMenuItem::render(SDL_Surface* screen)
             text->setColour(selectedColour);
         out = selectionIndicator;
         out += " " + menuItemText;
+        if(dirType == DT_DIR)
+            out += " <DIR>";
         text->print(screen,out);
         text->setColour(temp);
         return;
     }
     else
+    {
         out = menuItemText;
-
+        if(dirType == DT_DIR)
+            out += " <DIR>";
+    }
     text->print(screen,out);
 }
 #else
