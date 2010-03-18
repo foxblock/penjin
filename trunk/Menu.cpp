@@ -11,11 +11,14 @@ Menu::Menu()
         menu3D = false;
         angle = 0.0f;
         angleDelta = 0.1f;
+        menuStart = Vector3df(0,0,0);
+    #else
+        menuStart = Vector2di(0,0);
     #endif
     #ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
     #endif
-    menuStart = Vector2di(0,0);
+
 }
 
 Menu::~Menu()

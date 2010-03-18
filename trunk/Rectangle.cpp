@@ -91,42 +91,39 @@ void Rectangle::render()
     //Setup model view
     //glMatrixMode( GL_MODELVIEW );
     glLoadIdentity( );
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glAlphaFunc(GL_GREATER,0.1f);
-        glEnable(GL_ALPHA_TEST);
-            //glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glAlphaFunc(GL_GREATER,0.1f);
+        //glEnable(GL_ALPHA_TEST);
+            glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
                 glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
-                if(thickness>0)
-                {
-                glLineWidth(thickness);
-                glBegin(GL_LINE_LOOP);
-                }
-                else
-                glBegin(GL_QUADS);
+                glEnableClientState(GL_VERTEX_ARRAY);
+                    //  prepare vertices
                     #ifdef PENJIN3D
-                        glVertex3f(position.x, position.y,  position.z);
+                        float verts[] = {   position.x,position.y + dimensions.y,position.z,
+                                            position.x + dimensions.x,position.y + dimensions.y,position.z,
+                                            position.x + dimensions.x, position.y, position.z,
+                                            position.x,position.y,position.z};
+                        glVertexPointer(3, GL_FLOAT, 0,verts);
                     #else
-                        glVertex2f(position.x,position.y);
+                        float verts[] = {   position.x,position.y + dimensions.y,
+                                            position.x + dimensions.x,position.y + dimensions.y,
+                                            position.x + dimensions.x, position.y,
+                                            position.x,position.y};
+                        glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
-                    #ifdef PENJIN3D
-                        glVertex3f(position.x + dimensions.x, position.y, position.z);
-                    #else
-                        glVertex2f(position.x + dimensions.x, position.y);
-                    #endif
-                    #ifdef PENJIN3D
-                        glVertex3f(position.x + dimensions.x, position.y + dimensions.y, position.z);
-                    #else
-                        glVertex2f(position.x + dimensions.x, position.y + dimensions.y);
-                    #endif
-                    #ifdef PENJIN3D
-                        glVertex3f(position.x, position.y + dimensions.y, position.z);
-                    #else
-                        glVertex2f(position.x, position.y + dimensions.y);
-                    #endif
-                glEnd();
-            //glDisable(GL_BLEND);
-        glDisable(GL_ALPHA_TEST);
+                    if(thickness>0)
+                    {
+                        glLineWidth(thickness);
+                        glDrawArrays(GL_LINE_LOOP,0,4);
+                    }
+                    else
+                    {
+                        glDrawArrays(GL_QUADS,0,4);
+                    }
+                glDisableClientState(GL_VERTEX_ARRAY);
+            glDisable(GL_BLEND);
+        //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
 }
 #endif

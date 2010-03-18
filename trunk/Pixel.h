@@ -95,7 +95,25 @@ class Pixel
         void setPosition(CRfloat x, CRfloat y){position.x=x+0.5f;position.y=y+0.5f;}
     #endif
         template <class T>
-        void setPosition(const T& p){position.x = p.x;position.y=p.y;}
+        void setPosition(const T& p)
+        {
+            position.x = p.x;
+            position.y = p.y;
+            #ifdef PENJIN3D
+                position.z = p.z;
+            #endif
+        }
+
+    #ifdef PENJIN_SDL
+        Vector2di getPosition()const{return position;}
+    #else
+        #ifdef PENJIN3D
+            Vector3df getPosition()const{return position;}
+        #else
+            Vector2df getPosition()const{return position;}
+        #endif
+    #endif
+
 
     #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);   //  Blit to a specific surface
@@ -110,11 +128,18 @@ class Pixel
     private:
         void init();
         void setPixel();
-        Vector2di position;
+
         Colour colour;
     #ifdef PENJIN_SDL
+        Vector2di position;
         SDL_Surface* pixel;     //  Pixel to blit to the screen
         SDL_Surface* screen;    //  pointer to screen surface
+    #else
+        #ifdef PENJIN3D
+            Vector3df position;
+        #else
+            Vector2df position;
+        #endif
     #endif
 };
 

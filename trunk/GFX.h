@@ -6,7 +6,7 @@
 #include "PenjinTypes.h"
 #include "Random.h"
 #include "StringUtility.h"
-#include "Pixel.h"
+#include "Colour.h"
 #include "ErrorHandler.h"
 #ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
@@ -17,7 +17,8 @@
     #include "MMUHack.h"
 #endif
 //#include "LUT.h"
-
+#include <vector>
+using std::vector;
 
 namespace GFX
 {
@@ -72,6 +73,7 @@ namespace GFX
         void setPixel(CRint x, CRint y, const Colour& c);
         Colour getPixel(CRint x, CRint y);
         Colour getPixel(SDL_Surface* screen,CRint x, CRint y);
+        void renderPixelBuffer();   //  Renders all pixels stored in the buffer
         void clearScreen();
         void setClearColour(const Colour& c);
         Colour getClearColour();

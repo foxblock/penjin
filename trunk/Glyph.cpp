@@ -59,10 +59,11 @@ void Glyph::render()
         //  With the surface now converted to a texture we can render it to a quad
         glColor4f(1.0f, 1.0f, 1.0f, colour.alpha);
         glBindTexture (GL_TEXTURE_2D, glyph.getTextureID());
-
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
+        //glEnable(GL_ALPHA_TEST);
+        //glAlphaFunc(GL_GREATER, 0.5);
             glEnable(GL_TEXTURE_2D);
                 glBegin(GL_QUADS);
                     glTexCoord2f (0.0f, 0.0f);
@@ -91,6 +92,7 @@ void Glyph::render()
                     #endif
                 glEnd();
             glDisable(GL_TEXTURE_2D);
+        //glDisable(GL_ALPHA_TEST);
         glDisable(GL_BLEND);
     #endif
 }

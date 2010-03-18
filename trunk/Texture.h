@@ -17,13 +17,13 @@ class Texture
         Texture(CRstring fileName);
         ~Texture();
 
-        Colour getTransparentColour()const{return transparent;}
-        void setTransparentColour(const Colour& c){transparent = c;}
+        Colour getTransparentColour()const{return colourKey;}
+        void setTransparentColour(const Colour& c){colourKey = c;}
 
-        PENJIN_ERRORS loadSurface(SDL_Surface* surface){return loadSurface(surface,true);}            //  Load a texture from a surface
-        PENJIN_ERRORS loadSurfaceNoKey(SDL_Surface* surface){return loadSurface(surface,false);}
-        PENJIN_ERRORS loadTexture(CRstring fileName){return loadTexture(fileName,true);}               //  Load a texture from an image file
-        PENJIN_ERRORS loadTextureNoKey(CRstring imageName){return loadTexture(imageName,false);}       // Load a texture with no colourkey
+        PENJIN_ERRORS loadSurface(SDL_Surface* surface);//{return loadSurface(surface,true);}            //  Load a texture from a surface
+        //PENJIN_ERRORS loadSurfaceNoKey(SDL_Surface* surface){return loadSurface(surface,false);}
+        PENJIN_ERRORS loadTexture(CRstring fileName);//{return loadTexture(fileName,true);}               //  Load a texture from an image file
+        //PENJIN_ERRORS loadTextureNoKey(CRstring imageName){return loadTexture(imageName,false);}       // Load a texture with no colourkey
 
         bool isLoaded()const{return loaded;}                //  Check if the texture is still taking up mem by OpenGL
 
@@ -45,8 +45,8 @@ class Texture
 
 	private :
         void init();
-        PENJIN_ERRORS loadSurface(SDL_Surface* screen, CRbool keyed);
-        PENJIN_ERRORS loadTexture(CRstring file, CRbool keyed);
+        //PENJIN_ERRORS loadSurface(SDL_Surface* screen, CRbool keyed);
+        //PENJIN_ERRORS loadTexture(CRstring file, CRbool keyed);
         GLenum getTextureFormat(SDL_Surface* surface);  // Get the proper OpenGL format of the data stored in an SDL surface
         /// Check if a value is a power of two
         bool isPoT(const int& x)const{return NumberUtility::isPowerOfTwo(x);}
@@ -54,7 +54,7 @@ class Texture
 		GLuint textureID;
         Vector2di rawDimensions;   // stores the raw width and height in pixels of the image.
         Vector2di dimensions;
-        Colour transparent;
+        Colour colourKey;
 };
 #endif
 #endif

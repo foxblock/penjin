@@ -72,5 +72,29 @@ typedef const std::string& CRstring;
     #define float Fixed
     #define CRfloat CRFixed
 #endif  //  PENJIN_FIXED
+
+// Vertex helpers
+#ifdef PENJIN3D
+    struct ColourVertex
+    {
+        Point3df vertex;
+        Point4df colour;
+    };
+#else
+    #ifdef PENJIN_SDL
+        struct ColourVertex
+        {
+            Point2di vertex;
+            Point4di colour;
+        };
+    #else
+        struct ColourVertex
+        {
+            Point2df vertex;
+            Point4df colour;
+        };
+    #endif
+#endif
+
 #include "Variable.h"	        // multiple type storage
 #endif	//	TYPES_H

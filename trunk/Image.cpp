@@ -28,27 +28,35 @@ Image::~Image()
 
 PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
 {
-    if((size_t)i >= images.size())
-        return PENJIN_INVALID_INDEX;
-    if(images.at(i)->flags & SDL_SRCALPHA)
-    {
-        disableTransparentColour(i);
+    #ifdef PENJIN_SDL
+        if((size_t)i >= images.size())
+            return PENJIN_INVALID_INDEX;
+        if(images.at(i)->flags & SDL_SRCALPHA)
+        {
+            disableTransparentColour(i);
+            return PENJIN_OK;
+        }
+        if(SDL_SetColorKey(images[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i]->format,c.red,c.green,c.blue)) == -1)
+                return PENJIN_SDL_INVALID_COLORKEY;
+        colourKey = c;
+        colourKey.alpha = 255;
         return PENJIN_OK;
-    }
-    if(SDL_SetColorKey(images[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i]->format,c.red,c.green,c.blue)) == -1)
-            return PENJIN_SDL_INVALID_COLORKEY;
-    colourKey = c;
-    colourKey.alpha = 255;
-    return PENJIN_OK;
+    #else
+        return PENJIN_FUNCTION_IS_STUB;
+    #endif
 }
 
 PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2di& v)
 {
-    if((size_t)i >= images.size())
-        return PENJIN_INVALID_INDEX;
+    #ifdef PENJIN_SDL
+        if((size_t)i >= images.size())
+            return PENJIN_INVALID_INDEX;
 
-    Colour c = GFX::getPixel(images[i],v.x,v.y);
-    return setTransparentColour(i,c);
+        Colour c = GFX::getPixel(images[i],v.x,v.y);
+        return setTransparentColour(i,c);
+    #else
+        return PENJIN_FUNCTION_IS_STUB;
+    #endif
 }
 
 PENJIN_ERRORS Image::loadImage(CRstring name)
@@ -78,7 +86,7 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
         SDL_FreeSurface(t);
     #else
         textures.resize(textures.size()+1);
-        error = (PENJIN_ERRORS)textures[textures.size()-1].loadTexture(name);
+        error = (PENJIN_ERRORS)textures.back().loadTexture(name);
         if(error != PENJIN_OK)
         {
             textures.pop_back();
@@ -107,7 +115,7 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
         setupCaching();
     #else
         textures.resize(textures.size()+1);
-        PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTextureNoKey(name);
+        PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTexture(name);
         if(error != PENJIN_OK)
         {
             textures.pop_back();
@@ -387,6 +395,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         #endif
         // Scale and rotate
         glPushMatrix();
+
         #ifdef PENJIN3D
             glScalef(scale.x, scale.y, scale.z);
             glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
@@ -396,72 +405,63 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             glScalef(scale.x,scale.y,1.0f);
             glRotatef(angle, 0.0f, 0.0f, 1.0f);
         #endif
-        glLoadIdentity( );
+
         //glMatrixMode( GL_MODELVIEW );
             glEnable(GL_TEXTURE_2D);
-                if(textures[i].getTransparentColour().alpha == 1)
-                {
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    glEnable(GL_BLEND);
-                    glAlphaFunc(GL_GREATER,0.1f);
-                    glEnable(GL_ALPHA_TEST);
-                }
-                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-                glBindTexture (GL_TEXTURE_2D, textures[i].getTextureID());
-                glBegin(GL_QUADS);
-                    glTexCoord2f (texCoords.x, texCoords.y);
-                    #ifdef PENJIN3D
-                        glVertex3f(destx, desty,  destz);
-                    #else
-                        glVertex2f(destx,desty);
-                    #endif
-                    glTexCoord2f (texCoords.z, texCoords.y);
-                    if(!sheetMode)
-                    {
+                //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                //glEnable(GL_BLEND);
+                    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+                    glBindTexture (GL_TEXTURE_2D, textures[i].getTextureID());
+                    glBegin(GL_QUADS);
+                        glTexCoord2f (texCoords.x, texCoords.y);
                         #ifdef PENJIN3D
-                            glVertex3f(destx + textures[i].getRawWidth(), desty, destz);
+                            glVertex3f(destx, desty,  destz);
                         #else
-                            glVertex2f(destx + textures[i].getRawWidth(), desty);
+                            glVertex2f(destx,desty);
                         #endif
-                        glTexCoord2f (texCoords.z, texCoords.w);
-                        #ifdef PENJIN3D
-                            glVertex3f(destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(), destz);
-                        #else
-                            glVertex2f(destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight());
-                        #endif
-                        glTexCoord2f (texCoords.x, texCoords.w);
-                        #ifdef PENJIN3D
-                            glVertex3f(destx, desty + textures[i].getRawHeight(), destz);
-                        #else
-                            glVertex2f(destx, desty + textures[i].getRawHeight());
-                        #endif
-                    }
-                    else
-                    {
-                        #ifdef PENJIN3D
-                            glVertex3f(destx + clipAreas[i].w, desty, destz);
-                        #else
-                            glVertex2f(destx + clipAreas[i].w, desty);
-                        #endif
-                        glTexCoord2f (texCoords.z, texCoords.w);
-                        #ifdef PENJIN3D
-                            glVertex3f(destx + clipAreas[i].w, desty + clipAreas[i].h, destz);
-                        #else
-                            glVertex2f(destx + clipAreas[i].w, desty + clipAreas[i].h);
-                        #endif
-                        glTexCoord2f (texCoords.x, texCoords.w);
-                        #ifdef PENJIN3D
-                            glVertex3f(destx, desty + clipAreas[i].h, destz);
-                        #else
-                            glVertex2f(destx, desty + clipAreas[i].h);
-                        #endif
-                    }
-                glEnd();
-                if(textures[i].getTransparentColour().alpha == 1)
-                {
-                    glDisable(GL_BLEND);
-                    glDisable(GL_ALPHA_TEST);
-                }
+                        glTexCoord2f (texCoords.z, texCoords.y);
+                        if(!sheetMode)
+                        {
+                            #ifdef PENJIN3D
+                                glVertex3f(destx + textures[i].getRawWidth(), desty, destz);
+                            #else
+                                glVertex2f(destx + textures[i].getRawWidth(), desty);
+                            #endif
+                            glTexCoord2f (texCoords.z, texCoords.w);
+                            #ifdef PENJIN3D
+                                glVertex3f(destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(), destz);
+                            #else
+                                glVertex2f(destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight());
+                            #endif
+                            glTexCoord2f (texCoords.x, texCoords.w);
+                            #ifdef PENJIN3D
+                                glVertex3f(destx, desty + textures[i].getRawHeight(), destz);
+                            #else
+                                glVertex2f(destx, desty + textures[i].getRawHeight());
+                            #endif
+                        }
+                        else
+                        {
+                            #ifdef PENJIN3D
+                                glVertex3f(destx + clipAreas[i].w, desty, destz);
+                            #else
+                                glVertex2f(destx + clipAreas[i].w, desty);
+                            #endif
+                            glTexCoord2f (texCoords.z, texCoords.w);
+                            #ifdef PENJIN3D
+                                glVertex3f(destx + clipAreas[i].w, desty + clipAreas[i].h, destz);
+                            #else
+                                glVertex2f(destx + clipAreas[i].w, desty + clipAreas[i].h);
+                            #endif
+                            glTexCoord2f (texCoords.x, texCoords.w);
+                            #ifdef PENJIN3D
+                                glVertex3f(destx, desty + clipAreas[i].h, destz);
+                            #else
+                                glVertex2f(destx, desty + clipAreas[i].h);
+                            #endif
+                        }
+                    glEnd();
+                //glDisable(GL_BLEND);
             glDisable(GL_TEXTURE_2D);
         glPopMatrix();
     }

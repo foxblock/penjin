@@ -16,7 +16,7 @@ void SoundClass::init()
     #elif PLATFORM_PANDORA
         Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);
 	#else
-        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 256);		// default
+        #error "Audio setup is not defined for this platform!"
 	#endif
 }
 
