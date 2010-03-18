@@ -466,7 +466,8 @@ void Text::align(const Vector2di& guess)
         position.x += b.x;
     #else
         Vector3df b = Vector3df(clipBoundary.w,clipBoundary.h,0);
-        b-= (position + guess);
+        Vector3df g(guess.x,guess.y,0);
+        b-= (position + g);
         b*=0.5f;
         //position.x = startPos.x;
         position.x += b.x;

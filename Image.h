@@ -56,6 +56,10 @@ class Image
                 textures.push_back(t);
                 sheetMode = false;
             }
+            void disableTransparentColour()
+            {
+                cout << ErrorHandler().getErrorString(PenjinErrors::PENJIN_FUNCTION_IS_STUB) << endl;
+            }
 		#endif
 		PENJIN_ERRORS loadImage(CRstring imageName);                                 // Load an image into the vector
         PENJIN_ERRORS loadImageNoKey(CRstring imageName);
@@ -149,8 +153,12 @@ class Image
         #ifndef PENJIN3D
             void setScaleX(CRfloat scaleX){this->scale.x = scaleX;}
             void setScaleY(CRfloat scaleY){this->scale.y = scaleY;}
+            float getScaleX()const{return scale.x;}
+            float getScaleY()const{return scale.y;}
             void setScale(CRfloat scale){this->scale.x = this->scale.y = scale;}
+            Vector2df getScale(){return scale;}
             void setRotation(CRfloat angle){this->angle = angle;}
+            float getRotation()const{return angle;}
         #endif
         #ifdef PENJIN_SDL
             //	Set if to use a HW surface to blit
@@ -172,11 +180,16 @@ class Image
         #elif PENJIN_GL
             #ifdef PENJIN3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
+                Vector3df getRotationVector()const{return rotation;}
                 void setRotation(CRfloat a){rotation.z = a;}
+                float getRotation()const{return rotation.z;}
                 void setScale(const Vector3df& scaleVector) {scale = scaleVector;}
                 void setScale(CRfloat s){scale.x=scale.y=scale.z=s;}
+                Vector3df getScale()const{return scale;}
                 void setScaleX(CRfloat s){scale.x = s;}
                 void setScaleY(CRfloat s){scale.y=s;}
+                float getScaleX()const{return scale.x;}
+                float getScaleY()const{return scale.y;}
             #endif
 
             void setAlpha(float alpha) //  alpha in the range of 0 to 1;

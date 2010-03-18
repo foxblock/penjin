@@ -29,28 +29,21 @@ namespace GFX
 #elif PENJIN_ASCII
 
 #endif
+    vector <ColourVertex> pixBuff;
 }
 
 #ifdef PLATFORM_GP2X
-void GFX::useMMUHack(CRbool h)
-{
-    useHack = h;
-}
+    void GFX::useMMUHack(CRbool h){useHack = h;}
 #endif
 
-void GFX::setFullscreen(CRbool fs)
-{
-    fullscreen = fs;
-}
+void GFX::setFullscreen(CRbool fs){fullscreen = fs;}
 
-Colour GFX::getClearColour()
-{
-    return clear;
-}
+Colour GFX::getClearColour(){return clear;}
 
 // Force to blit to screen now!
 void GFX::forceBlit()
 {
+    renderPixelBuffer();
     #ifdef PLATFORM_GP2X
         //  We do MMUHack BEFORE video flip!
         if(useHack)
@@ -64,6 +57,53 @@ void GFX::forceBlit()
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
     #endif
+}
+
+void GFX::renderPixelBuffer()
+{
+    if(!pixBuff.empty())
+    {
+        #ifdef PENJIN_GL
+            //  Setup vertex pointers
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().vertex);
+            glEnableClientState(GL_COLOR_ARRAY);
+            glColorPointer(4, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().colour);
+                glDrawArrays(GL_POINTS,0,pixBuff.size()-1);
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
+        #elif PENJIN_SDL
+            SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, NULL, NULL, NULL, NULL);
+            for(uint i=0; i < pixBuff.size(); ++i )
+            {
+                ColourVertex v = pixBuff.at(i);
+                //  Blend if necesary
+                SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL,v.colour.w);
+                //  Set the colour
+                setPixel(pixel,v.vertex.x,v.vertex.y,Colour(v.colour.x,v.colour.y,v.colour.z,v.colour.w));
+                SDL_Rect d;
+                d.x = v.vertex.x;
+                d.y = v.vertex.y;
+                SDL_BlitSurface(pixel, NULL, screen, &d);
+            }
+            SDL_FreeSurface(pixel);
+        #endif
+        // After rendering all pixels we should clear out the buffer :P
+        pixBuff.clear();
+    }
+
+}
+
+void GFX::setPixel(CRint x, CRint y, const Colour& colour)
+{
+    ColourVertex v;
+    v.vertex.x = x;
+    v.vertex.y = y;
+    v.colour.x = colour.red;
+    v.colour.y = colour.green;
+    v.colour.z = colour.blue;
+    v.colour.w = colour.alpha;
+    pixBuff.push_back(v);
 }
 
 void GFX::setResolution(uint x,uint y)
@@ -135,6 +175,9 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         xRes = screen->w;
         yRes = screen->h;
     }
+    #ifdef PENJIN_GL
+        glEnable(GL_CULL_FACE); // don't render the back of polygons...
+    #endif
 #endif
 #ifdef PENJIN3D
     init3DRendering();
@@ -165,8 +208,6 @@ void GFX::showCursor(CRbool show)
     void GFX::borderColouring(CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour){borderColouring(screen,x,y,w,h,thick,baseColour);}
     void GFX::borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour)
     {
-        lockSurface(screen);
-        Pixel t;
         //	within the box specified
         if(thick!= -1)
         {
@@ -179,9 +220,7 @@ void GFX::showCursor(CRbool show)
                     {
                         baseColour.setColour((uchar)(baseColour.red-i+j),baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
                         //baseColour.setColour(baseColour.red+ ,baseColour.green+lut.Lsin(j).intValue >> 16,baseColour.blue+lut.Lsin(j).intValue >> 16);
-                        t.setPosition(i,j);
-                        t.setColour(baseColour);
-                        t.render(screen);
+                        setPixel(screen,i,j,baseColour);
                     }
                 }
             }
@@ -194,19 +233,14 @@ void GFX::showCursor(CRbool show)
                 {
                     baseColour.setColour((uchar)(baseColour.red-i+j),baseColour.green-i+j,baseColour.blue+baseColour.red-baseColour.green);
                     //baseColour.setColour(baseColour.red+ ,baseColour.green+lut.Lsin(j).intValue >> 16,baseColour.blue+lut.Lsin(j).intValue >> 16);
-                    t.setPosition(i,j);
-                    t.setColour(baseColour);
-                    t.render(screen);
+                    setPixel(screen,i,j,baseColour);
                 }
             }
         }
-        unlockSurface(screen);
     }
     void GFX::renderStatic(CRint xStart,CRint yStart,CRint w,CRint h,CRint spacing, CRint thickness){renderStatic(screen,xStart,yStart,w,h,spacing,thickness);}
     void GFX::renderStatic(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint spacing, CRint thick)
     {
-        Pixel pixel;
-        lockSurface(screen);
         //	Setup random numbers for 5 colours (white, black and 3 grays)
         Random::setLimits(0,2);
         //	Now randomly run through the entire screen buffer and place a randompiece of static
@@ -218,14 +252,15 @@ void GFX::showCursor(CRbool show)
                 {
                     uint colour = Random::nextInt();
                     if(colour == 0)
-                        pixel.setColour(BLACK);
+                        setPixel(screen,i,j,BLACK);
                     else if(colour == 1)
-                        pixel.setColour(128,128,128);
+                        setPixel(screen,i,j,Colour(64,64,64));
                     else if(colour == 2)
-                        pixel.setColour(WHITE);
-
-                    pixel.setPosition(i,j);
-                    pixel.render(screen);
+                        setPixel(screen,i,j,Colour(128,128,128));
+                    else if(colour == 3)
+                        setPixel(screen,i,j,Colour(196,196,196));
+                    else if(colour == 4)
+                        setPixel(screen,i,j,WHITE);
                 }
             }
         }
@@ -240,22 +275,19 @@ void GFX::showCursor(CRbool show)
                     {
                         uint colour = Random::nextInt();
                         if(colour == 0)
-                            pixel.setColour(BLACK);
+                            setPixel(screen,i,j,BLACK);
                         else if(colour == 1)
-                            pixel.setColour(64,64,64);
+                            setPixel(screen,i,j,Colour(64,64,64));
                         else if(colour == 2)
-                            pixel.setColour(128,128,128);
+                            setPixel(screen,i,j,Colour(128,128,128));
                         else if(colour == 3)
-                            pixel.setColour(196,196,196);
+                            setPixel(screen,i,j,Colour(196,196,196));
                         else if(colour == 4)
-                            pixel.setColour(WHITE);
-                        pixel.setPosition(i,j);
-                        pixel.render(screen);
+                            setPixel(screen,i,j,WHITE);
                     }
                 }
             }
         }
-        unlockSurface(screen);
     }
 
     void GFX::lockSurface(SDL_Surface* scr)
@@ -289,7 +321,7 @@ void GFX::showCursor(CRbool show)
         r.w=r.h=1;
         SDL_FillRect(scr,&r,c.getSDL_Uint32Colour());
     }
-    void GFX::setPixel(CRint x, CRint y, const Colour& c){setPixel(screen,x,y,c);}
+
     SDL_Surface* GFX::cropSurface(SDL_Surface* in, SDL_Rect* c)
     {
         SDL_Surface *cropped = NULL;
@@ -306,22 +338,18 @@ void GFX::showCursor(CRbool show)
         return getPixel(screen,x,y);
     }
 #elif PENJIN_GL
-    void GFX::setPixel(CRint x, CRint y, const Colour& colour)
-    {
-        glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
-        glVertex2i(x,y);
-    }
     Colour GFX::getPixel(CRint x, CRint y)
     {
-
+        cout << ErrorHandler().getErrorString(PenjinErrors::PENJIN_FUNCTION_IS_STUB) << " GFX::getPixel(CRint x, CRint y)"<< endl;
+        return MAGENTA;
     }
     void GFX::setClearColour(const Colour& c){glClearColor(c.red,c.green,c.blue,c.alpha);}
     void GFX::init2DRendering()
     {
         // Setup OpenGL
-        //glDisable(GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
         glShadeModel(GL_SMOOTH);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         //Setup viewport
         glViewport(0, 0, xRes, yRes);
@@ -336,6 +364,7 @@ void GFX::showCursor(CRbool show)
         glLoadIdentity();
         glColor3f(1.0f,1.0f,1.0f);
 
+        glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
         // flip textures
         //glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
         //glScalef(-1.0f, 1.0f, 1.0f);
@@ -350,8 +379,8 @@ void GFX::showCursor(CRbool show)
         void GFX::init3DRendering()
         {
             glShadeModel(GL_SMOOTH);
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glViewport(0, 0, x, y);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glViewport(0, 0, xRes, yRes);
             //Setup world view
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();

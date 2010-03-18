@@ -15,7 +15,7 @@ void Texture::init()
 {
     loaded = false;
     dimensions.x = dimensions.y = -1;
-    transparent = MAGENTA;
+    colourKey = MAGENTA;
 }
 
 Texture::~Texture()
@@ -25,7 +25,7 @@ Texture::~Texture()
     loaded = false;
 }
 
-PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface, CRbool keyed)
+PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface)
 {
     if(loaded)
 		glDeleteTextures(1, &textureID);
@@ -44,55 +44,70 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface, CRbool keyed)
     if(!isPoT(surface->h))
         rawDimensions.y = NumberUtility::nextPowerOfTwo(surface->h);
 
+    colourKey.alpha = 0;
     SDL_Surface* intermediary = NULL;
-	GLenum textureFormat = NULL;
-	int numColours = surface->format->BytesPerPixel;
-    intermediary = SDL_CreateRGBSurface(SDL_SWSURFACE, rawDimensions.x, rawDimensions.y, surface->format->BitsPerPixel,
-   0, 0, 0, 0);
-    /*
-    TODO Fix color keyed textures!
-    if(keyed)
-    {
-        transparent = GFX::getPixel(surface,0,0);
+    GLenum textureFormat = NULL;
 
-        SDL_FillRect(intermediary, NULL, SDL_MapRGBA(intermediary->format,transparent.red,transparent.green,transparent.blue,0));
-        SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(intermediary->format,transparent.red,transparent.green,transparent.blue));
-        transparent.alpha = 1;  //  We use this as a flag that a tranparent key is set.
-    }*/
-    SDL_SetAlpha(surface,0,SDL_ALPHA_OPAQUE);
-    SDL_BlitSurface(surface, 0 , intermediary, 0);
-    textureFormat = getTextureFormat(intermediary);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, numColours);
-
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-#ifdef PENJIN3D
-    gluBuild2DMipmaps(GL_TEXTURE_2D, textureFormat,intermediary->w, intermediary->h, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);
+    intermediary = SDL_CreateRGBSurface(SDL_SWSURFACE, rawDimensions.x, rawDimensions.y, 32,
+    #if SDL_BYTEORDER == SDL_LIL_ENDIAN // OpenGL RGBA masks
+				0x000000FF,
+				0x0000FF00,
+				0x00FF0000,
+				0xFF000000
 #else
-    glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, intermediary->w, intermediary->h, 0, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);
+				0xFF000000,
+				0x00FF0000,
+				0x0000FF00,
+				0x000000FF
 #endif
+);
+
+    //  check if original image uses an alpha channel
+    if(!(surface->flags & SDL_SRCALPHA))
+    {
+        // if no alpha get pixel (0,0) and key it out.
+        colourKey = GFX::getPixel(surface,0,0);
+        colourKey.alpha = 1.0f;
+        SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(surface->format,colourKey.red*255,colourKey.green*255,colourKey.blue*255));
+    }
+    else
+        SDL_SetAlpha(surface, 0, 0);
+    SDL_BlitSurface(surface, 0 , intermediary, 0);
+    //int numColours = intermediary->format->BytesPerPixel;
+    //  We convert all formats to RGBA it makes life simpler!
+    textureFormat = GL_RGBA;//getTextureFormat(intermediary);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, textureFormat);
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    #ifdef PENJIN3D
+        gluBuild2DMipmaps(GL_TEXTURE_2D, textureFormat,intermediary->w, intermediary->h, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);
+    #else
+        glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, intermediary->w, intermediary->h, 0, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);
+    #endif
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     if(surface)
     {
-        SDL_FreeSurface(surface);
-        surface = NULL;
+    SDL_FreeSurface(surface);
+    surface = NULL;
     }
-	if(intermediary)
-	{
-        SDL_FreeSurface(intermediary);
-        intermediary = NULL;
-	}
+  	if(intermediary)
+  	{
+      SDL_FreeSurface(intermediary);
+      intermediary = NULL;
+  	}
+
 	loaded = true;
 	return PENJIN_OK;
 }
 
-PENJIN_ERRORS Texture::loadTexture(CRstring fileName, CRbool keyed)
+PENJIN_ERRORS Texture::loadTexture(CRstring fileName)
 {
 	SDL_Surface* surface = NULL;
 	surface = IMG_Load(fileName.c_str());
-	return loadSurface(surface,keyed);
+	return loadSurface(surface);
 }
 
 GLenum Texture::getTextureFormat(SDL_Surface* surface)

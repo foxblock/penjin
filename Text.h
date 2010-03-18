@@ -91,17 +91,15 @@ class Text
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
         void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs[fontSize-1][0]->setRenderMode(m);}
         GlyphClass::RENDER_MODES getRenderMode()const{return glyphs[fontSize-1][0]->getRenderMode();}
-
+        Vector2di getDimensions()const{return dimensions;}
+        Vector2di getDimensions(CRstring str);
         #ifndef PENJIN3D
             Vector2df getStartPosition()const{return startPos;}
             Vector2df getPosition()const{return position;}
-            Vector2di getDimensions()const{return dimensions;}
-            Vector2di getDimensions(CRstring str);
+
         #else
             Vector3df getStartPosition()const{return startPos;}
             Vector3df getPosition()const{return position;}
-            Vector3df getDimensions()const{return dimensions;}
-            Vector3df getDimensions(CRstring str);
         #endif
         int getWidth()const{return dimensions.x;}
         int getHeight()const{return dimensions.y;}

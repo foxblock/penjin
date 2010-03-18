@@ -10,9 +10,9 @@ Pixel::Pixel()
 void Pixel::init()
 {
 #ifdef PENJIN_SDL
-    pixel = NULL;
-    pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, SDL_GetVideoSurface()->format->BitsPerPixel, NULL, NULL, NULL, NULL);
     screen = SDL_GetVideoSurface();
+    pixel = NULL;
+    pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, NULL, NULL, NULL, NULL);
 #endif
 }
 

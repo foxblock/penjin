@@ -46,26 +46,27 @@ void Line::render()
     //glMatrixMode( GL_MODELVIEW );
     glLoadIdentity( );
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glAlphaFunc(GL_GREATER,0.1f);
-        glEnable(GL_ALPHA_TEST);
-            //glEnable(GL_BLEND);
+        //glAlphaFunc(GL_GREATER,0.1f);
+        //glEnable(GL_ALPHA_TEST);
+            glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
                 glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
                 glLineWidth(lineWidth);
-                glBegin(GL_LINES);
+
+                glEnableClientState(GL_VERTEX_ARRAY);
                     #ifdef PENJIN3D
-                        glVertex3f(position.x, position.y,  position.z);
+                        float verts[] = {   start.x, start.y, start.z,
+                                            end.x, end.y, end.z};
+                        glVertexPointer(3, GL_FLOAT, 0,verts);
                     #else
-                        glVertex2f(start.x,start.y);
+                        float verts[] = {   start.x, start.y,
+                                            end.x, end.y};
+                        glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
-                    #ifdef PENJIN3D
-                        glVertex3f(position.x + dimensions.x, position.y, position.z);
-                    #else
-                        glVertex2f(end.x, end.y);
-                    #endif
-                glEnd();
-            //glDisable(GL_BLEND);
-        glDisable(GL_ALPHA_TEST);
+                    glDrawArrays(GL_LINES,0,2);
+                glDisableClientState(GL_VERTEX_ARRAY);
+            glDisable(GL_BLEND);
+        //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
 #else
     render(screen);
