@@ -59,40 +59,30 @@ void Glyph::render()
         //  With the surface now converted to a texture we can render it to a quad
         glColor4f(1.0f, 1.0f, 1.0f, colour.alpha);
         glBindTexture (GL_TEXTURE_2D, glyph.getTextureID());
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_BLEND);
-        //glEnable(GL_ALPHA_TEST);
-        //glAlphaFunc(GL_GREATER, 0.5);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            GLfloat tx[] = {0,0, 1,0, 1,1, 0,1};
+            #ifdef PENJIN3D
+                GLfloat quad[] = {  position->x,position->y,position->z,
+                                    position->x + glyph.getWidth(), position->y, position->z,
+                                    position->x + glyph.getWidth(),position->y + glyph.getHeight(),position->z,
+                                    position->x,position->y + glyph.getHeight(),position->z};
+                glVertexPointer(3, GL_FLOAT, 0,quad);
+            #else
+                GLfloat quad[] = {  position->x,position->y,
+                                    position->x + glyph.getWidth(), position->y,
+                                    position->x + glyph.getWidth(),position->y + glyph.getHeight(),
+                                    position->x,position->y + glyph.getHeight()};
+                glVertexPointer(2, GL_FLOAT, 0,quad);
+            #endif
+            glTexCoordPointer(2, GL_FLOAT, 0, tx);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
-                glBegin(GL_QUADS);
-                    glTexCoord2f (0.0f, 0.0f);
-                    #ifdef PENJIN3D
-                        glVertex3f(position->x, position->y, position->z);
-                    #else
-                        glVertex2f(position->x,position->y);
-                    #endif
-                    glTexCoord2f (1.0f, 0.0f);
-                    #ifdef PENJIN3D
-                        glVertex3f(position->x + glyph.getWidth(), position->y, position->z);
-                    #else
-                        glVertex2f(position->x + glyph.getWidth(), position->y);
-                    #endif
-                    glTexCoord2f (1.0f,  1.0f);
-                    #ifdef PENJIN3D
-                        glVertex3f(position->x + glyph.getWidth(), position->y + glyph.getHeight(), position->z);
-                    #else
-                        glVertex2f(position->x + glyph.getWidth(), position->y + glyph.getHeight());
-                    #endif
-                    glTexCoord2f (0.0f, 1.0f);
-                    #ifdef PENJIN3D
-                        glVertex3f(position->x, position->y + glyph.getHeight(), position->z);
-                    #else
-                        glVertex2f(position->x, position->y + glyph.getHeight());
-                    #endif
-                glEnd();
+            glEnable(GL_BLEND);
+                glDrawArrays(GL_QUADS,0,4);
+            glDisable(GL_BLEND);
             glDisable(GL_TEXTURE_2D);
-        //glDisable(GL_ALPHA_TEST);
-        glDisable(GL_BLEND);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     #endif
 }

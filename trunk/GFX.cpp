@@ -66,7 +66,11 @@ void GFX::renderPixelBuffer()
         #ifdef PENJIN_GL
             //  Setup vertex pointers
             glEnableClientState(GL_VERTEX_ARRAY);
-            glVertexPointer(3, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().vertex);
+            #ifdef PENJIN_3D
+                glVertexPointer(3, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().vertex);
+            #else
+                glVertexPointer(2, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().vertex);
+            #endif
             glEnableClientState(GL_COLOR_ARRAY);
             glColorPointer(4, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().colour);
                 glDrawArrays(GL_POINTS,0,pixBuff.size()-1);
