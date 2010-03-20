@@ -306,9 +306,9 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             align(guess);
         }
         //  Run through the text chars
-        for(int i = 0; i < text.size(); ++i)
+        for(uint i = 0; i < text.size(); ++i)
         {
-            char c = text[i];
+            uchar c = text[i];
             // check for NULL terminator
             if(c == '\0')
             {
@@ -326,25 +326,28 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
                 //  use dummy for spacing
                 position.x+=glyphs[fontSize-1][0]->getWidth();
                 // we get a substring that is from here to the end of the string.
-                if(i+1<text.size())
+                if(wrapText)
                 {
-                    string subString = text.substr(i+1);
-                    // we search this substring for the next space
-                    uint x = 0;
-                    for(x = 0; x<subString.size();++x)
+                    if(i+1<text.size())
                     {
-                        if(subString[x] == ' ')
-                            break;
+                        string subString = text.substr(i+1);
+                        // we search this substring for the next space
+                        uint x = 0;
+                        for(x = 0; x<subString.size();++x)
+                        {
+                            if(subString[x] == ' ')
+                                break;
+                        }
+                        subString = subString.substr(0,x);
+                        TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
                     }
-                    subString = subString.substr(0,x);
-                    TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
-                }
 
-                if(position.x + guess.x >= clipBoundary.w)
-                {
-                    newLine();
+                    if(position.x + guess.x >= clipBoundary.w)
+                        newLine();
+                    continue;
                 }
-                continue;
+                else
+                    continue;
             }
             //  check for tab
             else if(c == '\t')
@@ -360,7 +363,7 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             }
 
             //  create more glyphs as needed - shifted 19 indices
-            while(glyphs[fontSize-1].size() <= c -19)
+            while(glyphs[fontSize-1].size() <= c-19)
             {
                 glyphs[fontSize-1].push_back(NULL);
                 glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
