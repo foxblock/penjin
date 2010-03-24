@@ -43,6 +43,8 @@ class Texture
         int getRawHeight()const{return rawDimensions.y;}
         Vector2di getRawDimensions()const{return rawDimensions;}
 
+        Point2df getTextureCoords()const{return txCoords;}
+
 	private :
         void init();
         //PENJIN_ERRORS loadSurface(SDL_Surface* screen, CRbool keyed);
@@ -52,8 +54,9 @@ class Texture
         bool isPoT(const int& x)const{return NumberUtility::isPowerOfTwo(x);}
 		bool loaded;
 		GLuint textureID;
-        Vector2di rawDimensions;   // stores the raw width and height in pixels of the image.
-        Vector2di dimensions;
+        Vector2di rawDimensions;    // stores the raw width and height in pixels of the image.
+        Vector2di dimensions;       // stroes the actual wanted image dimensions
+        Point2df txCoords;         // stores the caclulated tx coordinates
         Colour colourKey;
 };
 #endif

@@ -379,10 +379,11 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         }
         else    //  Make the clip the size of the image
         {
-            texCoords.x = 0.0f;
+            Point2df tc = textures.at(i).getTextureCoords();
+            texCoords.x = 0.0;
             texCoords.y = 0.0f;
-            texCoords.z = 1.0f;
-            texCoords.w = 1.0f;
+            texCoords.z = tc.x;
+            texCoords.w = tc.y;
         }
 
         // Check if we need to alpha blend
@@ -394,23 +395,29 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             glColor4f(1.0f, 1.0f, 1.0f, tAlpha);
         #endif
         // Scale and rotate
-        glPushMatrix();
 
+        float halfW = textures[i].getWidth()*0.5f;
+        float halfH = textures[i].getHeight()*0.5f;
+        glLoadIdentity();
+        glPushMatrix();
+        glTranslatef(destx+halfW,desty+halfH,0.0f);
         #ifdef PENJIN3D
-            glScalef(scale.x, scale.y, scale.z);
             glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
             glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
             glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+            glScalef(scale.x, scale.y, scale.z);
         #else
+            glRotatef(-angle, 0.0f, 0.0f, 1.0f);
             glScalef(scale.x,scale.y,1.0f);
-            glRotatef(angle, 0.0f, 0.0f, 1.0f);
         #endif
+
             glEnable(GL_TEXTURE_2D);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
                     glBindTexture (GL_TEXTURE_2D, textures[i].getTextureID());
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
                     if(!sheetMode)
                     {
                         #ifdef PENJIN3D
@@ -420,10 +427,10 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                                                 destx, desty + textures[i].getRawHeight(), destz};
                             glVertexPointer(3, GL_FLOAT, 0,quad);
                         #else
-                            GLfloat quad[] = {  destx, desty,
-                                                destx + textures[i].getRawWidth(), desty,
-                                                destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(),
-                                                destx, desty + textures[i].getRawHeight()};
+                            GLfloat quad[] = {  -halfW,-halfH,//destx, desty,
+                                                halfW,-halfH,//destx + textures[i].getRawWidth(), desty,
+                                                halfW,halfH,//destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(),
+                                                -halfW,halfH};//destx, desty + textures[i].getRawHeight()};
                             glVertexPointer(2, GL_FLOAT, 0,quad);
                         #endif
                     }
