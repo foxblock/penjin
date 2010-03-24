@@ -44,6 +44,10 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface)
     if(!isPoT(surface->h))
         rawDimensions.y = NumberUtility::nextPowerOfTwo(surface->h);
 
+    //  work out texture coords
+    txCoords.x = (float)dimensions.x/(float)rawDimensions.x;
+    txCoords.y = (float)dimensions.y/(float)rawDimensions.y;
+
     colourKey.alpha = 0;
     SDL_Surface* intermediary = NULL;
     GLenum textureFormat = NULL;
@@ -65,8 +69,8 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface)
     //  check if original image uses an alpha channel
     if(!(surface->flags & SDL_SRCALPHA))
     {
-        // if no alpha get pixel (0,0) and key it out.
-        colourKey = GFX::getPixel(surface,0,0);
+        // if no alpha use MAGENTA and key it out.
+        colourKey = MAGENTA;
         colourKey.alpha = 1.0f;
         SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(surface->format,colourKey.red*255,colourKey.green*255,colourKey.blue*255));
     }
