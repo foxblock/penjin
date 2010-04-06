@@ -83,30 +83,30 @@ void HeightMap::render()
                     //1
                     glTexCoord2f((float)x/(float)mapWidth,(float)(z+1)/(float)mapWidth);
                     glVertex3f(x,vertices[x][z+1],z+1);
-
+                    //4
+                    glTexCoord2f((float)x/(float)mapWidth,(float)z/(float)mapWidth);
+                    glVertex3f(x,vertices[x][z],z);
                     //2
                     glTexCoord2f((float)(x+1)/(float)mapWidth,(float)(z+1)/(float)mapWidth);
                     glVertex3f(x+1,vertices[x+1][z+1],(z+1));
 
-                    //4
-                    glTexCoord2f((float)x/(float)mapWidth,(float)z/(float)mapWidth);
-                    glVertex3f(x,vertices[x][z],z);
+
 
 
                     // next triangle
                     //3
                     glTexCoord2f((float)(x+1)/(float)mapWidth,(float)z/(float)mapWidth);
                     glVertex3f(x+1,vertices[x+1][z],z);
-
-
                     //2
                     glTexCoord2f((float)(x+1)/(float)mapWidth,(float)(z+1)/(float)mapWidth);
                     glVertex3f(x+1,vertices[x+1][z+1],(z+1));
-
-
                     //4
                     glTexCoord2f((float)x/(float)mapWidth,(float)z/(float)mapWidth);
                     glVertex3f(x,vertices[x][z],z);
+
+
+
+
             }
         }
 	glEnd();

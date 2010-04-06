@@ -356,20 +356,23 @@ void GFX::showCursor(CRbool show)
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         //Setup viewport
-        glViewport(0, 0, xRes, yRes);
+        //glViewport(0, 0, xRes, yRes);
 
         //Setup world view
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, xRes, yRes, 0, -1, 1);
 
-        //Setup texture matrix
+        //glMatrixMode(GL_TEXTURE);
+        //glRotated(90,0,0,1);
+        //glLoadIdentity();
+        //Setup modelview matrix
         glMatrixMode( GL_MODELVIEW );
         //glMatrixMode(GL_TEXTURE);
         glLoadIdentity();
         glColor3f(1.0f,1.0f,1.0f);
 
-        glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
+        //glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
     }
 
     void GFX::clearScreen(){glClear(GL_COLOR_BUFFER_BIT

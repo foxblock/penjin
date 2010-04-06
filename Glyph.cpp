@@ -61,7 +61,7 @@ void Glyph::render()
         glBindTexture (GL_TEXTURE_2D, glyph.getTextureID());
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            GLfloat tx[] = {0,0, 1,0, 1,1, 0,1};
+            GLfloat tx[] = {0,0, 0,1, 1,1, 1,0};
             #ifdef PENJIN3D
                 GLfloat quad[] = {  position->x,position->y,position->z,
                                     position->x + glyph.getWidth(), position->y, position->z,
@@ -70,9 +70,10 @@ void Glyph::render()
                 glVertexPointer(3, GL_FLOAT, 0,quad);
             #else
                 GLfloat quad[] = {  position->x,position->y,
-                                    position->x + glyph.getWidth(), position->y,
+                                    position->x,position->y + glyph.getHeight(),
                                     position->x + glyph.getWidth(),position->y + glyph.getHeight(),
-                                    position->x,position->y + glyph.getHeight()};
+                                    position->x + glyph.getWidth(), position->y
+                                    };
                 glVertexPointer(2, GL_FLOAT, 0,quad);
             #endif
             glTexCoordPointer(2, GL_FLOAT, 0, tx);
