@@ -366,24 +366,31 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         // Set up blitting area
         Vector4df texCoords;
         Vector2df dims;
-        dims.x = textures[0].getRawWidth();
-        dims.y = textures[0].getRawHeight();
+        dims.x = textures[0].getWidth();
+        dims.y = textures[0].getHeight();
         //   If the image is a spritesheet, then set the relevant clips
+        float halfW;
+        float halfH;
+        Point2df tc;
         if(sheetMode)
         {
+            halfW = clipAreas[i].w*0.5f;
+            halfH = clipAreas[i].h*0.5f;
+            tc = textures.front().getTextureCoords();
             texCoords.x = (float)clipAreas[i].x / (float)dims.x;
             texCoords.y = (float)clipAreas[i].y / (float)dims.y;
-            texCoords.z = ((float)clipAreas[i].x + (float)clipAreas[i].w) / (float)dims.x;
-            texCoords.w = ((float)clipAreas[i].y + (float)clipAreas[i].h) / (float)dims.y;
-            i = 0;  // only element zero should have spritesheet data
+            texCoords.z = (float)(clipAreas[i].x + clipAreas[i].w) / (float)dims.x;
+            texCoords.w = (float)(clipAreas[i].y + clipAreas[i].h) / (float)dims.y;
         }
         else    //  Make the clip the size of the image
         {
-            Point2df tc = textures.at(i).getTextureCoords();
-            texCoords.x = 0.0;
+            tc = textures.at(i).getTextureCoords();
+            texCoords.x = 0.0f;
             texCoords.y = 0.0f;
             texCoords.z = tc.x;
             texCoords.w = tc.y;
+            halfW = textures[i].getWidth()*0.5f;
+            halfH = textures[i].getHeight()*0.5f;
         }
 
         // Check if we need to alpha blend
@@ -395,9 +402,6 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             glColor4f(1.0f, 1.0f, 1.0f, tAlpha);
         #endif
         // Scale and rotate
-
-        float halfW = textures[i].getWidth()*0.5f;
-        float halfH = textures[i].getHeight()*0.5f;
         glLoadIdentity();
         glPushMatrix();
         glTranslatef(destx+halfW,desty+halfH,0.0f);
@@ -407,7 +411,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
             glScalef(scale.x, scale.y, scale.z);
         #else
-            glRotatef(-angle, 0.0f, 0.0f, 1.0f);
+            glRotatef(-angle + 90, 0.0f, 0.0f, 1.0f);
             glScalef(scale.x,scale.y,1.0f);
         #endif
 
@@ -417,39 +421,19 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                     glBindTexture (GL_TEXTURE_2D, textures[i].getTextureID());
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-                    if(!sheetMode)
-                    {
                         #ifdef PENJIN3D
-                            GLfloat quad[] = {  destx, desty, destz,
-                                                destx + textures[i].getRawWidth(), desty, destz,
-                                                destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(), destz,
-                                                destx, desty + textures[i].getRawHeight(), destz};
+                            GLfloat quad[] = {  -halfW,-halfH,destz,
+                                                halfW,-halfH,destz,
+                                                halfW,halfH,destz,
+                                                -halfW,halfH,destz};
                             glVertexPointer(3, GL_FLOAT, 0,quad);
                         #else
-                            GLfloat quad[] = {  -halfW,-halfH,//destx, desty,
-                                                halfW,-halfH,//destx + textures[i].getRawWidth(), desty,
-                                                halfW,halfH,//destx + textures[i].getRawWidth(), desty + textures[i].getRawHeight(),
-                                                -halfW,halfH};//destx, desty + textures[i].getRawHeight()};
+                            GLfloat quad[] = {  -halfW,-halfH,
+                                                -halfW,halfH,
+                                                halfW,halfH,
+                                                halfW,-halfH};
                             glVertexPointer(2, GL_FLOAT, 0,quad);
                         #endif
-                    }
-                    else
-                    {
-                        #ifdef PENJIN3D
-                            GLfloat quad[] = {  destx, desty, destz,
-                                                destx + clipAreas[i].w, desty, destz,
-                                                destx + clipAreas[i].w, desty + clipAreas[i].h, destz,
-                                                destx, desty + clipAreas[i].h, destz};
-                            glVertexPointer(3, GL_FLOAT, 0,quad);
-                        #else
-                            GLfloat quad[] = {  destx, desty,
-                                                destx + clipAreas[i].w, desty,
-                                                destx + clipAreas[i].w, desty + clipAreas[i].h,
-                                                destx, desty + clipAreas[i].h};
-                            glVertexPointer(2, GL_FLOAT, 0,quad);
-                        #endif
-                    }
                     GLfloat tx[] = {texCoords.x,texCoords.y, texCoords.w,texCoords.y, texCoords.z,texCoords.w, texCoords.x,texCoords.w};
                     glTexCoordPointer(2, GL_FLOAT, 0, tx);
                     glDrawArrays(GL_QUADS,0,4);

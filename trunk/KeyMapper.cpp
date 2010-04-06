@@ -145,24 +145,27 @@ void KeyMapper::defaultMap()
     keys[keys.size()-1] = new KeyMapJoyButton(++i,"CLICK",0);
 #elif PLATFORM_PANDORA
 //0 TOP/X,1 RIGHT/A,2 BOTTOM/B,3 LEFT/Y,4 SELECT,5 START,6 PANDORA,7 L,8 R,9 L2,10 R2,11 HOLD
+/*
+ EvilDragon: Buttons are: START = LALT, SELECT = LCTRL, L = RSHIFT, R = RCTRL and on the button side:
+EvilDragon: Top Button = Page Up, Lower Button = Page Down, Left Button = Prior, Right Button = Next
+EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
+*/
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(0,"X",0);// TOP
+    keys[keys.size()-1] = new KeyMapSDLKey("A","HOME",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(1,"A",0);// RIGHT
+    keys[keys.size()-1] = new KeyMapSDLKey("B","END",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(2,"B",0);// BOTTOM
+    keys[keys.size()-1] = new KeyMapSDLKey("X","PAGEDOWN",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(3,"Y",0);// LEFT
+    keys[keys.size()-1] = new KeyMapSDLKey("Y","PAGEUP",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(4,"SELECT",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("L","RIGHT_SHIFT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(5,"START",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("R","RIGHT_CTRL",0);
     keys.push_back(NULL);
-    // TODO: Add Pandora Menu button support.! This is button 6
-    keys[keys.size()-1] = new KeyMapJoyButton(7,"L",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","LEFT_ALT",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(8,"R",0);
-    keys.push_back(NULL);
+    keys[keys.size()-1] = new KeyMapSDLKey("START","LEFT_CTRL",0);
     //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons.
     //  These do not exist physically on a standard Pandora and for this reason are ommited.
     keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
