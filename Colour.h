@@ -161,37 +161,37 @@ class Colour
         }
         //Colour operator/(const float& c){return Colour(red/c,green/c,blue/c,alpha);}
         //  Less Than Equal
-        bool operator<=(const Colour& c){return lessThanEqual(c.red,c.green,c.blue,c.alpha);}
-        bool operator<=(const PENJIN_COLOURS& colour){return operator<=(Colour(colour));}
-        bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b){return lessThanEqual(r,g,b,255);}
-        bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return (isEqual(r,g,b,a) || lessThan(r,g,b,a));}
+        bool operator<=(const Colour& c)const{return lessThanEqual(c.red,c.green,c.blue,c.alpha);}
+        bool operator<=(const PENJIN_COLOURS& colour)const{return operator<=(Colour(colour));}
+        bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b)const{return lessThanEqual(r,g,b,255);}
+        bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return (isEqual(r,g,b,a) || lessThan(r,g,b,a));}
         //  Less Than
-        bool operator<(const Colour& c){return lessThan(c.red,c.green,c.blue,c.alpha);}
-        bool operator<(const PENJIN_COLOURS& colour){return operator<(Colour(colour));}
-        bool lessThan(const uchar& r,const uchar& g,const uchar& b){return lessThan(r,g,b,255);}
-        bool lessThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a);
+        bool operator<(const Colour& c)const{return lessThan(c.red,c.green,c.blue,c.alpha);}
+        bool operator<(const PENJIN_COLOURS& colour)const{return operator<(Colour(colour));}
+        bool lessThan(const uchar& r,const uchar& g,const uchar& b)const{return lessThan(r,g,b,255);}
+        bool lessThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a) const;
         //  More Than Equal
-        bool operator>=(const Colour& c){return moreThanEqual(c.red,c.green,c.blue,c.alpha);}
-        bool operator>=(const PENJIN_COLOURS& colour){return operator>=(Colour(colour));}
-        bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b){return moreThanEqual(r,g,b,255);}
-        bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return (isEqual(r,g,b,a) || moreThan(r,g,b,a));}
+        bool operator>=(const Colour& c)const{return moreThanEqual(c.red,c.green,c.blue,c.alpha);}
+        bool operator>=(const PENJIN_COLOURS& colour)const{return operator>=(Colour(colour));}
+        bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b)const{return moreThanEqual(r,g,b,255);}
+        bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return (isEqual(r,g,b,a) || moreThan(r,g,b,a));}
         //  More Than
-        bool operator>(const Colour& c){return !operator<(c);}
-        bool operator>(const PENJIN_COLOURS& colour){return !operator<(Colour(colour));}
-        bool moreThan(const uchar& r,const uchar& g,const uchar& b){return !lessThan(r,g,b,255);}
-        bool moreThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return !lessThan(r,g,b,a);}
+        bool operator>(const Colour& c)const{return !operator<(c);}
+        bool operator>(const PENJIN_COLOURS& colour)const{return !operator<(Colour(colour));}
+        bool moreThan(const uchar& r,const uchar& g,const uchar& b)const{return !lessThan(r,g,b,255);}
+        bool moreThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return !lessThan(r,g,b,a);}
 
         //  Equivalency
-        bool operator==(const Colour& c){return isEqual(c.red,c.green,c.blue,c.alpha);}
-        bool operator==(const PENJIN_COLOURS& colour){return operator==(Colour(colour));}
-        bool isEqual(const uchar& r,const uchar& g,const uchar& b){return isEqual(r,g,b,255);}
-        bool isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a);
+        bool operator==(const Colour& c)const{return isEqual(c.red,c.green,c.blue,c.alpha);}
+        bool operator==(const PENJIN_COLOURS& colour)const{return operator==(Colour(colour));}
+        bool isEqual(const uchar& r,const uchar& g,const uchar& b)const{return isEqual(r,g,b,255);}
+        bool isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const;
 
         //  Inequality
-        bool operator!=(const Colour& colour){return !operator==(colour);}
-        bool operator!=(const PENJIN_COLOURS& colour){return !operator==(colour);}
-        bool notEqual(const uchar& r,const uchar& g,const uchar& b){return !isEqual(r,g,b);}
-        bool notEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a){return !isEqual(r,g,b,a);}
+        bool operator!=(const Colour& colour)const{return !operator==(colour);}
+        bool operator!=(const PENJIN_COLOURS& colour)const{return !operator==(colour);}
+        bool notEqual(const uchar& r,const uchar& g,const uchar& b)const{return !isEqual(r,g,b);}
+        bool notEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return !isEqual(r,g,b,a);}
 
         //  Negation - Provides the inverse colour
         Colour operator- ()const{return (Colour(WHITE) - *this);}

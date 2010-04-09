@@ -38,6 +38,7 @@ class Rectangle
             #ifdef PENJIN_SDL
                 screen = SDL_GetVideoSurface();
                 rectangle = NULL;
+                init();
             #endif
         }
 

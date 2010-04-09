@@ -151,7 +151,7 @@ void Colour::setColour(CRint rgb)
     #endif
 }
 
-bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
+bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)const
 {
    if(red >= r)
       return false;
@@ -164,7 +164,7 @@ bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)
    return true;
 }
 
-bool Colour::isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)
+bool Colour::isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const
 {
    if(red != r)
       return false;

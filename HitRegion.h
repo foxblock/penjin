@@ -29,25 +29,24 @@ public:
 	//-------------------------------------------------
 	// Public Methods
 	//-------------------------------------------------
-    void init(int x, int y, int width, int height);
+    void init(CRint x, CRint y, CRint width, CRint height);
     #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);
     #endif
     void render();
 
-    void move(int x, int y);
-    void moveTo(int x, int y);
+    void move(CRint x, CRint y);
+    void moveTo(CRint x, CRint y);
 
-    bool hitTest(HitRegion region);
-    bool hitTest(HitRegion* region);
-    bool hitTest(CollisionMap* map);
-    Colour colourTest(CollisionMap* map);
-    Colour colourTest(CollisionMap* map, int x, int y);
+    bool hitTest(const HitRegion* const region) const;
+    bool hitTest(const CollisionMap* const map, CRint x, CRint y) const;
+    Colour colourTest(const CollisionMap* const map) const;
+    Colour colourTest(const CollisionMap* const map, CRint x, CRint y) const;
 
-    int getX();
-    int getY();
-    int getWidth();
-    int getHeight();
+    int getX() const;
+    int getY() const;
+    int getWidth() const;
+    int getHeight() const;
 
 private:
 	//-------------------------------------------------
