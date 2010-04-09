@@ -22,7 +22,7 @@ HitRegion::~HitRegion()
 //-----------------------------------------------------
 // Methodes
 //-----------------------------------------------------
-void HitRegion::init(int x, int y, int width, int height)
+void HitRegion::init(CRint x, CRint y, CRint width, CRint height)
 {
     m_Region.x = x;
     m_Region.y = y;
@@ -31,13 +31,13 @@ void HitRegion::init(int x, int y, int width, int height)
     box.setPosition(x,y);
     box.setDimensions(width,height);
 }
-void HitRegion::move(int x, int y)
+void HitRegion::move(CRint x, CRint y)
 {
     m_Region.x += x;
     m_Region.y += y;
     box.setPosition(x,y);
 }
-void HitRegion::moveTo(int x, int y)
+void HitRegion::moveTo(CRint x, CRint y)
 {
     m_Region.x = x;
     m_Region.y = y;
@@ -54,25 +54,18 @@ void HitRegion::render()
 {
     box.render();
 }
-bool HitRegion::hitTest(HitRegion region)
-{
-    if(((region.getX() - m_Region.x) < m_Region.w && (m_Region.x - region.getX()) < region.getWidth()) &&
-       ((region.getY() - m_Region.y) < m_Region.h && (m_Region.y - region.getY()) < region.getHeight())) return true;
-
-    return false;
-}
-bool HitRegion::hitTest(HitRegion* region)
+bool HitRegion::hitTest(const HitRegion* const region) const
 {
     if(((region->getX() - m_Region.x) < m_Region.w && (m_Region.x - region->getX()) < region->getWidth()) &&
        ((region->getY() - m_Region.y) < m_Region.h && (m_Region.y - region->getY()) < region->getHeight())) return true;
 
     return false;
 }
-bool HitRegion::hitTest(CollisionMap* map)
+bool HitRegion::hitTest(const CollisionMap* const map, CRint x, CRint y) const
 {
-    for(int xpos = m_Region.x; xpos <= m_Region.x + m_Region.w; xpos += 1)
+    for(int xpos = m_Region.x - x; xpos <= m_Region.x - x + m_Region.w; ++xpos)
     {
-        for(int ypos = m_Region.y; ypos <= m_Region.y + m_Region.h; ypos += 1)
+        for(int ypos = m_Region.y - y; ypos <= m_Region.y - y + m_Region.h; ++ypos)
         {
             if(map->getCollisionType(xpos, ypos) == BLACK) return true;
         }
@@ -80,11 +73,11 @@ bool HitRegion::hitTest(CollisionMap* map)
 
     return false;
 }
-Colour HitRegion::colourTest(CollisionMap* map)
+Colour HitRegion::colourTest(const CollisionMap* const map) const
 {
     return map->getCollisionType(m_Region.x + (m_Region.w / 2), m_Region.y + (m_Region.h / 2));
 }
-Colour HitRegion::colourTest(CollisionMap* map, int x, int y)
+Colour HitRegion::colourTest(const CollisionMap* map, CRint x, CRint y) const
 {
     int xpos = min(m_Region.w - 1, x);
 
@@ -92,19 +85,19 @@ Colour HitRegion::colourTest(CollisionMap* map, int x, int y)
 
     return map->getCollisionType(m_Region.x + xpos, m_Region.y + ypos);
 }
-int HitRegion::getX()
+int HitRegion::getX() const
 {
     return m_Region.x;
 }
-int HitRegion::getY()
+int HitRegion::getY() const
 {
     return m_Region.y;
 }
-int HitRegion::getWidth()
+int HitRegion::getWidth() const
 {
     return m_Region.w;
 }
-int HitRegion::getHeight()
+int HitRegion::getHeight() const
 {
     return m_Region.h;
 }
