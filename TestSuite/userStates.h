@@ -20,7 +20,8 @@ enum STATE_MODES
     STATE_PRIMITIVE,
     STATE_RAYCAST,
     STATE_FILE_LIST,
-    STATE_ROTATION
+    STATE_ROTATION,
+    STATE_COLLISION
 };
 #include "StateTitle.h"
 #include "StateAnimation.h" //  Animation testing suite.
@@ -29,5 +30,6 @@ enum STATE_MODES
 #include "StateRaycast.h"   //  Raycaster
 #include "StateFileList.h"  //  File lister
 #include "StateRotation.h"  //  Rotations tester
+#include "StateCollision.h" //  CollisionRegion test
 
 #endif	//	USERSTATES_H

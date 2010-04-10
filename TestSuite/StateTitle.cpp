@@ -68,6 +68,11 @@ void StateTitle::initMenu()
 
     menu.addItem(MENU_STRING_ITEM);
     menu.setIsSelectable(true);
+    menu.setMenuItemText("Collision Test");
+    menu.setSpacing(spacing);
+
+    menu.addItem(MENU_STRING_ITEM);
+    menu.setIsSelectable(true);
     menu.setMenuItemText("Quit!");
     menu.setSpacing(spacing);
     menu.centreText();
@@ -136,6 +141,8 @@ void StateTitle::menuLogic()
         setNextState(STATE_FILE_LIST);
     else if(choice == 6)
         setNextState(STATE_ROTATION);
-    else if(choice == 7)    //  Quit
+    else if (choice == 7)
+        setNextState(STATE_COLLISION);
+    else if(choice == 8)    //  Quit
         nullifyState();
 }
