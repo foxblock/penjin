@@ -23,10 +23,15 @@ CollisionRegion::~CollisionRegion()
 
 void CollisionRegion::generateHitRegion()
 {
+    if (map == NULL)
+        return;
+
     int x,y,w,h;
     w = h = 0;
     x = map->getWidth();
     y = map->getHeight();
+    // starting on the bottom left, go to the top right of the image
+    // determines the smallest bounding box aroudn the colliding object
     for (int I = map->getWidth()-1; I >= 0; --I)
     {
         for (int K = map->getHeight()-1; K >= 0; --K)
@@ -50,12 +55,13 @@ Colour CollisionRegion::getCollisionType(int x, int y, CRbool absolute) const
 {
     if (absolute)
     {
-        x -= pos.x;
-        y -= pos.y;
+        x -= getX();
+        y -= getY();
     }
     if (map == NULL)
     {
-        if (x < 0 || y < 0 || x > region.w || y > region.h)
+        // bounds check
+        if (x < 0 || y < 0 || x >= getWidth() || y >= getHeight())
             return noCollision;
         else
         {
@@ -67,10 +73,11 @@ Colour CollisionRegion::getCollisionType(int x, int y, CRbool absolute) const
     }
     else
     {
-        if(x < 0 || y < 0 || x > map->getWidth() || y > map->getHeight())
+        // bounds check
+        if(x < 0 || y < 0 || x >= getWidth() || y >= getHeight())
             return noCollision;
 
-        Colour c = map->getPixel(x,y);
+        Colour c = map->getPixel(x + region.x,y + region.y);
 #ifdef PENJIN_SDL
         c.alpha = 255;
 #else
@@ -94,7 +101,7 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
         // check for collision
         for (int I = xPos; I <= xPosMax; ++I)
         {
-            for (int K = yPos; K <= yPosMax; ++K)
+            for (int K = yPos; K < yPosMax; ++K)
             {
                 // if both have a collision-pixel at the same spot, we have a collision
                 if (this->hitTest(I,K,true) && tester->hitTest(I,K,true))
@@ -113,27 +120,6 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
     }
 }
 
-#ifdef PENJIN_SDL
-void CollisionRegion::render(SDL_Surface* screen)
-{
-    if (map)
-    {
-        map->renderImage(screen,pos);
-    }
-    if (not showRect && region.w != 0 && region.h != 0)
-    {
-        showRect = new Rectangle(region.w,region.h);
-        showRect->setColour(Colour(GREEN));
-        showRect->setThickness(1);
-    }
-    if (showRect)
-    {
-        showRect->setDimensions(region.w,region.h);
-        showRect->setPosition(pos.x + region.x,pos.y + region.y);
-        showRect->render(screen);
-    }
-}
-#else
 void  CollisionRegion::render()
 {
     if (map)
@@ -144,7 +130,7 @@ void  CollisionRegion::render()
     {
         showRect = new Rectangle(region.w,region.h);
         showRect->setColour(Colour(GREEN));
-        showRect->setThickness(1);
+        showRect->setThickness(max(getWidth() / 100.0, 1.0));
     }
     if (showRect)
     {
@@ -153,4 +139,3 @@ void  CollisionRegion::render()
         showRect->render();
     }
 }
-#endif

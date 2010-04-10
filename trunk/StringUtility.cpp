@@ -72,6 +72,25 @@ string StringUtility::intToString(CRint n)
 	return str;
 }
 
+
+string StringUtility::boolToString(CRbool value, CRbool useBoolString)
+{
+    if (value)
+    {
+        if (useBoolString)
+            return "true";
+        else
+            return "1";
+    }
+    else
+    {
+        if (useBoolString)
+            return "false";
+        else
+            return "0";
+    }
+}
+
 bool StringUtility::isDigit(CRchar digit)
 {
 	return true;

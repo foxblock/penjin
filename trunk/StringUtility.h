@@ -27,6 +27,7 @@ namespace StringUtility
         string longToString(CRlong value);
         string intToString(CRint value);
         string shortToString(CRshort value);
+        string boolToString(CRbool value, CRbool useBoolString=true);
 
         /// Char* string conversions
         Fixed cStringToFixed(char* value);
