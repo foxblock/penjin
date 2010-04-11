@@ -230,7 +230,7 @@ class SimpleJoy
         #define NUB_CUTOFF 5
         #define NUB_SCALE  10
 
-        int PND_OpenEventDeviceByName( char device_name[] );
+        int PND_OpenEventDeviceByName( const char device_name[] );
         void PND_ReadEvents( int fd, int device );
         void PND_CheckEvent( struct input_event *event, int device );
 
