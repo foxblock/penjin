@@ -188,6 +188,7 @@ void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
             case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x += Event.jaxis.value * scaler;break;
             case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y += Event.jaxis.value * scaler;break;
         #endif
+            default:                break;
     }
 }
 
@@ -202,6 +203,7 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
             case SJ_RIGHTSTICK_Y:   rightStick.y = Event.motion.xrel;break;
             case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = Event.motion.x;break;
             case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = Event.motion.x;break;
+            default:                break;
         }
     if(axis == 1 && Event.motion.yrel != 0)
         switch(map)
@@ -212,6 +214,7 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
             case SJ_RIGHTSTICK_Y:   rightStick.y = Event.motion.yrel;break;
             case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = Event.motion.y;break;
             case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = Event.motion.y;break;
+            default:                break;
         }
 }
 
@@ -335,6 +338,8 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
                                 else
                                     rightClick = sjHELD;
         break;
+
+        default:                break;
     }
 }
 
@@ -375,6 +380,7 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
         case SJ_MOUSE_LEFT:     leftClick = sjRELEASED;break;
         //case SJ_MOUSE_CENTRE: = sjRELEASED;break;
         case SJ_MOUSE_RIGHT:    rightClick = sjRELEASED;break;
+        default:                break;
     }
 }
 
@@ -464,7 +470,7 @@ void SimpleJoy::joystickStatus()
 }
 
 #if defined(PLATFORM_PANDORA)
-int SimpleJoy::PND_OpenEventDeviceByName( char device_name[] )
+int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 {
 	int fd;
 
@@ -511,7 +517,7 @@ void SimpleJoy::PND_ReadEvents( int fd, int device )
 
 		if (rd > (int) sizeof(struct input_event))
 		{
-			for (i = 0; i < rd / sizeof(struct input_event); i++)
+			for (i = 0; i < rd / (int) sizeof(struct input_event); i++)
 			{
 				PND_CheckEvent( &ev[i], device );
 			}
@@ -582,6 +588,8 @@ void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
             case SJ_MOUSE_Y:
                 oldMouse.y = mouse.y;mouse.y += nubL.x * scaler;
             break;
+            default:
+            break;
         }
     }
     else if(ax == 1)//  LEFTNUB_Y
@@ -609,6 +617,8 @@ void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
             break;
             case SJ_MOUSE_Y:
                 oldMouse.y = mouse.y;mouse.y += nubL.y * scaler;
+            break;
+            default:
             break;
         }
     }
@@ -638,6 +648,8 @@ void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
             case SJ_MOUSE_Y:
                 oldMouse.y = mouse.y;mouse.y += nubR.x * scaler;
             break;
+            default:
+            break;
         }
     }
     else if(ax == 3)//  RIGHTNUB_Y
@@ -665,6 +677,8 @@ void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
             break;
             case SJ_MOUSE_Y:
                 oldMouse.y = mouse.y;mouse.y += nubR.y * scaler;
+            break;
+            default:
             break;
         }
     }
