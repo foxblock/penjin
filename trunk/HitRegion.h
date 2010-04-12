@@ -39,9 +39,9 @@ public:
     void moveTo(CRint x, CRint y);
 
     bool hitTest(const HitRegion* const region) const;
-    bool hitTest(const CollisionMap* const map, CRint x, CRint y) const;
-    Colour colourTest(const CollisionMap* const map) const;
-    Colour colourTest(const CollisionMap* const map, CRint x, CRint y) const;
+    bool hitTest(CollisionMap* const map, CRint x, CRint y)const;
+    Colour colourTest(CollisionMap* const map) const;
+    Colour colourTest(CollisionMap* const map, CRint x, CRint y)const;
 
     int getX() const;
     int getY() const;

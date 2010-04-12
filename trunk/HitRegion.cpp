@@ -61,7 +61,8 @@ bool HitRegion::hitTest(const HitRegion* const region) const
 
     return false;
 }
-bool HitRegion::hitTest(const CollisionMap* const map, CRint x, CRint y) const
+
+bool HitRegion::hitTest(CollisionMap* const map, CRint x, CRint y)const
 {
     for(int xpos = m_Region.x - x; xpos <= m_Region.x - x + m_Region.w; ++xpos)
     {
@@ -73,11 +74,11 @@ bool HitRegion::hitTest(const CollisionMap* const map, CRint x, CRint y) const
 
     return false;
 }
-Colour HitRegion::colourTest(const CollisionMap* const map) const
+Colour HitRegion::colourTest(CollisionMap* const map) const
 {
     return map->getCollisionType(m_Region.x + (m_Region.w / 2), m_Region.y + (m_Region.h / 2));
 }
-Colour HitRegion::colourTest(const CollisionMap* map, CRint x, CRint y) const
+Colour HitRegion::colourTest(CollisionMap* const map, CRint x, CRint y)const
 {
     int xpos = min(m_Region.w - 1, x);
 

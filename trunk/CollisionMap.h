@@ -21,7 +21,7 @@ class CollisionMap
             void render();
         #endif
 
-        Colour getCollisionType(CRuint x, CRuint y) const
+        Colour getCollisionType(CRuint x, CRuint y)
 		{
 			if(x < 0 || y < 0 || x > map.getWidth() || y > map.getHeight())
 				return noCollision;
