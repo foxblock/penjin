@@ -77,14 +77,7 @@ Colour CollisionRegion::getCollisionType(int x, int y, CRbool absolute) const
         if(x < 0 || y < 0 || x >= getWidth() || y >= getHeight())
             return noCollision;
 
-        Colour c = map->getPixel(x + region.x,y + region.y);
-#ifdef PENJIN_SDL
-        c.alpha = 255;
-#else
-        c.alpha = 1.0f;
-#endif
-
-        return c;
+        return map->getPixel(x + region.x,y + region.y);
     }
 }  //  check what sort of collision has been made.
 

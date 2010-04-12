@@ -36,6 +36,10 @@ class CollisionRegion
         // deletes region, but does not touch the collision-image
         void resetHitRegion() {region.x = 0; region.y = 0; region.w = 0; region.h = 0; if (showRect) { delete showRect; showRect = NULL; }}
 
+        // Functions to check whether the CollisionRegion has an image or a region
+        bool hasImage() {return (map != NULL);}
+        bool hasRegion() {return (region.w != 0 || region.h != 0);}
+
         // get position or size of the object, withRegion also takes the generated or set region into account
         // you should always use withRegion=true as the returned values will also be accurate on the absence of a collision-region
         int getX(CRbool withRegion=true) const {if (withRegion) return pos.x + region.x; else return pos.x;}
@@ -61,7 +65,7 @@ class CollisionRegion
         Colour getCollisionType(int x, int y, CRbool absolute) const;
 
         // check whether a single point collides with the collisionRegion (always fullShape if possible)
-        bool hitTest(int x, int y, CRbool absolute) const{return (getCollisionType(x,y,absolute) != noCollision);}
+        bool hitTest(int x, int y, CRbool absolute) const {return (getCollisionType(x,y,absolute) != noCollision);}
         // check whether another region collides with this region (rectangular or fullShape)
         // also works when one or both have no collision image or region loaded
         bool hitTest(const CollisionRegion* const region, CRbool fullShape=false) const;
