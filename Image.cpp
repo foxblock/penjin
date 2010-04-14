@@ -446,7 +446,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a)
     {
-            glColor4f(r*0.003921569f, g*0.003921569f, b*0.003921569f, a*0.003921569f); // 1/255
+            glColor4i(r, g, b, a);
             glBegin(GL_POINTS);
                 glVertex3f(x, y, z);
             glEnd();

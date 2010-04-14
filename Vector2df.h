@@ -33,6 +33,7 @@ class Vector2df : public vec2<float>
         Vector2df& operator=(const vec2<fixed_point<16> >& v){x = fix2float(v.x);y = fix2float(v.y);return *this;}
         template <class T>
         Vector2df& operator=(const T& v){x = v.x;y=v.y;return *this;}
+        Vector2df& operator=(const float& v){x = y = v;return *this;}
 
 
         // TODO Add a level of approximation to equivalence operators.
@@ -49,6 +50,7 @@ class Vector2df : public vec2<float>
         template <class T>
         Vector2df operator*(const T& v)const{return Vector2df(x * v.x, y * v.y);}
         Vector2df operator*(const float& f)const{return Vector2df(x*f,y*f);}
+        Vector2df operator*(const int& i)const{return Vector2df(x*i,y*i);}
 
         template <class T>
         Vector2df operator/(const T& v)const{return Vector2df(x / v.x, y / v.y);}
