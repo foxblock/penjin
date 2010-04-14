@@ -28,9 +28,28 @@ namespace NumberUtility
     int nextPowerOfTwo(CRint x);
     template <class T>
     int sign(const T& value); // Signum function, returns the sign of a number (-1 for negative numbers, 1 for positive ones, 0 for 0)
-    int wrapValue(int value, CRint limit);
-    //template<typename T>
-    //T wrapValue(T val,const T& limit);
+    //int wrapValue(int value, CRint limit);
+    template <class T>
+    T wrapValue(T val,const T& limit)
+    {
+    //    	We need to keep going until it is within the required range.
+        while(val < 0 && val >limit)
+        {
+    //        	We can't have it less than 0, as it causes problems.
+            if(val < 0)
+            {
+    //             compensate upwards
+                val += limit;
+            }
+    //        	We can't have it more than the limit either
+            else if(val > limit)
+            {
+    //            	compensate downwards
+                val -= limit;
+            }
+        }
+        return val;
+    }
 
     /// Angles
     float degToRad(CRfloat a);
