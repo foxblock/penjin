@@ -71,6 +71,8 @@ namespace GFX
     thickness of -1 renders a full rectangle
     */
         void setPixel(CRint x, CRint y, const Colour& c);
+        template <class T>
+        void setPixel(const T& p, const Colour& c){setPixel(p.x,p.y,c);}
         Colour getPixel(CRint x, CRint y);
         Colour getPixel(SDL_Surface* screen,CRint x, CRint y);
         void renderPixelBuffer();   //  Renders all pixels stored in the buffer
