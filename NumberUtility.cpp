@@ -66,50 +66,6 @@ bool NumberUtility::isPrime(CRuint value)
     return true;
 }
 
-int NumberUtility::wrapValue(int val,CRint limit)
-{
-    //  We need to keep going until it is within the required range.
-    while(val < 0 || val >limit)
-    {
-    //  We can't have it less than 0, as it causes problems.
-        if(val < 0)
-        {
-    //  compensate upwards
-            val += limit;
-        }
-    //  We can't have it more than the limit either
-        else if(val > limit)
-        {
-    //  compensate downwards
-            val -= limit;
-        }
-    }
-    return val;
-}
-
-//template<typename T>
-//T NumberUtility::wrapValue(T val,const T& limit)
-//{
-////    	We need to keep going until it is within the required range.
-//    while(val < 0 && val >limit)
-//    {
-////        	We can't have it less than 0, as it causes problems.
-//        if(val < 0)
-//        {
-////             compensate upwards
-//            val += limit;
-//        }
-////        	We can't have it more than the limit either
-//        else if(val > limit)
-//        {
-////            	compensate downwards
-//            val -= limit;
-//        }
-//    }
-//    return val;
-//}
-
-
 ///----------------------
 /// Angles
 ///----------------------
