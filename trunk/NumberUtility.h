@@ -33,7 +33,7 @@ namespace NumberUtility
     T wrapValue(T val,const T& limit)
     {
     //    	We need to keep going until it is within the required range.
-        while(val < 0 && val >limit)
+        while(val < 0 || val >limit)
         {
     //        	We can't have it less than 0, as it causes problems.
             if(val < 0)
