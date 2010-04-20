@@ -26,15 +26,15 @@ void CollisionRegion::generateHitRegion()
     if (map == NULL)
         return;
 
-    int x,y,w,h;
+    float x,y,w,h;
     w = h = 0;
     x = map->getWidth();
     y = map->getHeight();
     // starting on the bottom left, go to the top right of the image
     // determines the smallest bounding box aroudn the colliding object
-    for (int I = map->getWidth()-1; I >= 0; --I)
+    for (float I = map->getWidth()-1; I >= 0; --I)
     {
-        for (int K = map->getHeight()-1; K >= 0; --K)
+        for (float K = map->getHeight()-1; K >= 0; --K)
         {
             if (map->getPixel(I,K) != noCollision)
             {
@@ -51,7 +51,7 @@ void CollisionRegion::generateHitRegion()
     region.h = h-y+1;
 }
 
-Colour CollisionRegion::getCollisionType(int x, int y, CRbool absolute) const
+Colour CollisionRegion::getCollisionType(float x, float y, CRbool absolute) const
 {
     if (absolute)
     {
@@ -86,15 +86,15 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
     if (fullShape)
     {
         // determine overlaping area
-        int xPos = max(this->getX(), tester->getX());
-        int yPos = max(this->getY(), tester->getY());
-        int xPosMax = min(this->getX() + this->getWidth(), tester->getX() + tester->getWidth());
-        int yPosMax = min(this->getY() + this->getHeight(), tester->getY() + tester->getHeight());
+        float xPos = max(this->getX(), tester->getX());
+        float yPos = max(this->getY(), tester->getY());
+        float xPosMax = min(this->getX() + this->getWidth(), tester->getX() + tester->getWidth());
+        float yPosMax = min(this->getY() + this->getHeight(), tester->getY() + tester->getHeight());
 
         // check for collision
-        for (int I = xPos; I <= xPosMax; ++I)
+        for (float I = xPos; I <= xPosMax; ++I)
         {
-            for (int K = yPos; K < yPosMax; ++K)
+            for (float K = yPos; K < yPosMax; ++K)
             {
                 // if both have a collision-pixel at the same spot, we have a collision
                 if (this->hitTest(I,K,true) && tester->hitTest(I,K,true))
