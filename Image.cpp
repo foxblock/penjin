@@ -112,7 +112,9 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
             images.pop_back();
             return PENJIN_IMG_UNABLE_TO_OPEN;
         }
-        setupCaching();
+        #ifdef PENJIN_CACHE_ROTATIONS
+            setupCaching();
+        #endif
     #else
         textures.resize(textures.size()+1);
         PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTexture(name);
@@ -281,44 +283,50 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         else if(angle != 0 || scale.x!= 1 || scale.y!= 1)
         {
             SDL_Surface* tempImage = NULL;
-            //  If not in a tilesheet we can do rotation caching
-            if(!sheetMode && scale.x == 1 && scale.y == 1)
-            {
-                uint myAngle = NumberUtility::wrapValue((uint)angle,(uint)359);
-                if(myAngle == 0)
-                    SDL_BlitSurface(images.at(i), &src, dstimg, &dst);
-                else
+            #ifdef PENJIN_CACHE_ROTATIONS
+                //  If not in a tilesheet we can do rotation caching
+                if(!sheetMode && scale.x == 1 && scale.y == 1)
                 {
-                    if(rotCache.size()>myAngle-1 && rotCache.at(myAngle-1).surf != NULL)
-                    {
-                        dst.x += (src.w - rotCache.at(myAngle-1).surf->w)*0.5f;
-                        dst.y += (src.h - rotCache.at(myAngle-1).surf->h)*0.5f;
-                        SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
-                        ++rotCache.at(myAngle-1).useCount;
-                    }
+                    uint myAngle = NumberUtility::wrapValue((uint)angle,(uint)359);
+                    if(myAngle == 0)
+                        SDL_BlitSurface(images.at(i), &src, dstimg, &dst);
                     else
                     {
-                        //  If the cache is not full we cache more images
-                        if(currCached < maxCached)
+                        if(rotCache.size()>myAngle-1 && rotCache.at(myAngle-1).surf != NULL)
                         {
-                            cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
+                            dst.x += (src.w - rotCache.at(myAngle-1).surf->w)*0.5f;
+                            dst.y += (src.h - rotCache.at(myAngle-1).surf->h)*0.5f;
                             SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                            ++rotCache.at(myAngle-1).useCount;
                         }
-                        else    //  We manually render (SLOW)
-                        {       //  TODO: FREE least used cache items
-                            SDL_Surface* t = rotoZoom(*images.at(i),src,dst);
-                            SDL_BlitSurface(t, NULL, dstimg,&dst);
-                            SDL_FreeSurface(t);
+                        else
+                        {
+                            //  If the cache is not full we cache more images
+                            if(currCached < maxCached)
+                            {
+                                cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
+                                SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
+                            }
+                            else    //  We manually render (SLOW)
+                            {       //  TODO: FREE least used cache items
+                                SDL_Surface* t = rotoZoom(*images.at(i),src,dst);
+                                SDL_BlitSurface(t, NULL, dstimg,&dst);
+                                SDL_FreeSurface(t);
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
+                else
+                {
+                    tempImage = rotoZoom(*images.at(i),src,dst);
+                    SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
+                    SDL_FreeSurface(tempImage);
+                }
+            #else
                 tempImage = rotoZoom(*images.at(i),src,dst);
                 SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
                 SDL_FreeSurface(tempImage);
-            }
+            #endif
         }
     }
     //void Image::renderImage(SDL_Surface* dstimg, const Vector2di& pos){renderImage(0, dstimg, pos.x, pos.y);}
@@ -531,17 +539,19 @@ void Image::clear()
             --i;
         }
         images.clear();
-        i = rotCache.size()-1;
-        while(i >= 0)
-        {
-            if(rotCache.at(i).surf != NULL)
+        #ifdef PENJIN_CACHE_ROTATIONS
+            i = rotCache.size()-1;
+            while(i >= 0)
             {
-                SDL_FreeSurface(rotCache.at(i).surf);
-                rotCache.at(i).surf = NULL;
+                if(rotCache.at(i).surf != NULL)
+                {
+                    SDL_FreeSurface(rotCache.at(i).surf);
+                    rotCache.at(i).surf = NULL;
+                }
+                --i;
             }
-            --i;
-        }
-        rotCache.clear();
+            rotCache.clear();
+        #endif
     #else
         textures.clear();
     #endif
@@ -636,67 +646,68 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
     }
     return tempImage;
 }
+    #ifdef PENJIN_CACHE_ROTATIONS
+        void Image::setupCaching()
+        {
+            maxCached = currCached = 0;
+            Point2di dim;
+            dim.x = getWidth();
+            dim.y = getHeight();
 
-void Image::setupCaching()
-{
-    maxCached = currCached = 0;
-    Point2di dim;
-    dim.x = getWidth();
-    dim.y = getHeight();
+            // if the image is too big, it's not good to bloat out ram with all copies of rotations
+            if(dim.x > GFX::getXResolution() || dim.y > GFX::getYResolution())
+                return;
+            //  If the image is less than 2% of the screen dims then we will not see any noticeable benefit from caching
+            else if(dim.x < GFX::getXResolution()* 0.02f || dim.y < GFX::getYResolution()*0.02f)
+                return;
+            //  If the image is less than 5% of the screen dims then we cache all angles
+            else if(dim.x < GFX::getXResolution()* 0.05f || dim.y < GFX::getYResolution()*0.05f)
+                maxCached = 358;
+            else
+            {
+                //  TODO scale caching relative to size of sprite and screen resolution
+                maxCached = 0;
+            }
+        }
 
-    // if the image is too big, it's not good to bloat out ram with all copies of rotations
-    if(dim.x > GFX::getXResolution() || dim.y > GFX::getYResolution())
-        return;
-    //  If the image is less than 2% of the screen dims then we will not see any noticeable benefit from caching
-    else if(dim.x < GFX::getXResolution()* 0.02f || dim.y < GFX::getYResolution()*0.02f)
-        return;
-    //  If the image is less than 5% of the screen dims then we cache all angles
-    else if(dim.x < GFX::getXResolution()* 0.05f || dim.y < GFX::getYResolution()*0.05f)
-        maxCached = 358;
-    else
-    {
-        //  TODO scale caching relative to size of sprite and screen resolution
-        maxCached = 0;
-    }
-}
+        void Image::cacheRotation(uint angle, SDL_Surface* s)
+        {
+            //  Bring the angle into range
+            //angle = NumberUtility::wrapValue(angle, 359);
+            if(s == NULL)
+                return;
 
-void Image::cacheRotation(uint angle, SDL_Surface* s)
-{
-    //  Bring the angle into range
-    //angle = NumberUtility::wrapValue(angle, 359);
-    if(s == NULL)
-        return;
+            //  If the angle is 0 we don't actually need to rotate or cache
+            if(angle == 0)
+            {
+                if(s!=NULL)
+                    SDL_FreeSurface(s);
+                return;
+            }
 
-    //  If the angle is 0 we don't actually need to rotate or cache
-    if(angle == 0)
-    {
-        if(s!=NULL)
-            SDL_FreeSurface(s);
-        return;
-    }
+            //  shift one place for the lack of 0 angle.
+            angle-=1;
 
-    //  shift one place for the lack of 0 angle.
-    angle-=1;
+            ROT r;
+            r.surf = NULL;
+            r.useCount = 0;
 
-    ROT r;
-    r.surf = NULL;
-    r.useCount = 0;
+            //  Create enough space to store the rotation.
+            while(angle >= rotCache.size())
+            {
+                rotCache.push_back(r);
+            }
 
-    //  Create enough space to store the rotation.
-    while(angle >= rotCache.size())
-    {
-        rotCache.push_back(r);
-    }
-
-    //  now check and store the surface
-    if(rotCache.at(angle).surf == NULL)
-    {
-        rotCache.at(angle).surf = s;
-        ++currCached;
-    }
-    else
-        SDL_FreeSurface(s);
-}
+            //  now check and store the surface
+            if(rotCache.at(angle).surf == NULL)
+            {
+                rotCache.at(angle).surf = s;
+                ++currCached;
+            }
+            else
+                SDL_FreeSurface(s);
+        }
+    #endif
 #endif
 
 void Image::toGreyScale()
