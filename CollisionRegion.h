@@ -50,9 +50,12 @@ class CollisionRegion
 
         // adjust the position (or size) to match the one of the sprite
         void setX(CRfloat value) {pos.x = value;}
+        void incX(CRfloat value) {pos.x += value;}
         void setY(CRfloat value) {pos.y = value;}
+        void incY(CRfloat value) {pos.y += value;}
         void setPosition(const Vector2df &value) {pos = value;}
         void setPosition(CRfloat x, CRfloat y) {pos = Vector2di(x,y);}
+        void incPosition(const Vector2df &value) {pos += value;}
         void setWidth(CRfloat value) {region.w = value;}
         void setHeight(CRfloat value) {region.h = value;}
         void setSize(const Vector2df &value) {region.w = value.x; region.h = value.y;}
