@@ -28,6 +28,8 @@ bool AchievementUtility::compare(CRint reference, CRint value, CRint op)
         return value == reference;
     else if (op == coGREATER)
         return value > reference;
+    else
+        return false;
 }
 
 bool AchievementUtility::checkSpecial(const SpecialProperty& sp1, const SpecialProperty& sp2)

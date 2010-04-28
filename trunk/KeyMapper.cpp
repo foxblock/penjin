@@ -210,7 +210,7 @@ EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
 PENJIN_ERRORS KeyMapper::mapKey(CRuchar id)
 {
     Command temp;
-    PENJIN_ERRORS result;
+    PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
         temp = parse.getNextCommand();
@@ -234,7 +234,7 @@ PENJIN_ERRORS KeyMapper::mapKey(CRuchar id)
 PENJIN_ERRORS KeyMapper::mapMouse(CRuchar id)
 {
     Command temp;
-    PENJIN_ERRORS result;
+    PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
         temp = parse.getNextCommand();
@@ -276,7 +276,7 @@ PENJIN_ERRORS KeyMapper::mapMouse(CRuchar id)
 PENJIN_ERRORS KeyMapper::mapJoy(CRuchar id)
 {
     Command temp;
-    PENJIN_ERRORS result;
+    PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
         temp = parse.getNextCommand();

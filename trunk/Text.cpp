@@ -220,7 +220,7 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
             }
 
             //  create more glyphs as needed - shifted 19 indices
-            while(glyphs[fontSize-1].size() <= c-19)
+            while((int)glyphs[fontSize-1].size() <= c-19)
             {
                 glyphs[fontSize-1].push_back(NULL);
                 glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
