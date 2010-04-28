@@ -179,7 +179,7 @@ bool Colour::isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a
 
 SDL_Color Colour::getSDL_Colour()
 {
-    SDL_Color tempCol;
+    SDL_Color tempCol = {0,0,0,0};
 	#ifdef PENJIN_GL
         tempCol.r = red * 255;
         tempCol.g = green * 255;

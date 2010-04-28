@@ -634,7 +634,10 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         dst.x += (src.w - tempImage->w)*0.5f;
         dst.y += (src.h - tempImage->h)*0.5f;
     }
-    if(colourKey.alpha)
+
+    // This code fixes colour keying in 32 bpp mode (otherwise the colour key colour shows)
+    // It also caused the rotated images to disappear in 16 bpp mode, so only run for 32 bpp
+    if(in.format->BitsPerPixel == 32 && colourKey.alpha)
     {
         SDL_Surface* another = SDL_CreateRGBSurface(in.flags,tempImage->w, tempImage->h,in.format->BitsPerPixel, tempImage->format->Rmask, tempImage->format->Gmask, tempImage->format->Bmask, tempImage->format->Amask);
         SDL_FillRect(another, NULL, SDL_MapRGB(another->format,colourKey.red,colourKey.green,colourKey.blue));
@@ -644,6 +647,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         SDL_FreeSurface(tempImage);
         return another;
     }
+
     return tempImage;
 }
     #ifdef PENJIN_CACHE_ROTATIONS
@@ -655,7 +659,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
             dim.y = getHeight();
 
             // if the image is too big, it's not good to bloat out ram with all copies of rotations
-            if(dim.x > GFX::getXResolution() || dim.y > GFX::getYResolution())
+            if((uint)dim.x > GFX::getXResolution() || (uint)dim.y > GFX::getYResolution())
                 return;
             //  If the image is less than 2% of the screen dims then we will not see any noticeable benefit from caching
             else if(dim.x < GFX::getXResolution()* 0.02f || dim.y < GFX::getYResolution()*0.02f)

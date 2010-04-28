@@ -125,7 +125,7 @@ void AchievementSystem::render(SDL_Surface* screen)
 
 void AchievementSystem::renderList(SDL_Surface* screen, int numOffset)
 {
-    if (numOffset < 0 || numOffset >= achievements.size())    {
+    if (numOffset < 0 || (uint)numOffset >= achievements.size())    {
         #ifdef DEBUG
         cout << "[Achievements] Error: Trying to render list with out-of-bounds offset (" << numOffset << ")!" << endl;
         #endif
@@ -227,7 +227,7 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
 	doc.load(file);
 	if(!doc.size())
 		return PENJIN_FILE_NOT_FOUND;
-    int i = 0;
+    unsigned int i = 0;
     bool changed = true;
     while(i < doc.size())
     {

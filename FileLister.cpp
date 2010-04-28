@@ -36,7 +36,7 @@ void FileLister::createListing()
     listingTypes.clear();
     listing.push_back(workingDir);
     listingTypes.push_back(PATH);
-    while(dirEnt = readdir(dir))
+    while((dirEnt = readdir(dir)))
     {
         if(filters.size() == 0)
         {
