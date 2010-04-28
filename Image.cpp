@@ -287,7 +287,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                 //  If not in a tilesheet we can do rotation caching
                 if(!sheetMode && scale.x == 1 && scale.y == 1)
                 {
-                    uint myAngle = NumberUtility::wrapValue((uint)angle,(uint)359);
+                    uint myAngle = NumberUtility::wrapValue((int)angle,(int)359);
                     if(myAngle == 0)
                         SDL_BlitSurface(images.at(i), &src, dstimg, &dst);
                     else
