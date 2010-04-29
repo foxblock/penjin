@@ -1,8 +1,8 @@
 #ifndef KEYMAP_H
 #define KEYMAP_H
 
-#include "KeyboardDefines.h"
 #include "PenjinTypes.h"
+#include <SDL.h>
 #include <string>
 using std::string;
 

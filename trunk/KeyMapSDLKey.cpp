@@ -83,7 +83,7 @@ void KeyMapSDLKey::setSDLKey(CRstring k)
         key=SDLK_EQUALS;
     else if(k == "ESCAPE")
         key=SDLK_ESCAPE;
-    else if(k == "€")
+    else if(k == "EURO")
         key=SDLK_EURO;
     else if(k == "!")
         key=SDLK_EXCLAIM;
