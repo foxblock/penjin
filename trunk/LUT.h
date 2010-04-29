@@ -31,7 +31,7 @@ namespace LUT
     float LItan(float angle);
 
     /// Conversion
-    uchar degreeToBrad(CRfloat angle);
+    uchar degreeToBrad(float angle);
     uchar radianToBrad(CRfloat angle);
     float bradToDegree(CRuchar angle);
     float bradToRadian(CRuchar angle);
