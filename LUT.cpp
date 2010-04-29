@@ -90,8 +90,9 @@ float LUT::LItan(float angle)
     return y1 + (y2-y1)*(angle*1000/PI-x1);
 }
 
-uchar LUT::degreeToBrad(CRfloat angle)
+uchar LUT::degreeToBrad(float angle)
 {
+    angle = NumberUtility::wrapValue(angle,359.0f);
     #ifdef PENJIN_FIXED
         return fixedpoint::fix2int(angle*32*POINT_ZERO_TWO_TWO);
     #else
