@@ -163,9 +163,9 @@ EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapSDLKey("R","RIGHT_CTRL",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","LEFT_ALT",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","LEFT_CTRL",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("START","LEFT_CTRL",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("START","LEFT_ALT",0);
     //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons.
     //  These do not exist physically on a standard Pandora and for this reason are ommited.
     keys.push_back(NULL);
