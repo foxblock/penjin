@@ -60,6 +60,12 @@ void Text::clear()
 {
 	if(font)
     {
+        //  Sleep to try and allow any text rendering to finish...
+        #ifndef PENJIN_SYS_TIMER
+            SDL_Delay(1);
+        #else
+            sleep(1);
+        #endif
         TTF_CloseFont(font);			// Release the font object
         font = NULL;
     }
