@@ -2,7 +2,7 @@
 #define KEYMAP_H
 
 #include "PenjinTypes.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <string>
 using std::string;
 

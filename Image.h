@@ -105,7 +105,7 @@ class Image
         PENJIN_ERRORS setTransparentColour(CRuint i, const Vector2di& pixel);
         PENJIN_ERRORS setTransparentColour(const Vector2di& pixel)
         {
-            PENJIN_ERRORS error;
+            PENJIN_ERRORS error = PENJIN_ERROR;
             uint i;
             #ifdef PENJIN_SDL
             for (i=0;i<images.size();i++)
@@ -125,7 +125,7 @@ class Image
         PENJIN_ERRORS setTransparentColour(CRuint i, const Colour& c);
         PENJIN_ERRORS setTransparentColour(const Colour& c)
         {
-            PENJIN_ERRORS error;
+            PENJIN_ERRORS error = PENJIN_ERROR;
             uint i;
             #ifdef PENJIN_SDL
             for (i=0;i<images.size();i++)
