@@ -57,7 +57,9 @@ PENJIN_ERRORS Sound::loadSound(CRstring soundName)
 
 bool Sound::isPaused()const
 {
-	if(Mix_Paused(channel))
+    if(channel == -1)
+        return false;
+	else if(Mix_Paused(channel))
 		return true;
 	return false;
 }

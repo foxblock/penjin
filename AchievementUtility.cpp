@@ -104,13 +104,3 @@ bool AchievementUtility::isEventSpecial(CRstring name, const vector<SpecialPrope
 
     return found;
 }
-
-string AchievementUtility::getSecretName()
-{
-     return "???";
-}
-
-string AchievementUtility::getSecretDescription()
-{
-     return "It's a secret.";
-}
