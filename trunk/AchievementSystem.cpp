@@ -21,7 +21,7 @@ AchievementSystem::AchievementSystem()
     colours[coFontColour] = DEFAULT_FONT_COLOUR;
     colours[coHeadlineColour] = DEFAULT_HEADLINE_COLOUR;
     colours[coBackgroundColour] = DEFAULT_BACKGROUND_COLOUR;
-    colours[coProgressColour] = DEFAULT_BACKGROUND_COLOUR;
+    colours[coProgressColour] = DEFAULT_PROGRESS_COLOUR;
 
     secretText[0] = DEFAULT_SECRET_HEADLINE;
     secretText[1] = DEFAULT_SECRET_DESCRIPTION;
