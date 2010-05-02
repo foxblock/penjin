@@ -1,5 +1,9 @@
 #include "Achievement.h"
 
+#include "AchievementSystem.h"
+
+#define PARENT_SYSTEM ((AchievementSystem*)parent)
+
 ///------------------------------
 /// Constructor / Destructor
 ///------------------------------
@@ -19,8 +23,6 @@ Achievement::Achievement()
 
     showProgress = true;
     text.loadFont("font/modernaBold.ttf");
-    //text.setRenderMode(GlyphClass::BOXED);
-    //text.setBgColour(DARK_GREY);
     text.setRelativity(true);
 }
 
@@ -129,13 +131,11 @@ void Achievement::render(SDL_Surface* screen)
     // background box
     if (unlocked)
     {
-        bgBox.setColour(Colour(160,160,160));
-        //text.setBgColour(Colour(160,160,160));
+        bgBox.setColour(PARENT_SYSTEM->getProgressColour());
     }
     else
     {
-        bgBox.setColour(DARK_GREY);
-        //text.setBgColour(DARK_GREY);
+        bgBox.setColour(PARENT_SYSTEM->getBackgroundColour());
     }
     bgBox.setDimensions(size.x,size.y);
     bgBox.render(screen);
@@ -149,13 +149,13 @@ void Achievement::render(SDL_Surface* screen)
     text.setPosition(position.x+size.y,position.y+BORDER);
     text.setAlignment(TextClass::LEFT_JUSTIFIED);
     text.setFontSize(18);
-    text.setColour(40,40,100);
+    text.setColour(PARENT_SYSTEM->getHeadlineColour());
     if (secret && not unlocked)
     {
-        text.print(screen,getSecretName()+"\n");
+        text.print(screen,PARENT_SYSTEM->getSecretHeadline()+"\n");
         text.setFontSize(12);
-        text.setColour(WHITE);
-        text.print(screen, getSecretDescription());
+        text.setColour(PARENT_SYSTEM->getFontColour());
+        text.print(screen, PARENT_SYSTEM->getSecretDescription());
     }
     else
     {
@@ -164,7 +164,7 @@ void Achievement::render(SDL_Surface* screen)
         temp = StringUtility::substrReplace(temp,"%c",StringUtility::intToString(count));
         temp = StringUtility::substrReplace(temp,"%l",StringUtility::intToString(limit));
         text.setFontSize(12);
-        text.setColour(WHITE);
+        text.setColour(PARENT_SYSTEM->getFontColour());
         text.print(screen,temp+"\n");
     }
 
@@ -180,7 +180,52 @@ void Achievement::render(SDL_Surface* screen)
 
 void Achievement::render()
 {
+    // background box
+    if (unlocked)
+    {
+        bgBox.setColour(PARENT_SYSTEM->getProgressColour());
+    }
+    else
+    {
+        bgBox.setColour(PARENT_SYSTEM->getBackgroundColour());
+    }
+    bgBox.setDimensions(size.x,size.y);
+    bgBox.render();
 
+    // progress background and text
+    if (not secret || unlocked)
+        renderProgress(;
+
+    // text
+    text.setBoundaries(Vector2di(position.x+size.y,position.y+BORDER),Vector2di(position.x+size.x-5,position.y+size.y-BORDER));
+    text.setPosition(position.x+size.y,position.y+BORDER);
+    text.setAlignment(TextClass::LEFT_JUSTIFIED);
+    text.setFontSize(18);
+    text.setColour(PARENT_SYSTEM->getHeadlineColour());
+    if (secret && not unlocked)
+    {
+        text.print(PARENT_SYSTEM->getSecretHeadline()+"\n");
+        text.setFontSize(12);
+        text.setColour(PARENT_SYSTEM->getFontColour());
+        text.print( PARENT_SYSTEM->getSecretDescription());
+    }
+    else
+    {
+        text.print(name+"\n");
+        string temp = descr;
+        temp = StringUtility::substrReplace(temp,"%c",StringUtility::intToString(count));
+        temp = StringUtility::substrReplace(temp,"%l",StringUtility::intToString(limit));
+        text.setFontSize(12);
+        text.setColour(PARENT_SYSTEM->getFontColour());
+        text.print(temp+"\n");
+    }
+
+    // icon
+    if (unlocked)
+        icon.setCurrentFrame(1);
+    else
+        icon.setCurrentFrame(0);
+    icon.render();
 }
 #endif
 
@@ -230,7 +275,7 @@ void Achievement::renderProgress(SDL_Surface* screen)
         if (not unlocked)
         {
             bgBox.setDimensions(round(size.x*float(count)/limit),size.y);
-            bgBox.setColour(Colour(160,160,160));
+            bgBox.setColour(PARENT_SYSTEM->getProgressColour());
             bgBox.render(screen);
 
         }
@@ -247,6 +292,21 @@ void Achievement::renderProgress(SDL_Surface* screen)
 
 void Achievement::renderProgress()
 {
+    if (showProgress)
+    {
+        if (not unlocked)
+        {
+            bgBox.setDimensions(round(size.x*float(count)/limit),size.y);
+            bgBox.setColour(PARENT_SYSTEM->getProgressColour());
+            bgBox.render();
 
+        }
+        text.setBoundaries(Vector2di(position.x+size.y,position.y+round(0.7*size.y)),Vector2di(position.x+size.x-BORDER,position.y+size.y));
+        text.setPosition(position.x+size.y,position.y+round(0.7*size.y));
+        text.setAlignment(TextClass::RIGHT_JUSTIFIED);
+        text.setFontSize(18);
+        string temp = StringUtility::intToString(min(count,limit))+"/"+StringUtility::intToString(limit);
+        text.print(temp);
+    }
 }
 #endif

@@ -23,6 +23,7 @@
 #include "Rectangle.h"
 #include "AnimatedSprite.h"
 #include "Text.h"
+#include "Colour.h"
 
 #include "AchievementUtility.h"
 
@@ -83,6 +84,9 @@ class Achievement
         virtual void setSize(const Vector2di& newSize) {size = newSize;};
         virtual void setShowProgress(CRbool newShow) {showProgress = newShow;};
 
+        virtual void setParent(void* newParent) {parent = newParent;};
+        virtual void* getParent() {return parent;};
+
         // display and layout
         #ifdef PENJIN_SDL
         virtual void render(SDL_Surface* screen);
@@ -92,6 +96,8 @@ class Achievement
 
         // compare log with achievement events
         virtual bool check(const vector<Event>& checkEvents);
+
+        void* parent;
 
     protected:
         // increase or decrease achievement count
