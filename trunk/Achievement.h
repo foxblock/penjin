@@ -97,8 +97,6 @@ class Achievement
         // compare log with achievement events
         virtual bool check(const vector<Event>& checkEvents);
 
-        void* parent;
-
     protected:
         // increase or decrease achievement count
         virtual void changeCount(const vector<Event>& changeEvents);
@@ -128,6 +126,7 @@ class Achievement
         bool unlocked;
         int type;
         CountDown counter;
+        void* parent;
 };
 
 #endif // ACHIEVEMENT_H

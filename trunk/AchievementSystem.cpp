@@ -104,10 +104,10 @@ int AchievementSystem::unlockedCount() const
     return count;
 }
 
-int AchievementSystem::getListSize() const
+float AchievementSystem::getListSize() const
 {
     SDL_Surface* screen = SDL_GetVideoSurface();
-    return ceil((screen->h - offset.y) / (achievementSize.y+spacing));
+    return (float)(screen->h - offset.y + spacing) / (float)(achievementSize.y + spacing);
 }
 
 #ifdef PENJIN_SDL
@@ -168,7 +168,7 @@ void AchievementSystem::renderList(SDL_Surface* screen, float numOffset)
 
     vector<Achievement*>::iterator I;
     float count = floor(numOffset) - numOffset;
-    for (I = achievements.begin()+floor(numOffset); I < min(achievements.begin()+ceil(numOffset)+getListSize(),achievements.end()); ++I)
+    for (I = achievements.begin()+floor(numOffset); I < min(achievements.begin()+ceil(numOffset+getListSize()),achievements.end()); ++I)
     {
         (**I).setPosition(offset.x,round(offset.y+((achievementSize.y+spacing)*count)));
         (**I).render(screen);
@@ -234,7 +234,7 @@ void AchievementSystem::renderList(float numOffset)
 
     vector<Achievement*>::iterator I;
     float count = floor(numOffset) - numOffset;
-    for (I = achievements.begin()+floor(numOffset); I < min(achievements.begin()+ceil(numOffset)+getListSize(),achievements.end()); ++I)
+    for (I = achievements.begin()+floor(numOffset); I < min(achievements.begin()+ceil(numOffset+getListSize()),achievements.end()); ++I)
     {
         (**I).setPosition(offset.x,round(offset.y+((achievementSize.y+spacing)*count)));
         (**I).render();
