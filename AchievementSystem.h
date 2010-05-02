@@ -105,7 +105,7 @@ class AchievementSystem
         // general functions
         int achievementCount() const {return achievements.size();};
         int unlockedCount() const;
-        int getListSize() const;
+        float getListSize() const;
         #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);
         void renderList(SDL_Surface* screen, float numOffset);
