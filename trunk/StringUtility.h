@@ -13,12 +13,20 @@ namespace StringUtility
 {
         ///	OS Format conversion
         //	Note that these only work if the TO target is the same as the host OS as the app is run on!
+        string stripLineEndings(string line);
+
+        string xToLin(string line);
+        string xToWin(string line);
+        string xToMac(string line);
+        string xTox(string line);
+        //  depracated
         string linToWin(CRstring line);
         string winToLin(CRstring line);
         string macToWin(CRstring line);
         string winToMac(CRstring line);
         string macToLin(CRstring line);
         string linToMac(CRstring line);
+        //  end deprecated
 
         ///	Various to string conversions
         string FixedToString(CRFixed value);

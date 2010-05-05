@@ -1,42 +1,71 @@
 #include "StringUtility.h"
 
-string StringUtility::linToWin(CRstring line)
+string StringUtility::stripLineEndings(string line)
 {
-    string out = line;
-	uint iMax = (uint)line.size();
-	for (uint i = 0; i < iMax; ++i)
-	{
-		//	check if the current char is a Linux NL
-		if (out[i] == 0x0A)
-		{
-			//	Remove the NL
-			out.erase(out.begin()+i);
+    //  strip LF
+    line = substrReplace(line,"\r","");
+    //  strip CR and return
+    return substrReplace(line,"\n","");
+}
 
-			//	Add the windows CR
-			out.push_back(0x0D);
-		}
-	}
-	return out;
+string StringUtility::xTox(string line)
+{
+    line = stripLineEndings(line);
+    return (line + "\n");
+}
+
+string StringUtility::xToWin(string line)
+{
+    line = stripLineEndings(line);
+    line.push_back(0x0D);    //  CR
+    line.push_back(0x0A);    //  LF
+	return line;
+}
+
+string StringUtility::xToLin(string line)
+{
+    line = stripLineEndings(line);
+    //	Add linux LF
+    line.push_back(0x0A);
+	return line;
+}
+
+string StringUtility::xToMac(string line)
+{
+    line = stripLineEndings(line);
+    //	Add Mac CF
+    line.push_back(0x0D);
+	return line;
+}
+
+string StringUtility::linToMac(CRstring line)
+{
+    return xToMac(line);
+}
+
+string StringUtility::macToLin(CRstring line)
+{
+    return xToLin(line);
 }
 
 string StringUtility::winToLin(CRstring line)
 {
-    string out = line;
-	//	run through the text line
-	uint iMax = (uint)line.size();
-	for(uint i = 0; i < iMax; ++i)
-	{
-		//	check if the current char is a win CR
-		if(out[i] == 0x0D)
-		{
-			//	Remove win CR
-			out.erase(out.begin()+i);
+    return xToLin(line);
+}
 
-			//	Add linux NL
-			out.push_back(0x0A);
-		}
-	}
-	return out;
+string StringUtility::linToWin(CRstring line)
+{
+    return xToWin(line);
+}
+
+string StringUtility::winToMac(CRstring line)
+{
+    return xToMac(line);
+}
+
+string StringUtility::macToWin(CRstring line)
+{
+    return xToWin(line);
 }
 
 string StringUtility::doubleToString(CRdouble value)
