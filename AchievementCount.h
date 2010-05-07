@@ -10,19 +10,17 @@
 
 #include "Achievement.h"
 using namespace std;
-using namespace AchievementUtility;
 
 class AchievementCount : public Achievement
 {
     public:
         AchievementCount();
-        virtual ~AchievementCount();
 
-        void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0);
+        void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event>& changeEvents);
+        void changeCount(const vector<Event*>& changeEvents);
 };
 
 #endif // ACHIEVEMENTCOUNT_H

@@ -11,17 +11,15 @@
 
 #include "Achievement.h"
 using namespace std;
-using namespace AchievementUtility;
 
 class AchievementBoolean : public Achievement
 {
     public:
         AchievementBoolean();
-        virtual ~AchievementBoolean();
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event>& changeEvents);
+        void changeCount(const vector<Event*>& changeEvents);
 };
 
 #endif // ACHIEVEMENTBOOLEAN_H

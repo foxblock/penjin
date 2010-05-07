@@ -10,11 +10,6 @@ AchievementBoolean::AchievementBoolean() : Achievement()
     showProgress = false;
 }
 
-AchievementBoolean::~AchievementBoolean()
-{
-
-}
-
 ///------------------------------
 /// Public
 ///------------------------------
@@ -24,7 +19,7 @@ AchievementBoolean::~AchievementBoolean()
 /// Private
 ///------------------------------
 
-void AchievementBoolean::changeCount(const vector<Event>& changeEvents)
+void AchievementBoolean::changeCount(const vector<Event*>& changeEvents)
 {
     // reset counter
     if (counter.getLimit() > 0)

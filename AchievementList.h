@@ -12,15 +12,13 @@
 
 #include "Achievement.h"
 using namespace std;
-using namespace AchievementUtility;
 
 class AchievementList : public Achievement
 {
     public:
         AchievementList();
-        virtual ~AchievementList();
 
-        void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action);
+        void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count, CRint comparison, CRint action);
 
         virtual int getTimeLimit() const {return -1;};
         virtual void setTimeLimit(CRint value);
@@ -33,7 +31,7 @@ class AchievementList : public Achievement
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event>& changeEvents);
+        void changeCount(const vector<Event*>& changeEvents);
 
         void resetDone();
 

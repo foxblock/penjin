@@ -27,17 +27,17 @@
 #include "AchievementTime.h"
 #include "AchievementReset.h"
 #include "AchievementList.h"
+#include "Event.h"
+
 #include "Text.h"
 #include "Timer.h"
 #include "Vector2di.h"
-
 #include "TextDoc.h"
 #include "Encryption.h"
 #include "PenjinErrors.h"
 
 using namespace PenjinErrors;
 using namespace std;
-using namespace AchievementUtility;
 
 enum PopupPos // Top positions currently not sliding in correctly
 {
@@ -69,10 +69,10 @@ class AchievementSystem
         void addAchievement(Achievement* a){achievements.push_back(a); a->setParent(this);};
 
         // different wrapper functions for logging an event using different levels of information
-        void logEvent(CRint id, CRint count=1) {logEventSpecial(StringUtility::intToString(id),emptySpecial(),count);}
-        void logEvent(CRstring name, CRint count=1) {logEventSpecial(name,emptySpecial(),count);}
-        void logEventSpecial(CRint id, const vector<SpecialProperty>& special, CRint count=1) {logEventSpecial(StringUtility::intToString(id),special,count);}
-        void logEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1);
+        void logEvent(CRint id, CRint count=1) {logEventSpecial(StringUtility::intToString(id),NULL,count);}
+        void logEvent(CRstring name, CRint count=1) {logEventSpecial(name,NULL,count);}
+        void logEventSpecial(CRint id, vector<SpecialProperty>* special, CRint count=1) {logEventSpecial(StringUtility::intToString(id),special,count);}
+        void logEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1);
 
         // display and layout functions
         void setOffset(CRint newX, CRint newY) {setOffset(Vector2di(newX,newY));};
@@ -119,7 +119,7 @@ class AchievementSystem
         PENJIN_ERRORS save(CRstring file);
 
     private:
-        vector<Event> log;
+        vector<Event*> log;
         vector<Achievement*> achievements;
         vector<Popup> popups;
         Encryption crypt;

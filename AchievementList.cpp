@@ -12,22 +12,17 @@ AchievementList::AchievementList() : Achievement()
     eCount = 0;
 }
 
-AchievementList::~AchievementList()
-{
-
-}
-
 
 ///------------------------------
 /// Public
 ///------------------------------
 // the actual addEvent function, which all wrapper functions use
-void AchievementList::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
+void AchievementList::addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEventSpecial(name,special,events))
+    Event* ev = new Event(name,special,count,comparison,action);
+	if (not ev->isEvent(events))
 	{
-	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);
 		if (action == acRESET || action == acDECREASE)
             doneEvents.push_back(true);
@@ -37,10 +32,14 @@ void AchievementList::addEventSpecial(CRstring name, const vector<SpecialPropert
             ++eCount;
         }
 	}
-    #ifdef _DEBUG
     else
+    {
+        delete ev;
+    #ifdef _DEBUG
         cout << "[Achievements] Error: Duplicate event " << name << " on achievement " << this->name << " - ignored!" << endl;
     #endif
+    }
+
 }
 
 void AchievementList::setTimeLimit(CRint value)
@@ -112,18 +111,18 @@ void AchievementList::renderProgress()
 /// Private
 ///------------------------------
 
-void AchievementList::changeCount(const vector<Event>& changeEvents)
+void AchievementList::changeCount(const vector<Event*>& changeEvents)
 {
-    vector<Event>::const_iterator I;
+    vector<Event*>::const_iterator I;
     for (I = changeEvents.begin(); I < changeEvents.end(); ++I)
     {
-        vector<Event>::const_iterator K;
+        vector<Event*>::const_iterator K;
         vector<bool>::iterator L = doneEvents.begin();
         for (K = events.begin(); K < events.end(); ++K)
         {
-            if (K->name == I->name && checkSpecial(K->special,I->special))
+            if ((*K)->name == (*I)->name && (*K)->checkSpecial((*I)->special))
             {
-                if (I->action == acRESET || I->action == acDECREASE)
+                if ((*I)->action == acRESET || (*I)->action == acDECREASE)
                 {
                     resetDone();
                     return;
@@ -147,11 +146,11 @@ void AchievementList::changeCount(const vector<Event>& changeEvents)
 
 void AchievementList::resetDone()
 {
-    vector<Event>::const_iterator I;
+    vector<Event*>::const_iterator I;
     vector<bool>::iterator K = doneEvents.begin();
     for (I = events.begin(); I < events.end(); ++I)
     {
-        if (I->action != acRESET && I->action != acDECREASE)
+        if ((*I)->action != acRESET && (*I)->action != acDECREASE)
             *K = false;
         ++K;
     }

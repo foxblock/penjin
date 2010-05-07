@@ -30,10 +30,12 @@ AchievementSystem::AchievementSystem()
 AchievementSystem::~AchievementSystem()
 {
     vector<Achievement*>::iterator I;
-    for (I = achievements.begin(); I < achievements.end(); I++)
-    {
+    for (I = achievements.begin(); I < achievements.end(); ++I)
         delete (*I);
-    }
+
+    vector<Event*>::iterator K;
+    for (K = log.begin(); K < log.end(); ++K)
+        delete (*K);
 }
 
 AchievementSystem* AchievementSystem::GetSingleton()
@@ -47,25 +49,25 @@ AchievementSystem* AchievementSystem::GetSingleton()
 /// Public
 ///------------------------------
 
-void AchievementSystem::logEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count)
+void AchievementSystem::logEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count)
 {
     bool found = false;
-    vector<Event>::iterator I;
+    vector<Event*>::iterator I;
 
     // goes through the vector of already logged events and increases count if found
-    for (I = log.begin(); I < log.end() && not found; I++)
+    for (I = log.begin(); I < log.end() && not found; ++I)
     {
-        if (I->name == name && checkSpecial(I->special,special))
+        if ((*I)->name == name && (*I)->checkSpecial(special))
         {
             found = true;
-            I->count += count;
+            (*I)->count += count;
         }
     }
 
     // if not found, logged event is added to vector
     if (not found)
     {
-        Event ev = {name,special,count,0,0};
+        Event* ev = new Event(name,special,count,0,0);
         log.push_back(ev);
     }
 }
@@ -261,6 +263,10 @@ void AchievementSystem::update()
         }
     }
 
+    // clear the log
+    vector<Event*>::iterator L;
+    for (L = log.begin(); L < log.end(); ++L)
+        delete *(L);
 	log.clear();
 
 	// removes old popups
