@@ -23,6 +23,9 @@ class AchievementList : public Achievement
         virtual int getTimeLimit() const {return -1;};
         virtual void setTimeLimit(CRint value);
 
+        virtual void load(CRstring);
+        virtual string save() const;
+
         #ifdef PENJIN_SDL
         void renderProgress(SDL_Surface* screen);
         #else

@@ -57,7 +57,6 @@ class Achievement
         virtual int getLimit() const {return limit;};
         virtual void setLimit(CRint value) {limit = value; if (limit > 1) showProgress = true;};
         virtual int getCount() const {return count;};
-        virtual void setCount(CRint value);
         virtual int getTimeLimit() const {return counter.getLimit();};
         virtual void setTimeLimit(CRint value) {counter.setLimit(value);};
         virtual int eventCount() const {return events.size();};
@@ -86,6 +85,9 @@ class Achievement
         virtual void setParent(void* newParent) {parent = newParent;};
         virtual void* getParent() {return parent;};
 
+        virtual void load(CRstring value);
+        virtual string save() const;
+
         // display and layout
         #ifdef PENJIN_SDL
         virtual void render(SDL_Surface* screen);
@@ -99,6 +101,7 @@ class Achievement
     protected:
         // increase or decrease achievement count
         virtual void changeCount(const vector<Event*>& changeEvents);
+        virtual void setCount(CRint value);
         #ifdef PENJIN_SDL
         virtual void renderProgress(SDL_Surface* screen);
         #else

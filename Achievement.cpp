@@ -53,8 +53,7 @@ bool Achievement::check(const vector<Event*>& checkEvents)
             if ((*K)->check((*I)))
             {
                 // add necessary information to a temporary vector which will be passed to the changeCount function
-                Event* ev = new Event((*K)->name,NULL,(*I)->count,0,(*K)->action);
-                countEvents.push_back(ev);
+                countEvents.push_back((*I));
             }
         }
     }
@@ -62,11 +61,6 @@ bool Achievement::check(const vector<Event*>& checkEvents)
     // checks for count change
     if (countEvents.size() > 0)
         changeCount(countEvents);
-
-    // clear temporary vector
-    vector<Event*>::iterator L;
-    for (L = countEvents.begin(); L < countEvents.end(); ++L)
-        delete (*L);
 
     // returns true if achievemnt has been unlocked
     if (count >= limit && not unlocked)
@@ -132,6 +126,16 @@ void Achievement::setPosition(const Vector2di &newPos)
     position = newPos;
     bgBox.setPosition(newPos.x,newPos.y);
     icon.setPosition(newPos.x+5,newPos.y+5);
+}
+
+void Achievement::load(CRstring value)
+{
+    setCount(StringUtility::stringToInt(value));
+}
+
+string Achievement::save() const
+{
+    return StringUtility::intToString(count);
 }
 
 

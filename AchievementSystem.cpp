@@ -304,7 +304,7 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
             {
                 //  the next line is the count
                 ++i;
-                (*I)->setCount(StringUtility::stringToInt(crypt.decryptBuffer(doc.getLine(i))));
+                (*I)->load(crypt.decryptBuffer(doc.getLine(i)));
                 //  move to the next line
                 ++i;
                 //  break out since we are finished with this achievement
@@ -327,7 +327,7 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::save(CRstring file)
         //  save the name
         doc.append(crypt.encryptBuffer((*I)->getName()));
         //  save the count
-        doc.append( crypt.encryptBuffer(StringUtility::intToString((*I)->getCount())));
+        doc.append( crypt.encryptBuffer( (*I)->save() ));
     }
 	doc.save(file);
 	return PENJIN_OK;
