@@ -215,6 +215,24 @@ short StringUtility::stringToShort(CRstring value)
 	return out;
 }
 
+bool StringUtility::stringToBool(CRstring value, CRbool useBoolString)
+{
+    if (useBoolString)
+    {
+        if (value == "true")
+            return true;
+        else
+            return false;
+    }
+    else
+    {
+        if (value == "1")
+            return true;
+        else
+            return false;
+    }
+}
+
 double StringUtility::cStringToDouble(char* value){return stringToDouble((string)value);}
 float StringUtility::cStringToFloat(char* value){return stringToFloat((string)value);}
 Fixed StringUtility::cStringToFixed(char* value){return stringToFixed((string)value);}

@@ -1,5 +1,9 @@
 #include "AchievementList.h"
 
+#include "AchievementSystem.h"
+
+#define PARENT_SYSTEM ((AchievementSystem*)parent)
+
 ///------------------------------
 /// Constructor / Destructor
 ///------------------------------
@@ -49,6 +53,38 @@ void AchievementList::setTimeLimit(CRint value)
     #endif
 }
 
+void AchievementList::load(CRstring value)
+{
+    if (showProgress)
+    {
+        cout << "loading: " << value << endl;
+        for (uint I = 0; I < doneEvents.size(); ++I)
+        {
+            bool temp = StringUtility::stringToBool(value.substr(I,1),false);
+            doneEvents.at(I) = temp;
+            if (temp)
+                ++doneCount;
+        }
+    }
+    else
+        setCount(StringUtility::stringToInt(value));
+}
+
+string AchievementList::save() const
+{
+    if (showProgress)
+    {
+        string result = "";
+        vector<bool>::const_iterator I;
+        for (I = doneEvents.begin(); I < doneEvents.end(); ++I)
+            result += StringUtility::boolToString((*I),false);
+
+        return result;
+    }
+    else
+        return StringUtility::intToString(count);
+}
+
 #ifdef PENJIN_SDL
 void AchievementList::renderProgress(SDL_Surface* screen)
 {
@@ -65,7 +101,7 @@ void AchievementList::renderProgress(SDL_Surface* screen)
         if (not unlocked)
         {
             bgBox.setDimensions(round(size.x*float(useCount)/useLimit),size.y);
-            bgBox.setColour(Colour(160,160,160));
+            bgBox.setColour(PARENT_SYSTEM->getProgressColour());
             bgBox.render(screen);
 
         }
@@ -129,8 +165,11 @@ void AchievementList::changeCount(const vector<Event*>& changeEvents)
                 }
                 else
                 {
-                    *L = true;
-                    ++doneCount;
+                    if ((*L) != true)
+                    {
+                        *L = true;
+                        ++doneCount;
+                    }
                 }
             }
             ++L;
@@ -140,7 +179,8 @@ void AchievementList::changeCount(const vector<Event*>& changeEvents)
     if (doneCount >= eCount)
     {
         ++count;
-        resetDone();
+        if (limit > 1)
+            resetDone();
     }
 }
 
