@@ -25,10 +25,9 @@
 #include "Text.h"
 #include "Colour.h"
 
-#include "AchievementUtility.h"
+#include "Event.h"
 
 using namespace std;
-using namespace AchievementUtility;
 
 enum AchievementType
 {
@@ -48,11 +47,11 @@ class Achievement
         virtual ~Achievement();
 
         // different wrapper functions for adding events
-        virtual void addEvent(Event newE){events.push_back(newE);}
-        virtual void addEvent(CRint id, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(StringUtility::intToString(id),emptySpecial(),count,comparison,action);}
-        virtual void addEvent(CRstring name, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(name,emptySpecial(),count,comparison,action);}
-        virtual void addEventSpecial(CRint id, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(StringUtility::intToString(id),special,count,comparison,action);}
-        virtual void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0);
+        virtual void addEvent(Event* newE){events.push_back(newE);}
+        virtual void addEvent(CRint id, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(StringUtility::intToString(id),NULL,count,comparison,action);}
+        virtual void addEvent(CRstring name, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(name,NULL,count,comparison,action);}
+        virtual void addEventSpecial(CRint id, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0){addEventSpecial(StringUtility::intToString(id),special,count,comparison,action);}
+        virtual void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
 
         // getters and setters
         virtual int getLimit() const {return limit;};
@@ -95,11 +94,11 @@ class Achievement
         #endif
 
         // compare log with achievement events
-        virtual bool check(const vector<Event>& checkEvents);
+        virtual bool check(const vector<Event*>& checkEvents);
 
     protected:
         // increase or decrease achievement count
-        virtual void changeCount(const vector<Event>& changeEvents);
+        virtual void changeCount(const vector<Event*>& changeEvents);
         #ifdef PENJIN_SDL
         virtual void renderProgress(SDL_Surface* screen);
         #else
@@ -119,7 +118,7 @@ class Achievement
         bool showProgress;
 
         // data
-        vector<Event> events;
+        vector<Event*> events;
         int count;
         int limit;
         vector<int> milestones;

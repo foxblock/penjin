@@ -28,7 +28,9 @@ Achievement::Achievement()
 
 Achievement::~Achievement()
 {
-
+    vector<Event*>::iterator I;
+    for (I = events.begin(); I < events.end(); ++I)
+        delete (*I);
 }
 
 
@@ -36,22 +38,22 @@ Achievement::~Achievement()
 /// Public
 ///------------------------------
 
-bool Achievement::check(const vector<Event>& checkEvents)
+bool Achievement::check(const vector<Event*>& checkEvents)
 {
-    vector<Event> countEvents;
-    vector<Event>::const_iterator I;
+    vector<Event*> countEvents;
+    vector<Event*>::const_iterator I;
 
     // go through the logged events and compare with achievements events
-    for (I = checkEvents.begin(); I < checkEvents.end(); I++)
+    for (I = checkEvents.begin(); I < checkEvents.end(); ++I)
     {
-        vector<Event>::const_iterator K;
-        for (K = events.begin(); K < events.end(); K++)
+        vector<Event*>::const_iterator K;
+        for (K = events.begin(); K < events.end(); ++K)
         {
             // comparison:
-            if (I->name == K->name && compare(K->count,I->count,K->comparison) && checkSpecial(K->special,I->special))
+            if ((*K)->check((*I)))
             {
                 // add necessary information to a temporary vector which will be passed to the changeCount function
-                Event ev = {K->name,I->special,I->count,0,K->action};
+                Event* ev = new Event((*K)->name,NULL,(*I)->count,0,(*K)->action);
                 countEvents.push_back(ev);
             }
         }
@@ -60,6 +62,11 @@ bool Achievement::check(const vector<Event>& checkEvents)
     // checks for count change
     if (countEvents.size() > 0)
         changeCount(countEvents);
+
+    // clear temporary vector
+    vector<Event*>::iterator L;
+    for (L = countEvents.begin(); L < countEvents.end(); ++L)
+        delete (*L);
 
     // returns true if achievemnt has been unlocked
     if (count >= limit && not unlocked)
@@ -84,18 +91,21 @@ bool Achievement::check(const vector<Event>& checkEvents)
 }
 
 // the actual addEvent function, which all wrapper functions use
-void Achievement::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
+void Achievement::addEventSpecial(CRstring name,vector<SpecialProperty>* special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEventSpecial(name,special,events))
+    Event* ev = new Event(name,special,count,comparison,action);
+	if (not ev->isEvent(events))
 	{
-	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);
 	}
-    #ifdef _DEBUG
     else
+    {
+        delete ev;
+    #ifdef _DEBUG
         cout << "[Achievements] Error: Duplicate event " << name << " on achievement " << this->name << " - ignored!" << endl;
     #endif
+    }
 }
 
 void Achievement::setCount(CRint value)
@@ -234,7 +244,7 @@ void Achievement::render()
 /// Private
 ///------------------------------
 
-void Achievement::changeCount(const vector<Event>& changeEvents)
+void Achievement::changeCount(const vector<Event*>& changeEvents)
 {
     // reset counter
     if (counter.getLimit() > 0)
@@ -248,22 +258,22 @@ void Achievement::changeCount(const vector<Event>& changeEvents)
         }
     }
 
-    vector<Event>::const_iterator I;
+    vector<Event*>::const_iterator I;
 
     // go through events and change count accordingly
-    for (I = changeEvents.begin(); I < changeEvents.end(); I++)
+    for (I = changeEvents.begin(); I < changeEvents.end(); ++I)
     {
-        if (I->action == acRESET)
+        if ((*I)->action == acRESET)
         {
             count = 0;
             break;
         }
-        else if (I->action == acDECREASE)
+        else if ((*I)->action == acDECREASE)
             count--;
-        else if (I->action == acINCREASE)
+        else if ((*I)->action == acINCREASE)
             count++;
-        else if (I->action == acINCREASE_COUNT)
-            count += I->count;
+        else if ((*I)->action == acINCREASE_COUNT)
+            count += (*I)->count;
     }
 }
 

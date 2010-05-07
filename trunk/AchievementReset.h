@@ -11,15 +11,13 @@
 
 #include "Achievement.h"
 using namespace std;
-using namespace AchievementUtility;
 
 class AchievementReset : public Achievement
 {
     public:
         AchievementReset();
-        virtual ~AchievementReset();
 
-        void addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count=1, CRint comparison=0, CRint action=0);
+        void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
 
     protected:
 };

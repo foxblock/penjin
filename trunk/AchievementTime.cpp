@@ -10,48 +10,46 @@ AchievementTime::AchievementTime() : Achievement()
     showProgress = false;
 }
 
-AchievementTime::~AchievementTime()
-{
-
-}
-
 ///------------------------------
 /// Public
 ///------------------------------
 
 // the actual addEvent function, which all wrapper functions use
-void AchievementTime::addEventSpecial(CRstring name, const vector<SpecialProperty>& special, CRint count, CRint comparison, CRint action)
+void AchievementTime::addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count, CRint comparison, CRint action)
 {
     // check whether event was already added to prevent duplicates
-	if (not isEventSpecial(name,special,events))
+    Event* ev = new Event(name,special,count,comparison,action);
+	if (not ev->isEvent(events))
 	{
-	    Event ev = {name,special,count,comparison,action};
 		events.push_back(ev);
 		doneEvents.push_back(false);
 	}
-    #ifdef _DEBUG
     else
+    {
+        delete ev;
+    #ifdef _DEBUG
         cout << "[Achievements] Error: Duplicate event " << name << " on achievement " << this->name << " - ignored!" << endl;
     #endif
+    }
 }
 
 ///------------------------------
 /// Private
 ///------------------------------
 
-void AchievementTime::changeCount(const vector<Event>& changeEvents)
+void AchievementTime::changeCount(const vector<Event*>& changeEvents)
 {
     if (not counter.isStarted())
         counter.start();
 
-    vector<Event>::const_iterator I;
+    vector<Event*>::const_iterator I;
     for (I = changeEvents.begin(); I < changeEvents.end(); ++I)
     {
-        vector<Event>::const_iterator K;
+        vector<Event*>::const_iterator K;
         vector<bool>::iterator L = doneEvents.begin();
         for (K = events.begin(); K < events.end(); ++K)
         {
-            if (K->name == I->name)
+            if ((*K)->name == (*I)->name)
                 *L = true;
             ++L;
         }
