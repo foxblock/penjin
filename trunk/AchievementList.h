@@ -27,14 +27,14 @@ class AchievementList : public Achievement
         virtual string save() const;
 
         #ifdef PENJIN_SDL
-        void renderProgress(SDL_Surface* screen);
+        virtual void renderProgress(SDL_Surface* screen);
         #else
-        void renderProgress();
+        virtual void renderProgress();
         #endif
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event*>& changeEvents);
+        virtual void changeCount(const vector<Event*>& changeEvents);
 
         void resetDone();
 
