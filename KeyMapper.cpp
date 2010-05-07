@@ -151,9 +151,9 @@ EvilDragon: Top Button = Page Up, Lower Button = Page Down, Left Button = Prior,
 EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
 */
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("B","HOME",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("A","HOME",0);
     keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("A","END",0);
+    keys[keys.size()-1] = new KeyMapSDLKey("B","END",0);
     keys.push_back(NULL);
     keys[keys.size()-1] = new KeyMapSDLKey("X","PAGEDOWN",0);
     keys.push_back(NULL);

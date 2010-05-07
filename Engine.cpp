@@ -50,6 +50,9 @@ Engine::~Engine()
     #elif   PLATFORM_WII
         Penjin::deInitFileSystem(); // shutdown FAT
 	#endif
+	#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+        SDL_Quit();
+	#endif
 }
 
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
