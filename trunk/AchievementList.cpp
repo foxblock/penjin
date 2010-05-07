@@ -129,7 +129,7 @@ void AchievementList::renderProgress()
         if (not unlocked)
         {
             bgBox.setDimensions(round(size.x*float(useCount)/useLimit),size.y);
-            bgBox.setColour(Colour(160,160,160));
+            bgBox.setColour(PARENT_SYSTEM->getProgressColour());
             bgBox.render();
 
         }
