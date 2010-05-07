@@ -16,11 +16,11 @@ class AchievementCount : public Achievement
     public:
         AchievementCount();
 
-        void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
+        virtual void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event*>& changeEvents);
+        virtual void changeCount(const vector<Event*>& changeEvents);
 };
 
 #endif // ACHIEVEMENTCOUNT_H

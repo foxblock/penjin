@@ -19,7 +19,7 @@ class AchievementBoolean : public Achievement
 
     protected:
         // increase or decrease achievement count
-        void changeCount(const vector<Event*>& changeEvents);
+        virtual void changeCount(const vector<Event*>& changeEvents);
 };
 
 #endif // ACHIEVEMENTBOOLEAN_H

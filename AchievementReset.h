@@ -17,7 +17,7 @@ class AchievementReset : public Achievement
     public:
         AchievementReset();
 
-        void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
+        virtual void addEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1, CRint comparison=0, CRint action=0);
 
     protected:
 };

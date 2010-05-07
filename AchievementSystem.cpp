@@ -248,10 +248,12 @@ void AchievementSystem::renderList(float numOffset)
 void AchievementSystem::update()
 {
     vector<Achievement*>::iterator I;
+    vector<int> unlocked;
 
     // compares all achievements with log and checks for updates
     if (log.size() > 0)
     {
+        int index = 0;
         for (I = achievements.begin(); I < achievements.end(); ++I)
         {
             if (not (**I).getStatus() && (**I).check(log))
@@ -259,7 +261,9 @@ void AchievementSystem::update()
                 save("achieve.ach");
                 Popup temp = {(*I),popupTimer.getScaledTicks()};
                 popups.push_back(temp);
+                unlocked.push_back(index);
             }
+            ++index;
         }
     }
 
@@ -268,6 +272,15 @@ void AchievementSystem::update()
     for (L = log.begin(); L < log.end(); ++L)
         delete *(L);
 	log.clear();
+
+    // if anything was unlocked, log an event for that, too
+    vector<int>::iterator M;
+    for (M = unlocked.begin(); M < unlocked.end(); ++M)
+    {
+        vector<SpecialProperty>* prop = new vector<SpecialProperty>;
+        prop->push_back(SpecialProperty("INDEX",(*M),coEQUAL));
+        logEventSpecial("ACHIEVEMENT_UNLOCK",prop);
+    }
 
 	// removes old popups
 	vector<Popup>::iterator K;
