@@ -57,7 +57,6 @@ void AchievementList::load(CRstring value)
 {
     if (showProgress)
     {
-        cout << "loading: " << value << endl;
         for (uint I = 0; I < doneEvents.size(); ++I)
         {
             bool temp = StringUtility::stringToBool(value.substr(I,1),false);
@@ -65,6 +64,8 @@ void AchievementList::load(CRstring value)
             if (temp)
                 ++doneCount;
         }
+        if (doneCount >= eCount)
+            setCount(count + 1);
     }
     else
         setCount(StringUtility::stringToInt(value));
