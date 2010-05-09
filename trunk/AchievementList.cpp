@@ -159,7 +159,7 @@ void AchievementList::changeCount(const vector<Event*>& changeEvents)
         {
             if ((*K)->name == (*I)->name && (*K)->checkSpecial((*I)->special))
             {
-                if ((*I)->action == acRESET || (*I)->action == acDECREASE)
+                if ((*K)->action == acRESET || (*K)->action == acDECREASE)
                 {
                     resetDone();
                     return;
