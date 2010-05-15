@@ -13,10 +13,13 @@ AchievementSystem::AchievementSystem()
     popupSize = achievementSize;
     spacing = 0;
     popup = Vector2di(0,0);
-    fadeTime = 500;
-    showTime = 2000;
+    fadeTime = DEFAULT_FADE_TIME;
+    showTime = DEFAULT_SHOW_TIME;
     showTop = false;
+    showPopups = true;
     popupTimer.start();
+
+    achievementFile = "achieve.ach";
 
     colours[coFontColour] = DEFAULT_FONT_COLOUR;
     colours[coHeadlineColour] = DEFAULT_HEADLINE_COLOUR;
@@ -118,7 +121,7 @@ void AchievementSystem::render(SDL_Surface* screen)
     // Render achievement popups
     vector<Popup>::iterator I;
     int count = 0;
-    for (I = popups.begin(); I < popups.end(); ++I)
+    for (I = popups.begin(); I < popups.end() && showPopups; ++I)
     {
         int diff = popupTimer.getScaledTicks() - I->time;
 
@@ -184,7 +187,7 @@ void AchievementSystem::render()
     // Render achievement popups
     vector<Popup>::iterator I;
     int count = 0;
-    for (I = popups.begin(); I < popups.end(); ++I)
+    for (I = popups.begin(); I < popups.end() && showPopups; ++I)
     {
         int diff = popupTimer.getScaledTicks() - I->time;
 
@@ -258,7 +261,7 @@ void AchievementSystem::update()
         {
             if (not (**I).getStatus() && (**I).check(log))
             {
-                save("achieve.ach");
+                save();
                 Popup temp = {(*I),popupTimer.getScaledTicks()};
                 popups.push_back(temp);
                 unlocked.push_back(index);
@@ -327,6 +330,7 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::load(CRstring file)
         }
 
     }
+    achievementFile = file;
 	return PENJIN_OK;
 }
 
@@ -343,7 +347,16 @@ PenjinErrors::PENJIN_ERRORS AchievementSystem::save(CRstring file)
         doc.append( crypt.encryptBuffer( (*I)->save() ));
     }
 	doc.save(file);
+    achievementFile = file;
 	return PENJIN_OK;
+}
+
+PenjinErrors::PENJIN_ERRORS AchievementSystem::eraseData()
+{
+    if (remove(achievementFile.c_str()) == 0)
+        return PENJIN_OK;
+    else
+        return PENJIN_FILE_NOT_FOUND;
 }
 
 ///------------------------------

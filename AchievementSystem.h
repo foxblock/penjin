@@ -18,6 +18,9 @@
 #define DEFAULT_BACKGROUND_COLOUR DARK_GREY
 #define DEFAULT_PROGRESS_COLOUR 10526880
 
+#define DEFAULT_FADE_TIME 500
+#define DEFAULT_SHOW_TIME 2000
+
 #define DEFAULT_SECRET_HEADLINE "???"
 #define DEFAULT_SECRET_DESCRIPTION "It's a secret."
 
@@ -30,6 +33,7 @@
 #include "Event.h"
 
 #include "Text.h"
+#include "Colour.h"
 #include "Timer.h"
 #include "Vector2di.h"
 #include "TextDoc.h"
@@ -39,7 +43,7 @@
 using namespace PenjinErrors;
 using namespace std;
 
-enum PopupPos // Top positions currently not sliding in correctly
+enum PopupPos
 {
     ppTOPLEFT,
     ppTOPCENTER,
@@ -68,6 +72,9 @@ class AchievementSystem
         // adds an achievent to the vector, what else...
         void addAchievement(Achievement* a){achievements.push_back(a); a->setParent(this);};
 
+        // returns a reference to a single achievement, which can be used to render a customized list-view (for example)
+        Achievement* getAchievement(CRint index) const {return achievements.at(index);};
+
         // different wrapper functions for logging an event using different levels of information
         void logEvent(CRint id, CRint count=1) {logEventSpecial(StringUtility::intToString(id),NULL,count);}
         void logEvent(CRstring name, CRint count=1) {logEventSpecial(name,NULL,count);}
@@ -75,23 +82,26 @@ class AchievementSystem
         void logEventSpecial(CRstring name, vector<SpecialProperty>* special, CRint count=1);
 
         // display and layout functions
-        void setOffset(CRint newX, CRint newY) {setOffset(Vector2di(newX,newY));};
+        void setOffset(CRint newX, CRint newY) {setOffset(Vector2di(newX,newY));}; // offset for list-view
         void setOffset(const Vector2di& newOffset) {offset = newOffset;};
-        void setSpacing(int newS) {spacing = newS;};
-        Vector2di getAchievementSize() const {return achievementSize;};
+        void setSpacing(int newS) {spacing = newS;}; // spacing between single achievements in list-view
+        Vector2di getAchievementSize() const {return achievementSize;}; // size of a single achievement in list-view
         void setAchievementSize(CRint newW, CRint newH) {setAchievementSize(Vector2di(newW,newH));};
         void setAchievementSize(const Vector2di& newSize) {achievementSize = newSize;};
-        void setPopupSize(CRint newW, CRint newH) {setPopupSize(Vector2di(newW,newH));};
+        void setPopupSize(CRint newW, CRint newH) {setPopupSize(Vector2di(newW,newH));}; // size set size of achievement popups
         void setPopupSize(const Vector2di& newSize) {popupSize = newSize;};
-        void setPopupPosition(PopupPos pos);
+        void setPopupPosition(PopupPos pos); // set position of the popup (screen borders)
         void setPopupFadeTime(CRint newFade) {fadeTime = newFade;};
         void setPopupShowTime(CRint newShow) {showTime = newShow;};
+        void disablePopups() {showPopups = false;};
+        void enablePopups() {showPopups = true;};
+        bool showingPopups() {return showPopups;};
 
         // display customisation
         void setFontColour(const Colour &col) {colours[coFontColour] = col;};
-        void setHeadlineColour(const Colour &col) {colours[coHeadlineColour] = col;};
+        void setHeadlineColour(const Colour &col) {colours[coHeadlineColour] = col;}; // achievement name
         void setBackgroundColour(const Colour &col) {colours[coBackgroundColour] = col;};
-        void setProgressColour(const Colour &col) {colours[coProgressColour] = col;};
+        void setProgressColour(const Colour &col) {colours[coProgressColour] = col;}; // progress-bar colour
         Colour getFontColour() const {return colours[coFontColour];};
         Colour getHeadlineColour() const {return colours[coHeadlineColour];};
         Colour getBackgroundColour() const {return colours[coBackgroundColour];};
@@ -105,7 +115,7 @@ class AchievementSystem
         // general functions
         int achievementCount() const {return achievements.size();};
         int unlockedCount() const;
-        float getListSize() const;
+        float getListSize() const; // number of achievements displayed in list-view with current offset settings and screen size
         #ifdef PENJIN_SDL
         void render(SDL_Surface* screen);
         void renderList(SDL_Surface* screen, float numOffset);
@@ -115,8 +125,13 @@ class AchievementSystem
         #endif
         void update();
 
+        void setAchievementFile(CRstring newFile) {achievementFile = newFile;};
+        string getAchievementFile() {return achievementFile;};
         PENJIN_ERRORS load(CRstring file);
+        PENJIN_ERRORS load() {return load(achievementFile);};
         PENJIN_ERRORS save(CRstring file);
+        PENJIN_ERRORS save() {return save(achievementFile);};
+        PENJIN_ERRORS eraseData();
 
     private:
         vector<Event*> log;
@@ -124,6 +139,7 @@ class AchievementSystem
         vector<Popup> popups;
         Encryption crypt;
         TextDoc doc;
+        string achievementFile;
 
         Vector2di offset; // offset for the list view (in pixels)
         Vector2di achievementSize; // size of a single achievement (list view)
@@ -132,7 +148,8 @@ class AchievementSystem
         Vector2di popup; // offset for a popup (in pixels), does not get accessed directly
         int fadeTime; // time it takes for a popup to fade in/out (in milli seconds)
         int showTime; // tile a popup is fully shown (in milli seconds)
-        bool showTop;
+        bool showTop; // popup position on the top of the screen
+        bool showPopups; // show popups with milestone or unlock information
         Timer popupTimer;
 
         enum ColourOptions {
