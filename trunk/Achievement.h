@@ -64,16 +64,16 @@ class Achievement
 
         virtual int getType() const {return type;};
 
-        virtual string getName() const {return name;};
+        virtual string getName() const {return name;}; // headline
         virtual void setName(CRstring newName) {if (newName.size() > 0) name = newName;};
         virtual string getDescription() const {return descr;};
         virtual void setDescription(CRstring newDescr) {if (newDescr.size() > 0) descr = newDescr;};
         virtual const AnimatedSprite* getIcon() const {return &icon;};
-        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1); icon.disableTransparentColour();};
+        virtual void setIcon(string fileName) {icon.loadFrames(fileName,2,1); icon.disableTransparentColour();}; // icon should be square
 
         virtual bool getSecret() const {return secret;};
         virtual void setSecret(bool newState) {secret = newState;};
-        virtual bool getStatus() const {return unlocked;};
+        virtual bool getStatus() const {return unlocked;}; // has been achieved?
         virtual Vector2di getPosition() const {return position;};
         virtual void setPosition(CRint newX, CRint newY) {setPosition(Vector2di(newX,newY));};
         virtual void setPosition(const Vector2di& newPos);
@@ -82,7 +82,7 @@ class Achievement
         virtual void setSize(const Vector2di& newSize) {size = newSize;};
         virtual void setShowProgress(CRbool newShow) {showProgress = newShow;};
 
-        virtual void setParent(void* newParent) {parent = newParent;};
+        virtual void setParent(void* newParent) {parent = newParent;}; // will be automatically set upon calling addAchievement
         virtual void* getParent() {return parent;};
 
         virtual void load(CRstring value);
@@ -101,7 +101,7 @@ class Achievement
     protected:
         // increase or decrease achievement count
         virtual void changeCount(const vector<Event*>& changeEvents);
-        virtual void setCount(CRint value);
+        virtual void setCount(CRint value); // used for loading
         #ifdef PENJIN_SDL
         virtual void renderProgress(SDL_Surface* screen);
         #else
