@@ -7,8 +7,11 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
-using namespace std;
+#include <vector>
 #include "PenjinTypes.h"
+
+using namespace std;
+
 namespace StringUtility
 {
         ///	OS Format conversion
@@ -74,5 +77,8 @@ namespace StringUtility
 
         /// Additional
         string substrReplace(string text, CRstring oldSubstr, CRstring newSubstr); // replaces all occurrences of oldSubstr in text with newSubstr
+        void tokenize(CRstring str, vector<string>& tokens, CRstring delimiters = " "); // splits a string into parts at a certain char and adds the parts to the passed vector
+        void tokenize(CRstring str, vector<string>& tokens, CRstring delimiters, CRuint maxParts);
+        string combine(const vector<string>& tokens, CRstring delimiter = ","); // compines an array or string parts into one string seperating them with the delimiter char
 }
 #endif	//	STRINGUTILITY_H
