@@ -72,7 +72,7 @@ class CollisionRegion
         bool hitTest(float x, float y, CRbool absolute) const {return (getCollisionType(x,y,absolute) != noCollision);}
         // check whether another region collides with this region (rectangular or fullShape)
         // also works when one or both have no collision image or region loaded
-        bool hitTest(const CollisionRegion* const region, CRbool fullShape=false) const;
+        bool hitTest(const CollisionRegion* const tester, CRbool fullShape=false) const;
 
     private:
         Image *map;

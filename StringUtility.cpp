@@ -305,3 +305,64 @@ string StringUtility::substrReplace(string text, CRstring oldSubstr, CRstring ne
 
 }
 
+/* This is basically the same thing as String.Split in .NET; it splits a string on a token into numerous substrings */
+void StringUtility::tokenize(CRstring str,
+                      vector<string>& tokens,
+                      CRstring delimiters)
+{
+    tokens.clear();
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+
+void StringUtility::tokenize(CRstring str,
+                      vector<string>& tokens,
+                      CRstring delimiters,
+                      CRuint maxParts)
+{
+    tokens.clear();
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+    while (tokens.size() < maxParts-1 && (string::npos != pos || string::npos != lastPos))
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+    if (lastPos < str.size())
+    {
+        tokens.push_back(str.substr(lastPos, str.size()-lastPos));
+    }
+}
+
+// Combine a Tokenized vector back into a string
+string StringUtility::combine(const vector<string>& tokens, CRstring delimiter)
+{
+	string newString = "";
+	unsigned int i;
+
+	for (i=0;i<tokens.size();i++) {
+		newString += tokens[i];
+		newString += delimiter;
+	}
+
+	return newString;
+}
