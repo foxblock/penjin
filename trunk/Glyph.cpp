@@ -19,7 +19,7 @@ Glyph::~Glyph()
 }
 
 
-#ifdef PENJIN_SDL
+#if defined( PENJIN_SDL) && !defined(PENJIN_SOFT)
 void Glyph::render(SDL_Surface* scr)
 {
     glyph.renderImage(scr,*position);
@@ -30,7 +30,7 @@ void Glyph::refresh()
 {
     if(position == NULL || !isprint(character) || fontSize == 0)        //  No cursor position is invalid usage.
         return;
-#ifndef PENJIN_GL
+#ifdef PENJIN_SDL
     if(glyph.size())
         glyph.clear();
 #endif
@@ -44,7 +44,7 @@ void Glyph::refresh()
         tS = TTF_RenderText_Shaded(font,t,colour.getSDL_Colour(),bgColour.getSDL_Colour());
     else
         tS = TTF_RenderText_Blended(font,t,colour.getSDL_Colour());
-#ifndef PENJIN_GL
+#ifdef PENJIN_SDL
     glyph.loadImage(tS);
 #else
     glyph.loadSurface(tS);
@@ -53,7 +53,7 @@ void Glyph::refresh()
 
 void Glyph::render()
 {
-    #ifndef PENJIN_GL
+    #ifdef PENJIN_SDL
         glyph.renderImage(*position);
     #else
         //  With the surface now converted to a texture we can render it to a quad

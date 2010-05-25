@@ -10,7 +10,7 @@
 #include "ErrorHandler.h"
 #ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
-#elif PENJIN_SDL
+#elif defined (PENJIN_SDL) || defined (PENJIN_SOFT)
     #include <SDL/SDL.h>
 #endif
 #ifdef PLATFORM_GP2X
@@ -41,7 +41,7 @@ namespace GFX
     #endif
 
     //SPECIAL EFFECTS
-    #if defined(PENJIN_SDL) || defined(PENJIN_GL)
+    #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
         SDL_Surface* getVideoSurface();
         void showCursor(CRbool show);
     #endif
@@ -88,7 +88,7 @@ namespace GFX
         void unlockSurface();                       //  unlock the screen
         SDL_Surface* cropSurface(SDL_Surface* in, SDL_Rect* crop);    //  crop a surface
         void clearScreen(SDL_Surface* screen);      //  blank the surface
-    #elif PENJIN_GL
+    #elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
         void init2DRendering();   //  Setup a 2D rendering mode.
                                 //  Also enables blending.
         #ifdef PENJIN3D
