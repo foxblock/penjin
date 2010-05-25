@@ -46,7 +46,7 @@ class Rectangle
         void setPosition(const T& x, const T& y){position.x = x; position.y=y;}
 
         template <class T>
-        void setPosition(const T& pos) {position = pos;};
+        void setPosition(const T& pos) {position.x = pos.x; position.y = pos.y;};
 
         template <class T>
         void setDimensions(const T& w, const T& h)
@@ -71,7 +71,8 @@ class Rectangle
         template <class T>
         void setDimensions(const T& size)
         {
-            dimensions = size;
+            dimensions.x = size.x;
+	    dimensions.y = size.y;
             #ifdef PENJIN_SDL
                 resize();
                 setRectangle();

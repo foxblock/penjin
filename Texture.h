@@ -1,8 +1,20 @@
 #ifndef INC_TEXTURE_H
 #define INC_TEXTURE_H
 
-#ifdef PENJIN_GL
-#include <SDL/SDL_opengl.h>
+#if defined (PENJIN_GL) || defined (PENJIN_SOFT)
+#ifndef PENJIN_SOFT
+    #include <SDL/SDL_opengl.h>
+#else
+    //  GLenem...
+    enum GLenum
+    {
+        GL_RGBA,
+        GL_BGRA,
+        GL_RGB,
+        GL_BGR
+    };
+
+#endif
 #include <SDL/SDL_image.h>
 #include "NumberUtility.h"
 #include "PenjinTypes.h"
@@ -27,9 +39,9 @@ class Texture
 
         bool isLoaded()const{return loaded;}                //  Check if the texture is still taking up mem by OpenGL
 
-        void setTextureID(const GLuint& textureID);             //  If you have created a texture elsewhere you can pass in
+        void setTextureID(CRuint textureID);             //  If you have created a texture elsewhere you can pass in
                                                                 //    the ID so that it will be cleaned up
-        GLuint getTextureID()const{return textureID;}
+        uint getTextureID()const{return textureID;}
 
         int getWidth()const{return dimensions.x;}
         int getHeight()const{return dimensions.y;}
@@ -53,7 +65,7 @@ class Texture
         /// Check if a value is a power of two
         bool isPoT(const int& x)const{return NumberUtility::isPowerOfTwo(x);}
 		bool loaded;
-		GLuint textureID;
+		uint textureID;
         Vector2di rawDimensions;    // stores the raw width and height in pixels of the image.
         Vector2di dimensions;       // stroes the actual wanted image dimensions
         Point2df txCoords;         // stores the caclulated tx coordinates

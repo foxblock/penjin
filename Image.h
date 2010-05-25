@@ -2,8 +2,10 @@
 #define IMAGE_H_INCLUDED
 
 #include <SDL/SDL.h>
-#ifdef PENJIN_GL
-    #include <SDL/SDL_opengl.h>
+#if defined (PENJIN_GL) || defined (PENJIN_SOFT)
+    #ifndef PENJIN_SOFT
+        #include <SDL/SDL_opengl.h>
+    #endif
     #include "Texture.h"
 #elif PENJIN_SDL
     #include <SDL/SDL_rotozoom.h>
@@ -133,7 +135,8 @@ class Image
                 error = setTransparentColour(i,c);
                 if (error != PENJIN_OK) return error;
             }
-            #else
+            #endif
+            #if defined (PENJIN_GL) || defined (PENJIN_SOFT)
             for (i=0;i<textures.size();i++)
             {
                 error = setTransparentColour(i,c);
@@ -177,7 +180,7 @@ class Image
             uint* getPixelArray(CRint x,CRint y)const;
             // check and unlock screen
             void screenUnlock();
-        #elif PENJIN_GL
+        #elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
             #ifdef PENJIN3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
                 Vector3df getRotationVector()const{return rotation;}
@@ -255,7 +258,7 @@ class Image
                 vector <ROT> rotCache;      //  Cached rotations
                 void setupCaching();        //  Auto config of rotation chaching
             #endif
-		#elif PENJIN_GL
+		#elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
             vector<Texture> textures;   //  Stores Textures for image
 		#endif
 

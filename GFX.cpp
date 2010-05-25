@@ -73,7 +73,7 @@ void GFX::renderPixelBuffer()
             #endif
             glEnableClientState(GL_COLOR_ARRAY);
             glColorPointer(4, GL_FLOAT, sizeof(ColourVertex), &pixBuff.front().colour);
-                glDrawArrays(GL_POINTS,0,pixBuff.size()-1);
+                glDrawArrays(GL_POINTS,0,pixBuff.size());
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_COLOR_ARRAY);
         #elif PENJIN_SDL
@@ -197,7 +197,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     #endif
     return PENJIN_OK;
 }
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+#if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
 SDL_Surface* GFX::getVideoSurface(){return screen;}
 void GFX::showCursor(CRbool show)
 {

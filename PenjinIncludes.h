@@ -6,6 +6,15 @@
 #ifdef PLATFORM_WII
     #include <gccore.h>
 #endif
+
+#ifdef PENJIN_SOFT
+    /// Setup SW Renderer
+    #include "trenki/renderer/geometry_processor.h"
+    #include "trenki/renderer/rasterizer_subdivaffine.h"
+    #include "trenki/renderer/span.h"
+    using namespace swr;
+#endif
+
 #ifdef PENJIN_SDL
     #include <SDL/SDL.h>
 #elif PENJIN_GL
