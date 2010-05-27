@@ -68,7 +68,7 @@ void Raycast::init(int x, int y, int w, int h)
 
     screenWidth = w;
     screenHeight = h;
-    pixelCache.resize(screenWidth-x,screenHeight-y);
+    //pixelCache.resize(screenWidth-x,screenHeight-y);
 
 	posX = 22;
 	posY = 12;  //x and y start position
@@ -77,7 +77,7 @@ void Raycast::init(int x, int y, int w, int h)
 	planeX = 0;
 	planeY = 0.74; //the 2d raycaster version of camera plane
 
-    drawSurface.loadBackground("images/DarkTreasure/Surface.png");
+    drawSurface.loadBackground("images/Textures/Surface.png");
     #ifdef PENJIN_SDL
     drawSurface.setUseHardware(true);
     #endif
@@ -96,7 +96,7 @@ void Raycast::init(int x, int y, int w, int h)
 #ifdef PENJIN_SDL
 void Raycast::render(SDL_Surface* screen)
 {
-    clearPixels();
+    //clearPixels();
     drawSurface.render(screen);
     //buff.update();//Set the buffer to be the same as the
 
@@ -202,27 +202,27 @@ void Raycast::render(SDL_Surface* screen)
         float texY = ((d * texSize) / lineHeight) / 256;
 
         Colour c = textures.getPixel(texNum, texX, texY);
-
-//        c.red = sqrt(c.red * distanceColour.red) * distance;
-//        if (c.red < 0) c.red == 0;
-//        if (c.red > 255) c.red == 255;
-//        c.green = sqrt(c.green * distanceColour.green) * distance;
-//        if (c.green < 0) c.green == 0;
-//        if (c.green > 255) c.green == 255;
-//        c.blue = sqrt(c.blue * distanceColour.blue) * distance;
-//        if (c.blue < 0) c.blue == 0;
-//        if (c.blue > 255) c.blue == 255;
-
+/*
+        c.red = sqrt(c.red * distanceColour.red) * distance;
+        if (c.red < 0) c.red == 0;
+        if (c.red > 255) c.red == 255;
+        c.green = sqrt(c.green * distanceColour.green) * distance;
+        if (c.green < 0) c.green == 0;
+        if (c.green > 255) c.green == 255;
+        c.blue = sqrt(c.blue * distanceColour.blue) * distance;
+        if (c.blue < 0) c.blue == 0;
+        if (c.blue > 255) c.blue == 255;
+*/
         if(c.alpha != 0)
         {
             if(side == 1)
-                setPixel(Vector2di(x, y), c / 2);
+                GFX::setPixel(Vector2di(x, y), c /2);
             else
-                setPixel(Vector2di(x, y), c);
+                GFX::setPixel(Vector2di(x, y), c);
         }
       }
     }
-    renderPixels(screen);
+    //renderPixels(screen);
 	fps.print(screen,frameTime);
 }
 #else
