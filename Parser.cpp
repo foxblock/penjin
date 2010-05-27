@@ -43,7 +43,7 @@ PENJIN_ERRORS Parser::loadParserConfigFile(CRstring fileName)
     int variableCount = -1;
 
     //  Run through the file
-    for(uint i = 0; i < doc.size()-1;++i)
+    for(uint i = 0; i < doc.size();++i)
     {
         // Reset tempKey and comment
         tempKey = "NULL";
@@ -86,6 +86,9 @@ PENJIN_ERRORS Parser::loadParserConfigFile(CRstring fileName)
 
 PENJIN_ERRORS Parser::createCommandList(CRstring fileName)
 {
+    // Check if parser has been configured
+    if(keyWords.empty())
+        return PenjinErrors::PENJIN_PARSE_ERROR;
 	///	open script file
 	PENJIN_ERRORS status = doc.load(fileName);
 	if(status != PENJIN_OK)
@@ -95,7 +98,7 @@ PENJIN_ERRORS Parser::createCommandList(CRstring fileName)
     //  We have stored.
     string tempLine;
     string var;
-    for(uint i = 0; i < doc.size()-1;++i)
+    for(uint i = 0; i < doc.size();++i)
     {
         tempLine = doc.getLine(i);
 
