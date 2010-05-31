@@ -34,6 +34,7 @@ void ScoreScreen::init()
 	    scores.initialiseTables();
         scores.saveScores(scoreFile);
 	}
+	textStrings[1] = scores.getName(scores.getLastNameIndex());
 	scores.setBoundaries(bounds);
 	// Create a nice starfield effect
 	emit.resize(3);

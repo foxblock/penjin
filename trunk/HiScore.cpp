@@ -5,6 +5,7 @@ HiScore::HiScore()
 	mode = HIGH_TO_LOW;
 	numScores = 10;
 	numInitials = 3;
+	lastNameIndex = 0;
 	nameTable = NULL;
 	scoreTable = NULL;
 	nameTable = new string[numScores];
@@ -25,6 +26,7 @@ HiScore::HiScore(CRuint numScores,CRuint numInitials)
 	mode = HIGH_TO_LOW;
 	this->numScores = numScores;
 	this->numInitials = numInitials;
+    lastNameIndex = 0;
 	nameTable = NULL;
 	scoreTable = NULL;
 	nameTable = new string[numScores];
@@ -74,6 +76,9 @@ PENJIN_ERRORS HiScore::loadScores(CRstring fileName)
 		nameTable[i] = crypt.decryptBuffer(doc.getLine(i));
 	for (uint i = numScores; i < numScores*2; ++i)
 		scoreTable[i-10] = stringToInt(crypt.decryptBuffer(doc.getLine(i)));
+    //  now get the index of the last enterred name
+    if(doc.size() >numScores*2)
+        lastNameIndex = stringToInt(crypt.decryptBuffer(doc.getLine(numScores*2)));
 	return PENJIN_OK;
 }
 
@@ -103,6 +108,7 @@ void HiScore::nameEntry(string name, uint score)
 
 					score = temp;
 					name = sTemp;
+					lastNameIndex = x;
 				}
 			}
 			else
@@ -119,6 +125,7 @@ void HiScore::nameEntry(string name, uint score)
 
 					score = temp;
 					name = sTemp;
+					lastNameIndex = x;
 				}
 			}
 		}
@@ -163,7 +170,7 @@ PENJIN_ERRORS HiScore::saveScores(CRstring fileName)
 		doc.append(crypt.encryptBuffer(nameTable[i]));
 	for (uint i = 0; i < numScores; ++i)
 		doc.append(crypt.encryptBuffer(intToString(scoreTable[i])));
-
+    doc.append(crypt.encryptBuffer(intToString(lastNameIndex)));
 	doc.save(fileName);
 	return PENJIN_OK;
 }
