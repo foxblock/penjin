@@ -84,7 +84,56 @@ PENJIN_ERRORS Parser::loadParserConfigFile(CRstring fileName)
     return status;
 }
 
-PENJIN_ERRORS Parser::createCommandList(CRstring fileName)
+PENJIN_ERRORS Parser::saveParserConfigFile(CRstring fileName)
+{
+    doc.clear();
+    doc.append(";   Parser configuration File.");
+    doc.append(";   Saved by Penjin Parser::saveParserConfigFile(CRstring fileName)");
+    if(keyWords.empty())
+        PENJIN_ERROR;
+    for(uint i = 0; i < keyWords.size(); ++i)
+    {
+        doc.append(keyWords.at(i).getKeyWord() + ":"
+        + StringUtility::intToString(keyWords.at(i).getNumAlphas())
+        + "," + StringUtility::intToString(keyWords.at(i).getNumNumerics()) + ";");
+    }
+    return doc.save(fileName);
+}
+
+PENJIN_ERRORS Parser::saveCommandList(CRstring fileName)
+{
+    doc.clear();
+    doc.append(";   Parser command list File.");
+    doc.append(";   Saved by Penjin Parser::saveCommandList(CRstring fileName)");
+    queue <Command> t = Parser::getCommandList();
+    while(!t.empty())
+    {
+        Command c = t.front();
+        int ID = c.commandType;
+        if(ID != -1)
+        {
+            string out = keyWords.at(ID).getKeyWord() + ":";
+            if(keyWords.at(ID).getNumAlphas() == -1)
+            {
+
+            }
+            else
+            {
+            }
+            if(keyWords.at(ID).getNumNumerics() == -1)
+            {
+            }
+           // doc.append(c. + ":"
+        //+ StringUtility::intToString(keyWords.at(i).getNumAlphas())
+        //+ "," + StringUtility::intToString(keyWords.at(i).getNumNumerics()) + ";");
+        }
+        else
+            return PENJIN_ERROR;
+    }
+    return doc.save(fileName);
+}
+
+PENJIN_ERRORS Parser::loadCommandList(CRstring fileName)
 {
     // Check if parser has been configured
     if(keyWords.empty())

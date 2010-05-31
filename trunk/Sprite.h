@@ -36,6 +36,10 @@ class Sprite
         uint getWidth()const{return image.getWidth();}
         uint getHeight()const{return image.getHeight();}
 
+        #ifdef PENJIN_CACHE_ROTATIONS
+            void setDegreesCached(CRuint d){image.setDegreesCached(d);}
+            void precacheRotations(){image.precacheRotations();}
+        #endif
         void setRotation(CRfloat angle){image.setRotation(angle);}
         void setScaleX(CRfloat scaleX){image.setScaleX(scaleX);}
         void setScaleY(CRfloat scaleY){image.setScaleY(scaleY);}

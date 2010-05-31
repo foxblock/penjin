@@ -329,6 +329,17 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             #endif
         }
     }
+    #ifdef PENJIN_CACHE_ROTATIONS
+        void Image::precacheRotations()
+        {
+            for(int i = maxCached-1; i>=0; --i)
+            {
+                setRotation(i);
+                renderImage(NULL,0,0);
+            }
+        }
+    #endif
+
     //void Image::renderImage(SDL_Surface* dstimg, const Vector2di& pos){renderImage(0, dstimg, pos.x, pos.y);}
     //template <class  T>
     //void Image::renderImage(SDL_Surface* dstimg, const T& destX, const T& destY){renderImage(0,dstimg,destX,destY);}
