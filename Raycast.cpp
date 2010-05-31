@@ -96,7 +96,7 @@ void Raycast::init(int x, int y, int w, int h)
 #ifdef PENJIN_SDL
 void Raycast::render(SDL_Surface* screen)
 {
-    //clearPixels();
+    clearPixels();
     drawSurface.render(screen);
     //buff.update();//Set the buffer to be the same as the
 
@@ -216,13 +216,13 @@ void Raycast::render(SDL_Surface* screen)
         if(c.alpha != 0)
         {
             if(side == 1)
-                GFX::setPixel(Vector2di(x, y), c /2);
+                setPixel(Vector2di(x, y), c /2.0f);
             else
-                GFX::setPixel(Vector2di(x, y), c);
+                setPixel(Vector2di(x, y), c);
         }
       }
     }
-    //renderPixels(screen);
+    renderPixels(screen);
 	fps.print(screen,frameTime);
 }
 #else

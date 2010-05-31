@@ -232,6 +232,12 @@ class Image
         void swapRG();      //  Swap the red and green channels
         void swapGB();      //  Swap the green and blue channels
         void swapRB();      //  Swap the red and blue channels
+
+        // Cache rotation config
+        #ifdef PENJIN_CACHE_ROTATIONS
+            void setDegreesCached(CRuint d){maxCached = d;}
+            void precacheRotations();
+        #endif
     private:
         // Disabled to revent double freed pointers.
         Image(const Image& BlingRef);

@@ -25,7 +25,7 @@ PENJIN_ERRORS KeyMapper::loadControlMap(CRstring file)
         defaultMap();
         return result;
     }
-    result = parse.createCommandList(file);
+    result = parse.loadCommandList(file);
     if(result != PENJIN_OK)
     {
         defaultMap();

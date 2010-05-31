@@ -77,7 +77,7 @@ void GFX::renderPixelBuffer()
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_COLOR_ARRAY);
         #elif PENJIN_SDL
-            SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, NULL, NULL, NULL, NULL);
+            SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
             for(uint i=0; i < pixBuff.size(); ++i )
             {
                 ColourVertex v = pixBuff.at(i);
