@@ -48,13 +48,15 @@ class HiScore
 
         void initialiseTables();						//	Clears the tables, ready to use.
 
-        uint getScore(CRuint i)
+        uint getScore(CRuint i)const
         {
             if(i < numScores)
                 return scoreTable[i];
 
             return 0;
         }
+        string getName(CRuint i)const{return nameTable[i];}
+        uint getLastNameIndex()const{return lastNameIndex;}
         /// FONT STUFFs
         PENJIN_ERRORS loadFont(CRstring font,CRint size){return text.loadFont(font,size);}
         void setColour(Colour colour){text.setColour(colour);}
@@ -64,6 +66,7 @@ class HiScore
         uint numInitials;
         uint* scoreTable;
         string* nameTable;
+        uint lastNameIndex;
         uint mode;
         TextDoc doc;
         Text text;
