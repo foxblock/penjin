@@ -8,6 +8,22 @@ KeyMapSDLKey::KeyMapSDLKey()
     target = SJ_UNMAPPED;
 }
 
+KeyMapSDLKey::KeyMapSDLKey(CRstring k)
+{
+    device = DEV_KEYBOARD;
+    setDeviceID(0);
+    target = SJ_UNMAPPED;
+    setSDLKey(k);
+}
+
+KeyMapSDLKey::KeyMapSDLKey(SDLKey k)
+{
+    device = DEV_KEYBOARD;
+    setDeviceID(0);
+    target = SJ_UNMAPPED;
+    key= k;
+}
+
 KeyMapSDLKey::~KeyMapSDLKey()
 {
     //dtor

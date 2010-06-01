@@ -90,7 +90,7 @@ PENJIN_ERRORS Parser::saveParserConfigFile(CRstring fileName)
     doc.append(";   Parser configuration File.");
     doc.append(";   Saved by Penjin Parser::saveParserConfigFile(CRstring fileName)");
     if(keyWords.empty())
-        PENJIN_ERROR;
+        return PENJIN_ERROR;
     for(uint i = 0; i < keyWords.size(); ++i)
     {
         doc.append(keyWords.at(i).getKeyWord() + ":"
