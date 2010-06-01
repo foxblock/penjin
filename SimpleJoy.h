@@ -5,12 +5,12 @@
 #include "KeyMapper.h"
 
 #if defined(PLATFORM_PANDORA)
-#include <linux/input.h>
+    #include <linux/input.h>
 
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
+    #include <string.h>
+    #include <fcntl.h>
+    #include <unistd.h>
+    #include <stdio.h>
 #endif
 
 /*
@@ -82,6 +82,18 @@ class SimpleJoy
         sjSTATUS isDownLeft()const{return sjRELEASED;}
         sjSTATUS isDownRight()const{return sjRELEASED;}
     #endif
+
+        /// Keyboard passthrough
+        sjSTATUS isKey(CRstring k)
+        {
+            KeyMapSDLKey t(k);
+            for(int i = storeKeys.size()-1; i>=0;--i)
+            {
+                if(t.getKey() == storeKeys.at(i).key.getKey())
+                    return storeKeys.at(i).status;
+            }
+        }
+        string isKeyLetter();
 
         /// Joystick
         void setDeadZone(const Vector2di& zone){deadZone = zone;}
@@ -196,6 +208,7 @@ class SimpleJoy
 
         /// Status
         void joystickStatus();
+
     private:
         void mappedDown(const SIMPLEJOY_MAP& map);
         void mappedUp(const SIMPLEJOY_MAP& map);
@@ -205,6 +218,12 @@ class SimpleJoy
         SDL_Joystick *Joy;		//	SDL joystick
         SDL_Event Event;
         sjSTATUS Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
+        struct tKey
+        {
+            KeyMapSDLKey key;
+            sjSTATUS status;
+        };
+        vector <tKey> storeKeys;
     #ifdef PLATFORM_PC
         sjSTATUS Quit;
     #endif

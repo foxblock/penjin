@@ -9,10 +9,12 @@ class KeyMapSDLKey : public KeyMap
     public:
         KeyMapSDLKey();
         KeyMapSDLKey(CRstring SJ,CRstring SDL,CRuchar devID){setSDLKey(SDL);setSJMap(SJ);setDeviceID(devID);device = DEV_KEYBOARD;}
+        KeyMapSDLKey(CRstring sdlKey);
+        KeyMapSDLKey(SDLKey k);
         virtual ~KeyMapSDLKey();
 
         void setBind(const SDLKey& k,const SIMPLEJOY_MAP& t,CRuchar devID){key=k;target=t;deviceID = devID;}
-        SDLKey getkey()const{return key;}
+        SDLKey getKey()const{return key;}
 
 
     private:

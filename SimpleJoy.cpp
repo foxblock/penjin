@@ -53,6 +53,7 @@ void SimpleJoy::update()
     PND_ReadEvents( fd_nubL, DEV_NUBL );
     PND_ReadEvents( fd_nubR, DEV_NUBR );
     #endif
+    storeKeys.clear();
     while (SDL_PollEvent(&Event))
     {
         #ifdef PLATFORM_PC
@@ -64,12 +65,28 @@ void SimpleJoy::update()
                 Quit = sjHELD;
         }
         #endif
+        if(Event.type == SDL_KEYDOWN)
+        {
+            KeyMapSDLKey t(Event.key.keysym.sym);
+            tKey k;
+            k.key = t;
+            k.status = sjPRESSED;
+            storeKeys.push_back(k);
+        }
+        else if(Event.type == SDL_KEYUP)
+        {
+            KeyMapSDLKey t(Event.key.keysym.sym);
+            tKey k;
+            k.key = t;
+            k.status = sjRELEASED;
+            storeKeys.push_back(k);
+        }
         for(int b = mapper.size()-1; b>=0;--b)
         {
             KEY_MAP_DEVICE device = mapper.keys[b]->getDevice();
             if(device == DEV_KEYBOARD)
             {
-                if(((KeyMapSDLKey*)mapper.keys[b])->getkey() == Event.key.keysym.sym)
+                if(((KeyMapSDLKey*)mapper.keys[b])->getKey() == Event.key.keysym.sym)
                 {
                     if(Event.type == SDL_KEYDOWN)
                         mappedDown(mapper.keys[b]->getTarget());
@@ -166,6 +183,20 @@ void SimpleJoy::update()
             case SDL_MOUSEMOTION:       mouseMotion(Event.motion.x, Event.motion.y);break;
         }*/
     }
+}
+
+string SimpleJoy::isKeyLetter()
+{
+    for(int i = storeKeys.size()-1; i>=0;--i)
+    {
+        if(storeKeys.at(i).status == sjPRESSED && StringUtility::isLetter(storeKeys.at(i).key.getKey()))
+        {
+            string t;
+            t.push_back(storeKeys.at(i).key.getKey());
+            return t;
+        }
+    }
+    return "NULL";
 }
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
@@ -414,6 +445,7 @@ void SimpleJoy::resetKeys()
         nubR.x = 0;
         nubR.y = 0;
     #endif
+        storeKeys.clear();
 }
 void SimpleJoy::resetDpad()
 {
