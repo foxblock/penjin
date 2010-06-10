@@ -1,6 +1,7 @@
 #include "GFX.h"
 namespace GFX
 {
+    uint bpp = 0;
     Colour clear(BLACK);
 	#ifdef PLATFORM_PC
         uint xRes = 1024;
@@ -122,6 +123,12 @@ void GFX::setResolution()
     setResolution(0,0);
 }
 
+void GFX::setBPP(uint b)
+{
+    //  0 is automatic
+    bpp = b;
+}
+
 PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 {
     /*
@@ -169,7 +176,9 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 #if defined(PENJIN_SDL) || defined(PENJIN_GL)
     if(fullscreen)
         flags = flags | SDL_FULLSCREEN;
-    screen = SDL_SetVideoMode(xRes, yRes, info->vfmt->BitsPerPixel, flags);
+    if(bpp == 0 || !(bpp == 8 || bpp == 16 || bpp == 32))
+        bpp = info->vfmt->BitsPerPixel;
+    screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
 	if(screen  == NULL )
 	{
 		return PENJIN_SDL_SETVIDEOMODE_FAILED;

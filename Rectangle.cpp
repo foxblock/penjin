@@ -43,7 +43,7 @@ void Rectangle::init()
 {
 #ifdef PENJIN_SDL
     rectangle = NULL;
-    rectangle = SDL_CreateRGBSurface(SDL_SWSURFACE, dimensions.x, dimensions.y, screen->format->BitsPerPixel, NULL, NULL, NULL, NULL);
+    rectangle = SDL_CreateRGBSurface(SDL_SWSURFACE, dimensions.x, dimensions.y, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
 #endif
 }
 
@@ -150,9 +150,8 @@ void Rectangle::render()
         t.x=t.y=0;
         t.w = dimensions.x;
         t.h = dimensions.y;
-        SDL_FillRect(rectangle, NULL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
-        SDL_SetColorKey(rectangle, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
-        SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red,colour.green,colour.blue));
+        SDL_FillRect(rectangle, NULL, SDL_MapRGB(screen->format,colour.red+8,colour.green+8,colour.blue+8));
+        SDL_FillRect(rectangle, &t, SDL_MapRGB(screen->format,colour.red,colour.green,colour.blue));
         if(thickness>0)
         {
             t.x+=thickness;
@@ -161,8 +160,9 @@ void Rectangle::render()
             t.h-=thickness*2;
             //  do some checks to see if the borders are close enough to render a normal rect
             if(t.w < dimensions.x && t.h < dimensions.y)
-                SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
+                SDL_FillRect(rectangle, &t, SDL_MapRGB(screen->format,colour.red+8,colour.green+8,colour.blue+8));
         }
         SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
+        SDL_SetColorKey(rectangle, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(screen->format,colour.red+8,colour.green+8,colour.blue+8));
     }
 #endif

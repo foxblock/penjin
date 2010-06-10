@@ -27,6 +27,7 @@ namespace GFX
     void setResolution();    // set an automatic resolution
     void setResolution(uint xRes,uint yRes);
     void setFullscreen(CRbool full);
+    void setBPP(uint bpp);
     PenjinErrors::PENJIN_ERRORS resetScreen();            // Applies the current settings to the screen.
 
     uint getXResolution();
