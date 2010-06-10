@@ -29,7 +29,63 @@ uint Parser::countNumCommands(CRint com)
     return comCount;
 }
 
-PENJIN_ERRORS Parser::loadParserConfigFile(CRstring fileName)
+
+PENJIN_ERRORS Parser::loadParserConfig(vector<string> lines)
+{
+    PENJIN_ERRORS status = doc.load(lines);
+    //  Load the parser's configuration script
+    if(status != PENJIN_OK)
+        return status;
+
+    keyWords.clear();
+
+    KeyWord tempKey;
+    string tempLine;
+    int variableCount = -1;
+
+    //  Run through the file
+    for(uint i = 0; i < doc.size();++i)
+    {
+        // Reset tempKey and comment
+        tempKey = "NULL";
+        tempKey = NULL;
+
+        /// Get a line to work with
+        tempLine = doc.getLine(i);
+        if(tempLine[0] == ';')
+            continue;
+        // Get a variable name
+        if(tempLine.find(":") != tempLine.npos)
+        {
+			tempKey = getVariableName(tempLine);	//	Get the name of the variable
+			tempLine = stripVariableName(tempLine); //	Now leave only the values
+            if(!tempKey.getKeyWord().empty())
+                ++variableCount;
+            else
+                return PENJIN_PARSE_ERROR;
+            tempKey = variableCount;
+        }
+        else if(tempLine.find(";") != tempLine.npos)
+        {
+            // it's only a comment don't parse it
+            status = PENJIN_OK;
+            continue;
+        }
+        else
+            return PENJIN_PARSE_ERROR;
+        /// next get number of alpha parameters
+        tempKey.setNumAlphas (stringToInt(getValue(tempLine)));
+        tempLine = stripValue(tempLine);
+        /// next get number of numerics
+        tempKey.setNumNumerics(stringToInt(getValue(tempLine)));
+        tempLine = stripValue(tempLine);
+        keyWords.push_back(tempKey);
+        status = PENJIN_OK;
+    }
+    return status;
+}
+
+PENJIN_ERRORS Parser::loadParserConfig(CRstring fileName)
 {
     PENJIN_ERRORS status = doc.load(fileName);
     //  Load the parser's configuration script
@@ -84,7 +140,7 @@ PENJIN_ERRORS Parser::loadParserConfigFile(CRstring fileName)
     return status;
 }
 
-PENJIN_ERRORS Parser::saveParserConfigFile(CRstring fileName)
+PENJIN_ERRORS Parser::saveParserConfig(CRstring fileName)
 {
     doc.clear();
     doc.append(";   Parser configuration File.");
@@ -113,24 +169,120 @@ PENJIN_ERRORS Parser::saveCommandList(CRstring fileName)
         if(ID != -1)
         {
             string out = keyWords.at(ID).getKeyWord() + ":";
-            if(keyWords.at(ID).getNumAlphas() == -1)
-            {
 
-            }
-            else
+            for(uint p = 0; p < c.params.size(); ++p)
             {
+                if(c.params.at(p).hasString())
+                    out+=c.params.at(p).getString() + ",";
+                else if(c.params.at(p).hasFloat())
+                    out+= StringUtility::floatToString( c.params.at(p).getFloat()) + ",";
             }
-            if(keyWords.at(ID).getNumNumerics() == -1)
-            {
-            }
-           // doc.append(c. + ":"
-        //+ StringUtility::intToString(keyWords.at(i).getNumAlphas())
-        //+ "," + StringUtility::intToString(keyWords.at(i).getNumNumerics()) + ";");
+            out.at(out.size()-1) = ';';
+            doc.append(out);
         }
         else
             return PENJIN_ERROR;
     }
     return doc.save(fileName);
+}
+
+PENJIN_ERRORS Parser::loadCommandList(vector<string> lines)
+{
+    // Check if parser has been configured
+    if(keyWords.empty())
+        return PenjinErrors::PENJIN_PARSE_ERROR;
+	///	open script file
+	PENJIN_ERRORS status = doc.load(lines);
+	if(status != PENJIN_OK)
+        return status;
+
+    /// Now the script is open, we need to compare extracted KeyWords to the keywords
+    //  We have stored.
+    string tempLine;
+    string var;
+    for(uint i = 0; i < doc.size();++i)
+    {
+        tempLine = doc.getLine(i);
+
+        if(tempLine[0] == ';')
+            continue;
+
+        if(countColons(tempLine) != 1)
+            return PENJIN_PARSE_ERROR;
+
+        if(tempLine.find(":") != tempLine.npos)
+        {
+            //  get the variable name
+            var = getVariableName(tempLine);
+            if(var.empty())
+                return PENJIN_PARSE_ERROR;
+            int ID = -1;
+            /// Check the variable against all of the configd ids
+            for(uint j = 0; j < keyWords.size(); ++j)
+            {
+                if(var == keyWords[j].getKeyWord())
+                {
+                    ID = keyWords[j].getKeyType();
+                    break;
+                }
+            }
+            if( ID == -1)
+                return PENJIN_PARSE_ERROR;
+            /// Otherwise create a command
+            Command tempCommand;
+            tempCommand.commandType = ID;
+            tempLine = stripVariableName(tempLine);
+            Variable tempVariable;
+            /// Now get the number of alpha components from KeyWord object
+            if(keyWords[ID].getNumAlphas() == -1)
+            {
+                /// This is an indefinite number of parameters We just have to try to parse what we find
+                while(!tempLine.empty())
+                {
+                    tempVariable.setNULL();
+                    tempVariable = getValue(tempLine);
+                    tempLine = stripValue(tempLine);
+                    tempCommand.params.push_back(tempVariable);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < keyWords[ID].getNumAlphas(); ++j)
+                {
+                    tempVariable.setNULL();
+                    tempVariable = getValue(tempLine);
+                    tempLine = stripValue(tempLine);
+                    tempCommand.params.push_back(tempVariable);
+                }
+            }
+            /// Now get the number of numeric components from KeyWord object
+            if(keyWords[ID].getNumNumerics() == -1)
+            {
+                /// This is an indefinite number of parameters We just have to try to parse what we find
+                while(!tempLine.empty())
+                {
+                    tempVariable.setNULL();
+                    tempVariable.setFloat(stringToFloat(getValue(tempLine)));
+                    tempLine = stripValue(tempLine);
+                    tempCommand.params.push_back(tempVariable);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < keyWords[ID].getNumNumerics(); ++j)
+                {
+                    tempVariable.setNULL();
+                    tempVariable.setFloat(stringToFloat(getValue(tempLine)));
+                    tempLine = stripValue(tempLine);
+                    tempCommand.params.push_back(tempVariable);
+                }
+            }
+            /// add the constructed command onto the list
+            commandList.push(tempCommand);
+        }
+
+    }
+	return status;
 }
 
 PENJIN_ERRORS Parser::loadCommandList(CRstring fileName)

@@ -3,7 +3,10 @@
 
 #include "PenjinTypes.h"
 #include "KeyMapper.h"
+#include <iostream>
+using std::cout;
 
+/*
 #if defined(PLATFORM_PANDORA)
     #include <linux/input.h>
 
@@ -12,7 +15,7 @@
     #include <unistd.h>
     #include <stdio.h>
 #endif
-
+*/
 /*
 TODO: Add Wii Controls/GBA/NDS etc
 */
@@ -34,6 +37,11 @@ class SimpleJoy
             if(t == PENJIN_OK)
                 mapLoaded = true;
             return t;
+        }
+
+        PENJIN_ERRORS saveControlMap(CRstring filename)
+        {
+            return mapper.saveControlMap(filename);
         }
 
         void update();					//	Get current status of keyboard
@@ -185,7 +193,7 @@ class SimpleJoy
         int getTouchX()const{return mouse.x;}
         int getTouchY()const{return mouse.y;}
         sjSTATUS isTouch()const{return leftClick;}
-
+/*
 #if defined(PLATFORM_PANDORA)
         /// Nub's
         Vector2di getNubLeft()const{return nubL;}
@@ -195,7 +203,7 @@ class SimpleJoy
         int getNubRightX()const{return nubR.x;}
         int getNubRightY()const{return nubR.y;}
 #endif
-
+*/
 		void clearSDLEventQueue();
         void resetKeys();
         void resetDpad();
@@ -241,7 +249,7 @@ class SimpleJoy
         KeyMapper mapper;
         bool mapLoaded;
 
-    #if defined(PLATFORM_PANDORA)
+  /*  #if defined(PLATFORM_PANDORA)
         #define DEV_NUBL 1
         #define DEV_NUBR 2
         #define PND_NUBL "vsense66"
@@ -263,6 +271,7 @@ class SimpleJoy
         void MappedNubAxes(const SIMPLEJOY_MAP& map, CRint axis);
 
     #endif
+    */
 };
 
 #endif // SIMPLEJOY_H

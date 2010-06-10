@@ -67,7 +67,7 @@ class ScoreScreen
 
         }
         void charInput(){if(nameEntry)textStrings[1]+=currentLetter;}
-        void charInput(char l){if(nameEntry)textStrings[1]+=l;}
+        void charInput(uchar l);
         void charDelete(){if(textStrings[1].size()&& nameEntry)textStrings[1].erase(textStrings[1].begin()+textStrings[1].size()-1);}
 
     private:

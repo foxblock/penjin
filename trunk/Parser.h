@@ -21,10 +21,14 @@ using namespace std;
 class Parser
 {
     public:
-        PENJIN_ERRORS loadParserConfigFile(CRstring fileName);      //  Load a config script that tell the parser the format of what it will parse
+        PENJIN_ERRORS loadParserConfig(CRstring fileName);      //  Load a config script that tell the parser the format of what it will parse
         PENJIN_ERRORS loadCommandList(CRstring fileName);		    //	Load a script file, parses it and creates a commandlist
-        PENJIN_ERRORS saveParserConfigFile(CRstring fileName);      //  save a parser config file
+        PENJIN_ERRORS loadParserConfig(vector<string> lines);      //  Load a config script from raw strings
+        PENJIN_ERRORS loadCommandList(vector<string> lines);		    //	Load a script file from raw strings
+        PENJIN_ERRORS saveParserConfig(CRstring fileName);      //  save a parser config file
         PENJIN_ERRORS saveCommandList(CRstring fileName);           //  save a parser script from a commandList
+
+
 
         uint getNumCommands(){return commandList.size();}
         uint countNumCommands(CRint commandType);          //  counts the number of a specific command

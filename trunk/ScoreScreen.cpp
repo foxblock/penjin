@@ -97,12 +97,18 @@ ScoreScreen::~ScoreScreen()
     scores.saveScores(scoreFile);
 }
 
+void ScoreScreen::charInput(uchar l)
+{
+    if(nameEntry && StringUtility::isLetter(l) && textStrings[1].length()<3)
+        textStrings[1]+=l;
+}
+
 void ScoreScreen::update()
 {
     for(int i = emit.size()-1; i >=0; --i)
         emit.at(i).update();
 
-    if(textStrings[1].size()>3)
+    if(textStrings[1].length()>3)
     {
         //	turn name entry off
         nameEntry = false;
@@ -111,7 +117,7 @@ void ScoreScreen::update()
         textStrings[1][3]=0;
 
         //	Enter highscore into table
-        scores.nameEntry(textStrings[1], score);
+        scores.nameEntry(StringUtility::upper(textStrings[1]), score);
         textStrings[1].clear();
     }
 }

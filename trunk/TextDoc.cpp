@@ -27,6 +27,13 @@ void TextDoc::clear()
     docData.clear();
 }
 
+
+PENJIN_ERRORS TextDoc::load(vector<string> lines)
+{
+    docData = lines;
+    return PENJIN_OK;
+}
+
 PENJIN_ERRORS TextDoc::load(CRstring file)
 {
     #if defined (PLATFORM_WII)

@@ -24,7 +24,8 @@ namespace cmfFile
 #include "KeyMapDigitalJoyAxis.h"
 #include "KeyMapHat.h"
 
-#include "Parser.h"
+#include "PenjinErrors.h"
+class Parser;
 using namespace PenjinErrors;
 using namespace cmfFile;
 #include <vector>
@@ -35,12 +36,17 @@ class KeyMapper
         KeyMapper();
         ~KeyMapper();
 
-        int size(){return keys.size();}
+        size_t size()const{return keys.size();}
         KeyMap* getKeyMap(const CRuint mapping){return keys[mapping];}
         KeyMap* getKeyMap(const SIMPLEJOY_MAP& key);    //  Returns the keymap for this Command
 
 
-        PENJIN_ERRORS loadControlMap(CRstring filename);
+        PENJIN_ERRORS loadControlMap(CRstring filename);    //  Save and load the actual mapping
+        PENJIN_ERRORS loadControlMap(vector<string> lines);
+        PENJIN_ERRORS saveControlMap(CRstring filename);
+
+        PENJIN_ERRORS saveParserConfig(CRstring filename);  //  Save the parser validation file
+
         void loadDefaultMap(){defaultMap();}
         std::vector <KeyMap*> keys;
     private:
@@ -51,8 +57,11 @@ class KeyMapper
         PENJIN_ERRORS mapWiiClassic(CRuchar id);
         PENJIN_ERRORS mapWiitar(CRuchar id);
         void defaultMap();
+        void setupParser();
+        PENJIN_ERRORS parseData();
+        void clearKeys();
 
-        Parser parse;
+        Parser* parse;
 };
 
 #endif // KEYMAPPER_H

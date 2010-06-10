@@ -1,17 +1,18 @@
 #include "SimpleJoy.h"
 
+#include "StringUtility.h"
 
 SimpleJoy::~SimpleJoy()
 {
     if(Joy)
         SDL_JoystickClose(0);
-
+/*
 #if defined(PLATFORM_PANDORA)
 	if( fd_nubL > 0 )
 		close(fd_nubL );
 	if( fd_nubR > 0 )
 		close(fd_nubR );
-#endif
+#endif*/
 }
 
 SimpleJoy::SimpleJoy()
@@ -33,12 +34,13 @@ SimpleJoy::SimpleJoy()
 #ifdef _DEBUG
     joystickStatus();
 #endif
-
+/*
 #if defined(PLATFORM_PANDORA)
 	// Open Pandora analog nub's
 	fd_nubL = PND_OpenEventDeviceByName(PND_NUBL);
 	fd_nubR = PND_OpenEventDeviceByName(PND_NUBR);
 #endif
+*/
 }
 
 void SimpleJoy::update()
@@ -49,10 +51,10 @@ void SimpleJoy::update()
         mapLoaded = true;
     }
     /// Read Pandora nubs directly
-    #if defined(PLATFORM_PANDORA)
+    /*#if defined(PLATFORM_PANDORA)
     PND_ReadEvents( fd_nubL, DEV_NUBL );
     PND_ReadEvents( fd_nubR, DEV_NUBR );
-    #endif
+    #endif*/
     storeKeys.clear();
     while (SDL_PollEvent(&Event))
     {
@@ -116,7 +118,7 @@ void SimpleJoy::update()
             else if(device == DEV_JOYSTICK_AXIS)
             {
                 // Axis may be changed
-                #ifdef PLATFORM_PANDORA
+                /*#ifdef PLATFORM_PANDORA
                     //  first check if SDL is using a joystick
                     if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
                     {
@@ -125,13 +127,13 @@ void SimpleJoy::update()
                     }
                     //  check where we are mapping the nubs to
                     MappedNubAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget(),((KeyMapJoyAxis*)mapper.keys[b])->getAxis());
-                #else
+                #else*/
                     if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
                     {
                         if(Event.type == SDL_JOYAXISMOTION)
                             mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
                     }
-                #endif
+                //#endif
 
             }
             else if (device == DEV_JOYSTICK_HAT)
@@ -439,12 +441,12 @@ void SimpleJoy::resetKeys()
         mouse.y = 0;
         leftClick=rightClick=sjRELEASED;
 
-    #if defined(PLATFORM_PANDORA)
+    /*#if defined(PLATFORM_PANDORA)
         nubL.x = 0;
         nubL.y = 0;
         nubR.x = 0;
         nubR.y = 0;
-    #endif
+    #endif*/
         storeKeys.clear();
 }
 void SimpleJoy::resetDpad()
@@ -500,7 +502,7 @@ void SimpleJoy::joystickStatus()
         std::cout << "Buttons:\t" << SDL_JoystickNumButtons(Joy) << "\n";
     }
 }
-
+/*
 #if defined(PLATFORM_PANDORA)
 int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 {
@@ -514,7 +516,7 @@ int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 			perror("ERROR: Could not open device");
 			return 0;
 		}
-		if (fd < 0) break; /* no more devices */
+		if (fd < 0) break; // no more devices
 
 		ioctl(fd, EVIOCGNAME(sizeof(dev_name)), dev_name);
 		if (strcmp(dev_name, device_name) == 0)
@@ -536,7 +538,7 @@ int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 
 			return fd;
 		}
-		close(fd); /* we don't need this device */
+		close(fd); // we don't need this device
 	}
 	return 0;
 }
@@ -717,3 +719,4 @@ void SimpleJoy::MappedNubAxes(const SIMPLEJOY_MAP& map, CRint ax)
 }
 
 #endif
+*/
