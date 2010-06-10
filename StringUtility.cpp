@@ -127,9 +127,9 @@ bool StringUtility::isDigit(CRchar digit)
 
 bool StringUtility::isLetter(CRchar l)
 {
-	if (l >= 65 && l <= 90)
+	if (l >= 'a' && l <= 'z')
 		return true;
-	else if (l >= 97 && l <= 122)
+	else if (l >= 'A' && l <= 'Z')
 		return true;
 	return false;
 }

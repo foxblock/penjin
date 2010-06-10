@@ -163,7 +163,6 @@ void Rectangle::render()
             if(t.w < dimensions.x && t.h < dimensions.y)
                 SDL_FillRect(rectangle, &t, SDL_MapRGB(rectangle->format,colour.red+1,colour.green+1,colour.blue+1));
         }
-        if(colour.alpha != SDL_ALPHA_OPAQUE)
-            SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
+        SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
     }
 #endif

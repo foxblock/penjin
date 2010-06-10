@@ -1,13 +1,20 @@
 #include "KeyMapper.h"
-
+#include "Parser.h"
 KeyMapper::KeyMapper()
 {
     //ctor
+    parse = new Parser;
 }
 
 KeyMapper::~KeyMapper()
 {
     //dtor
+    clearKeys();
+    delete parse;
+}
+
+void KeyMapper::clearKeys()
+{
     for(int i = keys.size()-1; i>=0; --i)
     {
         if(keys[i])
@@ -17,24 +24,39 @@ KeyMapper::~KeyMapper()
     keys.clear();
 }
 
+PENJIN_ERRORS KeyMapper::loadControlMap(vector<string> lines)
+{
+    parse->loadCommandList(lines);
+    return parseData();
+}
+
 PENJIN_ERRORS KeyMapper::loadControlMap(CRstring file)
 {
-    PENJIN_ERRORS result = parse.loadParserConfigFile(parse.getParentDirectory(file) + parse.getExtension(file) + ".prs");
+    PENJIN_ERRORS result = parse->loadParserConfig(parse->getParentDirectory(file) + parse->getExtension(file) + ".prs");
+    if(result != PENJIN_OK)
+    {
+        setupParser();
+        result = PENJIN_OK;
+        //defaultMap();
+        //return result;
+    }
+    result = parse->loadCommandList(file);
     if(result != PENJIN_OK)
     {
         defaultMap();
-        return result;
+        result = PENJIN_OK;
+        //return result;
     }
-    result = parse.loadCommandList(file);
-    if(result != PENJIN_OK)
-    {
-        defaultMap();
-        return result;
-    }
+    return parseData();
+}
+
+PENJIN_ERRORS KeyMapper::parseData()
+{
+    PENJIN_ERRORS result = PENJIN_OK;
     Command temp;
     while(temp.commandType != CMF_END)
     {
-        temp = parse.getNextCommand();
+        temp = parse->getNextCommand();
         if(temp.commandType != CMF_DEVICE)
             break;
         else
@@ -67,82 +89,111 @@ PENJIN_ERRORS KeyMapper::loadControlMap(CRstring file)
     return result;
 }
 
+PENJIN_ERRORS KeyMapper::saveControlMap(CRstring file)
+{
+    return parse->saveCommandList(file);
+}
+
+PENJIN_ERRORS KeyMapper::saveParserConfig(CRstring file)
+{
+    return parse->saveParserConfig(file);
+}
+
+void KeyMapper::setupParser()
+{
+    //  first spit out the standard CMF data
+    vector<string> CMF;
+    CMF.push_back(";   Control Map Parser Config File");
+    CMF.push_back("DEVICE:1,1;");
+    CMF.push_back("BUTTON:1,1;");
+    CMF.push_back("KEY:2,0;");
+    CMF.push_back("AXIS:1,1;");
+    CMF.push_back("DIGITAL_AXIS:1,2;");
+    CMF.push_back("HAT:2,0;");
+    CMF.push_back("DEVICE_END:0,0;");
+    CMF.push_back("END:0,0;");
+    parse->loadParserConfig(CMF);
+    //defaultMap();
+}
+
 void KeyMapper::defaultMap()
 {
+    clearKeys();
+    setupParser();
+    vector<string> CMF;
+    CMF.push_back(";   Default Penjin Control Map");
+/*
+;   FAILSAFE - uses keyboard
+;   DEVICE:type,id;
+DEVICE:KEYBOARD,0;
+;   KEY:action,key;
+KEY:UP,UP;
+KEY:DOWN,DOWN;
+KEY:LEFT,LEFT;
+KEY:RIGHT,RIGHT;
+KEY:A,x;
+KEY:B,z;
+KEY:X,a;
+KEY:Y,s;
+KEY:L,q;
+KEY:R,w;
+KEY:SELECT,RIGHT_SHIFT;
+KEY:START,RETURN;
+DEVICE_END:;
+DEVICE:MOUSE,0;
+BUTTON:MOUSE_LEFT,0;
+AXIS:MOUSE_X,0;
+AXIS:MOUSE_Y,1;
+DEVICE_END:;
+END:;
+*/
 #if defined(PLATFORM_PANDORA) || defined(PLATFORM_PC)
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("UP","UP",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("DOWN","DOWN",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("LEFT","LEFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("RIGHT","RIGHT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapMouseAxis(0,"MOUSE_X",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapMouseAxis(1,"MOUSE_Y",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapMouseButton(0,"MOUSE_LEFT",0);
+    CMF.push_back("DEVICE:KEYBOARD,0;");
+            CMF.push_back("KEY:UP,UP;");
+            CMF.push_back("KEY:DOWN,DOWN;");
+            CMF.push_back("KEY:LEFT,LEFT;");
+            CMF.push_back("KEY:RIGHT,RIGHT;");
+    CMF.push_back("DEVICE_END:;");
+    CMF.push_back("DEVICE:MOUSE,0;");
+        CMF.push_back("BUTTON:MOUSE_LEFT,0;");
+        CMF.push_back("AXIS:MOUSE_X,0;");
+        CMF.push_back("AXIS:MOUSE_Y,1;");
+    CMF.push_back("DEVICE_END:;");
 #endif
 
 #ifdef PLATFORM_PC
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("A","X",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("B","Z",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("X","A",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("Y","S",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("L","Q",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("R","W",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","RIGHT_SHIFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("START","RETURN",0);
+    CMF.push_back("DEVICE:KEYBOARD,0;");
+            CMF.push_back("KEY:A,x;");
+            CMF.push_back("KEY:B,z;");
+            CMF.push_back("KEY:X,a;");
+            CMF.push_back("KEY:Y,s;");
+            CMF.push_back("KEY:L,q;");
+            CMF.push_back("KEY:R,w;");
+            CMF.push_back("KEY:SELECT,RIGHT_SHIFT;");
+            CMF.push_back("KEY:START,RETURN;");
+    CMF.push_back("DEVICE_END:;");
 #elif PLATFORM_GP2X
-    int i = -1;
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UP",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UPLEFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"LEFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWNLEFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWN",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"DOWNRIGHT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"RIGHT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"UPRIGHT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"START",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"SELECT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"L",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"R",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"A",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"B",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"Y",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"X",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"VOLUP",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"VOLDOWN",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyButton(++i,"CLICK",0);
+    CMF.push_back("DEVICE:JOYSTICK,0;");
+            CMF.push_back("BUTTON:UP,0;");
+            CMF.push_back("BUTTON:UPLEFT,1;");
+            CMF.push_back("BUTTON:LEFT,2;");
+            CMF.push_back("BUTTON:DOWNLEFT,3;");
+            CMF.push_back("BUTTON:DOWN,4;");
+            CMF.push_back("BUTTON:DOWNRIGHT,5;");
+            CMF.push_back("BUTTON:RIGHT,6;");
+            CMF.push_back("BUTTON:UPRIGHT,7;");
+            CMF.push_back("BUTTON:START,8;");
+            CMF.push_back("BUTTON:SELECT,9;");
+            CMF.push_back("BUTTON:L,10;");
+            CMF.push_back("BUTTON:R,11;");
+            CMF.push_back("BUTTON:A,12;");
+            CMF.push_back("BUTTON:B,13;");
+            CMF.push_back("BUTTON:X,14;");
+            CMF.push_back("BUTTON:Y,15;");
+            CMF.push_back("BUTTON:VOLUP,16;");
+            CMF.push_back("BUTTON:VOLDOWN,17;");
+            CMF.push_back("BUTTON:CLICK,18;");
+    CMF.push_back("DEVICE_END:;");
 #elif PLATFORM_PANDORA
 //0 TOP/X,1 RIGHT/A,2 BOTTOM/B,3 LEFT/Y,4 SELECT,5 START,6 PANDORA,7 L,8 R,9 L2,10 R2,11 HOLD
 /*
@@ -150,32 +201,22 @@ void KeyMapper::defaultMap()
 EvilDragon: Top Button = Page Up, Lower Button = Page Down, Left Button = Prior, Right Button = Next
 EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
 */
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("A","HOME",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("B","END",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("X","PAGEDOWN",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("Y","PAGEUP",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("L","RIGHT_SHIFT",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("R","RIGHT_CTRL",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("SELECT","LEFT_CTRL",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapSDLKey("START","LEFT_ALT",0);
-    //  NOTE: Buttons 9 and 10 are the Secondary Shoulder buttons.
-    //  These do not exist physically on a standard Pandora and for this reason are ommited.
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyAxis(0,"LEFTSTICK_X",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyAxis(1,"LEFTSTICK_Y",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyAxis(2,"RIGHTSTICK_X",0);
-    keys.push_back(NULL);
-    keys[keys.size()-1] = new KeyMapJoyAxis(3,"RIGHTSTICK_Y",0);
+    CMF.push_back("DEVICE:KEYBOARD,0;");
+            CMF.push_back("KEY:A,HOME;");
+            CMF.push_back("KEY:B,END;");
+            CMF.push_back("KEY:X,PAGEDOWN;");
+            CMF.push_back("KEY:Y,PAGEUP;");
+            CMF.push_back("KEY:L,RIGHT_SHIFT;");
+            CMF.push_back("KEY:R,RIGHT_CTRL;");
+            CMF.push_back("KEY:SELECT,LEFT_CTRL;");
+            CMF.push_back("KEY:START,LEFT_ALT;");
+    CMF.push_back("DEVICE_END:;");
+    CMF.push_back("DEVICE:JOYSTICK,0;");
+            CMF.push_back("AXIS:LEFTSTICK_X,0;");
+            CMF.push_back("AXIS:LEFTSTICK_Y,1;");
+            CMF.push_back("AXIS:RIGHTSTICK_X,2;");
+            CMF.push_back("AXIS:RIGHTSTICK_Y,3;");
+    CMF.push_back("DEVICE_END:;");
 #elif PLATFORM_WII
     #ifdef PENJIN_SDL_INPUT
         int i = -1;
@@ -206,6 +247,8 @@ EvilDragon: DPad works, that's Cursor Up, Down, Left, Right.
         // Use the Wii controls directly.
     #endif
 #endif
+    CMF.push_back("END:;");
+    loadControlMap(CMF);
 }
 
 PENJIN_ERRORS KeyMapper::mapKey(CRuchar id)
@@ -214,7 +257,7 @@ PENJIN_ERRORS KeyMapper::mapKey(CRuchar id)
     PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
-        temp = parse.getNextCommand();
+        temp = parse->getNextCommand();
         if(temp.commandType == CMF_DEVICE_END)
             break;
         result = PENJIN_ERROR;
@@ -238,7 +281,7 @@ PENJIN_ERRORS KeyMapper::mapMouse(CRuchar id)
     PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
-        temp = parse.getNextCommand();
+        temp = parse->getNextCommand();
         if(temp.commandType == CMF_DEVICE_END)
             break;
         result = PENJIN_ERROR;
@@ -280,7 +323,7 @@ PENJIN_ERRORS KeyMapper::mapJoy(CRuchar id)
     PENJIN_ERRORS result = PENJIN_OK;
     while(temp.commandType != CMF_DEVICE_END)
     {
-        temp = parse.getNextCommand();
+        temp = parse->getNextCommand();
         if(temp.commandType == CMF_DEVICE_END)
             break;
         result = PENJIN_ERROR;
