@@ -53,6 +53,7 @@ bool Achievement::check(const vector<Event*>& checkEvents)
             if ((*K)->check((*I)))
             {
                 // add necessary information to a temporary vector which will be passed to the changeCount function
+                (*I)->action = (*K)->action;
                 countEvents.push_back((*I));
             }
         }
@@ -273,12 +274,19 @@ void Achievement::changeCount(const vector<Event*>& changeEvents)
             break;
         }
         else if ((*I)->action == acDECREASE)
+        {
             count--;
+        }
         else if ((*I)->action == acINCREASE)
+        {
             count++;
+        }
         else if ((*I)->action == acINCREASE_COUNT)
+        {
             count += (*I)->count;
+        }
     }
+    cout << endl;
 }
 
 #ifdef PENJIN_SDL
