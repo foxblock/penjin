@@ -286,7 +286,6 @@ void Achievement::changeCount(const vector<Event*>& changeEvents)
             count += (*I)->count;
         }
     }
-    cout << endl;
 }
 
 #ifdef PENJIN_SDL
