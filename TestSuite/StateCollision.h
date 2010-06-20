@@ -50,6 +50,7 @@ class StateCollision : public BaseState
 
         bool isCollision;
         string whoCollision;
+        string dirCollision;
         int updateTime;
 };
 

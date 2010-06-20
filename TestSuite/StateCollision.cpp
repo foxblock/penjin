@@ -84,7 +84,8 @@ void StateCollision::render()
     text.print("Moving Bullet (Y): " + boolToString(options[movingBullet]) + "\n");
     text.print("Render collisions (R): " + boolToString(options[renderCollision]) + "\n\n\n");
     text.print("Collision: " + boolToString(isCollision) + "\n");
-    text.print("With: " + whoCollision + "\n\n\n");
+    text.print("With: " + whoCollision + "\n");
+    text.print("Direction: " + dirCollision + "\n\n\n");
     text.print("Total update time: " + intToString(updateTime) + "ms\n");
 
     // Render mouse cursor
@@ -125,10 +126,30 @@ void StateCollision::update()
         whoCollision += "Background, ";
     }
     // Checking against a variable CollisionRegion (image and/or region)
-    if (critterCol.hitTest(&bulletCol,options[fullShapeCheck]))
+    // Also checking for direction of collision
+    Directions dir = critterCol.directionTest(&bulletCol,options[fullShapeCheck]);
+    if (dir != diNONE)
     {
         isCollision = true;
         whoCollision += "Bullet, ";
+    }
+    switch (dir)
+    {
+        case diLEFT:
+            dirCollision = "left";
+            break;
+        case diRIGHT:
+            dirCollision = "right";
+            break;
+        case diTOP:
+            dirCollision = "top";
+            break;
+        case diBOTTOM:
+            dirCollision = "bottom";
+            break;
+        default:
+            dirCollision = "none";
+            break;
     }
     // Checking against a single point (always uses full shape checking when an image is loaded)
     if (critterCol.hitTest(input->getTouch().x,input->getTouch().y,true))
