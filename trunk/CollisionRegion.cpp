@@ -1,5 +1,7 @@
 #include "CollisionRegion.h"
 
+#include "NumberUtility.h"
+
 CollisionRegion::CollisionRegion()
 {
     //ctor
@@ -110,6 +112,40 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
             ((tester->getY() - this->getY()) < this->getHeight() && (this->getY() - tester->getY()) < tester->getHeight())) return true;
 
         return false;
+    }
+}
+
+Directions CollisionRegion::directionTest(const CollisionRegion* const tester, CRbool fullShape) const
+{
+    // check for collision first
+    if (not hitTest(tester,fullShape))
+    {
+        return diNONE;
+    }
+    // now check collision direction, by a simple check of the overlaping area
+    else
+    {
+        // calculate overlaping pixels
+        float diffX = min(this->getX() + this->getWidth(), tester->getX() + tester->getWidth()) - max(this->getX(), tester->getX());
+        float diffY = min(this->getY() + this->getHeight(), tester->getY() + tester->getHeight()) - max(this->getY(), tester->getY());
+
+        // check which side overlaps more (relatively)
+        if (diffX / min(this->getWidth(),tester->getWidth()) > diffY / min(this->getHeight(),tester->getHeight()))
+        {
+            // more X -> top/bottom collision
+            if ((this->getY() + this->getHeight()/2) > (tester->getY() + tester->getHeight()/2))
+                return diTOP;
+            else
+                return diBOTTOM;
+        }
+        else
+        {
+            // more Y -> left/right collision
+            if ((this->getX() + this->getWidth()/2) > (tester->getX() + tester->getWidth()/2))
+                return diLEFT;
+            else
+                return diRIGHT;
+        }
     }
 }
 

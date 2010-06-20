@@ -11,9 +11,22 @@
 
 #include "Image.h"
 #include "PenjinTypes.h"
-#include "NumberUtility.h"
 #include "Rectangle.h"
 #include "Vector2df.h"
+
+enum Directions
+{
+    diNONE=0,
+    diLEFT,
+    diRIGHT,
+    diTOP,
+    diBOTTOM,
+    diTOPLEFT,
+    diTOPRIGHT,
+    diBOTTOMLEFT,
+    diBOTTOMRIGHT,
+    diMIDDLE
+};
 
 class CollisionRegion
 {
@@ -65,14 +78,21 @@ class CollisionRegion
         void render();
 
         // returns the colour of the collision image at position x,y or checks against the region if no image has been loaded
-        // return noCollision if out of range
+        // absulute = true - the passed point is relative to the logic zero-point (for example the top-left corner of the screen)
+        // absolute = false - the passed point is relative to the position of the collisionRegion, so (0,0) will reference to the top-left corner of the region
+        // returns noCollision if out of range
         Colour getCollisionType(float x, float y, CRbool absolute) const;
 
         // check whether a single point collides with the collisionRegion (always fullShape if possible)
+        // absolute - see above
         bool hitTest(float x, float y, CRbool absolute) const {return (getCollisionType(x,y,absolute) != noCollision);}
         // check whether another region collides with this region (rectangular or fullShape)
         // also works when one or both have no collision image or region loaded
         bool hitTest(const CollisionRegion* const tester, CRbool fullShape=false) const;
+        // performs a hitTest first and a (rectangular) check for direction afterwards
+        // returns the result of that check (only 4 base directions, no corners, viewed from this object)
+        // might fail on extreme shapes (e.g. very tall and very thin)
+        Directions directionTest(const CollisionRegion* const tester, CRbool fullShape=false) const;
 
     private:
         Image *map;
