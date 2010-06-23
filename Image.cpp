@@ -332,7 +332,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
     #ifdef PENJIN_CACHE_ROTATIONS
         void Image::precacheRotations()
         {
-            for(int i = maxCached-1; i>=0; --i)
+            for(int i = maxCached; i>=1; --i)
             {
                 setRotation(i);
                 renderImage(NULL,0,0);
