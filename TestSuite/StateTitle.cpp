@@ -13,6 +13,7 @@ StateTitle::~StateTitle()
 void StateTitle::init()
 {
     input->resetKeys();
+    GFX::setClearColour(BLACK);
     initMenu();
 }
 
@@ -69,6 +70,11 @@ void StateTitle::initMenu()
     menu.addItem(MENU_STRING_ITEM);
     menu.setIsSelectable(true);
     menu.setMenuItemText("Collision Test");
+    menu.setSpacing(spacing);
+
+    menu.addItem(MENU_STRING_ITEM);
+    menu.setIsSelectable(true);
+    menu.setMenuItemText("Joystick Test");
     menu.setSpacing(spacing);
 
     menu.addItem(MENU_STRING_ITEM);
@@ -143,6 +149,8 @@ void StateTitle::menuLogic()
         setNextState(STATE_ROTATION);
     else if (choice == 7)
         setNextState(STATE_COLLISION);
-    else if(choice == 8)    //  Quit
+    else if (choice == 8)
+        setNextState(STATE_JOYMAP);
+    else if(choice == 9)    //  Quit
         nullifyState();
 }

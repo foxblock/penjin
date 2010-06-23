@@ -46,6 +46,8 @@ void MyGame::stateManagement()
         state = new StateRotation;
     else if (next == STATE_COLLISION)
         state = new StateCollision;
+    else if (next == STATE_JOYMAP)
+        state = new StateJoyMap;
 	/* EXAMPLE OF STATE CHECKING
 	else if(next == STATE_TITLE)
 		state = new StateTitle;*/

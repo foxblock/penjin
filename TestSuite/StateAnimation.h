@@ -3,9 +3,11 @@
 
 #include "PenjinStates.h"
 
-#include "Animation.h"
-#include "AnimatedSprite.h"
-#include "Emitter.h"
+//#include "Animation.h"
+//#include "AnimatedSprite.h"
+class Animation;
+class AnimatedSprite;
+//#include "Emitter.h"
 #include "Text.h"
 /*
 ABOUT: This class is designed to test all animated functionality.

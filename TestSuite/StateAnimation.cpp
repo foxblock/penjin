@@ -1,5 +1,6 @@
 #include "StateAnimation.h"
-
+#include "Animation.h"
+#include "AnimatedSprite.h"
 StateAnimation::StateAnimation()
 {
     //ctor

@@ -4,7 +4,8 @@ StateRaycast::StateRaycast()
 {
     m_Engine = new Raycast();
     m_Engine->init(32, 32, 480, 320);
-
+    m_Engine->loadTexture("images/Textures/1.png");
+    m_Engine->loadTexture("images/Textures/1.png");
     m_Border.loadBackground("images/Textures/Border.png");
     m_Border.setTransparentColour(MAGENTA);
     m_Border.setPosition(Vector2di(0,0));

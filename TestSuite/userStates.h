@@ -21,7 +21,8 @@ enum STATE_MODES
     STATE_RAYCAST,
     STATE_FILE_LIST,
     STATE_ROTATION,
-    STATE_COLLISION
+    STATE_COLLISION,
+    STATE_JOYMAP
 };
 #include "StateTitle.h"
 #include "StateAnimation.h" //  Animation testing suite.
@@ -31,5 +32,6 @@ enum STATE_MODES
 #include "StateFileList.h"  //  File lister
 #include "StateRotation.h"  //  Rotations tester
 #include "StateCollision.h" //  CollisionRegion test
+#include "StateJoyMap.h"    //  Joystick Mapping test GUI
 
 #endif	//	USERSTATES_H

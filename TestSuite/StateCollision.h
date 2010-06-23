@@ -9,7 +9,7 @@
 #include "Sprite.h"
 #include "AnimatedSprite.h"
 #include "CollisionRegion.h"
-#include "StringUtility.h";
+#include "StringUtility.h"
 #include "Line.h"
 
 using namespace StringUtility;

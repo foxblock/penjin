@@ -3,7 +3,7 @@
 StatePrimitive::StatePrimitive()
 {
     //ctor
-    primMode = RECT;//RAND_PRIM;
+    primMode = PIXEL;
     numPrims = 10;
     rect.setThickness(10);
 }
