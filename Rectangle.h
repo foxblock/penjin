@@ -4,6 +4,7 @@
 #include "PenjinTypes.h"
 #include "Colour.h"
 #include "GFX.h"
+
 #ifdef PENJIN_GL
 #include <SDL/SDL_opengl.h>
 #endif
@@ -86,6 +87,13 @@ class Rectangle
                 setRectangle();
             #endif
         }
+        void setAlpha(CRuchar a)
+        {
+            colour.alpha=a;
+            #ifdef PENJIN_SDL
+                SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
+            #endif
+        }
 #ifdef PENJIN_SDL
     void setThickness(CRuint t)
     {
@@ -129,5 +137,4 @@ class Rectangle
         void setRectangle();    //  blits the rect to the surface.
     #endif
 };
-
 #endif // RECTANGLE_H
