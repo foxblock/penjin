@@ -80,7 +80,7 @@ void Glyph::render()
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_BLEND);
-                glDrawArrays(GL_QUADS,0,4);
+                glDrawArrays(GL_TRIANGLE_FAN,0,4);
             glDisable(GL_BLEND);
             glDisable(GL_TEXTURE_2D);
         glDisableClientState(GL_VERTEX_ARRAY);

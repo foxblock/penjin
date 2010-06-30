@@ -217,11 +217,11 @@ void Emitter::setParticlesType(const PARTICLE_TYPES& type)
     void Emitter::render()
     {
         //  Run through all particles
-        glBegin(GL_POINTS);
+        //glBegin(GL_POINTS);
         for(int i = max-1 - invisible; i >= 0; --i)
             particles[i]->render();
 
-        glEnd();
+        //glEnd();
     }
 
 #endif

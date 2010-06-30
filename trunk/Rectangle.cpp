@@ -119,7 +119,7 @@ void Rectangle::render()
                     }
                     else
                     {
-                        glDrawArrays(GL_QUADS,0,4);
+                        glDrawArrays(GL_TRIANGLE_FAN,0,4);
                     }
                 glDisableClientState(GL_VERTEX_ARRAY);
             glDisable(GL_BLEND);

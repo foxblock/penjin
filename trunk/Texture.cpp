@@ -1,5 +1,5 @@
 #include "Texture.h"
-#ifdef PENJIN_GL
+#if defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
 Texture::Texture()
 {
 	init();
@@ -122,16 +122,20 @@ GLenum Texture::getTextureFormat(SDL_Surface* surface)
     {
         if (surface->format->Rmask == 0x000000ff)
             return GL_RGBA;
+        #ifdef PENJIN_GL
         else
             return GL_BGRA;
+        #endif
     }
     else if (numColours == 3)
     {
         if (surface->format->Rmask == 0x000000ff)
             return GL_RGB;
+        #ifdef PENJIN_GL
         else
             return GL_BGR;
-    }
+        #endif
+        }
 
 //  TODO in image is palleted, convert to a truecolour surface
 //    else if (numColours == 2)

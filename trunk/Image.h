@@ -2,14 +2,14 @@
 #define IMAGE_H_INCLUDED
 
 #include <SDL/SDL.h>
-#if defined (PENJIN_GL) || defined (PENJIN_SOFT)
-    #ifndef PENJIN_SOFT
+#if PENJIN_SDL
+    #include <SDL/SDL_rotozoom.h>
+    #include <SDL/SDL_image.h>
+#else
+    #ifdef PENJIN_GL
         #include <SDL/SDL_opengl.h>
     #endif
     #include "Texture.h"
-#elif PENJIN_SDL
-    #include <SDL/SDL_rotozoom.h>
-    #include <SDL/SDL_image.h>
 #endif
 
 #ifdef PLATFORM_WII
@@ -45,7 +45,7 @@ class Image
                 colourKey.alpha = 0;
             }
             void disableTransparentColour(){disableTransparentColour(images.size()-1);}
-        #elif PENJIN_GL
+        #elif PENJIN_GL || defined (PENJIN_ES) || defined (PENJIN_ES2)
             void loadImage(const Texture& t)
             {
                 textures.push_back(t);
@@ -180,7 +180,7 @@ class Image
             uint* getPixelArray(CRint x,CRint y)const;
             // check and unlock screen
             void screenUnlock();
-        #elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
+        #elif defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2) || defined (PENJIN_SOFT)
             #ifdef PENJIN3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
                 Vector3df getRotationVector()const{return rotation;}
@@ -264,7 +264,7 @@ class Image
                 vector <ROT> rotCache;      //  Cached rotations
                 void setupCaching();        //  Auto config of rotation chaching
             #endif
-		#elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
+		#elif defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2) ||defined (PENJIN_SOFT)
             vector<Texture> textures;   //  Stores Textures for image
 		#endif
 
