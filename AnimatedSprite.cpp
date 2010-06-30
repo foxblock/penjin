@@ -101,8 +101,14 @@ PENJIN_ERRORS AnimatedSprite::setTransparentColour(const Vector2di& v)
 
 PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 {
-    image.loadImage(s);
-    return PENJIN_OK;
+    #ifdef PENJIN_SDL
+        image.loadImage(s);
+        return PENJIN_OK;
+    #elif PENJIN_ES
+        return PENJIN_FUNCTION_IS_STUB;
+    #else
+        return PENJIN_FUNCTION_IS_STUB;
+    #endif
 }
 
 PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}

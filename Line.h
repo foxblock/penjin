@@ -5,6 +5,9 @@
 #include "Colour.h"
 #ifdef PENJIN_GL
 #include <SDL/SDL_opengl.h>
+#elif PENJIN_ES || PENJIN_ES2
+    #include <GLES/gl.h>
+    #include <GLES/egl.h>
 #elif PENJIN_SDL
 #include <SDL/SDL_gfxPrimitives.h>
 #endif

@@ -1,6 +1,6 @@
 #ifndef TEXT_H
 #define TEXT_H
-#if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
+#if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT) || defined(PENJIN_ES) || defined(PENJIN_ES2)
     #include "Glyph.h"
 #elif PENJIN_ASCII
     #ifdef _WIN32

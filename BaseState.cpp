@@ -98,7 +98,7 @@ void BaseState::unlimitedUpdate()
 
 void BaseState::init()
 {
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2) || defined (PENJIN_SOFT)
         #ifdef PENJIN3D
             GFX::init3DRendering();
         #else

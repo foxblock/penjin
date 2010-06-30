@@ -31,6 +31,13 @@ namespace GFX
 
 #endif
     vector <ColourVertex> pixBuff;
+
+#if defined(PENJIN_ES) || defined(PENJIN_ES2)
+    static EGLDisplay	eglDisplay	= 0;
+    static EGLConfig	eglConfig	= 0;
+    static EGLSurface	eglSurface	= 0;
+    static EGLContext	eglContext	= 0;
+#endif
 }
 
 #ifdef PLATFORM_GP2X
@@ -99,6 +106,16 @@ void GFX::renderPixelBuffer()
 
 }
 
+void GFX::showCursor(CRbool show)
+{
+    #if defined (PENJIN_SDL) || defined (PENJIN_GL)
+        if(show)
+            SDL_ShowCursor(SDL_ENABLE);
+        else
+            SDL_ShowCursor(SDL_DISABLE);
+    #endif
+}
+
 void GFX::setPixel(CRint x, CRint y, const Colour& colour)
 {
     ColourVertex v;
@@ -157,7 +174,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 #ifdef PENJIN_GL
         //Setup OpenGL window attributes
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -191,11 +208,48 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     #ifdef PENJIN_GL
         glEnable(GL_CULL_FACE); // don't render the back of polygons...
     #endif
+#elif PENJIN_ES || defined (PENJIN_ES2)
+    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if(eglDisplay == EGL_NO_DISPLAY)
+        return PENJIN_EGL_NO_DISPLAY;
+    EGLint iMajorVersion, iMinorVersion;
+	if (!eglInitialize(eglDisplay, &iMajorVersion, &iMinorVersion))
+	{
+		return PENJIN_EGL_INIT_FAILED;
+	}
+	EGLint attributes[] =
+	{
+	    #ifdef PENJIN_ES
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+	    #elif PENJIN_ES2
+	    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+	    #endif
+	    EGL_RED_SIZE, 5,
+	    EGL_GREEN_SIZE, 6,
+	    EGL_BLUE_SIZE, 5,
+	    EGL_DEPTH_SIZE, 16,
+	    EGL_NONE
+    };
+    EGLint numConfigs;
+    if(!eglChooseConfig(eglDisplay,attributes, &eglConfig, 1, &numConfigs))
+        return PENJIN_EGL_INIT_FAILED;
+    const EGLint contextAttribs[] =
+    {
+        #ifdef PENJIN_ES
+        EGL_CONTEXT_CLIENT_VERSION, 1,
+        #elif PENJIN_ES2
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        #endif
+        EGL_NONE
+    };
+    eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, contextAttribs);
+    if(eglContext == EGL_NO_CONTEXT)
+        return PENJIN_EGL_NO_CONTEXT;
 #endif
 #ifdef PENJIN3D
     init3DRendering();
 #else
-    #ifdef PENJIN_GL
+    #if defined PENJIN_GL || defined PENJIN_ES || defined PENJIN_ES2
         init2DRendering();
     #endif
 #endif
@@ -208,13 +262,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 }
 #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
 SDL_Surface* GFX::getVideoSurface(){return screen;}
-void GFX::showCursor(CRbool show)
-{
-    if(show)
-        SDL_ShowCursor(SDL_ENABLE);
-    else
-        SDL_ShowCursor(SDL_DISABLE);
-}
+
 #endif
 #ifdef PENJIN_SDL
     void GFX::setClearColour(const Colour& c){clear = c;}
@@ -350,7 +398,7 @@ void GFX::showCursor(CRbool show)
     {
         return getPixel(screen,x,y);
     }
-#elif PENJIN_GL
+#elif PENJIN_GL || defined (PENJIN_ES) || defined (PENJIN_ES2)
     Colour GFX::getPixel(CRint x, CRint y)
     {
         cout << ErrorHandler().getErrorString(PenjinErrors::PENJIN_FUNCTION_IS_STUB) << " GFX::getPixel(CRint x, CRint y)"<< endl;
@@ -370,7 +418,11 @@ void GFX::showCursor(CRbool show)
         //Setup world view
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
+        #ifdef PENJIN_GL
         glOrtho(0, xRes, yRes, 0, -1, 1);
+        #else
+
+        #endif
 
         //glMatrixMode(GL_TEXTURE);
         //glRotated(90,0,0,1);
@@ -379,8 +431,9 @@ void GFX::showCursor(CRbool show)
         glMatrixMode( GL_MODELVIEW );
         //glMatrixMode(GL_TEXTURE);
         glLoadIdentity();
+        #ifdef PENJIN_GL
         glColor3f(1.0f,1.0f,1.0f);
-
+        #endif
         //glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
     }
 

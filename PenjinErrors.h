@@ -34,6 +34,11 @@ namespace PenjinErrors
         PENJIN_SDL_SETVIDEOMODE_FAILED,
         PENJIN_SDL_INVALID_COLORKEY,
         PENJIN_SDL_HAS_ALPHA_CHANNEL,
+        //  EGL
+        PENJIN_EGL_NO_DISPLAY,
+        PENJIN_EGL_INIT_FAILED,
+        PENJIN_EGL_NO_CONTEXT,
+
         //  devkitpro libFAT
         PENJIN_FAT_INIT_FAILED,
         PENJIN_FAT_GET_ROOT_FAILED,
@@ -73,6 +78,10 @@ namespace PenjinErrors
         "SDL_SetVideoMode failed.",
         "SDL_SetColorKey failed.",
         "SDL_SetColorKey failed - Image has full alpha channel.",
+        //  EGL
+        "eglGetDisplay failed. Unable to access local windowing system.",
+        "eglInitialize failed.",
+        "eglCreateContext failed.",
 
         "FATlib Initialisation Error.",
         "FATlib Get root filesystem failed.",

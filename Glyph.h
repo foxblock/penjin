@@ -54,10 +54,10 @@ class Glyph
         Glyph(const Glyph& noCopy);
         Glyph& operator=(const Glyph& noCopy);
 
-        #ifdef PENJIN_GL
-            Texture glyph;
-        #else
+        #ifdef PENJIN_SDL
             Image glyph;
+        #else
+            Texture glyph;
         #endif
         //  We can check the below params to see if glyph needs to be recreated.
         char character;

@@ -28,8 +28,10 @@ lineRGBA(scr,
 
 void Line::render()
 {
-#ifdef PENJIN_GL
-        // Scale and rotate
+#ifdef PENJIN_SDL
+    render(screen);
+#else
+    // Scale and rotate
     glPushMatrix();
 /*
     #ifdef PENJIN3D
@@ -68,7 +70,5 @@ void Line::render()
             glDisable(GL_BLEND);
         //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
-#else
-    render(screen);
 #endif
 }

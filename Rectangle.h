@@ -7,6 +7,9 @@
 
 #ifdef PENJIN_GL
 #include <SDL/SDL_opengl.h>
+#elif PENJIN_ES || PENJIN_ES2
+    #include <GLES/gl.h>
+    #include <GLES/egl.h>
 #endif
 /*
 This class is a strict simple Rectangle.

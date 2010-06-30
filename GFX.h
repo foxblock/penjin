@@ -10,8 +10,15 @@
 #include "ErrorHandler.h"
 #ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
-#elif defined (PENJIN_SDL) || defined (PENJIN_SOFT)
+#elif defined (PENJIN_SDL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
     #include <SDL/SDL.h>
+#endif
+#ifdef PENJIN_ES
+    #include <GLES/gl.h>
+    #include <EGL/egl.h>
+#elif PENJIN_ES2
+    #include <GLES2/gl2.h>
+    #include <EGL/egl.h>
 #endif
 #ifdef PLATFORM_GP2X
     #include "MMUHack.h"
@@ -40,11 +47,11 @@ namespace GFX
     #ifdef PLATFORM_GP2X
         void useMMUHack(CRbool useHack);
     #endif
-
+    void showCursor(CRbool show);
     //SPECIAL EFFECTS
+
     #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
         SDL_Surface* getVideoSurface();
-        void showCursor(CRbool show);
     #endif
     #ifdef PENJIN_SDL
         void borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour);
@@ -89,7 +96,7 @@ namespace GFX
         void unlockSurface();                       //  unlock the screen
         SDL_Surface* cropSurface(SDL_Surface* in, SDL_Rect* crop);    //  crop a surface
         void clearScreen(SDL_Surface* screen);      //  blank the surface
-    #elif defined (PENJIN_GL) || defined (PENJIN_SOFT)
+    #elif defined (PENJIN_GL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         void init2DRendering();   //  Setup a 2D rendering mode.
                                 //  Also enables blending.
         #ifdef PENJIN3D

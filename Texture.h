@@ -1,10 +1,10 @@
 #ifndef INC_TEXTURE_H
 #define INC_TEXTURE_H
 
-#if defined (PENJIN_GL) || defined (PENJIN_SOFT)
-#ifndef PENJIN_SOFT
+#if defined (PENJIN_GL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
+#ifdef PENJIN_GL
     #include <SDL/SDL_opengl.h>
-#else
+#elif PENJIN_SOFT
     //  GLenem...
     enum GLenum
     {
@@ -13,7 +13,10 @@
         GL_RGB,
         GL_BGR
     };
-
+#elif PENJIN_ES || defined(PENJIN_ES2)
+    #include <SDL/SDL.h>
+    #include <GLES/gl.h>
+    #include <GLES/egl.h>
 #endif
 #include <SDL/SDL_image.h>
 #include "NumberUtility.h"

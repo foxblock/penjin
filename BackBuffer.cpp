@@ -7,7 +7,9 @@ BackBuffer::BackBuffer()
         buffer = NULL;
         screen = SDL_GetVideoSurface();
     #else
-        glClear(GL_ACCUM_BUFFER_BIT);
+        #ifdef PENJIN_GL
+            glClear(GL_ACCUM_BUFFER_BIT);
+        #endif
         alpha = 1.0f;
     #endif
 }
@@ -37,8 +39,10 @@ BackBuffer::~BackBuffer()
 #else
     void BackBuffer::render()
     {
+        #ifdef PENJIN_GL
         glAccum(GL_MULT, alpha);
         glAccum(GL_ACCUM, 1.0f-alpha);
         glAccum(GL_RETURN, 1.0f);
+        #endif
     }
 #endif

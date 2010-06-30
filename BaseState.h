@@ -17,9 +17,9 @@ using std::vector;
 
 #ifdef PENJIN_SDL
     #include <SDL/SDL.h>
-#endif
-#ifdef PENJIN_GL
+#elif PENJIN_GL
     #include <SDL/SDL_opengl.h>
+#elif PENJIN_ES || defined(PENJIN_ES2)
 #endif
 
 #ifdef USE_ACHIEVEMENTS

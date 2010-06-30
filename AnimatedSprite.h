@@ -25,7 +25,7 @@ class AnimatedSprite
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
         PENJIN_ERRORS setTransparentColour(const Vector2di& v);
         PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(Colour(c));}
-        #ifndef PENJIN_SOFT
+        #ifdef PENJIN_SDL
             void disableTransparentColour(){image.disableTransparentColour();}
         #endif
         uchar getAlpha()const{return image.getAlpha();}

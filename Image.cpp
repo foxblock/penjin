@@ -455,7 +455,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                         #endif
                     GLfloat tx[] = {texCoords.x,texCoords.y, texCoords.w,texCoords.y, texCoords.z,texCoords.w, texCoords.x,texCoords.w};
                     glTexCoordPointer(2, GL_FLOAT, 0, tx);
-                    glDrawArrays(GL_QUADS,0,4);
+                    glDrawArrays(GL_TRIANGLE_FAN,0,4);
                     glDisableClientState(GL_VERTEX_ARRAY);
                     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                 glDisable(GL_BLEND);
@@ -465,10 +465,12 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a)
     {
+        /*
             glColor4i(r, g, b, a);
             glBegin(GL_POINTS);
                 glVertex3f(x, y, z);
             glEnd();
+        */
     }
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a);
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b){setPixel(x,y,z,r,g,b,255);}
@@ -479,6 +481,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 
     Colour Image::getPixel(CRint x, CRint y)
     {
+        #ifdef PENJIN_GL
         glPushAttrib(GL_ENABLE_BIT);
         glDrawBuffer(GL_BACK);
 
@@ -519,6 +522,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 
         glPopAttrib();
         return Colour((float)pix[0],pix[1],pix[2],pix[3]);
+        #endif
     }
 #endif // PENJIN_SDL
 
