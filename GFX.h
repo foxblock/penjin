@@ -13,12 +13,15 @@
 #elif defined (PENJIN_SDL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
     #include <SDL/SDL.h>
 #endif
-#ifdef PENJIN_ES
-    #include <GLES/gl.h>
+#if defined (PENJIN_ES) || defined (PENJIN_ES2)
+    #ifdef PENJIN_ES
+        #include <GLES/gl.h>
+    #elif PENJIN_ES2
+        #include <GLES2/gl2.h>
+    #endif
     #include <EGL/egl.h>
-#elif PENJIN_ES2
-    #include <GLES2/gl2.h>
-    #include <EGL/egl.h>
+    #include <X11/Xlib.h>
+    #include <X11/Xutil.h>
 #endif
 #ifdef PLATFORM_GP2X
     #include "MMUHack.h"

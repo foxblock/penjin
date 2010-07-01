@@ -160,7 +160,7 @@ PENJIN_ERRORS Engine::penjinInit()
     #ifndef PENJIN_ASCII
         GFX::setResolution();
 	#endif
-    #if defined (PENJIN_SDL) || defined(PENJIN_GL)
+    #if defined (PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
         //Initialize SDL's subsystems.
         if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
             return PENJIN_SDL_SOMETHING_FAILED;
@@ -180,7 +180,7 @@ PENJIN_ERRORS Engine::penjinInit()
     //  Can't display window title on a GP2X
     #ifndef PLATFORM_GP2X
         string appName = Penjin::getApplicationName();
-        #if defined(PENJIN_SDL) || defined(PENJIN_GL)
+        #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
             SDL_WM_SetCaption((appName + " V" + AutoVersion::FULLVERSION_STRING + AutoVersion::STATUS_SHORT).c_str(), NULL);
         #endif
         #ifdef PENJIN_CACA

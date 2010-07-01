@@ -4,7 +4,14 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
-
+#if defined (PENJIN_ES) || defined (PENJIN_ES2)
+    #ifdef PENJIN_ES
+        #include <GLES/gl.h>
+    #elif PENJIN_ES2
+        #include <GLES2/gl2.h>
+    #endif
+    #include <EGL/egl.h>
+#endif
 #include <string>
 using std::string;
 #include <iostream>
@@ -47,6 +54,9 @@ class ErrorHandler
 		}
 		void setErrorPrefix(CRstring prefix){errorPrefix = prefix;}
 	private:
+    #if defined (PENJIN_ES) || defined (PENJIN_ES2)
+        // PUT GLES error checking here
+    #endif
 	#ifndef PENJIN_ASCII
         string checkSDL(CRint errorCode)
         {
