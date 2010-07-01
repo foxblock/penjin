@@ -33,10 +33,18 @@ namespace GFX
     vector <ColourVertex> pixBuff;
 
 #if defined(PENJIN_ES) || defined(PENJIN_ES2)
-    static EGLDisplay	eglDisplay	= 0;
-    static EGLConfig	eglConfig	= 0;
-    static EGLSurface	eglSurface	= 0;
-    static EGLContext	eglContext	= 0;
+	// X11 variables
+	Window				x11Window	= 0;
+	Display*			x11Display	= 0;
+	long				x11Screen	= 0;
+	XVisualInfo*		x11Visual	= 0;
+	Colormap			x11Colormap	= 0;
+
+	// EGL variables
+	EGLDisplay			eglDisplay	= 0;
+	EGLConfig			eglConfig	= 0;
+	EGLSurface			eglSurface	= 0;
+	EGLContext			eglContext	= 0;
 #endif
 }
 
@@ -64,6 +72,9 @@ void GFX::forceBlit()
     #elif PENJIN_CACA
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
+    #endif
+    #if defined (PENJIN_ES) || defined (PENJIN_ES2)
+        eglSwapBuffers(eglDisplay,eglSurface);
     #endif
 }
 
@@ -209,7 +220,43 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         glEnable(GL_CULL_FACE); // don't render the back of polygons...
     #endif
 #elif PENJIN_ES || defined (PENJIN_ES2)
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    Window					sRootWindow;
+    XSetWindowAttributes	sWA;
+	unsigned int			ui32Mask;
+	int						i32Depth;
+
+	// Initializes the display and screen
+	x11Display = XOpenDisplay(":0");
+	if (!x11Display)
+	{
+		printf("Error: Unable to open X display\n");
+		//goto cleanup;
+	}
+	x11Screen = XDefaultScreen( x11Display );
+
+	// Gets the window parameters
+	sRootWindow = RootWindow(x11Display, x11Screen);
+	i32Depth = DefaultDepth(x11Display, x11Screen);
+	x11Visual = new XVisualInfo;
+	XMatchVisualInfo( x11Display, x11Screen, i32Depth, TrueColor, x11Visual);
+	if (!x11Visual)
+	{
+		printf("Error: Unable to acquire visual\n");
+		//goto cleanup;
+	}
+    x11Colormap = XCreateColormap( x11Display, sRootWindow, x11Visual->visual, AllocNone );
+    sWA.colormap = x11Colormap;
+
+    // Add to these for handling other events
+    sWA.event_mask = StructureNotifyMask | ExposureMask | ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask;
+    ui32Mask = CWBackPixel | CWBorderPixel | CWEventMask | CWColormap;
+
+	// Creates the X11 window
+    x11Window = XCreateWindow( x11Display, RootWindow(x11Display, x11Screen), 0, 0, xRes, yRes,
+								 0, CopyFromParent, InputOutput, CopyFromParent, ui32Mask, &sWA);
+	XMapWindow(x11Display, x11Window);
+	XFlush(x11Display);
+    eglDisplay = eglGetDisplay((EGLNativeDisplayType)x11Display);
     if(eglDisplay == EGL_NO_DISPLAY)
         return PENJIN_EGL_NO_DISPLAY;
     EGLint iMajorVersion, iMinorVersion;
@@ -217,17 +264,24 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 	{
 		return PENJIN_EGL_INIT_FAILED;
 	}
+	eglBindAPI(EGL_OPENGL_ES_API);
+
 	EGLint attributes[] =
 	{
+        EGL_BUFFER_SIZE, 16,
+        EGL_RED_SIZE, 5,
+        EGL_GREEN_SIZE, 6,
+        EGL_BLUE_SIZE, 5,
+        EGL_ALPHA_SIZE, 0,
+        EGL_DEPTH_SIZE, EGL_DONT_CARE,
+        EGL_STENCIL_SIZE, EGL_DONT_CARE,
+        EGL_CONFIG_CAVEAT, EGL_NONE,
+        EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 	    #ifdef PENJIN_ES
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
 	    #elif PENJIN_ES2
 	    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
 	    #endif
-	    EGL_RED_SIZE, 5,
-	    EGL_GREEN_SIZE, 6,
-	    EGL_BLUE_SIZE, 5,
-	    EGL_DEPTH_SIZE, 16,
 	    EGL_NONE
     };
     EGLint numConfigs;
@@ -245,6 +299,8 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, contextAttribs);
     if(eglContext == EGL_NO_CONTEXT)
         return PENJIN_EGL_NO_CONTEXT;
+    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)x11Window, NULL);
+    eglMakeCurrent(eglDisplay,eglSurface,eglSurface,eglContext);
 #endif
 #ifdef PENJIN3D
     init3DRendering();
@@ -413,15 +469,15 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         //Setup viewport
-        //glViewport(0, 0, xRes, yRes);
+        glViewport(0, 0, xRes, yRes);
 
         //Setup world view
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         #ifdef PENJIN_GL
-        glOrtho(0, xRes, yRes, 0, -1, 1);
+        glOrtho(0, xRes, yRes, 0, 0, 1);
         #else
-
+        glOrthof(0, xRes, yRes, 0, 0, 1);
         #endif
 
         //glMatrixMode(GL_TEXTURE);
@@ -431,9 +487,7 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
         glMatrixMode( GL_MODELVIEW );
         //glMatrixMode(GL_TEXTURE);
         glLoadIdentity();
-        #ifdef PENJIN_GL
-        glColor3f(1.0f,1.0f,1.0f);
-        #endif
+        glColor4f(1.0f,1.0f,1.0f,1.0f);
         //glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
     }
 
@@ -454,35 +508,41 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
             gluPerspective(60.0f, (float)xRes/(float)yRes, 1.0f, xRes);
             //Setup model view
             glMatrixMode( GL_MODELVIEW );
-            glColor3f(1.0f,1.0f,1.0f);
+            glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
     #endif
 #endif
 
 void GFX::showVideoInfo()
 {
-    //#ifdef PENJIN_GL
-    SDL_Surface* screen = SDL_GetVideoSurface();
-    //#endif
-    cout << "Screen Info" << endl;
-    cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_SDL)
+        SDL_Surface* screen = SDL_GetVideoSurface();
+        cout << "Screen Info" << endl;
+        cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
+    #endif
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined(PENJIN_ES2)
         printf("GL Info\n");
         printf("Vendor:     %s\n",glGetString(GL_VENDOR));
         printf("Renderer:   %s\n",glGetString(GL_RENDERER));
         printf("Version:    %s\n",glGetString(GL_VERSION));
-        printf("Extensions: %s\n\n",glGetString(GL_EXTENSIONS));
-        int value;
-        SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &value );
-        cout << "SDL_GL_RED_SIZE:     " << value << endl;
-        SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &value );
-        cout << "SDL_GL_GREEN_SIZE:   " << value << endl;
-        SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &value );
-        cout << "SDL_GL_BLUE_SIZE:    " << value << endl;
-        SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &value );
-        cout << "SDL_GL_DEPTH_SIZE:   " << value << endl;
-        SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &value );
-        cout << "SDL_GL_DOUBLEBUFFER: " << value << endl;
+        printf("Extensions: %s\n",glGetString(GL_EXTENSIONS));
+        #if defined (PENJIN_GL) || defined (PENJIN_ES2)
+        printf("GLSL: %s\n",glGetString(GL_SHADING_LANGUAGE_VERSION));
+        #endif
+        #ifdef PENJIN_GL
+            cout << endl;
+            int value;
+            SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &value );
+            cout << "SDL_GL_RED_SIZE:     " << value << endl;
+            SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &value );
+            cout << "SDL_GL_GREEN_SIZE:   " << value << endl;
+            SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &value );
+            cout << "SDL_GL_BLUE_SIZE:    " << value << endl;
+            SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &value );
+            cout << "SDL_GL_DEPTH_SIZE:   " << value << endl;
+            SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &value );
+            cout << "SDL_GL_DOUBLEBUFFER: " << value << endl;
+        #endif
     #endif
 }
 
