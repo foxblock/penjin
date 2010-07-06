@@ -16,7 +16,7 @@ namespace cmfFile
     };
 }
 
-#include "KeyMapSDLKey.h"
+#include "KeyMapKey.h"
 #include "KeyMapMouseButton.h"
 #include "KeyMapMouseAxis.h"
 #include "KeyMapJoyButton.h"

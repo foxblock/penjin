@@ -5,17 +5,6 @@
 #include "KeyMapper.h"
 #include <iostream>
 using std::cout;
-
-/*
-#if defined(PLATFORM_PANDORA)
-    #include <linux/input.h>
-
-    #include <string.h>
-    #include <fcntl.h>
-    #include <unistd.h>
-    #include <stdio.h>
-#endif
-*/
 /*
 TODO: Add Wii Controls/GBA/NDS etc
 */
@@ -72,7 +61,7 @@ class SimpleJoy
                 return sjHELD;
             return sjRELEASED;
         }
-    #ifdef PLATFORM_PC
+    #ifndef PLATFORM_GP2X
         sjSTATUS isQuit()const{return Quit;}
     #endif
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
@@ -94,7 +83,7 @@ class SimpleJoy
         /// Keyboard passthrough
         sjSTATUS isKey(CRstring k)
         {
-            KeyMapSDLKey t(k);
+            KeyMapKey t(k);
             for(int i = storeKeys.size()-1; i>=0;--i)
             {
                 if(t.getKey() == storeKeys.at(i).key.getKey())
@@ -193,18 +182,8 @@ class SimpleJoy
         int getTouchX()const{return mouse.x;}
         int getTouchY()const{return mouse.y;}
         sjSTATUS isTouch()const{return leftClick;}
-/*
-#if defined(PLATFORM_PANDORA)
-        /// Nub's
-        Vector2di getNubLeft()const{return nubL;}
-        int getNubLeftX()const{return nubL.x;}
-        int getNubLeftY()const{return nubL.y;}
-        Vector2di getNubRight()const{return nubR;}
-        int getNubRightX()const{return nubR.x;}
-        int getNubRightY()const{return nubR.y;}
-#endif
-*/
-		void clearSDLEventQueue();
+
+		void clearEventQueue();
         void resetKeys();
         void resetDpad();
         void resetA();
@@ -223,16 +202,14 @@ class SimpleJoy
         void mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis);
         void mappedJoyAxes(const SIMPLEJOY_MAP& map);
 
-        SDL_Joystick *Joy;		//	SDL joystick
-        SDL_Event Event;
         sjSTATUS Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
         struct tKey
         {
-            KeyMapSDLKey key;
+            KeyMapKey key;
             sjSTATUS status;
         };
         vector <tKey> storeKeys;
-    #ifdef PLATFORM_PC
+    #ifndef PLATFORM_GP2X
         sjSTATUS Quit;
     #endif
         Vector2di deadZone;
@@ -249,11 +226,17 @@ class SimpleJoy
         KeyMapper mapper;
         bool mapLoaded;
 
-  /*  #if defined(PLATFORM_PANDORA)
-        #define DEV_NUBL 1
-        #define DEV_NUBR 2
+    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+        #define DEV_NUBL 0
+        #define DEV_NUBR 1
+        #define DEV_KEYS 2
+        #define DEV_GPIO 3
+        #define DEV_TOUCH 4
         #define PND_NUBL "vsense66"
         #define PND_NUBR "vsense67"
+        #define PND_KEYS "omap_twl4030keypad"
+        #define PND_GPIO "gpio-keys"
+        #define PND_TOUCH "touchscreen"
         #define NUB_CUTOFF 5
         #define NUB_SCALE  10
 
@@ -261,17 +244,20 @@ class SimpleJoy
         void PND_ReadEvents( int fd, int device );
         void PND_CheckEvent( struct input_event *event, int device );
 
-        int fd_nubL, fd_nubR, rd, version, i;
+        int fd_nubL, fd_nubR, fd_keys, fd_gpio, fd_touch;
+        int rd, version, i;
         struct input_event ev[64];
+        uint currentEvent;          //  stores the currently checked event for mapping purposes.
         char event_name[30];
         char dev_name[256]; //= "Unknown";
         unsigned short id[4];
-        Vector2di nubL, nubR;
+        //Vector2di nubL, nubR;
         // KEV nub code
-        void MappedNubAxes(const SIMPLEJOY_MAP& map, CRint axis);
-
+        //void MappedNubAxes(const SIMPLEJOY_MAP& map, CRint axis);
+    #else
+        SDL_Joystick *Joy;		//	SDL joystick
+        SDL_Event Event;
     #endif
-    */
 };
 
 #endif // SIMPLEJOY_H

@@ -265,8 +265,8 @@ PENJIN_ERRORS KeyMapper::mapKey(CRuchar id)
         {
             if(!temp.params.empty())
             {
-                KeyMapSDLKey* t = NULL;
-                t = new KeyMapSDLKey(temp.params[0].getString(),temp.params[1].getString(),id);
+                KeyMapKey* t = NULL;
+                t = new KeyMapKey(temp.params[0].getString(),temp.params[1].getString(),id);
                 keys.push_back(t);
                 result = PENJIN_OK;
             }

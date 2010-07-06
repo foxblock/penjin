@@ -15,6 +15,9 @@ namespace GFX
         uint xRes = 800;
         uint yRes = 480;
         bool fullscreen = true;
+        #ifndef FBIO_WAITFORVSYNC
+            #define FBIO_WAITFORVSYNC _IOW('F', 0x20, __u32)
+        #endif
     #elif PLATFORM_GP2X
         uint xRes = 320;
         uint yRes = 240;
@@ -25,7 +28,7 @@ namespace GFX
         uint yRes = 768;
         bool fullscreen = false;
     #endif
-#if defined (PENJIN_SDL) || defined(PENJIN_GL)
+#if defined (PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
     SDL_Surface* screen = SDL_GetVideoSurface();
 #elif PENJIN_ASCII
 
@@ -64,6 +67,18 @@ void GFX::forceBlit()
         //  We do MMUHack BEFORE video flip!
         if(useHack)
             MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (screen->w * screen->h));
+    #elif PLATFORM_PANDORA
+        //  vertical sync to prevent tearing
+        int fd = open( "/dev/fb0" , O_RDONLY );
+		if( 0 < fd )
+		{
+			int ret = 0;
+			ret = ioctl(fd, FBIO_WAITFORVSYNC, &ret );
+			/*if ( ret != 0 )
+                VSYNC failed
+			*/
+		}
+		close(fd);
     #endif
     #ifdef PENJIN_GL
         SDL_GL_SwapBuffers();
@@ -82,7 +97,7 @@ void GFX::renderPixelBuffer()
 {
     if(!pixBuff.empty())
     {
-        #ifdef PENJIN_GL
+        #if defined (PENJIN_GL) || defined (PENJIN_ES)
             //  Setup vertex pointers
             glEnableClientState(GL_VERTEX_ARRAY);
             #ifdef PENJIN_3D
@@ -119,7 +134,7 @@ void GFX::renderPixelBuffer()
 
 void GFX::showCursor(CRbool show)
 {
-    #if defined (PENJIN_SDL) || defined (PENJIN_GL)
+    #if defined (PENJIN_SDL) || defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         if(show)
             SDL_ShowCursor(SDL_ENABLE);
         else
@@ -159,15 +174,7 @@ void GFX::setBPP(uint b)
 
 PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 {
-    /*
-    #ifdef PLATFORM_GP2X
-    if(xRes == 0)
-        xRes = 320;
-    if(yRes == 0)
-        yRes = 240;
-    #endif
-    */
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+#if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined (PENJIN_SOFT)
 	const SDL_VideoInfo* info = NULL;	//Information about the current video settings
     int flags = 0;						//Flags for SDL_SetVideoMode
     //Get some video information
@@ -201,49 +208,48 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
     #endif
 #endif
-#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+#if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
     if(fullscreen)
         flags = flags | SDL_FULLSCREEN;
     if(bpp == 0 || !(bpp == 8 || bpp == 16 || bpp == 32))
         bpp = info->vfmt->BitsPerPixel;
     screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
 	if(screen  == NULL )
-	{
 		return PENJIN_SDL_SETVIDEOMODE_FAILED;
-    }
     else
     {
         xRes = screen->w;
         yRes = screen->h;
     }
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
         glEnable(GL_CULL_FACE); // don't render the back of polygons...
     #endif
-#elif PENJIN_ES || defined (PENJIN_ES2)
-    Window					sRootWindow;
-    XSetWindowAttributes	sWA;
-	unsigned int			ui32Mask;
-	int						i32Depth;
+#endif
+#if defined PENJIN_ES || defined (PENJIN_ES2)
+    Window                      sRootWindow;
+    XSetWindowAttributes        sWA;
+        unsigned int            ui32Mask;
+        int                     i32Depth;
 
-	// Initializes the display and screen
-	x11Display = XOpenDisplay(":0");
-	if (!x11Display)
-	{
-		printf("Error: Unable to open X display\n");
-		//goto cleanup;
-	}
-	x11Screen = XDefaultScreen( x11Display );
+        // Initializes the display and screen
+        x11Display = XOpenDisplay(":0");
+        if (!x11Display)
+        {
+            printf("Error: Unable to open X display\n");
+            //goto cleanup;
+        }
+        x11Screen = XDefaultScreen( x11Display );
 
-	// Gets the window parameters
-	sRootWindow = RootWindow(x11Display, x11Screen);
-	i32Depth = DefaultDepth(x11Display, x11Screen);
-	x11Visual = new XVisualInfo;
-	XMatchVisualInfo( x11Display, x11Screen, i32Depth, TrueColor, x11Visual);
-	if (!x11Visual)
-	{
-		printf("Error: Unable to acquire visual\n");
-		//goto cleanup;
-	}
+        // Gets the window parameters
+        sRootWindow = RootWindow(x11Display, x11Screen);
+        i32Depth = DefaultDepth(x11Display, x11Screen);
+        x11Visual = new XVisualInfo;
+        XMatchVisualInfo( x11Display, x11Screen, i32Depth, TrueColor, x11Visual);
+        if (!x11Visual)
+        {
+            printf("Error: Unable to acquire visual\n");
+            //goto cleanup;
+        }
     x11Colormap = XCreateColormap( x11Display, sRootWindow, x11Visual->visual, AllocNone );
     sWA.colormap = x11Colormap;
 
@@ -251,23 +257,44 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     sWA.event_mask = StructureNotifyMask | ExposureMask | ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask;
     ui32Mask = CWBackPixel | CWBorderPixel | CWEventMask | CWColormap;
 
-	// Creates the X11 window
+        // Creates the X11 window
     x11Window = XCreateWindow( x11Display, RootWindow(x11Display, x11Screen), 0, 0, xRes, yRes,
-								 0, CopyFromParent, InputOutput, CopyFromParent, ui32Mask, &sWA);
-	XMapWindow(x11Display, x11Window);
-	XFlush(x11Display);
+                0, CopyFromParent, InputOutput, CopyFromParent, ui32Mask, &sWA);
+
+    // Make it fullscreen
+    if(fullscreen)
+    {
+        XEvent xev;
+        Atom wm_state = XInternAtom(x11Display, "_NET_WM_STATE", False);
+        Atom fullscreen = XInternAtom(x11Display, "_NET_WM_STATE_FULLSCREEN", False);
+
+        memset(&xev, 0, sizeof(xev));
+        xev.type = ClientMessage;
+        xev.xclient.window = x11Window;
+        xev.xclient.message_type = wm_state;
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = 1;
+        xev.xclient.data.l[1] = fullscreen;
+        xev.xclient.data.l[2] = 0;
+
+        XSendEvent(x11Display, DefaultRootWindow(x11Display), False,
+        SubstructureNotifyMask, &xev);
+    }
+
+    XMapWindow(x11Display, x11Window);
+    XFlush(x11Display);
     eglDisplay = eglGetDisplay((EGLNativeDisplayType)x11Display);
     if(eglDisplay == EGL_NO_DISPLAY)
         return PENJIN_EGL_NO_DISPLAY;
     EGLint iMajorVersion, iMinorVersion;
-	if (!eglInitialize(eglDisplay, &iMajorVersion, &iMinorVersion))
-	{
-		return PENJIN_EGL_INIT_FAILED;
-	}
-	eglBindAPI(EGL_OPENGL_ES_API);
+    if (!eglInitialize(eglDisplay, &iMajorVersion, &iMinorVersion))
+    {
+            return PENJIN_EGL_INIT_FAILED;
+    }
+    eglBindAPI(EGL_OPENGL_ES_API);
 
-	EGLint attributes[] =
-	{
+    EGLint attributes[] =
+    {
         EGL_BUFFER_SIZE, 16,
         EGL_RED_SIZE, 5,
         EGL_GREEN_SIZE, 6,
@@ -277,12 +304,12 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         EGL_STENCIL_SIZE, EGL_DONT_CARE,
         EGL_CONFIG_CAVEAT, EGL_NONE,
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-	    #ifdef PENJIN_ES
+    #ifdef PENJIN_ES
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-	    #elif PENJIN_ES2
-	    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-	    #endif
-	    EGL_NONE
+    #elif PENJIN_ES2
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+    #endif
+        EGL_NONE
     };
     EGLint numConfigs;
     if(!eglChooseConfig(eglDisplay,attributes, &eglConfig, 1, &numConfigs))
