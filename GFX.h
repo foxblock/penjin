@@ -112,5 +112,9 @@ namespace GFX
             void init3DRendering();                     //  Setup a standard 3D rendering mode
         #endif
     #endif
+
+    #if defined (PENJIN_ES) || defined (PENJIN_ES2)
+        void shutdown();
+    #endif
 }
 #endif // GFX_H_INCLUDED

@@ -52,6 +52,9 @@ Engine::~Engine()
 	#endif
 	#if defined(PENJIN_SDL) || defined(PENJIN_GL)
         SDL_Quit();
+    #elif defined (PENJIN_ES) || defined (PENJIN_ES2)
+        GFX::shutdown();
+        SDL_Quit();
 	#endif
 }
 
