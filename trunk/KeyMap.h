@@ -2,6 +2,12 @@
 #define KEYMAP_H
 
 #include "PenjinTypes.h"
+#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #include <linux/input.h>
+    #include <fcntl.h>
+    #include <unistd.h>
+    #include <stdio.h>
+#endif
 #include <SDL/SDL.h>
 #include <string>
 using std::string;

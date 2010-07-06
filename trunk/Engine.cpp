@@ -160,9 +160,12 @@ PENJIN_ERRORS Engine::penjinInit()
     #ifndef PENJIN_ASCII
         GFX::setResolution();
 	#endif
-    #if defined (PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
+    #if defined (PENJIN_SDL) || defined(PENJIN_GL)
         //Initialize SDL's subsystems.
         if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
+            return PENJIN_SDL_SOMETHING_FAILED;
+    #elif defined (PENJIN_ES) || defined (PENJIN_ES2)
+        if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
             return PENJIN_SDL_SOMETHING_FAILED;
     #endif
     PENJIN_ERRORS err = init();

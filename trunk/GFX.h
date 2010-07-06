@@ -14,6 +14,7 @@
     #include <SDL/SDL.h>
 #endif
 #if defined (PENJIN_ES) || defined (PENJIN_ES2)
+#include "SDL_syswm.h"
     #ifdef PENJIN_ES
         #include <GLES/gl.h>
     #elif PENJIN_ES2
@@ -25,6 +26,11 @@
 #endif
 #ifdef PLATFORM_GP2X
     #include "MMUHack.h"
+#elif PLATFORM_PANDORA
+    #include <linux/fb.h>
+    #include <sys/ioctl.h>
+    #include <fcntl.h>
+    //#include <unistd.h>
 #endif
 //#include "LUT.h"
 #include <vector>
