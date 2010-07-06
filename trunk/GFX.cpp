@@ -613,3 +613,16 @@ uint GFX::getYResolution()
     return yRes;
 }
 
+#if defined(PENJIN_ES) || defined(PENJIN_ES2)
+void GFX::shutdown()
+{
+    eglMakeCurrent( eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+	eglDestroyContext ( eglDisplay, eglContext );
+	eglDestroySurface ( eglDisplay, eglSurface );
+	eglTerminate ( eglDisplay );
+    if (x11Window) XDestroyWindow(x11Display, x11Window);
+    if (x11Colormap) XFreeColormap( x11Display, x11Colormap );
+    if (x11Display) XCloseDisplay(x11Display);
+}
+#endif
+

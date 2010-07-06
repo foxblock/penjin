@@ -537,7 +537,7 @@ void SimpleJoy::joystickStatus()
     #endif
 }
 
-#if defined(PLATFORM_PANDORA)
+#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 {
 	int fd;
@@ -598,7 +598,7 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
 {
         int value;
         value = event->value;
-        cout << "RAW - type: " << event->type << " code: " << event->code << " val: " << event->value << endl;
+        //cout << "RAW - type: " << event->type << " code: " << event->code << " val: " << event->value << endl;
         switch( event->type )
         {
             case EV_KEY:
@@ -610,6 +610,7 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                     {
                         if(event->code == ((KeyMapKey*)mapper.keys[b])->getKey())
                         {
+                            cout << "Key:" << event->code << " Pressed!" << endl;
                             if(event->value == 1)
                                 mappedDown(mapper.keys[b]->getTarget());
                             else if(event->value == 0)
@@ -661,12 +662,16 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                     else if(device == DEV_MOUSE_AXIS)
                     {
                         if(dev == DEV_TOUCH && (event->code == ABS_X || event->code == ABS_Y))
+                        {
+                            cout << "Axis: " << event->code << " Moved!" << endl;
                             mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
+                        }
                     }
                     else if(device == DEV_MOUSE_BUTTON && dev == DEV_TOUCH)
                     {
                         if(event->code == ABS_PRESSURE)
                         {
+                            cout << "Pressure: " << event->value << " Pressed!" << endl;
                             if(event->value)
                                 mappedDown(mapper.keys[b]->getTarget());
                             else
