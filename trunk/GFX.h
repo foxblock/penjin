@@ -14,7 +14,6 @@
     #include <SDL/SDL.h>
 #endif
 #if defined (PENJIN_ES) || defined (PENJIN_ES2)
-#include "SDL_syswm.h"
     #ifdef PENJIN_ES
         #include <GLES/gl.h>
     #elif PENJIN_ES2
@@ -23,6 +22,7 @@
     #include <EGL/egl.h>
     #include <X11/Xlib.h>
     #include <X11/Xutil.h>
+    #include <X11/Xatom.h>
 #endif
 #ifdef PLATFORM_GP2X
     #include "MMUHack.h"
