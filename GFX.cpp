@@ -48,6 +48,13 @@ namespace GFX
 	EGLConfig			eglConfig	= 0;
 	EGLSurface			eglSurface	= 0;
 	EGLContext			eglContext	= 0;
+	enum
+	{
+	_NET_WM_STATE_REMOVE =0,
+	_NET_WM_STATE_ADD = 1,
+	_NET_WM_STATE_TOGGLE =2
+	};
+
 #endif
 }
 
@@ -261,28 +268,32 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     x11Window = XCreateWindow( x11Display, RootWindow(x11Display, x11Screen), 0, 0, xRes, yRes,
                 0, CopyFromParent, InputOutput, CopyFromParent, ui32Mask, &sWA);
 
+    XMapWindow(x11Display, x11Window);
+    XFlush(x11Display);
+
     // Make it fullscreen
     if(fullscreen)
     {
-        XEvent xev;
-        Atom wm_state = XInternAtom(x11Display, "_NET_WM_STATE", False);
-        Atom fullscreen = XInternAtom(x11Display, "_NET_WM_STATE_FULLSCREEN", False);
+		// Make the window fullscreen
+		unsigned char fullScreen = 1;
+		Atom wmState = XInternAtom(x11Display, "_NET_WM_STATE", False);
+		Atom wmFullScreen = XInternAtom(x11Display,"_NET_WM_STATE_FULLSCREEN", False);
 
-        memset(&xev, 0, sizeof(xev));
-        xev.type = ClientMessage;
-        xev.xclient.window = x11Window;
-        xev.xclient.message_type = wm_state;
-        xev.xclient.format = 32;
-        xev.xclient.data.l[0] = 1;
-        xev.xclient.data.l[1] = fullscreen;
-        xev.xclient.data.l[2] = 0;
+		XEvent xev;
+		xev.xclient.type		= ClientMessage;
+		xev.xclient.serial		= 0;
+		xev.xclient.send_event		= True;
+		xev.xclient.window		= x11Window;
+		xev.xclient.message_type	= wmState;
+		xev.xclient.format		= 32;
+		xev.xclient.data.l[0]		= (fullScreen ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
+		xev.xclient.data.l[1]		= wmFullScreen;
+		xev.xclient.data.l[2]		= 0;
 
-        XSendEvent(x11Display, DefaultRootWindow(x11Display), False,
-        SubstructureNotifyMask, &xev);
+		XSendEvent(x11Display, DefaultRootWindow(x11Display), False, SubstructureRedirectMask | SubstructureNotifyMask, &xev);
     }
 
-    XMapWindow(x11Display, x11Window);
-    XFlush(x11Display);
+
     eglDisplay = eglGetDisplay((EGLNativeDisplayType)x11Display);
     if(eglDisplay == EGL_NO_DISPLAY)
         return PENJIN_EGL_NO_DISPLAY;
