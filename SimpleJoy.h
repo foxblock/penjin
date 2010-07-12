@@ -4,6 +4,9 @@
 #include "PenjinTypes.h"
 #include "KeyMapper.h"
 #include <iostream>
+#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+#include <fstream>
+#endif
 using std::cout;
 /*
 TODO: Add Wii Controls/GBA/NDS etc
@@ -195,6 +198,9 @@ class SimpleJoy
 
         /// Status
         void joystickStatus();
+    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+        int getTouchPressure(){return ts_pressure;}
+    #endif
 
     private:
         void mappedDown(const SIMPLEJOY_MAP& map);
@@ -246,6 +252,11 @@ class SimpleJoy
 
         int fd_nubL, fd_nubR, fd_keys, fd_gpio, fd_touch;
         int rd, version, i;
+        int ts_pressure;
+        int pointercal[7];  // stores ts cali data
+        Point2di rawTS;
+        bool haveTSx;
+        bool haveTSy;
         struct input_event ev[64];
         uint currentEvent;          //  stores the currently checked event for mapping purposes.
         char event_name[30];
