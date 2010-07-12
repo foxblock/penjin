@@ -1,6 +1,7 @@
 #include "SimpleJoy.h"
 
 #include "StringUtility.h"
+#include "ErrorHandler.h"
 
 SimpleJoy::~SimpleJoy()
 {
@@ -33,6 +34,43 @@ SimpleJoy::SimpleJoy()
         fd_gpio = PND_OpenEventDeviceByName(PND_GPIO);
         fd_touch = PND_OpenEventDeviceByName(PND_TOUCH);
         currentEvent = 0;
+        //  open pointercal file
+        ifstream ifile("/etc/pointercal");//load infile
+        if(!ifile.is_open())
+        {
+            ErrorHandler().killApp(PENJIN_FILE_NOT_FOUND);
+        }
+        //  extract values
+        for(uint i = 0; i<7; ++i)
+        {
+            ifile >> pointercal[i];
+            cout << "i:" << i << "Pcal:" << pointercal[i] << endl;
+
+            //  hack
+            if(pointercal[i] == 0)
+            {
+                cout << "Hacked Values used!" << endl;
+                if(i == 0)
+                    pointercal[0] = -13868;
+                else if(i == 1)
+                    pointercal[1] = 53;
+                else if(i == 2)
+                    pointercal[2] = 54178276;
+                else if(i == 3)
+                    pointercal[3] = 43;
+                else if(i == 4)
+                    pointercal[4] = -8681;
+                else if(i == 5)
+                    pointercal[5] = 32884616;
+                else if(i == 6)
+                    pointercal[6] = 65536;
+            }
+        }
+
+        if(ifile.is_open())
+        {
+            ifile.close();
+        }
     #else
         SDL_JoystickEventState(SDL_ENABLE);
 
@@ -227,29 +265,42 @@ void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
 void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
 {
     #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+/*  -13868 53 54178276 43 -8681 32884616 65536
+    This implementation is a linear transformation using 7 parameters (a, b, c, d, e, f and s)
+    to transform the device coordinates (Xd, Yd) into screen coordinates (Xs, Ys) using the following equations:
+    s*Xs = a*Xd + b*Yd + c
+    s*Ys = d*Xd + e*Yd + f
+ */
+        cout << "a:" << pointercal[0] << " b:" << pointercal[1] << " c:" << pointercal[2] << endl;
+        cout << "d:" << pointercal[3] << " e:" << pointercal[4] << " f:" << pointercal[5] << endl;
+        cout << "s:" << pointercal[6] << endl;
         if(axis == 0 && ev[currentEvent].code == ABS_X)
         {
+            int val = ((pointercal[0]*rawTS.x) + (pointercal[1]*rawTS.y) + pointercal[2])/pointercal[6];
+            cout << "Calc_X:" << val << endl;
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = ev[currentEvent].value;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = ev[currentEvent].value;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = ev[currentEvent].value;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = ev[currentEvent].value;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = ev[currentEvent].value;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = ev[currentEvent].value;break;
+                case SJ_LEFTSTICK_X:    leftStick.x = val;break;
+                case SJ_LEFTSTICK_Y:    leftStick.y = val;break;
+                case SJ_RIGHTSTICK_X:   rightStick.x = val;break;
+                case SJ_RIGHTSTICK_Y:   rightStick.y = val;break;
+                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = val;break;
+                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = val;break;
                 default:                break;
             }
         }
         else if(axis == 1 && ev[currentEvent].code == ABS_Y)
         {
+            int val = ((pointercal[3]*rawTS.x) + (pointercal[4]*rawTS.y) + pointercal[5])/pointercal[6];
+            cout << "Calc_Y:" << val << endl;
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = ev[currentEvent].value;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = ev[currentEvent].value;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = ev[currentEvent].value;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = ev[currentEvent].value;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = ev[currentEvent].value;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = ev[currentEvent].value;break;
+                case SJ_LEFTSTICK_X:    leftStick.x = val;break;
+                case SJ_LEFTSTICK_Y:    leftStick.y = val;break;
+                case SJ_RIGHTSTICK_X:   rightStick.x = val;break;
+                case SJ_RIGHTSTICK_Y:   rightStick.y = val;break;
+                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = val;break;
+                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = val;break;
                 default:                break;
             }
         }
@@ -582,7 +633,10 @@ void SimpleJoy::PND_ReadEvents( int fd, int device )
 	if( fd != 0 )
 	{
 		rd = read(fd, ev, sizeof(struct input_event) * 64);
-
+        haveTSx = false;
+        haveTSy = false;
+        rawTS.x = 0;
+        rawTS.y = 0;
 		if (rd > (int) sizeof(struct input_event))
 		{
 			for (i = 0; i < rd / (int) sizeof(struct input_event); i++)
@@ -596,164 +650,112 @@ void SimpleJoy::PND_ReadEvents( int fd, int device )
 
 void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
 {
-        int value;
-        value = event->value;
-        //cout << "RAW - type: " << event->type << " code: " << event->code << " val: " << event->value << endl;
-        switch( event->type )
-        {
-            case EV_KEY:
-                // Mappings
-                for(int b = mapper.size()-1; b>=0; --b)
+    switch( event->type )
+    {
+        case EV_KEY:
+            // Mappings
+            for(int b = mapper.size()-1; b>=0; --b)
+            {
+                KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                if(device == DEV_KEYBOARD)
                 {
-                    KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
-                    if(device == DEV_KEYBOARD)
+                    if(event->code == ((KeyMapKey*)mapper.keys[b])->getKey())
                     {
-                        if(event->code == ((KeyMapKey*)mapper.keys[b])->getKey())
+                        cout << "Key:" << event->code << " Pressed!" << endl;
+                        if(event->value == 1)
+                            mappedDown(mapper.keys[b]->getTarget());
+                        else if(event->value == 0)
+                            mappedUp(mapper.keys[b]->getTarget());
+                    }
+                }
+            }
+            //  Keyboard passthrough
+            if(event->value == 1)
+            {
+                KeyMapKey t(event->code);
+                tKey k;
+                k.key = t;
+                k.status = sjPRESSED;
+                storeKeys.push_back(k);
+            }
+            else if(event->value == 0)
+            {
+                KeyMapKey t(event->code);
+                tKey k;
+                k.key = t;
+                k.status = sjRELEASED;
+                storeKeys.push_back(k);
+            }
+        break;
+        case EV_ABS:
+            // Mappings
+            if(dev == DEV_TOUCH)
+            {
+                if(event->code == ABS_X)
+                {
+                    rawTS.x = event->value;
+                    haveTSx = true;
+                }
+                else if(event->code == ABS_Y)
+                {
+                    rawTS.y = event->value;
+                    haveTSy = true;
+                }
+                if(haveTSx && haveTSy)
+                {
+                    cout << "TSRAW_X:" << rawTS.x << endl;
+                    cout << "TSRAW_Y:" << rawTS.y << endl;
+                    for(int b = mapper.size()-1; b>=0; --b)
+                    {
+                        KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                        if(device == DEV_MOUSE_AXIS)
                         {
-                            cout << "Key:" << event->code << " Pressed!" << endl;
-                            if(event->value == 1)
-                                mappedDown(mapper.keys[b]->getTarget());
-                            else if(event->value == 0)
-                                mappedUp(mapper.keys[b]->getTarget());
+                            if(dev == DEV_TOUCH)
+                            {
+                                //cout << "Axis: " << event->code << " Moved!" << endl;
+                                mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
+                            }
                         }
                     }
                 }
-                //  Keyboard passthrough
-                if(event->value == 1)
+            }
+            for(int b = mapper.size()-1; b>=0; --b)
+            {
+                KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                if(device == DEV_JOYSTICK_AXIS)
                 {
-                    KeyMapKey t(event->code);
-                    tKey k;
-                    k.key = t;
-                    k.status = sjPRESSED;
-                    storeKeys.push_back(k);
-                }
-                else if(event->value == 0)
-                {
-                    KeyMapKey t(event->code);
-                    tKey k;
-                    k.key = t;
-                    k.status = sjRELEASED;
-                    storeKeys.push_back(k);
-                }
-			break;
-            case EV_ABS:
-                // Mappings
-                for(int b = mapper.size()-1; b>=0; --b)
-                {
-                    KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
-                    if(device == DEV_JOYSTICK_AXIS)
+                    switch( dev )
                     {
-                        switch( dev )
-                        {
-                            case DEV_NUBL:
-                                if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 0)
-                                    mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                                if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 1)
-                                    mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                            break;
-                            case DEV_NUBR:
-                                if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 2)
-                                    mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                                if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 3)
-                                    mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                            break;
-                        }
-                    }
-                    else if(device == DEV_MOUSE_AXIS)
-                    {
-                        if(dev == DEV_TOUCH && (event->code == ABS_X || event->code == ABS_Y))
-                        {
-                            cout << "Axis: " << event->code << " Moved!" << endl;
-                            mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
-                        }
-                    }
-                    else if(device == DEV_MOUSE_BUTTON && dev == DEV_TOUCH)
-                    {
-                        if(event->code == ABS_PRESSURE)
-                        {
-                            cout << "Pressure: " << event->value << " Pressed!" << endl;
-                            if(event->value)
-                                mappedDown(mapper.keys[b]->getTarget());
-                            else
-                                mappedUp(mapper.keys[b]->getTarget());
-                        }
+                        case DEV_NUBL:
+                            if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 0)
+                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 1)
+                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                        break;
+                        case DEV_NUBR:
+                            if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 2)
+                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 3)
+                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                        break;
                     }
                 }
-            break;
-            default:
-                break;
-        }
-
-    /*      for(int b = mapper.size()-1; b>=0;--b)
-        {
-            KEY_MAP_DEVICE device = mapper.keys[b]->getDevice();
-            if(device == DEV_KEYBOARD)
-            {
-                if(((KeyMapKey*)mapper.keys[b])->getKey() == Event.key.keysym.sym)
+                else if(device == DEV_MOUSE_BUTTON && dev == DEV_TOUCH)
                 {
-                    if(Event.type == SDL_KEYDOWN)
-                        mappedDown(mapper.keys[b]->getTarget());
-                    else if(Event.type == SDL_KEYUP)
-                        mappedUp(mapper.keys[b]->getTarget());
-                }
-            }
-            else if(device == DEV_MOUSE_AXIS)
-            {
-                // Axis may be changed
-                if(Event.type == SDL_MOUSEMOTION)
-                    mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
-            }
-            else if(device == DEV_MOUSE_BUTTON)
-            {
-                MouseButtons::SDL_MOUSE_BUTTONS button = ((KeyMapMouseButton*)mapper.keys[b])->getButton();
-                if(button == Event.button.button)
-                {
-                    //oldMouse = mouse;
-                    // Buttons may have been pressed
-                    if(Event.type == SDL_MOUSEBUTTONDOWN)
-                        mappedDown(mapper.keys[b]->getTarget());
-                    else if(Event.type == SDL_MOUSEBUTTONUP)
-                        mappedUp(mapper.keys[b]->getTarget());
-                }
-            }
-            else if (device == DEV_JOYSTICK_HAT)
-            {
-                if(Event.type == SDL_JOYHATMOTION)
-                {
-                    if(((KeyMapHat*)mapper.keys[b])->getDirection() & Event.jhat.value)
-                        mappedDown(((KeyMapHat*)mapper.keys[b])->getTarget());
-                    else
-                        mappedUp(((KeyMapHat*)mapper.keys[b])->getTarget());
-                }
-            }
-            else if (device == DEV_DIGITAL_JOYSTICK_AXIS)
-            {
-                if(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
-                {
-                    #ifdef _DEBUG
-                    cout << "DAXIS: " << Event.jaxis.value << "  " << ((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTrigger() << endl;
-                    #endif
-                    if(Event.type == SDL_JOYAXISMOTION)
+                    if(event->code == ABS_PRESSURE)
                     {
-
-                        if(Event.jaxis.value == ((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTrigger())
-                            mappedDown(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTarget());
+                        //cout << "Pressure: " << event->value << " Pressed!" << endl;
+                        if(event->value)
+                            mappedDown(mapper.keys[b]->getTarget());
                         else
-                            mappedUp(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTarget());
+                            mappedUp(mapper.keys[b]->getTarget());
                     }
                 }
             }
-            else if(device == DEV_JOYSTICK_BUTTON)
-            {
-                if(((KeyMapJoyButton*)mapper.keys[b])->getButton() == Event.jbutton.button)
-                {
-                    // Buttons may have been pressed
-                    if(Event.type == SDL_JOYBUTTONDOWN)
-                        mappedDown(mapper.keys[b]->getTarget());
-                    else if(Event.type == SDL_JOYBUTTONUP)
-                        mappedUp(mapper.keys[b]->getTarget());
-                }
-            }
-        }*/
+        break;
+        default:
+            break;
+    }
+
 }
 #endif
