@@ -115,6 +115,42 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
     }
 }
 
+bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2df posObj, const Vector2df posTester, CRbool fullShape) const
+{
+    float objPosX = posObj.x + this->getRegionOffsetX();
+    float objPosY = posObj.y + this->getRegionOffsetY();
+    float testerPosX = posTester.x + tester->getRegionOffsetX();
+    float testerPosY = posTester.y + tester->getRegionOffsetY();
+    if (fullShape)
+    {
+        // determine overlaping area
+        float xPos = max(objPosX, testerPosX);
+        float yPos = max(objPosY, testerPosY);
+        float xPosMax = min(objPosX + this->getWidth(), testerPosX + tester->getWidth());
+        float yPosMax = min(objPosY + this->getHeight(), testerPosY + tester->getHeight());
+
+        // check for collision
+        for (float I = xPos; I <= xPosMax; ++I)
+        {
+            for (float K = yPos; K < yPosMax; ++K)
+            {
+                // if both have a collision-pixel at the same spot, we have a collision
+                if (this->hitTest(I - posObj.x,K - posObj.y,false) && tester->hitTest(I - posTester.x,K - posTester.y,false))
+                    return true;
+            }
+        }
+        return false;
+    }
+    else
+    {
+        // check rectangular bounds only
+        if (((testerPosX - objPosX) < this->getWidth() && (objPosX - testerPosX) < tester->getWidth()) &&
+            ((testerPosY - objPosY) < this->getHeight() && (objPosY - testerPosY) < tester->getHeight())) return true;
+
+        return false;
+    }
+}
+
 Directions CollisionRegion::directionTest(const CollisionRegion* const tester, CRbool fullShape) const
 {
     // check for collision first
@@ -142,6 +178,45 @@ Directions CollisionRegion::directionTest(const CollisionRegion* const tester, C
         {
             // more Y -> left/right collision
             if ((this->getX() + this->getWidth()/2) > (tester->getX() + tester->getWidth()/2))
+                return diLEFT;
+            else
+                return diRIGHT;
+        }
+    }
+}
+
+Directions CollisionRegion::directionTest(const CollisionRegion* const tester, const Vector2df posObj, const Vector2df posTester, CRbool fullShape) const
+{
+    // check for collision first
+    if (not hitTest(tester,posObj,posTester,fullShape))
+    {
+        return diNONE;
+    }
+    // now check collision direction, by a simple check of the overlaping area
+    else
+    {
+        float objPosX = posObj.x + this->getRegionOffsetX();
+        float objPosY = posObj.y + this->getRegionOffsetY();
+        float testerPosX = posTester.x + tester->getRegionOffsetX();
+        float testerPosY = posTester.y + tester->getRegionOffsetY();
+
+        // calculate overlaping pixels
+        float diffX = min(objPosX + this->getWidth(), testerPosX + tester->getWidth()) - max(objPosX, testerPosX);
+        float diffY = min(objPosY + this->getHeight(), testerPosY + tester->getHeight()) - max(objPosX, testerPosY);
+
+        // check which side overlaps more (relatively)
+        if (diffX / min(this->getWidth(),tester->getWidth()) > diffY / min(this->getHeight(),tester->getHeight()))
+        {
+            // more X -> top/bottom collision
+            if ((objPosY + this->getHeight()/2) > (testerPosY + tester->getHeight()/2))
+                return diTOP;
+            else
+                return diBOTTOM;
+        }
+        else
+        {
+            // more Y -> left/right collision
+            if ((objPosX + this->getWidth()/2) > (testerPosX + tester->getWidth()/2))
                 return diLEFT;
             else
                 return diRIGHT;
