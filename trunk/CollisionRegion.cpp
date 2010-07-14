@@ -202,7 +202,7 @@ Directions CollisionRegion::directionTest(const CollisionRegion* const tester, c
 
         // calculate overlaping pixels
         float diffX = min(objPosX + this->getWidth(), testerPosX + tester->getWidth()) - max(objPosX, testerPosX);
-        float diffY = min(objPosY + this->getHeight(), testerPosY + tester->getHeight()) - max(objPosX, testerPosY);
+        float diffY = min(objPosY + this->getHeight(), testerPosY + tester->getHeight()) - max(objPosY, testerPosY);
 
         // check which side overlaps more (relatively)
         if (diffX / min(this->getWidth(),tester->getWidth()) > diffY / min(this->getHeight(),tester->getHeight()))
