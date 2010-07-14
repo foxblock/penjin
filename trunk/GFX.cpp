@@ -165,25 +165,13 @@ void GFX::setResolution(uint x,uint y)
 {
     xRes = x;
     yRes = y;
+    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
     if(x == 0 || y == 0)
     {
-        #ifdef PLATFORM_PC
-            xRes = 1024;
-            yRes = 768;
-        #elif PLATFORM_WII
-            xRes = 640;
-            yRes = 480;
-        #elif PLATFORM_PANDORA
-            xRes = 800;
-            yRes = 480;
-        #elif PLATFORM_GP2X
-            xRes = 320;
-            yRes = 240;
-        #else // Penjin 2D project
-            xRes = 1024;
-            yRes = 768;
-        #endif
+        xRes = 800;
+        yRes = 480;
     }
+    #endif
 }
 
 void GFX::setResolution()

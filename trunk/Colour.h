@@ -78,7 +78,7 @@ class Colour
         Colour operator+(const Colour& c)
         {
             Colour b = *this;
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 b.red = min(b.red + c.red,1.0f);
                 b.green = min(b.green + c.green,1.0f);
                 b.blue = min(b.blue + c.blue,1.0f);
@@ -92,7 +92,7 @@ class Colour
         Colour operator-(const Colour& c)
         {
             Colour b = *this;
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 b.red = max(b.red - c.red,0.0f);
                 b.green = max(b.green - c.green,0.0f);
                 b.blue = max(b.blue - c.blue,0.0f);
@@ -110,7 +110,7 @@ class Colour
         Colour operator*(const Colour& c)
         {
             Colour b = *this;
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 b.red = min(b.red * c.red,1.0f);
                 b.green = min(b.green * c.green,1.0f);
                 b.blue = min(b.blue * c.blue,1.0f);
@@ -124,7 +124,7 @@ class Colour
         template <class T>
         Colour operator*(const T& c)
         {
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 red = red*(float)c;
                 green = green*(float)c;
                 blue = blue*(float)c;
@@ -136,7 +136,7 @@ class Colour
         Colour operator/(const Colour& c)
         {
             Colour b = *this;
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 b.red = max(b.red / c.red,0.0f);
                 b.green = max(b.green / c.green,0.0f);
                 b.blue = max(b.blue / c.blue,0.0f);
@@ -149,7 +149,7 @@ class Colour
         }
         Colour operator/(const uchar& c)
         {
-            #ifdef PENJIN_GL
+            #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                 float f = 1/(float)c;
                 red = red*f;
                 green = green*f;
@@ -202,7 +202,7 @@ class Colour
         void swapRB();
 
         // Colour data
-        #ifdef PENJIN_GL
+        #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
             float red; // Values stores in range 0.0 - 1.0f
             float green;
             float blue;

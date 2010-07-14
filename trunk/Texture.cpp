@@ -54,16 +54,16 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface)
 
     intermediary = SDL_CreateRGBSurface(SDL_SWSURFACE, rawDimensions.x, rawDimensions.y, 32,
     #if SDL_BYTEORDER == SDL_LIL_ENDIAN // OpenGL RGBA masks
-				0x000000FF,
-				0x0000FF00,
-				0x00FF0000,
-				0xFF000000
-#else
-				0xFF000000,
-				0x00FF0000,
-				0x0000FF00,
-				0x000000FF
-#endif
+        0x000000FF,
+        0x0000FF00,
+        0x00FF0000,
+        0xFF000000
+    #else
+        0xFF000000,
+        0x00FF0000,
+        0x0000FF00,
+        0x000000FF
+    #endif
 );
 
     //  check if original image uses an alpha channel
