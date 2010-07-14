@@ -6,7 +6,7 @@ void Colour::setColour(const uchar& r,const uchar& g,const uchar& b,const uchar&
     green = g;
     blue = b;
     alpha = a;
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         toGL();
     #endif
 }
@@ -24,7 +24,7 @@ void Colour::setColour(CRfloat r, CRfloat g, CRfloat b, CRfloat a)
         blue = b;
         alpha = a;
     #endif
-    #ifndef PENJIN_GL
+    #if !defined (PENJIN_GL) && !defined (PENJIN_ES) && !defined (PENJIN_ES2)
         toNormal();
     #endif
 }
@@ -135,7 +135,7 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 	}
 	alpha = 255;
 
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         toGL();
     #endif
 }
@@ -146,7 +146,7 @@ void Colour::setColour(CRint rgb)
     red = (rgb & 0x0000ff);
     green = (rgb & 0x00ff00)/0x100;
     blue = (rgb & 0xff0000)/0x10000;
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         toGL();
     #endif
 }
@@ -180,7 +180,7 @@ bool Colour::isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a
 SDL_Color Colour::getSDL_Colour()
 {
     SDL_Color tempCol = {0,0,0,0};
-	#ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         tempCol.r = red * 255;
         tempCol.g = green * 255;
         tempCol.b = blue * 255;
@@ -197,7 +197,7 @@ Uint32 Colour::getSDL_Uint32Colour(const SDL_Surface* dst)const{return SDL_MapRG
 void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
 {
 
-    #if PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         Uint8 r,g,b,a;
         SDL_GetRGBA(pixel,format,&r,&g,&b,&a);
         red = r;
@@ -210,7 +210,7 @@ void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
     #endif
 }
 
-#ifdef PENJIN_GL
+#if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
     void Colour::toGL()
     {
         const float DIV_255 = 0.003921569f;

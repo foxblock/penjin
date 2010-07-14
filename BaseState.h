@@ -92,6 +92,7 @@ class  BaseState
         bool isPaused;
     #ifdef PENJIN_SDL
         virtual void pauseSymbol(SDL_Surface* screen);
+        virtual void pauseSymbol(){pauseSymbol(GFX::getVideoSurface());}
     #else
         virtual void pauseSymbol();
     #endif

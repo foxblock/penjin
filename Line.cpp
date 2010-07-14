@@ -52,9 +52,7 @@ void Line::render()
         //glEnable(GL_ALPHA_TEST);
             glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
-                glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
                 glLineWidth(lineWidth);
-
                 glEnableClientState(GL_VERTEX_ARRAY);
                     #ifdef PENJIN3D
                         float verts[] = {   start.x, start.y, start.z,
@@ -65,8 +63,12 @@ void Line::render()
                                             end.x, end.y};
                         glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
+                glEnableClientState(GL_COLOR_ARRAY);
+                    float c[] = {   colour.red, colour.green, colour.blue, colour.alpha ,colour.red, colour.green, colour.blue, colour.alpha};
+                    glColorPointer(4, GL_FLOAT, 0,c);
                     glDrawArrays(GL_LINES,0,2);
                 glDisableClientState(GL_VERTEX_ARRAY);
+                glDisableClientState(GL_COLOR_ARRAY);
             glDisable(GL_BLEND);
         //glDisable(GL_ALPHA_TEST);
     glPopMatrix();

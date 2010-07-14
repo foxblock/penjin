@@ -96,7 +96,6 @@ void Rectangle::render()
         //glEnable(GL_ALPHA_TEST);
             glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
-                glColor4f(colour.red, colour.green, colour.blue, colour.alpha);
                 glEnableClientState(GL_VERTEX_ARRAY);
                     //  prepare vertices
                     #ifdef PENJIN3D
@@ -112,6 +111,12 @@ void Rectangle::render()
                                             position.x,position.y};
                         glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
+                glEnableClientState(GL_COLOR_ARRAY);
+                    float c[] = {   colour.red, colour.green, colour.blue, colour.alpha ,
+                                    colour.red, colour.green, colour.blue, colour.alpha ,
+                                    colour.red, colour.green, colour.blue, colour.alpha ,
+                                    colour.red, colour.green, colour.blue, colour.alpha};
+                    glColorPointer(4, GL_FLOAT, 0,c);
                     if(thickness>0)
                     {
                         glLineWidth(thickness);
@@ -122,6 +127,7 @@ void Rectangle::render()
                         glDrawArrays(GL_TRIANGLE_FAN,0,4);
                     }
                 glDisableClientState(GL_VERTEX_ARRAY);
+                glDisableClientState(GL_COLOR_ARRAY);
             glDisable(GL_BLEND);
         //glDisable(GL_ALPHA_TEST);
     glPopMatrix();

@@ -384,22 +384,22 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 
         // Set up blitting area
         Vector4df texCoords;
-        Vector2df dims;
-        dims.x = textures[0].getWidth();
-        dims.y = textures[0].getHeight();
         //   If the image is a spritesheet, then set the relevant clips
         float halfW;
         float halfH;
         Point2df tc;
         if(sheetMode)
         {
+            Vector2df dims;
+            dims.x = textures[0].getRawWidth();
+            dims.y = textures[0].getRawHeight();
             halfW = clipAreas[i].w*0.5f;
             halfH = clipAreas[i].h*0.5f;
             tc = textures.front().getTextureCoords();
-            texCoords.x = (float)clipAreas[i].x / (float)dims.x;
-            texCoords.y = (float)clipAreas[i].y / (float)dims.y;
-            texCoords.z = (float)(clipAreas[i].x + clipAreas[i].w) / (float)dims.x;
-            texCoords.w = (float)(clipAreas[i].y + clipAreas[i].h) / (float)dims.y;
+            texCoords.x = ((float)clipAreas[i].x / (float)dims.x);
+            texCoords.y = ((float)clipAreas[i].y / (float)dims.y);
+            texCoords.z = ((float)(clipAreas[i].x + clipAreas[i].w) / (float)dims.x);
+            texCoords.w = ((float)(clipAreas[i].y + clipAreas[i].h) / (float)dims.y);
         }
         else    //  Make the clip the size of the image
         {
@@ -430,30 +430,38 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
             glScalef(scale.x, scale.y, scale.z);
         #else
-            glRotatef(-angle + 90, 0.0f, 0.0f, 1.0f);
+            glRotatef(angle, 0.0f, 0.0f, 1.0f);
             glScalef(scale.x,scale.y,1.0f);
         #endif
 
             glEnable(GL_TEXTURE_2D);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glEnable(GL_BLEND);
-                    glBindTexture (GL_TEXTURE_2D, textures[i].getTextureID());
+                    if(sheetMode)
+                        glBindTexture (GL_TEXTURE_2D, textures.front().getTextureID());
+                    else
+                        glBindTexture (GL_TEXTURE_2D, textures.at(i).getTextureID());
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                         #ifdef PENJIN3D
-                            GLfloat quad[] = {  -halfW,-halfH,destz,
-                                                halfW,-halfH,destz,
-                                                halfW,halfH,destz,
-                                                -halfW,halfH,destz};
+                            GLfloat quad[] = {  halfW,-halfH,destz,
+                                                -halfW,-halfH,destz,
+                                                -halfW,halfH,destz,
+                                                halfW,halfH,destz};
                             glVertexPointer(3, GL_FLOAT, 0,quad);
                         #else
-                            GLfloat quad[] = {  -halfW,-halfH,
+                            GLfloat quad[] = {  halfW,-halfH,
+                                                -halfW,-halfH,
                                                 -halfW,halfH,
-                                                halfW,halfH,
-                                                halfW,-halfH};
+                                                halfW,halfH};
                             glVertexPointer(2, GL_FLOAT, 0,quad);
                         #endif
-                    GLfloat tx[] = {texCoords.x,texCoords.y, texCoords.w,texCoords.y, texCoords.z,texCoords.w, texCoords.x,texCoords.w};
+                        // x + z // y + w
+                        // yyww / zxxz
+                    GLfloat tx[] = {    texCoords.z,texCoords.y,
+                                        texCoords.x,texCoords.y,
+                                        texCoords.x,texCoords.w,
+                                        texCoords.z,texCoords.w};
                     glTexCoordPointer(2, GL_FLOAT, 0, tx);
                     glDrawArrays(GL_TRIANGLE_FAN,0,4);
                     glDisableClientState(GL_VERTEX_ARRAY);

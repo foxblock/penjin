@@ -4,7 +4,7 @@ ColourHSL::ColourHSL()
 {
     //ctor
     // default to WHITE
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         lightness = 1.0f;
         alpha = 1.0f;
     #else
@@ -84,7 +84,7 @@ void ColourHSL::setColour(const Colour& c)
 //  HSL components 0-255
 void ColourHSL::setColour(CRuchar h, CRuchar s, CRuchar l, CRuchar a)
 {
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         const float DIV_255 = 0.003921569f;
         hue = h*DIV_255;
         saturation = s*DIV_255;
@@ -101,7 +101,7 @@ void ColourHSL::setColour(CRuchar h, CRuchar s, CRuchar l, CRuchar a)
 // HSL components 0.0f - 1.0f
 void ColourHSL::setColour(CRfloat h, CRfloat s, CRfloat l, CRfloat a)
 {
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         hue = h;
         saturation = s;
         lightness = l;
@@ -121,7 +121,7 @@ Colour ColourHSL::getColourRGBA()
         return Colour(lightness,lightness,lightness,alpha);
 
     //  We need to work out components if this is not the case.
-    #ifdef PENJIN_GL
+    #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         float t1,t2;
         float tIn[3];
         float tOut[3];
