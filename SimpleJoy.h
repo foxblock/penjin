@@ -238,9 +238,9 @@ class SimpleJoy
         #define DEV_KEYS 2
         #define DEV_GPIO 3
         #define DEV_TOUCH 4
-        #define PND_NUBL "vsense66"
-        #define PND_NUBR "vsense67"
-        #define PND_KEYS "omap_twl4030keypad"
+        #define PND_NUBL "nub0"
+        #define PND_NUBR "nub1"
+        #define PND_KEYS "keypad"
         #define PND_GPIO "gpio-keys"
         #define PND_TOUCH "touchscreen"
         #define NUB_CUTOFF 5

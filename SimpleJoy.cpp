@@ -271,13 +271,17 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
     s*Xs = a*Xd + b*Yd + c
     s*Ys = d*Xd + e*Yd + f
  */
+    #ifdef _DEBUG
         cout << "a:" << pointercal[0] << " b:" << pointercal[1] << " c:" << pointercal[2] << endl;
         cout << "d:" << pointercal[3] << " e:" << pointercal[4] << " f:" << pointercal[5] << endl;
         cout << "s:" << pointercal[6] << endl;
+    #endif
         if(axis == 0 && ev[currentEvent].code == ABS_X)
         {
             int val = ((pointercal[0]*rawTS.x) + (pointercal[1]*rawTS.y) + pointercal[2])/pointercal[6];
+            #ifdef _DEBUG
             cout << "Calc_X:" << val << endl;
+            #endif
             switch(map)
             {
                 case SJ_LEFTSTICK_X:    leftStick.x = val;break;
@@ -292,7 +296,9 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
         else if(axis == 1 && ev[currentEvent].code == ABS_Y)
         {
             int val = ((pointercal[3]*rawTS.x) + (pointercal[4]*rawTS.y) + pointercal[5])/pointercal[6];
+            #ifdef _DEBUG
             cout << "Calc_Y:" << val << endl;
+            #endif
             switch(map)
             {
                 case SJ_LEFTSTICK_X:    leftStick.x = val;break;
@@ -661,7 +667,9 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                 {
                     if(event->code == ((KeyMapKey*)mapper.keys[b])->getKey())
                     {
+                        #ifdef _DEBUG
                         cout << "Key:" << event->code << " Pressed!" << endl;
+                        #endif
                         if(event->value == 1)
                             mappedDown(mapper.keys[b]->getTarget());
                         else if(event->value == 0)
@@ -703,8 +711,10 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                 }
                 if(haveTSx && haveTSy)
                 {
+                    #ifdef _DEBUG
                     cout << "TSRAW_X:" << rawTS.x << endl;
                     cout << "TSRAW_Y:" << rawTS.y << endl;
+                    #endif
                     for(int b = mapper.size()-1; b>=0; --b)
                     {
                         KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
