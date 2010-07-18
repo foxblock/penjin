@@ -16,10 +16,10 @@ class KeyWord
         void setNumNumerics(CRint num){numeric = num;}
         void setNumAlphas(CRint strings){this->strings = strings;}
 
-        int getNumNumerics(){return numeric;}
-        int getNumAlphas(){return strings;}
-        string getKeyWord(){return keyWord;}
-        int getKeyType(){return keyType;}
+        int getNumNumerics() const {return numeric;}
+        int getNumAlphas() const {return strings;}
+        string getKeyWord() const {return keyWord;}
+        int getKeyType() const {return keyType;}
 
         bool operator==(CRstring keyWord)
         {

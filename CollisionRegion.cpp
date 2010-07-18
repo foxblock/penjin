@@ -17,10 +17,8 @@ CollisionRegion::CollisionRegion()
 
 CollisionRegion::~CollisionRegion()
 {
-    if (map)
-        delete map;
-    if (showRect)
-        delete showRect;
+    delete map;
+    delete showRect;
 }
 
 void CollisionRegion::generateHitRegion()
@@ -115,7 +113,7 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
     }
 }
 
-bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2df posObj, const Vector2df posTester, CRbool fullShape) const
+bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2df& posObj, const Vector2df& posTester, CRbool fullShape) const
 {
     float objPosX = posObj.x + this->getRegionOffsetX();
     float objPosY = posObj.y + this->getRegionOffsetY();
@@ -185,7 +183,7 @@ Directions CollisionRegion::directionTest(const CollisionRegion* const tester, C
     }
 }
 
-Directions CollisionRegion::directionTest(const CollisionRegion* const tester, const Vector2df posObj, const Vector2df posTester, CRbool fullShape) const
+Directions CollisionRegion::directionTest(const CollisionRegion* const tester, const Vector2df& posObj, const Vector2df& posTester, CRbool fullShape) const
 {
     // check for collision first
     if (not hitTest(tester,posObj,posTester,fullShape))

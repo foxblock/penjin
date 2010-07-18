@@ -24,8 +24,8 @@ class IntVector2d
         }
         void setX(CRint x){this->x = x;}
         void setY(CRint y){this-> y = y;}
-        int getX(){return x;}
-        int getY(){return y;}
+        int getX() const {return x;}
+        int getY() const {return y;}
         // OPERATORS
         bool operator==(IntVector2d& vector);   //   Check if two vectors are equal
         IntVector2d operator- ();               //   Perform negation if vector
