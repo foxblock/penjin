@@ -68,7 +68,7 @@ class Timer
 
         void setOffset(CRint o) {offset = o * scaler;};
         void setOffset(CRint o, const TimerScalers& mode) {offset = o * calcScaler(mode);};
-        int getOffset() {return offset / scaler;};
+        int getOffset() const {return offset / scaler;};
         int getOffset(const TimerScalers& mode) {return offset / calcScaler(mode);};
 
         int getScaledTicks(const TimerScalers& mode)
@@ -169,10 +169,10 @@ class Timer
         /// Set a custom timer resolution.
         #ifdef PENJIN_FIXED
             void setScaler(CRFixed scale){setMode(CUSTOM);scaler = scale;}
-            Fixed getScaler(){return scaler;}
+            Fixed getScaler() const {return scaler;}
         #else
             void setScaler(CRfloat scale){setMode(CUSTOM);scaler = scale;}
-            float getScaler()const{return scaler;}
+            float getScaler() const {return scaler;}
         #endif
     protected:
         #ifdef PENJIN_FIXED

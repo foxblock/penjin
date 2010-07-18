@@ -95,7 +95,7 @@ class AchievementSystem
         void setPopupShowTime(CRint newShow) {showTime = newShow;};
         void disablePopups() {showPopups = false;};
         void enablePopups() {showPopups = true;};
-        bool showingPopups() {return showPopups;};
+        bool showingPopups() const {return showPopups;};
 
         // display customisation
         void setFontColour(const Colour &col) {colours[coFontColour] = col;};
@@ -109,8 +109,8 @@ class AchievementSystem
         // text shown when a secret achievement is still locked
         void setSecretHeadline(CRstring str) {secretText[0] = str;};
         void setSecretDescription(CRstring str) {secretText[1] = str;};
-        string getSecretHeadline() {return secretText[0];};
-        string getSecretDescription() {return secretText[1];};
+        string getSecretHeadline() const {return secretText[0];};
+        string getSecretDescription() const {return secretText[1];};
 
         // general functions
         int achievementCount() const {return achievements.size();};
@@ -126,7 +126,7 @@ class AchievementSystem
         void update();
 
         void setAchievementFile(CRstring newFile) {achievementFile = newFile;};
-        string getAchievementFile() {return achievementFile;};
+        string getAchievementFile() const {return achievementFile;};
         PENJIN_ERRORS load(CRstring file);
         PENJIN_ERRORS load() {return load(achievementFile);};
         PENJIN_ERRORS save(CRstring file);

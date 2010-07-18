@@ -49,11 +49,8 @@ public:
     // deletes the image, but preserves the region, call resetHitRegion to delete that, too
     void freeImage()
     {
-        if (map)
-        {
-            delete map;
-            map = NULL;
-        }
+        delete map;
+        map = NULL;
     }
 
     void setNoCollisionColour(const Colour& c)
@@ -76,19 +73,16 @@ public:
         region.y = 0;
         region.w = 0;
         region.h = 0;
-        if (showRect)
-        {
-            delete showRect;
-            showRect = NULL;
-        }
+        delete showRect;
+        showRect = NULL;
     }
 
     // Functions to check whether the CollisionRegion has an image or a region
-    bool hasImage()
+    bool hasImage() const
     {
         return (map != NULL);
     }
-    bool hasRegion()
+    bool hasRegion() const
     {
         return (region.w != 0 || region.h != 0);
     }
@@ -211,13 +205,13 @@ public:
     // also works when one or both have no collision image or region loaded
     bool hitTest(const CollisionRegion* const tester, CRbool fullShape=false) const;
     // use external positioning
-    bool hitTest(const CollisionRegion* const tester, const Vector2df PosObj, const Vector2df PosTester, CRbool fullShape=false) const;
+    bool hitTest(const CollisionRegion* const tester, const Vector2df& PosObj, const Vector2df& PosTester, CRbool fullShape=false) const;
     // performs a hitTest first and a (rectangular) check for direction afterwards
     // returns the result of that check (only 4 base directions, no corners, viewed from this object)
     // might fail on extreme shapes (e.g. very tall and very thin)
     Directions directionTest(const CollisionRegion* const tester, CRbool fullShape=false) const;
     // use external positioning
-    Directions directionTest(const CollisionRegion* const tester, const Vector2df posObj, const Vector2df posTester, CRbool fullShape=false) const;
+    Directions directionTest(const CollisionRegion* const tester, const Vector2df& posObj, const Vector2df& posTester, CRbool fullShape=false) const;
 
     // takes a direction and returns the opposite
     static Directions getOppositeDirection(const Directions& dir)

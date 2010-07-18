@@ -209,7 +209,7 @@ void Achievement::render()
 
     // progress background and text
     if (not secret || unlocked)
-        renderProgress(;
+        renderProgress();
 
     // text
     text.setBoundaries(Vector2di(position.x+size.y,position.y+BORDER),Vector2di(position.x+size.x-5,position.y+size.y-BORDER));

@@ -159,7 +159,7 @@ class Image
             float getScaleX()const{return scale.x;}
             float getScaleY()const{return scale.y;}
             void setScale(CRfloat scale){this->scale.x = this->scale.y = scale;}
-            Vector2df getScale(){return scale;}
+            Vector2df getScale() const {return scale;}
             void setRotation(CRfloat angle){this->angle = angle;}
             float getRotation()const{return angle;}
         #endif
