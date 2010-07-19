@@ -36,12 +36,12 @@ class Image
         #ifdef PENJIN_SDL
             void loadImage(SDL_Surface* s)
             {
-                images.push_back(s);
+                images.push_back(make_pair(s,true));
                 sheetMode = false;
             }
             void disableTransparentColour(CRuint i)
             {
-                SDL_SetColorKey(images.at(i), 0, images.at(i)->format->colorkey);
+                SDL_SetColorKey(images.at(i).first, 0, images.at(i).first->format->colorkey);
                 colourKey.alpha = 0;
             }
             void disableTransparentColour(){disableTransparentColour(images.size()-1);}
@@ -67,8 +67,8 @@ class Image
         PENJIN_ERRORS loadImageNoKey(CRstring imageName);
         PENJIN_ERRORS loadImageSheet(CRstring imageName,CRuint xTiles,CRuint yTiles);  // store the separated images on the vector
         PENJIN_ERRORS loadImageSheetNoKey(CRstring imageName,CRuint xTiles,CRuint yTiles);
-        PENJIN_ERRORS loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data
-        PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data
+        PENJIN_ERRORS loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data, surfaces added ny this function won't get deleted when the image gets deleted - keep track of them yourself!
+        PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // see above comment
         PENJIN_ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
 
         #ifdef PENJIN3D
@@ -175,8 +175,8 @@ class Image
             void setPixel(CRint x,CRint y,const uchar& r,const uchar& g,const uchar& b,const uchar& a);
             void setPixel(CRint x,CRint y,const uchar& r,const uchar& g,const uchar& b);
             // get a pixel
-            Colour getPixel(CRint x,CRint y)const{return GFX::getPixel(images.at(0),x,y);}
-            Colour getPixel(CRuint i,CRint x,CRint y)const{return GFX::getPixel(images.at(i),x,y);}
+            Colour getPixel(CRint x,CRint y)const{return GFX::getPixel(images.at(0).first,x,y);}
+            Colour getPixel(CRuint i,CRint x,CRint y)const{return GFX::getPixel(images.at(i).first,x,y);}
             uint* getPixelArray(CRint x,CRint y)const;
             // check and unlock screen
             void screenUnlock();
@@ -247,7 +247,7 @@ class Image
 
         #ifdef PENJIN_SDL
             void convertToHW();
-            vector<SDL_Surface*>images; //  Stores surfaces
+            vector< pair<SDL_Surface*,bool> >images; //  Stores surfaces
             SDL_Surface* screen;        //  The pointer to the screen;
 
             SDL_Surface* rotoZoom(SDL_Surface& in,SDL_Rect& src, SDL_Rect& dst);    // Rotozoom the passed in surface with the classes current params
