@@ -31,12 +31,12 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
     #ifdef PENJIN_SDL
         if((size_t)i >= images.size())
             return PENJIN_INVALID_INDEX;
-        if(images.at(i)->flags & SDL_SRCALPHA)
+        if(images.at(i).first->flags & SDL_SRCALPHA)
         {
             disableTransparentColour(i);
             return PENJIN_OK;
         }
-        if(SDL_SetColorKey(images[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i]->format,c.red,c.green,c.blue)) == -1)
+        if(SDL_SetColorKey(images[i].first, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i].first->format,c.red,c.green,c.blue)) == -1)
                 return PENJIN_SDL_INVALID_COLORKEY;
         colourKey = c;
         colourKey.alpha = 255;
@@ -52,7 +52,7 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2di& v)
         if((size_t)i >= images.size())
             return PENJIN_INVALID_INDEX;
 
-        Colour c = GFX::getPixel(images[i],v.x,v.y);
+        Colour c = GFX::getPixel(images[i].first,v.x,v.y);
         return setTransparentColour(i,c);
     #else
         return PENJIN_FUNCTION_IS_STUB;
@@ -73,14 +73,14 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
         colourKey.alpha = 0;
         error = setTransparentColour(currentI,Vector2di(0,0));
         //  check current blend mode.
-        SDL_Surface* t = images.at(currentI);
-        if(images.at(currentI)->flags & SDL_SRCALPHA)
+        SDL_Surface* t = images.at(currentI).first;
+        if(images.at(currentI).first->flags & SDL_SRCALPHA)
         {
-            images[currentI] = SDL_DisplayFormatAlpha(t);
+            images[currentI].first = SDL_DisplayFormatAlpha(t);
         }
         else
         {
-            images[currentI] = SDL_DisplayFormat(t);
+            images[currentI].first = SDL_DisplayFormat(t);
             setTransparentColour(currentI,colourKey);
         }
         SDL_FreeSurface(t);
@@ -101,13 +101,13 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
 {
     #ifdef PENJIN_SDL
         uint currentI = (uint)images.size();
-        images.push_back(NULL);
         #ifdef PLATFORM_WII
-            images[currentI] = IMG_Load((Penjin::getWorkingDirectory() + name).c_str());
+            SDL_Surface* surf = IMG_Load((Penjin::getWorkingDirectory() + name).c_str());
         #else
-            images[currentI] = IMG_Load(name.c_str());
+            SDL_Surface* surf = IMG_Load(name.c_str());
         #endif
-        if (!images[currentI])
+        images.push_back(make_pair(surf,false));
+        if (!images[currentI].first)
         {
             images.pop_back();
             return PENJIN_IMG_UNABLE_TO_OPEN;
@@ -186,10 +186,10 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
 {
     uint numTiles = p_numTiles;
     //  now we have to build the clipping areas based on the tile info we have.
-    //first the width and height per tile needs to be calculated
+    //second the width and height per tile needs to be calculated
     #ifdef PENJIN_SDL
-        uint width = images[0]->w;
-        uint height = images[0]->h;
+        uint width = images[0].first->w;
+        uint height = images[0].first->h;
     #else
         uint width = textures[0].getWidth();
         uint height = textures[0].getHeight();
@@ -244,10 +244,10 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             if(sheetMode)   //  We have a spritesheet
             {
                 //  If there is no area to clip the spritesheet we have a problem
-                if(!images[0] || clipAreas.size() || !clipAreas[i].w || !clipAreas[i].h)
+                if(!images[0].first || clipAreas.size() || !clipAreas[i].w || !clipAreas[i].h)
                     return;
             }
-            else if(!images[i])
+            else if(!images[i].first)
                 return;
         }
 
@@ -264,20 +264,20 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         }
         else    //  Make the clip the size of the image
         {
-            src.x = images[i]->clip_rect.x;
-            src.y = images[i]->clip_rect.y;
-            src.w = images[i]->w;
-            src.h = images[i]->h;
+            src.x = images[i].first->clip_rect.x;
+            src.y = images[i].first->clip_rect.y;
+            src.w = images[i].first->w;
+            src.h = images[i].first->h;
         }
 
         dst.x = destx;
         dst.y = desty;
 
         // try to set surface alpha - depends on surface type.
-        SDL_SetAlpha(images[i], SDL_SRCALPHA, alpha);
+        SDL_SetAlpha(images[i].first, SDL_SRCALPHA, alpha);
         if((angle == 0 && scale.x == 1 && scale.y == 1))
         {
-            SDL_BlitSurface(images[i], &src, dstimg, &dst);
+            SDL_BlitSurface(images[i].first, &src, dstimg, &dst);
         }
 
         else if(angle != 0 || scale.x!= 1 || scale.y!= 1)
@@ -289,7 +289,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                 {
                     uint myAngle = NumberUtility::wrapValue((int)angle,(int)359);
                     if(myAngle == 0)
-                        SDL_BlitSurface(images.at(i), &src, dstimg, &dst);
+                        SDL_BlitSurface(images.at(i).first, &src, dstimg, &dst);
                     else
                     {
                         if(rotCache.size()>myAngle-1 && rotCache.at(myAngle-1).surf != NULL)
@@ -304,12 +304,12 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                             //  If the cache is not full we cache more images
                             if(currCached < maxCached)
                             {
-                                cacheRotation(myAngle,rotoZoom(*images.at(i),src,dst));
+                                cacheRotation(myAngle,rotoZoom(*images.at(i).first,src,dst));
                                 SDL_BlitSurface(rotCache.at(myAngle-1).surf, NULL, dstimg,&dst);
                             }
                             else    //  We manually render (SLOW)
                             {       //  TODO: FREE least used cache items
-                                SDL_Surface* t = rotoZoom(*images.at(i),src,dst);
+                                SDL_Surface* t = rotoZoom(*images.at(i).first,src,dst);
                                 SDL_BlitSurface(t, NULL, dstimg,&dst);
                                 SDL_FreeSurface(t);
                             }
@@ -318,12 +318,12 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                 }
                 else
                 {
-                    tempImage = rotoZoom(*images.at(i),src,dst);
+                    tempImage = rotoZoom(*images.at(i).first,src,dst);
                     SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
                     SDL_FreeSurface(tempImage);
                 }
             #else
-                tempImage = rotoZoom(*images.at(i),src,dst);
+                tempImage = rotoZoom(*images.at(i).first,src,dst);
                 SDL_BlitSurface(tempImage,NULL, dstimg, &dst);
                 SDL_FreeSurface(tempImage);
             #endif
@@ -347,20 +347,20 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
     void Image::screenLock()
     {
        // Check and lock the surface if necessary.
-       if (SDL_MUSTLOCK(images.at(0)))
-            if (SDL_LockSurface(images.at(0)) < 0 )
+       if (SDL_MUSTLOCK(images.at(0).first))
+            if (SDL_LockSurface(images.at(0).first) < 0 )
                 return;
     }
 
-    void Image::setPixel(CRint x, CRint y, CRuchar r, CRuchar g, CRuchar b,CRuchar a){GFX::setPixel(images.at(0),x,y,Colour(r,g,b,a));}
+    void Image::setPixel(CRint x, CRint y, CRuchar r, CRuchar g, CRuchar b,CRuchar a){GFX::setPixel(images.at(0).first,x,y,Colour(r,g,b,a));}
     void Image::setPixel(CRint x, CRint y, CRuchar r, CRuchar g, CRuchar b){setPixel(x,y,r,g,b,255);}
     void Image::setPixel(CRint x, CRint y, const Colour& c){setPixel(x,y,c.red,c.green,c.blue,c.alpha);}
 
     void Image::screenUnlock()
     {
        // Check and unlock the durface if necessary
-       if ( SDL_MUSTLOCK(images.at(0)) )
-            SDL_UnlockSurface(images.at(0));
+       if ( SDL_MUSTLOCK(images.at(0).first) )
+            SDL_UnlockSurface(images.at(0).first);
     }
 #else
     #ifdef PENJIN3D
@@ -554,11 +554,11 @@ void Image::clear()
         int i = images.size()-1;
         while(i >= 0)
         {
-            if(images[i])
+            if(!images[i].second && images[i].first)
             {
-                SDL_FreeSurface(images[i]);
-                images[i] = NULL;
+                SDL_FreeSurface(images[i].first);
             }
+            images[i].first = NULL;
             --i;
         }
         images.clear();
@@ -593,7 +593,7 @@ uint Image::getHeight()const
         return clipAreas.front().h;
 
     #ifdef PENJIN_SDL
-        return images.front()->h;
+        return images.front().first->h;
     #else
         return textures.front().getHeight();
     #endif
@@ -605,7 +605,7 @@ uint Image::getWidth()const
         return clipAreas.front().w;
 
     #ifdef PENJIN_SDL
-        return images.front()->w;
+        return images.front().first->w;
     #else
         return textures.front().getWidth();
     #endif
@@ -643,7 +643,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
     }
     else
     {
-        //  first check if size has changed
+        //  second check if size has changed
         //  If the size has change then we can't use the cached rotations
 
         #ifdef PENJIN_FIXED
@@ -743,17 +743,17 @@ void Image::toGreyScale()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i));
-            for(int x = images.at(i)->w-1; x>=0; --x)
+            GFX::lockSurface(images.at(i).first);
+            for(int x = images.at(i).first->w-1; x>=0; --x)
             {
-                for(int y = images.at(i)->h-1; y >= 0; --y)
+                for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i),x,y);
+                    t = GFX::getPixel(images.at(i).first,x,y);
                     t.toGreyScale();
-                    GFX::setPixel(images.at(i),x,y,t);
+                    GFX::setPixel(images.at(i).first,x,y,t);
                 }
             }
-            GFX::unlockSurface(images.at(i));
+            GFX::unlockSurface(images.at(i).first);
         }
     #else
 
@@ -766,17 +766,17 @@ void Image::toNegative()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i));
-            for(int x = images.at(i)->w-1; x>=0; --x)
+            GFX::lockSurface(images.at(i).first);
+            for(int x = images.at(i).first->w-1; x>=0; --x)
             {
-                for(int y = images.at(i)->h-1; y >= 0; --y)
+                for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i),x,y);
+                    t = GFX::getPixel(images.at(i).first,x,y);
                     t = -t;
-                    GFX::setPixel(images.at(i),x,y,t);
+                    GFX::setPixel(images.at(i).first,x,y,t);
                 }
             }
-            GFX::unlockSurface(images.at(i));
+            GFX::unlockSurface(images.at(i).first);
         }
     #else
 
@@ -789,17 +789,17 @@ void Image::swapGB()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i));
-            for(int x = images.at(i)->w-1; x>=0; --x)
+            GFX::lockSurface(images.at(i).first);
+            for(int x = images.at(i).first->w-1; x>=0; --x)
             {
-                for(int y = images.at(i)->h-1; y >= 0; --y)
+                for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i),x,y);
+                    t = GFX::getPixel(images.at(i).first,x,y);
                     t.swapGB();
-                    GFX::setPixel(images.at(i),x,y,t);
+                    GFX::setPixel(images.at(i).first,x,y,t);
                 }
             }
-            GFX::unlockSurface(images.at(i));
+            GFX::unlockSurface(images.at(i).first);
         }
     #else
 
@@ -812,17 +812,17 @@ void Image::swapRB()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i));
-            for(int x = images.at(i)->w-1; x>=0; --x)
+            GFX::lockSurface(images.at(i).first);
+            for(int x = images.at(i).first->w-1; x>=0; --x)
             {
-                for(int y = images.at(i)->h-1; y >= 0; --y)
+                for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i),x,y);
+                    t = GFX::getPixel(images.at(i).first,x,y);
                     t.swapRB();
-                    GFX::setPixel(images.at(i),x,y,t);
+                    GFX::setPixel(images.at(i).first,x,y,t);
                 }
             }
-            GFX::unlockSurface(images.at(i));
+            GFX::unlockSurface(images.at(i).first);
         }
     #else
 
@@ -835,17 +835,17 @@ void Image::swapRG()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i));
-            for(int x = images.at(i)->w-1; x>=0; --x)
+            GFX::lockSurface(images.at(i).first);
+            for(int x = images.at(i).first->w-1; x>=0; --x)
             {
-                for(int y = images.at(i)->h-1; y >= 0; --y)
+                for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i),x,y);
+                    t = GFX::getPixel(images.at(i).first,x,y);
                     t.swapRG();
-                    GFX::setPixel(images.at(i),x,y,t);
+                    GFX::setPixel(images.at(i).first,x,y,t);
                 }
             }
-            GFX::unlockSurface(images.at(i));
+            GFX::unlockSurface(images.at(i).first);
         }
     #else
 
