@@ -21,7 +21,7 @@
 #include "CollisionMap.h"
 
 // RECT Struct
-struct RECT
+struct HRECT
 {
     int x, y, w, h;
 };
@@ -61,7 +61,7 @@ private:
 	//-------------------------------------------------
 	// Datamembers
 	//-------------------------------------------------
-    RECT m_Region;
+    HRECT m_Region;
     Rectangle box;
 };
 
