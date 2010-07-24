@@ -108,7 +108,7 @@ namespace GFX
     #elif defined (PENJIN_GL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         void init2DRendering();   //  Setup a 2D rendering mode.
                                 //  Also enables blending.
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             void init3DRendering();                     //  Setup a standard 3D rendering mode
         #endif
     #endif

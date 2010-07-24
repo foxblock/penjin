@@ -19,7 +19,7 @@ class AnimationStringMenuItem : public MenuItem
             void setUseHardware(CRbool use);
         #else
             virtual void render();
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 virtual void setPosition(const Vector3df& pos);
             #else
                 virtual void setPosition(const Vector2df& pos);

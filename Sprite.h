@@ -8,7 +8,7 @@ class Sprite
 {
     public:
         Sprite();
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Sprite(CRint x,CRint y);
             Sprite(const Vector2di& position);
         #else
@@ -62,7 +62,7 @@ class Sprite
             void setScale(const Vector3df& scale);
             void setX(CRfloat x){position.x = x;}
             void setY(CRfloat y){position.y = y;}
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 void setZ(CRfloat z){position.z = z;}
                 float getZ()const{return position.z;}
                 Vector3df getPosition()const{return position;}
@@ -81,7 +81,7 @@ class Sprite
         void clear(){image.clear();}
     private:
         Image image;
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df position;
         #else
             Vector2df position;

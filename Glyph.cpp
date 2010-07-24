@@ -62,7 +62,7 @@ void Glyph::render()
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             GLfloat tx[] = {0,0, 0,1, 1,1, 1,0};
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 GLfloat quad[] = {  position->x,position->y,position->z,
                                     position->x + glyph.getWidth(), position->y, position->z,
                                     position->x + glyph.getWidth(),position->y + glyph.getHeight(),position->z,

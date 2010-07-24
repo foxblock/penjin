@@ -11,7 +11,7 @@ AnimatedSprite::AnimatedSprite()
 	#ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
     #endif
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
 
@@ -38,13 +38,13 @@ AnimatedSprite::AnimatedSprite()
         animationTimer.start();
         position.x = x;
         position.y = y;
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             position.z = 0.0f;
         #endif
         playReversed = false;
         reachedEnd = false;
     }
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
     AnimatedSprite::AnimatedSprite(CRfloat x,CRfloat y,CRfloat z)
     {
         currentFrame = 0;

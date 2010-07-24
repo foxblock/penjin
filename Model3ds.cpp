@@ -1,4 +1,8 @@
 #include "Model3ds.h"
+#include <lib3ds/mesh.h>
+#include <lib3ds/file.h>
+#include <string.h>
+#include "Texture.h"
 using namespace PenjinErrors;
 Model3ds::Model3ds()
 {
@@ -36,7 +40,7 @@ void Model3ds::clear()
 	}
 }
 
-int Model3ds::loadModel(const string& filename)
+PENJIN_ERRORS Model3ds::loadModel(const string& filename)
 {
 	Lib3dsFile* file = NULL;
 	file = lib3ds_file_load(filename.c_str());
@@ -54,9 +58,9 @@ int Model3ds::loadModel(const string& filename)
 	    clear();
 	    setNULL();
     }
-        vertices = new Lib3dsVector[numFaces * 3];
-        normals = new Lib3dsVector[numFaces * 3];
-        coords = new GLfloat[numFaces * 3 * 2];
+        vertices = new ModelVector3f[numFaces * 3];
+        normals = new ModelVector3f[numFaces * 3];
+        coords = new float[numFaces * 3 * 2];
 
 	//Fill vertex and normal arrays
 	uint finishedFaces = 0;
@@ -84,6 +88,15 @@ int Model3ds::loadModel(const string& filename)
     return PENJIN_OK;
 }
 
+PENJIN_ERRORS Model3ds::loadTexture(CRstring filename)
+{
+    if(texture)
+        delete texture;
+    texture = NULL;
+    texture = new Texture;
+    return texture->loadTexture(filename);
+}
+
 void Model3ds::render()
 {
 	glEnable(GL_TEXTURE_2D);
@@ -107,3 +120,6 @@ void Model3ds::render()
 
 	glDisable(GL_TEXTURE_2D);
 }
+
+void Model3ds::update()
+{}

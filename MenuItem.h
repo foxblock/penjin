@@ -36,7 +36,7 @@ class MenuItem
         virtual void update();
 
         //  No need to pass Surface pointer to render function in OpenGL
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             //  3D Menu Effects
             void setMenu3D(CRbool menu3D){this->menu3D = menu3D;}
             void setAngle(float* angle){this->angle = angle;}
@@ -51,7 +51,7 @@ class MenuItem
         bool isMouseSelected(CRint x,CRint y);
         void setDimensions(const Vector2di& dim){dimensions = dim;}
         virtual Vector2di getDimensions();
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             virtual void setPosition(const Vector3df& pos){position = pos;}
             Vector3df getPosition()const{return position;}
         #else
@@ -70,7 +70,7 @@ class MenuItem
         bool isSelected;        //  Is this option currently selected in the menu
         bool isSelectable;      //  Is this option able to be selected in the menu
 
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df position;     //  The start position of the menu.
             bool menu3D;
             float* angle;            //  Angle of rotation for current selection

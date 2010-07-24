@@ -9,7 +9,7 @@ Animation::Animation()
     animationTimer.start();
 	position.x = 0;
 	position.y = 0;
-	#ifdef PENJIN3D
+	#ifdef PENJIN_3D
         position.z = 0.0f;
 	#endif
 	playReversed = false;

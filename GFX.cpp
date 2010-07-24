@@ -347,7 +347,7 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)x11Window, NULL);
     eglMakeCurrent(eglDisplay,eglSurface,eglSurface,eglContext);
 #endif
-#ifdef PENJIN3D
+#ifdef PENJIN_3D
     init3DRendering();
 #else
     #if defined PENJIN_GL || defined PENJIN_ES || defined PENJIN_ES2
@@ -537,11 +537,11 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
     }
 
     void GFX::clearScreen(){glClear(GL_COLOR_BUFFER_BIT
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         | GL_DEPTH_BUFFER_BIT
     #endif
     );}
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         void GFX::init3DRendering()
         {
             glShadeModel(GL_SMOOTH);

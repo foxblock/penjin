@@ -3,7 +3,7 @@
 Image::Image()
 {
     alpha = 255;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         rotation.x = rotation.y = rotation.z = 0.0f;
         scale.x = scale.y = scale.z = 1.0f;
     #else
@@ -363,7 +363,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             SDL_UnlockSurface(images.at(0).first);
     }
 #else
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         void Image::renderImage(uint i,CRfloat destx, CRfloat desty,CRfloat destz)
     #else
         void Image::renderImage(uint i,CRfloat destx, CRfloat desty)
@@ -424,7 +424,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         glLoadIdentity();
         glPushMatrix();
         glTranslatef(destx+halfW,desty+halfH,0.0f);
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
             glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
             glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
@@ -443,7 +443,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                         glBindTexture (GL_TEXTURE_2D, textures.at(i).getTextureID());
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                        #ifdef PENJIN3D
+                        #ifdef PENJIN_3D
                             GLfloat quad[] = {  halfW,-halfH,destz,
                                                 -halfW,-halfH,destz,
                                                 -halfW,halfH,destz,

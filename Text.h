@@ -2,12 +2,6 @@
 #define TEXT_H
 #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT) || defined(PENJIN_ES) || defined(PENJIN_ES2)
     #include "Glyph.h"
-#elif PENJIN_ASCII
-    #ifdef _WIN32
-        #include "Wincon.h"
-    #elif _LINUX
-        #include <ncurses.h>
-    #endif
 #endif
 #include <string>
 #include "DoubleVector.h"
@@ -18,11 +12,9 @@
 using namespace std;
 #include "PenjinTypes.h"
 #include "Colour.h"
-#include "StringUtility.h"
-#include "NumberUtility.h"
 #include "PenjinErrors.h"
 using namespace PenjinErrors;
-using namespace StringUtility;
+
 
 ///Text will wrap after 58 characters, inc spaces and punctuation. (at size 12 pt) (on a GP2X screen, 320x240)
 ///The text below shows how many characters can be used before the text will wrap.
@@ -60,7 +52,7 @@ class Text
         template <class T>
         void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
 
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             void setPosition(CRfloat x,CRfloat y);						//	Sets the starting position of the text
         #else
             #ifdef PENJIN_FIXED
@@ -89,11 +81,11 @@ class Text
         void setStyle(CRint style){TTF_SetFontStyle(font, style);}
         int getStyle()const{return TTF_GetFontStyle(font);}
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
-        void setRenderMode(const GlyphClass::RENDER_MODES& m){glyphs[fontSize-1][0]->setRenderMode(m);}
-        GlyphClass::RENDER_MODES getRenderMode()const{return glyphs[fontSize-1][0]->getRenderMode();}
+        void setRenderMode(const GlyphClass::RENDER_MODES& m);
+        GlyphClass::RENDER_MODES getRenderMode()const;
         Vector2di getDimensions()const{return dimensions;}
         Vector2di getDimensions(CRstring str);
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2df getStartPosition()const{return startPos;}
             Vector2df getPosition()const{return position;}
 
@@ -112,17 +104,17 @@ class Text
         void print(const char* text);
         void print(CRstring text);       //	write a string to the screen
         //	write an integer to the screen
-        void print(CRint number){print(StringUtility::intToString(number));}
+        void print(CRint number);
         //	write a float number to the screen
-        void print(CRfloat number){print(StringUtility::floatToString(number));}
+        void print(CRfloat number);
         #ifdef PENJIN_SDL
             void print(SDL_Surface* screen, char* text);		//	write a char* string to the screen
             void print(SDL_Surface* screen, const char* text);
             void print(SDL_Surface* screen, CRstring text);       //	write a string to the screen
             //	write an integer to the screen
-            void print(SDL_Surface* scr, CRint number){print(scr,intToString(number));}
+            void print(SDL_Surface* scr, CRint number);
             //	write a float number to the screen
-            void print(SDL_Surface* scr, CRfloat number){print(scr,floatToString(number));}
+            void print(SDL_Surface* scr, CRfloat number);
         #endif
 
         void clear();
@@ -152,7 +144,7 @@ class Text
         TTF_Font* font;
         string fontName;
         uint fontSize;
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2di position;
             Vector2di startPos;
             Vector2di dimensions;

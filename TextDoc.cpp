@@ -1,4 +1,5 @@
 #include "TextDoc.h"
+#include "ErrorHandler.h"
 
 void TextDoc::append(CRstring data)
 {

@@ -6,7 +6,7 @@ Rectangle::Rectangle()
     position.x = position.y = 0;
     dimensions.x = dimensions.y = 1;
     thickness = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         scale.x = scale.y = scale.z = 1.0f;
         rotation.x = rotation.y = rotation.z = 0.0f;
     #else
@@ -79,7 +79,7 @@ void Rectangle::render()
     // Scale and rotate
     glPushMatrix();
 
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         glScalef(scale.x, scale.y, scale.z);
         glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
         glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
@@ -98,7 +98,7 @@ void Rectangle::render()
             //  Set OpenGL alpha and colour
                 glEnableClientState(GL_VERTEX_ARRAY);
                     //  prepare vertices
-                    #ifdef PENJIN3D
+                    #ifdef PENJIN_3D
                         float verts[] = {   position.x,position.y + dimensions.y,position.z,
                                             position.x + dimensions.x,position.y + dimensions.y,position.z,
                                             position.x + dimensions.x, position.y, position.z,

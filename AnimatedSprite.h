@@ -9,7 +9,7 @@ class AnimatedSprite
     public:
         AnimatedSprite();
         #ifndef PENJIN_SDL
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 AnimatedSprite(CRfloat x,CRfloat y,CRfloat z);
             #endif
             AnimatedSprite(CRfloat x,CRfloat y);
@@ -39,7 +39,7 @@ class AnimatedSprite
         void setPosition(CRint x,CRint y){setPosition(Vector2di(x,y));}
         float getX()const{return position.x;}
         float getY()const{return position.y;}
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2df getPosition()const{return position;}
             void setX(CRint x){position.x = x;}
             void setY(CRint y){position.y = y;}
@@ -51,7 +51,7 @@ class AnimatedSprite
             void render();
             void setX(CRfloat x){position.x = x;}
             void setY(CRfloat y){position.y = y;}
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 Vector3df getPosition()const{return position;}
                 void setPosition(const Vector3df& pos){position = pos;}
                 void setZ(CRfloat z){position.z = z;}
@@ -74,7 +74,7 @@ class AnimatedSprite
                 numLoops = 0;
         }
         void clearFrames(){image.clear();}
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             void setScale(CRfloat scale){image.setScale(scale);}
             void setScaleX(CRfloat scaleX){image.setScaleX(scaleX);}
             void setScaleY(CRfloat scaleY){image.setScaleY(scaleY);}
@@ -83,7 +83,7 @@ class AnimatedSprite
         #ifdef PENJIN_SDL
             void setUseHardware(CRbool useHW){image.setUseHardware(useHW);}
         #else
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 void setScale(const Vector3df& scaleVec){image.setScale(scaleVec);}
                 void setRotation(const Vector3df& rotationVec){image.setRotation(rotationVec);}
             #endif
@@ -104,7 +104,7 @@ class AnimatedSprite
         bool playReversed;
         bool reachedEnd;
         uint currentFrame;
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df position;
         #else
             Vector2df position;

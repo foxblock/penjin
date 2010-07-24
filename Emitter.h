@@ -43,7 +43,7 @@ class Emitter
         void setInvisible(CRuint invis){invisible = invis;}
         template <class T>
         void setPosition(const T& pos){position = pos;}
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         void setPosition(const Vector2di& p){position.x = p.x;position.y = p.y;}
         Vector3df getPosition()const{return position;}
         Vector3df getPosition(CRuint i)const{if(i<=max-1){return particles[i]->getPosition();}}
@@ -96,7 +96,7 @@ class Emitter
             if(!stopNew)
             {
                 particles[i]->setPosition(position);
-                #ifndef PENJIN3D
+                #ifndef PENJIN_3D
                     #ifdef PENJIN_FIXED
                         Fixed x = Random::nextFixed(0,(maxVelocity.x.intValue >> 16) *2)-maxVelocity.x;
                         Fixed y = Random::nextFixed(0,(maxVelocity.y.intValue >> 16) *2)-maxVelocity.y;
@@ -152,7 +152,7 @@ class Emitter
         int lifeTime;               //  The max life of each particle
         Timer emitTimer;            //  The timer regulating this particle system.
         Colour colour;              //  The base colour of the particles
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2df gravity;              //  The gravity of this particle system
             Vector2df position;
             Vector2df maxVelocity;      //  The maximum velocity that each particle can travel at

@@ -14,7 +14,7 @@ void DirMenuItem::init()
     setType(MENU_DIR_ITEM);
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     dimensions.x = 0;

@@ -85,7 +85,7 @@ PENJIN_ERRORS Texture::loadSurface(SDL_Surface* surface)
 
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         gluBuild2DMipmaps(GL_TEXTURE_2D, textureFormat,intermediary->w, intermediary->h, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);
     #else
         glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, intermediary->w, intermediary->h, 0, textureFormat, GL_UNSIGNED_BYTE, intermediary->pixels);

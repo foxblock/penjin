@@ -18,7 +18,7 @@ void AnimationMenuItem::init()
     anim.setLooping(true);
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     dimensions.x = 0;
@@ -54,7 +54,7 @@ PENJIN_ERRORS AnimationMenuItem::loadSelectionFrame(CRstring fileName)
 
 void AnimationMenuItem::update()
 {
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         Vector2di Offset(horizontalOffset,0);
     #else
         Vector3df Offset(horizontalOffset,0.0f,0.0f);

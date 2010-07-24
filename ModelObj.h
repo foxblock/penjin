@@ -1,28 +1,30 @@
-/*
-	Pirate Games 2008 (and beyond...)
-	The source is free for modification.
-	Any changes should be emailed back to the Pirate Games team
-		(team@pirate-games.co.uk)
-*/#ifndef MODELOBJ_H
+#ifndef MODELOBJ_H
 #define MODELOBJ_H
-#include "Model3dBase.h"
-#include "PenjinTypes.h"
-#include "TextDoc.h"
 
-class ModelObj : public Model3dBase
+#include "PenjinTypes.h"
+#include "PenjinErrors.h"
+class ModelOBJ;
+class Texture;
+using namespace PenjinErrors;
+class ModelObj
 {
     public:
         ModelObj();
-        virtual ~ModelObj();
+        ~ModelObj();
 
-        virtual int loadModel(CRstring model);
+        PENJIN_ERRORS loadModel(CRstring model);
+        PENJIN_ERRORS loadBumpMap(CRstring map);
+        //PENJIN_ERRORS loadNormalMap(CRstring map);
+        PENJIN_ERRORS loadTexture(CRstring texture);
 
-        virtual void render();
-        //virtual void update();  //  Only relevent for animated models
+        void render();
+        void update();  //  Only relevent for animated models
     private:
-        GLfloat* vertices;
-        GLfloat* normals;
-        GLfloat* texCoords;
+        ModelOBJ* model;
+        Texture* texture;
+        //Texture* normalMap;
+        Texture* bumpMap;
+
 };
 
 #endif // MODELOBJ_H

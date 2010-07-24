@@ -35,7 +35,13 @@ struct Point4df{float x;float y;float z;float w;};
 struct Point4dx{Fixed x;Fixed y;Fixed z;Fixed w;};
 struct Point4di{int x;int y;int z;int w;};
 
-
+//  Model Vectors
+typedef float ModelVector3f[3];
+typedef float ModelVector2f[2];
+typedef Fixed ModelVector3x[3];
+typedef Fixed ModelVector2x[2];
+typedef int ModelVector3i[3];
+typedef int ModelVector2i[2];
 // CONSTANT REFERENCES
 typedef const bool& CRbool;
 typedef const int& CRint;
@@ -74,7 +80,7 @@ typedef const std::string& CRstring;
 #endif  //  PENJIN_FIXED
 
 // Vertex helpers
-#ifdef PENJIN3D
+#ifdef PENJIN_3D
     struct ColourVertex
     {
         Point3df vertex;

@@ -7,7 +7,7 @@ Menu::Menu()
     #endif
     currentSelection = 0;
     correction = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         menu3D = false;
         angle = 0.0f;
         angleDelta = 0.1f;
@@ -35,7 +35,7 @@ Menu::~Menu()
 
 void Menu::update()
 {
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         if(menu3D)
         {
             angle+= angleDelta;
@@ -46,7 +46,7 @@ void Menu::update()
         if(currentSelection == i)
         {
             menuItems[i]->setIsSelected(true);
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 if(menu3D)
                 {
                     menuItems[i]->setAngle(&angle);
@@ -57,7 +57,7 @@ void Menu::update()
         else
         {
             menuItems[i]->setIsSelected(false);
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 menuItems[i]->setMenu3D(false);
             #endif
         }
@@ -178,7 +178,7 @@ void Menu::updatePositions()
     {
         if (s != 0)
         {
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 Vector3df pos = menuItems[s-1]->getPosition();
                 pos.y += (menuItems[s-1]->getSpacing() - menuItems[s-1]->getDimensions().y);
             #else
@@ -425,7 +425,7 @@ void Menu::setSelectionIndicator(CRchar c)
     }
 #endif
 
-#ifdef PENJIN3D
+#ifdef PENJIN_3D
  void Menu::setMenuItemDimensions(CRuint i,const Vector2di& dims){menuItems[i]->setDimensions(dims);}
 #endif
 

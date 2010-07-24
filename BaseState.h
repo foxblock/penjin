@@ -75,7 +75,7 @@ class  BaseState
 		bool getNullifyState()const{return nullify;}
 		void nullifyState(){nullify = true;nextState = STATE_NULL;}
 		#ifndef PENJIN_ASCII
-            void setSimpleJoy(SimpleJoy* sj){input = sj;}
+            void setSimpleJoy(SimpleJoy* sj);//{input = sj;}
         #endif
 		//	This is used to pass variables between states!
 		vector<Variable> variables;

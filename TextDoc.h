@@ -11,9 +11,10 @@
 #include <iostream>
 using namespace std;
 
-#include "ErrorHandler.h"
+//#include "ErrorHandler.h"
+#include "PenjinErrors.h"
 #include "PenjinTypes.h"
-
+using namespace PenjinErrors;
 
 class TextDoc
 {

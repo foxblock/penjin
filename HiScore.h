@@ -72,7 +72,7 @@ class HiScore
         Text text;
         Encryption crypt;
         string tableTitle;
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2di startPos;
             Vector2di endPos;
             Vector2df centrePos;

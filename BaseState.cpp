@@ -1,5 +1,7 @@
 #include "BaseState.h"
 
+#include "SimpleJoy.h"
+
 BaseState::BaseState()
 {
     isPaused = false;
@@ -13,6 +15,13 @@ BaseState::~BaseState()
 {
     /// Tidy up
 }
+
+#ifndef PENJIN_ASCII
+void BaseState::setSimpleJoy(SimpleJoy* sj)
+{
+    input = sj;
+}
+#endif
 
 void BaseState::pauseUpdate()
 {
@@ -99,7 +108,7 @@ void BaseState::unlimitedUpdate()
 void BaseState::init()
 {
     #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2) || defined (PENJIN_SOFT)
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             GFX::init3DRendering();
         #else
             GFX::init2DRendering();

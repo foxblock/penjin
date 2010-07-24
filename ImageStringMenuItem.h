@@ -18,7 +18,7 @@ class ImageStringMenuItem : public MenuItem
         #endif
         virtual void render();
 
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             virtual void setPosition(const Vector3df& pos);
         #else
             virtual void setPosition(const Vector2df& pos);

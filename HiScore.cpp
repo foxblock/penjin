@@ -1,4 +1,6 @@
 #include "HiScore.h"
+#include "StringUtility.h"
+using namespace StringUtility;
 
 HiScore::HiScore()
 {
@@ -14,7 +16,7 @@ HiScore::HiScore()
 	initialiseTables();
 	text.setRelativity(true);
 	//text.setCentreText(true);
-	#ifndef PENJIN3D
+	#ifndef PENJIN_3D
         startPos = Vector2di(120,5);
     #else
         startPos = Vector3df(120.0f,5.0f,0.0f);
@@ -34,7 +36,7 @@ HiScore::HiScore(CRuint numScores,CRuint numInitials)
 	tableTitle = "Hi Scores";
 	initialiseTables();
 	text.setRelativity(true);
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         startPos = Vector2di(120,5);
     #else
         startPos = Vector3df(120.0f,5.0f,0.0f);
