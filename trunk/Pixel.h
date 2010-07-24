@@ -99,7 +99,7 @@ class Pixel
         {
             position.x = p.x;
             position.y = p.y;
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 position.z = p.z;
             #endif
         }
@@ -107,7 +107,7 @@ class Pixel
     #ifdef PENJIN_SDL
         Vector2di getPosition()const{return position;}
     #else
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df getPosition()const{return position;}
         #else
             Vector2df getPosition()const{return position;}
@@ -135,7 +135,7 @@ class Pixel
         SDL_Surface* pixel;     //  Pixel to blit to the screen
         SDL_Surface* screen;    //  pointer to screen surface
     #else
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df position;
         #else
             Vector2df position;

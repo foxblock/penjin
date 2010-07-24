@@ -30,7 +30,7 @@ class Glyph
         void refresh(); //  Updates the glyph
 
         void setFont(TTF_Font* f){font = f;}            //  Set the pointer to the loaded Font object
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             void setPosition(Vector3df* p){position = p;}
         #else
             void setPosition(Vector2di* p){position = p;}
@@ -67,7 +67,7 @@ class Glyph
         TTF_Font* font;
         GlyphClass::RENDER_MODES renderMode;
         //  This is just a position we move around
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df* position;
         #else
             Vector2di* position;

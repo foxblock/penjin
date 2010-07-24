@@ -9,7 +9,7 @@ void StringMenuItem::init()
     setType(MENU_STRING_ITEM);
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     dimensions.x = 0;

@@ -1,51 +1,73 @@
 #include "Model3d.h"
-
+#include "Model3ds.h"
+#include "ModelObj.h"
+#include "Parser.h"
 Model3d::Model3d()
 {
     //ctor
-    model = NULL;
-    model = new Model3dBase();
+    model3ds = NULL;
+    modelobj = NULL;
 }
 
 Model3d::~Model3d()
 {
     //dtor
-    if(model)
-        delete model;
-    model = NULL;
+    delete model3ds;
+    delete modelobj;
 }
 
 
-int Model3d::loadTexture(CRstring filename)
+PENJIN_ERRORS Model3d::loadTexture(CRstring filename)
 {
-    if(model)
-        return model->loadTexture(filename);
+    if(model3ds)
+        return model3ds->loadTexture(filename);
+    else if(modelobj)
+        return modelobj->loadTexture(filename);
+
     return PENJIN_ERROR;
 }
 
-int Model3d::loadModel(CRstring filename)
+PENJIN_ERRORS Model3d::loadModel(CRstring filename)
 {
     string ext = Parser().getExtension(filename);
     ext = StringUtility::upper(ext);
-
-    if(model)
-        delete model;
-    model = NULL;
-/*
+    PENJIN_ERRORS result;
     if(ext == "OBJ")                    //  OBJ format 3d model
-        model = new ModelObj();
-    else*/ if(ext == "3DS")               //  3dStudio Max model
-        model = new Model3ds();
+    {
+        delete modelobj;
+        modelobj = NULL;
+
+        modelobj = new ModelObj;
+        result = modelobj->loadModel(filename);
+    }
+    else if(ext == "3DS")               //  3dStudio Max model
+    {
+        delete model3ds;
+        model3ds = NULL;
+
+        model3ds = new Model3ds;
+        result = model3ds->loadModel(filename);
+    }
+    else if(ext == "MD2")               //  Quake2 Model format
+    {
+
+    }
     else
-        model = new Model3dBase();      //  unknown format
-    return model->loadModel(filename);
+        return PENJIN_ERROR;      //  unknown format
+    return result;
 }
 
 void Model3d::render()
 {
-    model->render();
+    if(model3ds)
+        model3ds->render();
+    else if(modelobj)
+        modelobj->render();
 }
 void Model3d::update()
 {
-    model->update();
+    if(model3ds)
+        model3ds->update();
+    else if(modelobj)
+        modelobj->update();
 }

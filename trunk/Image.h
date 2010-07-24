@@ -71,7 +71,7 @@ class Image
         PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // see above comment
         PENJIN_ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
 
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             void renderImage(uint i,CRfloat destX,CRfloat destY,CRfloat destZ);
             template <class T>
             void renderImage(const T& destX,const T& destY){renderImage(0,destX,destY,0);}
@@ -153,7 +153,7 @@ class Image
         uint getWidth()const;
         uint getHeight()const;
         void setAlpha(const uchar& alpha); //  alpha 0 to 255
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             void setScaleX(CRfloat scaleX){this->scale.x = scaleX;}
             void setScaleY(CRfloat scaleY){this->scale.y = scaleY;}
             float getScaleX()const{return scale.x;}
@@ -181,7 +181,7 @@ class Image
             // check and unlock screen
             void screenUnlock();
         #elif defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2) || defined (PENJIN_SOFT)
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
                 Vector3df getRotationVector()const{return rotation;}
                 void setRotation(CRfloat a){rotation.z = a;}
@@ -272,7 +272,7 @@ class Image
 
         uchar alpha;
         vector<SDL_Rect>clipAreas;  //  Stores clipping planes
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df scale;            //  scale Vector for opengl
             Vector3df rotation;         //  Rotation Vector for opengl
         #else

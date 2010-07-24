@@ -4,14 +4,14 @@ Sprite::Sprite()
 {
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     #ifdef PENJIN_SDL
         screen = SDL_GetVideoSurface();
     #endif
 }
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     Sprite::Sprite(CRint x,CRint y)
     {
         setPosition(x,y);

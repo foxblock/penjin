@@ -1,5 +1,19 @@
 #include "Engine.h"
 
+#include "StringUtility.h"
+#ifndef PENJIN_ASCII
+    #include "Sound.h"
+    #include "Text.h"
+#else
+    #include "Random.h"
+#endif
+#ifdef USE_ACHIEVEMENTS
+    #include "AchievementSystem.h"
+    #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
+#endif
+
+using namespace StringUtility;
+
 Engine::Engine()
 {
 	///	Default constructor
@@ -11,6 +25,8 @@ Engine::Engine()
     state = NULL;
 	state = new BaseState;
 	setInitialState(STATE_BASE);
+
+	gameTimer = new Timer;
 
 #ifndef PENJIN_ASCII
     input = NULL;
@@ -25,6 +41,7 @@ Engine::~Engine()
         delete state;
         state = NULL;
     }
+    delete gameTimer;
     #ifndef PENJIN_ASCII
         if(input)
         {
@@ -56,6 +73,16 @@ Engine::~Engine()
         GFX::shutdown();
         SDL_Quit();
 	#endif
+}
+
+void Engine::setInitialState(CRuint nextState)
+{
+    if(!state)
+    {
+        state = NULL;
+        state = new BaseState;
+    }
+    state->setNextState(nextState);
 }
 
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
@@ -217,13 +244,13 @@ PENJIN_ERRORS Engine::penjinInit()
         if(customControlMap != "NULL")
             input->loadControlMap(customControlMap);
     #endif
-    gameTimer.setMode(SIXTY_FRAMES);
+    gameTimer->setMode(SIXTY_FRAMES);
     #ifndef PENJIN_SYS_TIMER
         now = SDL_GetTicks();
     #else
         now = clock();
 	#endif
-	gameTimer.start();
+	gameTimer->start();
 	Random::randSeed();
 
 	return PENJIN_OK;
@@ -239,8 +266,6 @@ bool Engine::stateLoop()
 	}
 	else if (state->getNeedInit() == false)
 	{
-        if(state->getNeedInit())
-            return true;
         //  Update physics
         state->unlimitedUpdate();
         if(state->getNeedInit())
@@ -254,7 +279,7 @@ bool Engine::stateLoop()
 		        state->onPause();
 		        state->setFirstPaused(true);
             }
-            if(gameTimer.getScaledTicks() > 1)
+            if(gameTimer->getScaledTicks() > 1)
             {
                 state->pauseInput();
                 state->pauseUpdate();
@@ -268,7 +293,7 @@ bool Engine::stateLoop()
                 #ifndef PENJIN_ASCII
                     GFX::forceBlit();
                 #endif
-                gameTimer.start();
+                gameTimer->start();
             }
             else
             #ifndef PENJIN_SYS_TIMER
@@ -282,9 +307,9 @@ bool Engine::stateLoop()
             state->onResume();
             state->setFirstPaused(false);
         }
-		else if(gameTimer.getScaledTicks() > 1)
+		else if(gameTimer->getScaledTicks() > 1)
 		{
-			gameTimer.start();
+			gameTimer->start();
 			state->userInput();
 			state->update();
 			#ifdef USE_ACHIEVEMENTS
@@ -329,7 +354,7 @@ bool Engine::stateLoop()
 		#ifndef PENJIN_SYS_TIMER
 		else
 		{
-		    SDL_Delay(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
+		    SDL_Delay(timeRemaining((uint)gameTimer->getScaler()));  // Release CPU briefly
 		}
 		#else
         /*else

@@ -2,25 +2,8 @@
 #define ENGINE_H
 
 #include "PenjinIncludes.h"	//	List all inclusions in this file
-#include "PenjinStates.h"		//	List all game states in this file
 #include "PenjinTypes.h"		//	All Penjin types listed here.
-#include "StringUtility.h"
-#ifndef PENJIN_ASCII
-    #include "Sound.h"
-    #include "Text.h"
-#else
-    #include "Random.h"
-#endif
-#ifdef USE_ACHIEVEMENTS
-    #include "AchievementSystem.h"
-    #define ACHIEVEMENTS (AchievementSystem::GetSingleton())
-#endif
-#ifdef PLATFORM_GP2X
-#include "MMUHack.h"
-#endif
-
-using namespace StringUtility;
-
+#include "PenjinStates.h"		//	List all game states in this file
 /* This is a base engine class. You do not use this directly, it is inherited by and overridden by a child class.
 This can be seen as a template for your main application.
 
@@ -45,15 +28,7 @@ class Engine
 		void getVariables();
 
 		//	Functions for engine setup
-		void setInitialState(CRuint nextState)
-		{
-			if(!state)
-			{
-				state = NULL;
-				state = new BaseState;
-			}
-			state->setNextState(nextState);
-		}
+		void setInitialState(CRuint nextState);
 
 	protected:
         #ifndef PENJIN_ASCII
@@ -70,7 +45,7 @@ class Engine
             bool loadMenu;
 		#endif
 		vector<Variable> variables;		//	Variable storage for transfer between states
-		Timer gameTimer;				//	Timer for frame regulation and event scheduling.
+		Timer* gameTimer;				//	Timer for frame regulation and event scheduling.
 		uint now;
 		#ifdef _DEBUG
             float calcFPS()

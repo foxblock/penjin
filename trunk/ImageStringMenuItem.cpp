@@ -9,7 +9,7 @@ void ImageStringMenuItem::init()
     setType(MENU_IMAGE_STRING_ITEM);
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     dimensions.x = 0;
@@ -65,7 +65,7 @@ Vector2di ImageStringMenuItem::getDimensions()
     return dimensions;
 }
 
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     void ImageStringMenuItem::setPosition(const Vector2df& pos)
     {
         position = pos;
@@ -84,7 +84,7 @@ Vector2di ImageStringMenuItem::getDimensions()
 void ImageStringMenuItem::centreText(CRint corr)
 {
     /// Get the difference of the text and the animFrame
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         Vector2di diff = menuImage.getDimensions()-text.getDimensions();
     #else
         Vector3df temp;

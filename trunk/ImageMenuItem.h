@@ -16,7 +16,7 @@ class ImageMenuItem : public MenuItem
         #ifdef PENJIN_SDL
             virtual void render(SDL_Surface* screen);
         #else
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 virtual void update();
             #endif
         #endif

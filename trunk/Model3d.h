@@ -1,16 +1,12 @@
-/*
-	Pirate Games 2008 (and beyond...)
-	The source is free for modification.
-	Any changes should be emailed back to the Pirate Games team
-		(team@pirate-games.co.uk)
-*/#ifndef MODEL3D_H
+#ifndef MODEL3D_H
 #define MODEL3D_H
 #include "PenjinTypes.h"
 #include "PenjinErrors.h"
 using namespace PenjinErrors;
-#include "Model3dBase.h"
-#include "Parser.h"
-#include "StringUtility.h"
+
+class Model3ds;
+class ModelObj;
+
 class Model3d
 {
     public:
@@ -19,14 +15,22 @@ class Model3d
         Model3d(CRstring modelName,CRstring textureName);
         ~Model3d();
 
-        int loadTexture(CRstring filename);
-        int loadModel(CRstring filename);
+        PENJIN_ERRORS loadTexture(CRstring filename);
+        PENJIN_ERRORS loadModel(CRstring filename);
 
         void render();
         void update();      //  if the model supports animation you can call this.
 
+        void setRotation(const Vector3df& vec){rotation = vec;}
+        void setScale(const Vector3df& vec){scale = vec;}
+
     private:
-        Model3dBase* model;
+        Model3ds* model3ds;
+        ModelObj* modelobj;
+
+        Vector3df rotation;     //  Rotation Vector
+        Vector3df scale;        //  Scale Vector
+
 };
 
 #endif // MODEL3D_H

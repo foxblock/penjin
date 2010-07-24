@@ -46,7 +46,7 @@ class Animation
             numLoops = firstLoops;
         }
         void setReversePlay(CRbool reverse){playReversed = reverse;}
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             void setPosition(const Vector2di& pos){position = pos;}
         #else
             void setPosition(const Vector3df& pos){position = pos;}
@@ -55,7 +55,7 @@ class Animation
         Timer animationTimer;
         Image image;
 
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2di position;
         #else
             Vector3df position;

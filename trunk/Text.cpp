@@ -1,5 +1,14 @@
 #include "Text.h"
-
+#ifdef PENJIN_ASCII
+    #ifdef _WIN32
+        #include "Wincon.h"
+    #elif _LINUX
+        #include <ncurses.h>
+    #endif
+#endif
+#include "StringUtility.h"
+#include "NumberUtility.h"
+using namespace StringUtility;
 PENJIN_ERRORS TextClass::init()
 {
     if(isInitialised())
@@ -35,7 +44,7 @@ Text::Text()
 	startPos.x = 0;
 	startPos.y = 0;
 	dimensions.x = dimensions.y = 0;
-	#ifdef PENJIN3D
+	#ifdef PENJIN_3D
         #ifdef PENJIN_FIXED
                 position.z = startPos.z = 0;
         #else
@@ -147,6 +156,11 @@ PENJIN_ERRORS Text::loadFont(CRstring name)
 PENJIN_ERRORS Text::setFontSize(CRuint s)
 {
     return loadFont(fontName, s);
+}
+
+void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
+{
+    glyphs.at(0,0)->setRenderMode(mode);
 }
 
 #ifdef PENJIN_SDL
@@ -292,7 +306,19 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
         string t = text;
         print( screen,t);
     }
+        //	write an integer to the screen
+    void Text::print(SDL_Surface* scr, CRint number){print(scr,intToString(number));}
+    //	write a float number to the screen
+    void Text::print(SDL_Surface* scr, CRfloat number){print(scr,floatToString(number));}
+            //	write an integer to the screen
+    void Text::print(CRint number){print(screen,number);}
+    //	write a float number to the screen
+    void Text::print(CRfloat number){print(screen,number);}
 #else
+    //	write an integer to the screen
+    void Text::print(CRint number){print(StringUtility::intToString(number));}
+    //	write a float number to the screen
+    void Text::print(CRfloat number){print(StringUtility::floatToString(number));}
     void Text::print(CRstring text)
     {
          //  no text, no render
@@ -431,7 +457,7 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
         print(t);
     }
 #endif
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     void Text::setPosition(CRfloat x, CRfloat y)
     {
         position.x = startPos.x = x;
@@ -467,7 +493,7 @@ void Text::align(const Vector2di& guess)
 {
     if(alignment == CENTRED)
     {
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         Vector2df b(clipBoundary.w,clipBoundary.h);
         b-= (position + guess);
         b*=0.5f;

@@ -50,7 +50,7 @@ void AnimatedParticle::update()
 
 
     if(useDeviance)
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             #ifdef PENJIN_FIXED
                 position = position + Vector2dx(Random::nextFixed()-deviation,Random::nextFixed()-deviation);
             #else

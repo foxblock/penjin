@@ -31,7 +31,7 @@ class Rectangle
             dimensions.x = w;
             dimensions.y = h;
             thickness = 0;
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 scale.x = scale.y = scale.z = 1.0f;
                 rotation.x = rotation.y = rotation.z = 0.0f;
             #else
@@ -121,7 +121,7 @@ class Rectangle
         Vector2di dimensions;
         Colour colour;
 
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         Vector3df position;
         Vector3df scale;
         Vector3df rotation;

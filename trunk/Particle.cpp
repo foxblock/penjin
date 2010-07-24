@@ -6,7 +6,7 @@ Particle::Particle()
     setPosition(0,0);
 }
 
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     Particle::Particle(CRfloat x,CRfloat y)
     {
         init();
@@ -41,7 +41,7 @@ void Particle::init()
     deviation = 0;
     velocity.x = 0;
     velocity.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         velocity.z = 0;
     #endif
     gravity = acceleration = velocity;
@@ -78,7 +78,7 @@ void Particle::advanceUpdate()
 
 
     if(useDeviance)
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             #ifdef PENJIN_FIXED
                 position = position + Vector2dx(rand.nextFixed()-deviation,rand.nextFixed()-deviation);
             #else
@@ -102,7 +102,7 @@ void Particle::update()
 
 
     if(useDeviance)
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         #ifdef PENJIN_FIXED
             position = position + Vector2dx(rand.nextFixed()-deviation,rand.nextFixed()-deviation);
         #else
@@ -116,7 +116,7 @@ void Particle::update()
 void Particle::setColour(const Colour& col){colour.setColour(col);}
 
 void Particle::setColour(const uchar& r,const uchar& g,const uchar& b){colour.setColour(r,g,b);}
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     void Particle::setDeviation(CRfloat dev)
     {
         deviation = dev;

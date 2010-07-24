@@ -14,7 +14,7 @@ void ImageMenuItem::init()
     selected = NULL;
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
         menu3D = false;
         angle = NULL;
@@ -61,7 +61,7 @@ PENJIN_ERRORS ImageMenuItem::loadSelection(CRstring fileName)
         else if (isSelected && selected)
             selected->renderImage(position + Offset);
     }
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         void ImageMenuItem::update()
         {
             if(menu3D)

@@ -34,7 +34,7 @@ void Line::render()
     // Scale and rotate
     glPushMatrix();
 /*
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         glScalef(scale.x, scale.y, scale.z);
         glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
         glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
@@ -54,7 +54,7 @@ void Line::render()
             //  Set OpenGL alpha and colour
                 glLineWidth(lineWidth);
                 glEnableClientState(GL_VERTEX_ARRAY);
-                    #ifdef PENJIN3D
+                    #ifdef PENJIN_3D
                         float verts[] = {   start.x, start.y, start.z,
                                             end.x, end.y, end.z};
                         glVertexPointer(3, GL_FLOAT, 0,verts);

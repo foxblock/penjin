@@ -55,7 +55,7 @@ class Menu
         Vector2df getSelectionPosition()const{return menuItems.at(currentSelection)->getPosition();}
 
         /// Set the topleft corner of the menu
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             void setMenuStart(const Vector2di& start){menuStart = start;}
             void setMenuStart(CRint x,CRint y){menuStart.x = x; menuStart.y = y;}
             void setMenuStart(const Vector2dx& start){menuStart.x = start.x.intValue >> 16; menuStart.y = start.y.intValue >> 16;}
@@ -140,7 +140,7 @@ class Menu
     private:
         void updatePositions();
 
-        #ifndef PENJIN3D
+        #ifndef PENJIN_3D
             Vector2df   menuStart;              //  Stores the topleft coord of the menu
         #else
             Vector3df   menuStart;

@@ -2,7 +2,7 @@
 #define INC_VECTOR3D_H
 
 #include <cmath>
-#ifdef PENJIN3D
+#ifdef PENJIN_3D
 #include <SDL/SDL_opengl.h>
 #endif
 #include "PenjinTypes.h"

@@ -10,7 +10,7 @@ void AnimationStringMenuItem::init()
     setType(MENU_ANIM_STRING_ITEM);
     position.x = 0;
     position.y = 0;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         position.z = 0.0f;
     #endif
     dimensions.x = 0;
@@ -72,7 +72,7 @@ Vector2di AnimationStringMenuItem::getDimensions()
 PENJIN_ERRORS AnimationStringMenuItem::loadSelectionFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){return anim.loadSelectionFrames(fileName, xTiles, yTiles);}
 PENJIN_ERRORS AnimationStringMenuItem::loadSelectionFrame(CRstring fileName){return anim.loadSelectionFrame(fileName);}
 
-#ifndef PENJIN3D
+#ifndef PENJIN_3D
     void AnimationStringMenuItem::setPosition(const Vector2df& pos)
     {
         position = pos;
@@ -93,7 +93,7 @@ void AnimationStringMenuItem::centreText(CRint corr)
     /// Get the difference of the text and the animFrame
     Vector2di diff = text.getDimensions()-anim.getDimensions();
     diff = diff*0.5f;
-    #ifdef PENJIN3D
+    #ifdef PENJIN_3D
         text.setPosition(Vector3df(diff.x+corr,diff.y,0.0f));
     #else
         text.setPosition(Vector2df(diff.x+corr,diff.y));

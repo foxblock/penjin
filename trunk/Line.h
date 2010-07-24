@@ -32,7 +32,7 @@ class Line
         void render();
 
     private:
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Point3di start;
             Point3di end;
         #else

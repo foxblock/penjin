@@ -1,36 +1,28 @@
 #ifndef INC_MODEL3DS_H
 #define INC_MODEL3DS_H
-
-
-#include <SDL/SDL_opengl.h>
-
-#include <lib3ds/file.h>
-#include <lib3ds/mesh.h>
-#include <string>
-using namespace std;
-
 #include "PenjinTypes.h"
 #include "PenjinErrors.h"
-#include "Texture.h"
-#include "Model3dBase.h"
-
-class Model3ds : public Model3dBase
+class Texture;
+using namespace PenjinErrors;
+class Model3ds
 {
 	public :
         Model3ds();
         ~Model3ds();
 
-        virtual int loadModel(const string& fileName);
+        PENJIN_ERRORS loadTexture(CRstring filename);
+        PENJIN_ERRORS loadModel(CRstring filename);
 
-        virtual void render();
+        void render();
+        void update();
 
 	private :
-		uint numFaces;		//Total number of faces model has over all meshes
-		Lib3dsVector* vertices;		//Vertex array
-		Lib3dsVector* normals;		//Normal array
-		GLfloat* coords;			//Texture coordinate array
-
-		void setNULL();
+        Texture* texture;
+        uint numFaces;	            //  Total number of faces model has over all meshes
+		ModelVector3f* vertices;		//  Vertex array
+		ModelVector3f* normals;		//  Normal array
+		float* coords;			    //  Texture coordinate array
+        void setNULL();
 		void clear();
 };
 

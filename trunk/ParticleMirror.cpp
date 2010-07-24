@@ -22,7 +22,7 @@ void ParticleMirror::update()
         {
             for(int j = emit[i]->size()-1; j>=0; --j)
             {
-                #ifdef PENJIN3D
+                #ifdef PENJIN_3D
                     // TODO 3D version
                 #else
                     // Check direction of particle

@@ -9,7 +9,7 @@ Emitter::Emitter()
     stopNew = false;
     fade = 0;
     fadeValue = 0;
-    #ifndef PENJIN3D
+    #ifndef PENJIN_3D
         acceleration = Vector2df(0,0);
         gravity = position = acceleration;
         maxVelocity = Vector2df(3,3);
@@ -301,7 +301,7 @@ void Emitter::advanceUpdate(CRuint n)
                 }
             }
 
-            #ifdef PENJIN3D
+            #ifdef PENJIN_3D
                 Vector3df vel;
             #else
                 Vector2df vel;
@@ -382,7 +382,7 @@ void Emitter::update()
             }
         }
 
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df vel;
         #else
             Vector2df vel;

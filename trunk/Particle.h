@@ -31,13 +31,13 @@ using namespace ParticleTypes;
 class Particle
 {
     public:
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Particle(const Vector3df& vec);
             Particle(CRfloat x,CRfloat y);
         #else
             Particle(const Vector2df& vec);
             Particle(CRfloat x, CRfloat y);
-        #endif  // PENJIN3D
+        #endif  // PENJIN_3D
         Particle();
         void init();
 
@@ -61,7 +61,7 @@ class Particle
         virtual void setAlpha(CRuchar a){colour.setAlpha(a);}
         uchar getAlpha()const{return colour.getAlpha();}
 
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             void setPosition(const Vector3df& vec){position = vec;}
             void setPosition(const Vector2df& vec){position = Vector3df(vec.x, vec.y, 0.0f);}
             void setPosition(CRfloat x,CRfloat y,CRfloat z){position = Vector3df(x,y,z);}
@@ -88,7 +88,7 @@ class Particle
             void setVelocity(const Vector2df& vel){velocity = vel;}
             Vector2df getVelocity()const{return velocity;}
             Vector2df getAcceleration()const{return acceleration;}
-        #endif  //  PENJIN3D
+        #endif  //  PENJIN_3D
 
         int getLifeTime()const{return lifeTime;}
 
@@ -96,7 +96,7 @@ class Particle
         void setLifeTime(CRint s){lifeTime = s;}
 
     protected:
-        #ifdef PENJIN3D
+        #ifdef PENJIN_3D
             Vector3df position;
             Vector3df velocity;
             float deviation;            //  This is the random variance of the particle position
