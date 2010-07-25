@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <string>
+#include <vector>
 #include "PenjinTypes.h"
 #include "PenjinErrors.h"
 using namespace PenjinErrors;
@@ -13,6 +14,9 @@ namespace SoundClass
 {
     void init();
     void deInit();
+    void setGlobalVolume(CRuint volume);
+    uint getGlobalVolume();
+    void stopAll();
 }
 
 class Sound
@@ -22,25 +26,24 @@ class Sound
         ~Sound();
 
         PENJIN_ERRORS loadSound(CRstring soundName);
-        void setLoops(CRint loops){this->loops = loops;}
-        void setVolume(CRuint volume){Mix_Volume(channel,volume);}
-        uint getVolume()const{return Mix_Volume(channel,-1);}
-        void setGlobalVolume(CRuint volume){Mix_Volume(-1,volume);}
-        uint getGlobalVolume()const{return Mix_Volume(-1,-1);}
+        void setLoops(CRint newloops, CRint id=-1){this->defLoops = newloops;}; // set default loops, which will be used when play is called without loop parameter
+        void setVolume(CRuint volume, CRint id=-1); // using -1 as id will set volume for all playing instances
+        uint getVolume(CRint id=-1)const; // using -1 as id will return volume for first instance
+        void setSimultaneousPlay(CRbool b){simultaneousPlay = b;} // allow playing of multiple instances of this sound as the same time
 
-        bool isPlaying()const;
-        bool isPaused()const;
+        bool isPlaying(CRint id=-1)const; // no or id=-1 will return first instance's status
+        bool isPaused(CRint id=-1)const; // no or id=-1 will return first instance's status
 
-        void play();
-        void pause();
-        void playPause();
-        void stop();
-        void stopAll();
+        void play(int loops=-2, CRint id=-1); // passing a loop parameter will overwrite the default value for this instance, passing -1 as id will add another instance to the list (if simul play is true)
+        void pause(CRint id=-1); // pauses all instances if id is -1
+        void playPause(CRint id=-1); // only plays/pauses one instance, first one of id is -1
+        void stop(CRint id=-1); // stops all instances if id is -1
 
         void freeAll();
     private:
         Mix_Chunk *sound;
-        int channel;
-        int loops;
+        bool simultaneousPlay;
+        int defLoops;
+        vector< pair<int, int> > instances; // channel, loops
 };
 #endif	//	SOUND_H

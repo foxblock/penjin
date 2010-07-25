@@ -1,108 +1,196 @@
 #include "Sound.h"
 
-Sound::Sound()
-{
-	sound = NULL;
-	channel = -1;
-	loops = 0;
-}
-
 void SoundClass::init()
 {
-	#ifdef PLATFORM_GP2X
-		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 128);			// Initialize SDL_mixer for GP2X, buffer is set lower than PC
-    #elif PLATFORM_PC
-		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);		// Initialize SDL_mixer for PC, buffer is set higher
-    #elif PLATFORM_PANDORA
-        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);
-	#else
-        #error "Audio setup is not defined for this platform!"
-	#endif
+#ifdef PLATFORM_GP2X
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 128);			// Initialize SDL_mixer for GP2X, buffer is set lower than PC
+#elif PLATFORM_PC
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);		// Initialize SDL_mixer for PC, buffer is set higher
+#elif PLATFORM_PANDORA
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);
+#else
+#error "Audio setup is not defined for this platform!"
+#endif
 }
 
 void SoundClass::deInit()
 {
-	Mix_CloseAudio();																// Close SDL_Mixer Audio
+    Mix_CloseAudio();																// Close SDL_Mixer Audio
+}
+
+void SoundClass::setGlobalVolume(CRuint volume)
+{
+    Mix_Volume(-1,volume);
+}
+
+uint SoundClass::getGlobalVolume()
+{
+    return Mix_Volume(-1,-1);
+}
+
+void SoundClass::stopAll()
+{
+    Mix_HaltChannel(-1);
+};
+
+/// ---
+
+Sound::Sound()
+{
+    sound = NULL;
+    defLoops = 0;
+    simultaneousPlay = false;
 }
 
 Sound::~Sound()
 {
-	freeAll();
+    freeAll();
 }
 
 void Sound::freeAll()
 {
-	if(sound)
-	{
-	    if(isPlaying())
-            stop();
-		Mix_FreeChunk(sound);															// Release the memory allocated to sound
-		sound = NULL;
-	}
-	sound = NULL;
-	channel = -1;
+    if(sound)
+    {
+        for (int I = 0; I < instances.size(); ++I)
+            if(isPlaying(I))
+                stop(I);
+        Mix_FreeChunk(sound);															// Release the memory allocated to sound
+    }
+    sound = NULL;
+    instances.clear();
 }
 
 PENJIN_ERRORS Sound::loadSound(CRstring soundName)
 {
-	if(channel != -1)
-		channel = -1;
-	freeAll();
-	sound = Mix_LoadWAV(soundName.c_str());										// load sound.wav from sdcard
+    freeAll();
+    sound = Mix_LoadWAV(soundName.c_str());										// load sound.wav from sdcard
 
-	if(sound)
-		return PENJIN_OK;
-	return PENJIN_FILE_NOT_FOUND;
+    if(sound)
+        return PENJIN_OK;
+    return PENJIN_FILE_NOT_FOUND;
 }
 
-bool Sound::isPaused()const
+void Sound::setVolume(CRuint volume, CRint id)
 {
-    if(channel == -1)
+    if (id > instances.size())
+        return;
+    if (id >= 0)
+    {
+        Mix_Volume(instances.at(id).first,volume);
+    }
+    else
+    {
+        for (int I = 0; I < instances.size(); ++I)
+            Mix_Volume(instances.at(id).first,volume);
+    }
+}
+
+uint Sound::getVolume(CRint id) const
+{
+    if (instances.size() == 0)
+        return -1;
+    int useID = id;
+    if (id < 0 || id > instances.size()-1)
+        useID = 0;
+    return Mix_Volume(instances.at(useID).first,-1);
+}
+
+bool Sound::isPaused(CRint id) const
+{
+    if (instances.size() == 0 || id > instances.size()-1 || id < -1)
         return false;
-	else if(Mix_Paused(channel))
-		return true;
-	return false;
+    else
+    {
+        if (id < 0)
+            return Mix_Paused(instances.begin()->first);
+        else
+            return Mix_Paused(instances.at(id).first);
+    }
 }
 
-bool Sound::isPlaying()const
+bool Sound::isPlaying(CRint id) const
 {
-    if(channel == -1)
+    if (instances.size() == 0 || (int)id > (int)(instances.size()-1) || id < -1)
         return false;
-	else if(Mix_Playing(channel))
-		return true;
-	return false;
+    else
+    {
+        if (id < 0)
+            return Mix_Playing(instances.begin()->first);
+        else
+            return Mix_Playing(instances.at(id).first);
+    }
 }
 
-void Sound::play()
+void Sound::play(int loops, CRint id)
 {
-	if(isPaused())
-		Mix_Resume(channel);
-	else if(channel == -1 || !isPlaying())
-		channel = Mix_PlayChannel(channel, sound, loops);
+    if (simultaneousPlay)
+    {
+        // do some cleanup
+        for (int I = 0; I < instances.size(); ++I)
+            if (not isPlaying(I) && not isPaused(I))
+                instances.erase(instances.begin()+I);
+    }
+    if (loops == -2)
+        loops = defLoops;
+    if(id < 0)
+    {
+        if (not simultaneousPlay && instances.size() > 0)
+        {
+            if (not isPlaying())
+                Mix_PlayChannel(instances.begin()->first,sound,instances.begin()->second);
+        }
+        else
+        {
+            // Add another instance to the list
+            int channel = Mix_PlayChannel(-1, sound, loops);
+            if (channel != -1)
+                instances.push_back(make_pair(channel,loops));
+            // TODO: Spit out Penjin error string otherwise
+        }
+    }
+    else if (isPaused(id))
+        Mix_Resume(instances.at(id).first);
+    else if (id < instances.size())
+        Mix_PlayChannel(instances.at(id).first,sound,instances.at(id).second);
 }
 
-void Sound::pause()
+void Sound::pause(CRint id)
 {
-	if(isPlaying())
-		Mix_Pause(channel);
+    if (id >= 0)
+    {
+        if(isPlaying(id))
+            Mix_Pause(instances.at(id).first);
+    }
+    else
+    {
+        for (int I = 0; I < instances.size(); ++I)
+            pause(I);
+    }
 }
 
-void Sound::playPause()
+void Sound::playPause(CRint id)
 {
-    if(isPaused())
-        play();
-    else if(isPlaying())
-        pause();
+    if (id >= 0)
+    {
+        if(isPaused(id))
+            play(id);
+        else if(isPlaying(id))
+            pause(id);
+    }
+    else
+        playPause(0);
 }
 
-void Sound::stop()
+void Sound::stop(CRint id)
 {
-    //  Don't stop all channels!
-    if(channel != -1)
-        Mix_HaltChannel(channel);
-}
-
-void Sound::stopAll()
-{
-    Mix_HaltChannel(-1);
+    if (id >= 0)
+    {
+        if(isPlaying(id))
+            Mix_HaltChannel(instances.at(id).first);
+    }
+    else
+    {
+        for (int I = 0; I < instances.size(); ++I)
+            stop(I);
+    }
 }
