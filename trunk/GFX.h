@@ -110,7 +110,9 @@ namespace GFX
                                 //  Also enables blending.
         #ifdef PENJIN_3D
             void init3DRendering();                     //  Setup a standard 3D rendering mode
+            void perspective(CRfloat fov,CRfloat aspect,CRfloat znear,CRfloat zfar);    //  setup a perspective view
         #endif
+        void loadIdentity();    // load the identity matrix
     #endif
 
     #if defined (PENJIN_ES) || defined (PENJIN_ES2)

@@ -112,11 +112,8 @@ void Rectangle::render()
                         glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
                 glEnableClientState(GL_COLOR_ARRAY);
-                    float c[] = {   colour.red, colour.green, colour.blue, colour.alpha ,
-                                    colour.red, colour.green, colour.blue, colour.alpha ,
-                                    colour.red, colour.green, colour.blue, colour.alpha ,
-                                    colour.red, colour.green, colour.blue, colour.alpha};
-                    glColorPointer(4, GL_FLOAT, 0,c);
+                    float c[] = {  colour.red, colour.green, colour.blue, colour.alpha};
+                    glColorPointer(1, GL_FLOAT, 0,c);
                     if(thickness>0)
                     {
                         glLineWidth(thickness);

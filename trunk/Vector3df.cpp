@@ -21,3 +21,12 @@ void Vector3df::normalise()
 		z = 0.0f;
 	}
 }
+
+Vector3df Vector3df::cross(const Vector3df& v)
+{
+	Vector3df temp;
+	temp.x = y*v.z - z*v.y;
+	temp.y = z*v.x - x*v.z;
+	temp.z = x*v.y - y*v.x;
+	return temp;
+}
