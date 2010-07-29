@@ -19,6 +19,7 @@ void Model3ds::setNULL()
     vertices = NULL;
     normals = NULL;
     coords = NULL;
+    texture = NULL;
 }
 
 void Model3ds::clear()
@@ -38,6 +39,7 @@ void Model3ds::clear()
         delete [] coords;
         coords = NULL;
 	}
+	delete texture;
 }
 
 PENJIN_ERRORS Model3ds::loadModel(const string& filename)
@@ -73,7 +75,7 @@ PENJIN_ERRORS Model3ds::loadModel(const string& filename)
 			Lib3dsFace* face = &mesh->faceL[currentFace];
 			for(uint i = 0 ; i < 3 ; ++i)
 			{
-				memcpy(&vertices[finishedFaces*3 + i], mesh->pointL[face->points[i]].pos, sizeof(Lib3dsVector));
+				memcpy(&vertices[finishedFaces*3 + i], mesh->pointL[face->points[i]].pos, sizeof(ModelVector3f));
 				coords[uvCounter    ] = mesh->texelL[face->points[i]][0];
 				coords[uvCounter + 1] = mesh->texelL[face->points[i]][1];
 				uvCounter += 2;
@@ -90,8 +92,7 @@ PENJIN_ERRORS Model3ds::loadModel(const string& filename)
 
 PENJIN_ERRORS Model3ds::loadTexture(CRstring filename)
 {
-    if(texture)
-        delete texture;
+    delete texture;
     texture = NULL;
     texture = new Texture;
     return texture->loadTexture(filename);
@@ -109,7 +110,7 @@ void Model3ds::render()
 	glNormalPointer(GL_FLOAT, 0, normals);
 	glTexCoordPointer(2, GL_FLOAT, 0, coords);
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);//
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);//
 	glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
 
 	glDrawArrays(GL_TRIANGLES, 0, numFaces*3);

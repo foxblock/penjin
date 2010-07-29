@@ -1,4 +1,5 @@
 #include "GFX.h"
+#include "NumberUtility.h"
 namespace GFX
 {
     uint bpp = 0;
@@ -510,6 +511,7 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
     {
         // Setup OpenGL
         glDisable(GL_DEPTH_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glShadeModel(GL_SMOOTH);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -544,13 +546,18 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
     #ifdef PENJIN_3D
         void GFX::init3DRendering()
         {
+            //glEnable(GL_LIGHTING);
+            glEnable(GL_DEPTH_TEST);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glShadeModel(GL_SMOOTH);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glViewport(0, 0, xRes, yRes);
             //Setup world view
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            gluPerspective(60.0f, (float)xRes/(float)yRes, 1.0f, xRes);
+            perspective(90.0f,(float)xRes/(float)yRes, 1.0f, xRes);
+            glMatrixMode(GL_TEXTURE);
+            glRotated(180,0,0,1);
             //Setup model view
             glMatrixMode( GL_MODELVIEW );
             glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -630,7 +637,15 @@ uint GFX::getYResolution()
 {
     return yRes;
 }
-
+#if defined (PENJIN_GL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
+    #ifdef PENJIN_3D
+        void GFX::perspective(CRfloat fov,CRfloat aspect,CRfloat znear,CRfloat zfar)
+        {
+            float range = znear*tan(NumberUtility::degToRad(fov*0.5f));
+            glFrustum(-range*aspect,range*aspect,-range,range,znear,zfar);
+        }
+    #endif
+#endif
 #if defined(PENJIN_ES) || defined(PENJIN_ES2)
 void GFX::shutdown()
 {
