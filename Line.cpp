@@ -44,12 +44,7 @@ void Line::render()
         glRotatef(angle, 0.0f, 0.0f, 1.0f);
     #endif
   */
-    //Setup model view
-    //glMatrixMode( GL_MODELVIEW );
     glLoadIdentity( );
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //glAlphaFunc(GL_GREATER,0.1f);
-        //glEnable(GL_ALPHA_TEST);
             glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
                 glLineWidth(lineWidth);
@@ -70,7 +65,6 @@ void Line::render()
                 glDisableClientState(GL_VERTEX_ARRAY);
                 glDisableClientState(GL_COLOR_ARRAY);
             glDisable(GL_BLEND);
-        //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
 #endif
 }
