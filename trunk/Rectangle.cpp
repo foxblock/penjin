@@ -89,11 +89,9 @@ void Rectangle::render()
         glRotatef(angle, 0.0f, 0.0f, 1.0f);
     #endif
     //Setup model view
-    //glMatrixMode( GL_MODELVIEW );
+
     glLoadIdentity( );
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //glAlphaFunc(GL_GREATER,0.1f);
-        //glEnable(GL_ALPHA_TEST);
             glEnable(GL_BLEND);
             //  Set OpenGL alpha and colour
                 glEnableClientState(GL_VERTEX_ARRAY);
@@ -112,8 +110,8 @@ void Rectangle::render()
                         glVertexPointer(2, GL_FLOAT, 0,verts);
                     #endif
                 glEnableClientState(GL_COLOR_ARRAY);
-                    float c[] = {  colour.red, colour.green, colour.blue, colour.alpha};
-                    glColorPointer(1, GL_FLOAT, 0,c);
+                    float c[] = {  colour.red, colour.green, colour.blue, colour.alpha,  colour.red, colour.green, colour.blue, colour.alpha,  colour.red, colour.green, colour.blue, colour.alpha,  colour.red, colour.green, colour.blue, colour.alpha};
+                    glColorPointer(4, GL_FLOAT, 0,c);
                     if(thickness>0)
                     {
                         glLineWidth(thickness);
@@ -126,7 +124,6 @@ void Rectangle::render()
                 glDisableClientState(GL_VERTEX_ARRAY);
                 glDisableClientState(GL_COLOR_ARRAY);
             glDisable(GL_BLEND);
-        //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
 }
 #endif

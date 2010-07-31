@@ -106,6 +106,7 @@ void GFX::renderPixelBuffer()
     if(!pixBuff.empty())
     {
         #if defined (PENJIN_GL) || defined (PENJIN_ES)
+            glEnable(GL_BLEND);
             //  Setup vertex pointers
             glEnableClientState(GL_VERTEX_ARRAY);
             #ifdef PENJIN_3D
@@ -118,6 +119,7 @@ void GFX::renderPixelBuffer()
                 glDrawArrays(GL_POINTS,0,pixBuff.size());
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_COLOR_ARRAY);
+            glDisable(GL_BLEND);
         #elif PENJIN_SDL
             SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
             for(uint i=0; i < pixBuff.size(); ++i )
@@ -547,7 +549,11 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
         void GFX::init3DRendering()
         {
             //glEnable(GL_LIGHTING);
+            glClearDepth(1);
             glEnable(GL_DEPTH_TEST);
+            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHT0);
+            glEnable(GL_COLOR_MATERIAL);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glShadeModel(GL_SMOOTH);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
