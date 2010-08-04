@@ -27,6 +27,7 @@ class Sphere
         uint Vsegs;
         float radius;
         vector<float> verts;
+        vector<float> norms;
         Colour colour;
         Vector3df position;
 };

@@ -24,22 +24,23 @@ Sphere::~Sphere()
 void Sphere::refresh()
 {
     verts.clear();
+    norms.clear();
     int i, j;
     for(i = 0; i <= Hsegs; ++i)
     {
-        float lat0 = M_PI * (-0.5f + (float) (i - 1) / Hsegs);
-        float z0  = sin(lat0);
-        float zr0 =  cos(lat0);
+        double lat0 = M_PI * (-0.5f + (double) (i - 1) / Hsegs);
+        double z0  = sin(lat0);
+        double zr0 =  cos(lat0);
 
-        float lat1 = M_PI * (-0.5f + (float) i / Hsegs);
-        float z1 = sin(lat1);
-        float zr1 = cos(lat1);
+        double lat1 = M_PI * (-0.5f + (double) i / Hsegs);
+        double z1 = sin(lat1);
+        double zr1 = cos(lat1);
 
         for(j = 0; j <= Vsegs; ++j)
         {
-            float lng = 2 * M_PI * (float) (j - 1) / Vsegs;
-            float x = cos(lng);
-            float y = sin(lng);
+            double lng = 2 * M_PI * (double) (j - 1) / Vsegs;
+            double x = cos(lng);
+            double y = sin(lng);
 
             //glNormal3f(x * zr0, y * zr0, z0);
             //glVertex3f(x * zr0, y * zr0, z0);
@@ -51,6 +52,23 @@ void Sphere::refresh()
             verts.push_back(x*zr1*radius);
             verts.push_back(y*zr1*radius);
             verts.push_back(z1*radius);
+            /* FIXME!!!
+            Vector3df a(x*zr0*radius, y*zr0*radius, z0*radius);
+            Vector3df b(x*zr1*radius, y*zr1*radius, z1*radius);
+            Vector3df c(x*zr1*radius, y*zr0*radius, z1*radius);
+            Vector3df d(x*zr0*radius, y*zr1*radius, z1*radius);
+            Vector3df v1 = a-b;
+            Vector3df v2 = a-c;
+            Vector3df v3 = c-d;
+            Vector3df crossed = v1.normalisedCross(v2);
+            norms.push_back(crossed.x);
+            norms.push_back(crossed.y);
+            norms.push_back(crossed.z);
+            crossed = v2.normalisedCross(v3);
+            norms.push_back(crossed.x);
+            norms.push_back(crossed.y);
+            norms.push_back(crossed.z);
+            */
         }
     }
 }
@@ -80,12 +98,12 @@ void Sphere::render()
     glEnable(GL_BLEND);
 	glEnableClientState(GL_VERTEX_ARRAY);
     //glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, &verts.front());
-	//glNormalPointer(GL_FLOAT,0, &verts.front());
+	glVertexPointer(3, GL_FLOAT, 0, &verts[0]);
+	//glNormalPointer(GL_FLOAT,0, &norms.front());
     //glEnableClientState(GL_COLOR_ARRAY);
     //float c[] = {   colour.red, colour.green, colour.blue, colour.alpha};
     //glColorPointer(4, GL_FLOAT, 0,c);
-    glColor4f(colour.red,colour.green,colour.blue,colour.alpha);
+    //glColor4f(colour.red,colour.green,colour.blue,colour.alpha);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());
 
     //glDisableClientState(GL_COLOR_ARRAY);

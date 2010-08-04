@@ -515,7 +515,7 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
         glDisable(GL_DEPTH_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glShadeModel(GL_SMOOTH);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         //Setup viewport
         glViewport(0, 0, xRes, yRes);
@@ -540,32 +540,48 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
         //glCullFace(GL_FRONT);   // we have inverted the Y to mic drawing like SDL so we have to cull the front face
     }
 
-    void GFX::clearScreen(){glClear(GL_COLOR_BUFFER_BIT
-    #ifdef PENJIN_3D
-        | GL_DEPTH_BUFFER_BIT
-    #endif
-    );}
+    void GFX::clearScreen()
+    {
+        glClear(GL_COLOR_BUFFER_BIT
+            #ifdef PENJIN_3D
+                | GL_DEPTH_BUFFER_BIT
+            #endif
+        );
+        glLoadIdentity();
+    }
     #ifdef PENJIN_3D
         void GFX::init3DRendering()
         {
-            //glEnable(GL_LIGHTING);
-            glClearDepth(1);
+            //  Depth testing setup
+            //glClearDepth(1);
             glEnable(GL_DEPTH_TEST);
+            glDepthFunc( GL_LEQUAL );
+
+            //  default lighting setup
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
             glEnable(GL_COLOR_MATERIAL);
+            //  blending
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            // shading
             glShadeModel(GL_SMOOTH);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+            //  window size
             glViewport(0, 0, xRes, yRes);
-            //Setup world view
+            //glLoadIdentity();
+            //  align textures
+            glMatrixMode(GL_TEXTURE);
+            glRotatef(180,0,0,1);
+
+            //  setup perspective
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            perspective(90.0f,(float)xRes/(float)yRes, 1.0f, xRes);
-            glMatrixMode(GL_TEXTURE);
-            glRotated(180,0,0,1);
+            perspective(90.0f,(float)xRes/(float)yRes, 0.1f, 100.0f);
+
             //Setup model view
             glMatrixMode( GL_MODELVIEW );
+            glLoadIdentity();
             glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
     #endif
@@ -648,7 +664,14 @@ uint GFX::getYResolution()
         void GFX::perspective(CRfloat fov,CRfloat aspect,CRfloat znear,CRfloat zfar)
         {
             float range = znear*tan(NumberUtility::degToRad(fov*0.5f));
-            glFrustum(-range*aspect,range*aspect,-range,range,znear,zfar);
+            #ifdef PENJIN_ES
+                glFrustumf(-range*aspect,range*aspect,-range,range,znear,zfar);
+            #elif PENJIN_ES2
+                glFrustumf(-range*aspect,range*aspect,-range,range,znear,zfar);
+            #else
+                glFrustum(-range*aspect,range*aspect,-range,range,znear,zfar);
+            #endif
+
         }
     #endif
 #endif

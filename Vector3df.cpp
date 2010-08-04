@@ -30,3 +30,10 @@ Vector3df Vector3df::cross(const Vector3df& v)
 	temp.z = x*v.y - y*v.x;
 	return temp;
 }
+
+Vector3df Vector3df::normalisedCross(const Vector3df& v)
+{
+    Vector3df out = cross(v);
+    out.normalise();
+    return out;
+}
