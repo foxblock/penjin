@@ -178,6 +178,10 @@ class SimpleJoy
         Vector2di getMouse()const{return mouse;}
         int getMouseX()const{return mouse.x;}
         int getMouseY()const{return mouse.y;}
+        Vector2di getMouseDelta()const{return mouse-oldMouse;}
+        int getMouseDeltaX()const{return mouse.x-oldMouse.x;}
+        int getMouseDeltaY()const{return mouse.y-oldMouse.y;}
+
         sjSTATUS isLeftClick()const{return leftClick;}
         sjSTATUS isRightClick()const{return rightClick;}
         /// TouchScreen - Just a wrapper to mouse
