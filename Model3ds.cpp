@@ -87,6 +87,8 @@ PENJIN_ERRORS Model3ds::loadModel(const string& filename)
     if(file)
         lib3ds_file_free(file);
 
+    normalise();
+
     return PENJIN_OK;
 }
 
@@ -124,3 +126,18 @@ void Model3ds::render()
 
 void Model3ds::update()
 {}
+
+void Model3ds::normalise()
+{
+    /*Vector3df t;
+    for(int i = numFaces*3; i>=0; --i)
+    {
+        t.x = vertices[i][0];
+        t.y = vertices[i][1];
+        t.z = vertices[i][2];
+        t.normalise();
+        vertices[i][0] = t.x;
+        vertices[i][1] = t.y;
+        vertices[i][2] = t.z;
+    }*/
+}

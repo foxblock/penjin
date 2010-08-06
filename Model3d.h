@@ -24,6 +24,7 @@ class Model3d
         void setPosition(const Vector3df& p){position = p;}
         void setRotation(const Vector3df& vec){rotation = vec;}
         void setScale(const Vector3df& vec){scale = vec;}
+        void setScale(CRfloat s){setScale(Vector3df(s,s,s));}
         Vector3df getPosition()const{return position;}
 
     private:

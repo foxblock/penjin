@@ -2,6 +2,16 @@
 #include "Model3ds.h"
 #include "ModelObj.h"
 #include "Parser.h"
+#ifdef PENJIN_GL
+    #include <SDL/SDL_opengl.h>
+#endif
+#if defined (PENJIN_ES) || defined (PENJIN_ES2)
+    #ifdef PENJIN_ES
+        #include <GLES/gl.h>
+    #elif PENJIN_ES2
+        #include <GLES2/gl2.h>
+    #endif
+#endif
 Model3d::Model3d()
 {
     //ctor
@@ -59,10 +69,17 @@ PENJIN_ERRORS Model3d::loadModel(CRstring filename)
 
 void Model3d::render()
 {
+    glPushMatrix();
+    glScalef(scale.x,scale.y,scale.z);
+    glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+    glTranslatef(position.x,position.y,position.z);
     if(model3ds)
         model3ds->render();
     else if(modelobj)
         modelobj->render();
+    glPopMatrix();
 }
 void Model3d::update()
 {
