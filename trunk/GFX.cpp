@@ -24,6 +24,10 @@ namespace GFX
         uint yRes = 240;
         bool fullscreen = false;    // Enabling crashes the HWScaler.
         bool useHack = false;
+    #elif PLATFORM_DINGOO
+        uint xRes = 320;
+        uint yRes = 240;
+        bool fullscreen = false;
     #else // Penjin 2D project
         uint xRes = 1024;
         uint yRes = 768;
@@ -221,8 +225,10 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = SDL_OPENGL;
         SDL_Surface* screen = NULL;
 #elif PENJIN_SDL
-    #ifdef PLATFORM_GP2X
+    #if defined (PLATFORM_GP2X) || defined (PLATFORM_PANDORA)
         flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
+    #else
+        flags = SDL_SWSURFACE;
     #endif
 #endif
 #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
@@ -573,11 +579,11 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
             //  align textures
             glMatrixMode(GL_TEXTURE);
             glRotatef(180,0,0,1);
-
+            glRotatef(180,0,1,0);
             //  setup perspective
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            perspective(90.0f,(float)xRes/(float)yRes, 0.1f, 100.0f);
+            perspective(60.0f,(float)xRes/(float)yRes, 1.0f, 1000.0f);
 
             //Setup model view
             glMatrixMode( GL_MODELVIEW );

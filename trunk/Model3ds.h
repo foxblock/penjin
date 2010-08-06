@@ -22,6 +22,7 @@ class Model3ds
 		ModelVector3f* vertices;		//  Vertex array
 		ModelVector3f* normals;		//  Normal array
 		float* coords;			    //  Texture coordinate array
+        void normalise();
         void setNULL();
 		void clear();
 };

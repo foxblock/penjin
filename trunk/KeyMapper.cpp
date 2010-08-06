@@ -194,6 +194,21 @@ END:;
             CMF.push_back("BUTTON:VOLDOWN,17;");
             CMF.push_back("BUTTON:CLICK,18;");
     CMF.push_back("DEVICE_END:;");
+#elif PLATFORM_DINGOO
+    CMF.push_back("DEVICE:KEYBOARD,0;");
+            CMF.push_back("KEY:UP,UP;");
+            CMF.push_back("KEY:DOWN,DOWN;");
+            CMF.push_back("KEY:LEFT,LEFT;");
+            CMF.push_back("KEY:RIGHT,RIGHT;");
+            CMF.push_back("KEY:A,LEFT_CTRL;");
+            CMF.push_back("KEY:B,LEFT_ALT;");
+            CMF.push_back("KEY:X,SPACE;");
+            CMF.push_back("KEY:Y,LEFT_SHIFT;");
+            CMF.push_back("KEY:L,TAB;");
+            CMF.push_back("KEY:R,BACKSPACE;");
+            CMF.push_back("KEY:START,RETURN;");
+            CMF.push_back("KEY:SELECT,ESCAPE;");
+    CMF.push_back("DEVICE_END:;");
 #elif PLATFORM_PANDORA
 //0 TOP/X,1 RIGHT/A,2 BOTTOM/B,3 LEFT/Y,4 SELECT,5 START,6 PANDORA,7 L,8 R,9 L2,10 R2,11 HOLD
 /*
