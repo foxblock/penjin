@@ -8,6 +8,8 @@ void SoundClass::init()
     Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);		// Initialize SDL_mixer for PC, buffer is set higher
 #elif PLATFORM_PANDORA
     Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 512);
+#elif PLATFORM_DINGOO
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, AUDIO_S16, MIX_DEFAULT_CHANNELS, 256);
 #else
 #error "Audio setup is not defined for this platform!"
 #endif
