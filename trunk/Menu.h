@@ -104,6 +104,7 @@ class Menu
             void setTextSelectionColour(const Colour& colour){textSelectionColour = colour;}
             void setTextBgColour(const Colour& col){text->setBgColour(col);}
             void setTransparentColour(Colour c);
+            Text* getTextObject() {return text;}; // use this to make advanced changes to the text, like alignment and render mode
             #ifdef PENJIN_SDL
                 void setUseHardware(CRbool use);
             #endif

@@ -115,16 +115,32 @@ bool Menu::setMouseSelection(CRint x,CRint y)
 
 void Menu::menuUp()
 {
-    if(currentSelection > 0)
-        if(menuItems[currentSelection-1]->getIsSelectable())
-            --currentSelection;
+    int I = 1;
+    while (currentSelection - I >= 0)
+    {
+        if (menuItems[currentSelection - I]->getIsSelectable())
+        {
+            currentSelection -= I;
+            return;
+        }
+        else
+            ++I;
+    }
 }
 
 void Menu::menuDown()
 {
-    if(currentSelection < (int)menuItems.size()-1)
-        if(menuItems[currentSelection+1]->getIsSelectable())
-            ++currentSelection;
+    int I = 1;
+    while (currentSelection + I < (int)menuItems.size())
+    {
+        if (menuItems[currentSelection + I]->getIsSelectable())
+        {
+            currentSelection += I;
+            return;
+        }
+        else
+            ++I;
+    }
 }
 
 void Menu::addItem(CRint type)
