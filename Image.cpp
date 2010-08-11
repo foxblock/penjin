@@ -851,3 +851,41 @@ void Image::swapRG()
 
     #endif
 }
+
+#ifdef PENJIN_SDL
+void Image::setSurfaceSharing(CRbool value, CRint index)
+{
+    if (index < 0)
+    {
+        vector< pair<SDL_Surface*,bool> >::iterator I;
+        for (I = images.begin(); I < images.end(); ++I)
+        {
+            I->second = value;
+        }
+    }
+    else if (index < images.size())
+        images[index].second = value;
+    else
+        cout << "Error: Trying to access out of bounds index in Image::setSurfaceSharing(" << index << ")" << endl;
+}
+
+bool Image::getSurfaceSharing(CRint index) const
+{
+    if (index < 0)
+    {
+        vector< pair<SDL_Surface*,bool> >::const_iterator I;
+        for (I = images.begin(); I < images.end(); ++I)
+        {
+            if (I->second)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    else if (index < images.size())
+        return images[index].second;
+    else
+        cout << "Error: Trying to access out of bounds index in Image::getSurfaceSharing(" << index << ")" << endl;
+}
+#endif

@@ -46,6 +46,7 @@ void Glyph::refresh()
         tS = TTF_RenderText_Blended(font,t,colour.getSDL_Colour());
 #ifdef PENJIN_SDL
     glyph.loadImage(tS);
+    glyph.setSurfaceSharing(false);
 #else
     glyph.loadSurface(tS);
 #endif
