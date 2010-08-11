@@ -87,9 +87,13 @@ void StateJoyMap::userInput()
     if(input->isQuit())
         nullifyState();
 
+    // Return to main menu
+    if(input->isStart())
+        setNextState(STATE_TITLE);
+
+
     if(testMode)
     {
-
         cursorPos = input->getMouse();
         lastJoyPos[0] = joyPos[0];
         lastJoyPos[1] = joyPos[1];
