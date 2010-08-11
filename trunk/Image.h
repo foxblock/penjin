@@ -34,9 +34,9 @@ class Image
         ~Image();
 
         #ifdef PENJIN_SDL
-            void loadImage(SDL_Surface* s)
+            void loadImage(SDL_Surface* s) // don't use this function for sharing surfaces (by default)
             {
-                images.push_back(make_pair(s,true));
+                images.push_back(make_pair(s,false));
                 sheetMode = false;
             }
             void disableTransparentColour(CRuint i)
