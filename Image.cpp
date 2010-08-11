@@ -155,11 +155,12 @@ PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yT
     PENJIN_ERRORS error;
     //  We load the image into the image vector
     loadImage(surface);
-//    if(error != PENJIN_OK)
-//        return error;
+
     sheetMode = true;  //  successful loading means we have a tilesheet
 
     #ifdef PENJIN_SDL
+        // Enable sharing
+        images[images.size()-1].second = true;
         //  Apply colour key
         uint currentI = (uint)images.size()-1;
         error = setTransparentColour(currentI,Vector2di(0,0));
@@ -174,9 +175,12 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRui
 {
     //  We load the image into the image vector
     loadImage(surface);
-//    if(error != PENJIN_OK)
-//        return error;
     sheetMode = true;  //  successful loading means we have a tilesheet
+
+    #ifdef PENJIN_SDL
+        // Enable sharing
+         images[images.size()-1].second = true;
+    #endif
 
     return assignClipAreas(xTiles, yTiles, skipTiles, numTiles);
 }
