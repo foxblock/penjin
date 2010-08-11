@@ -180,6 +180,11 @@ class Image
             uint* getPixelArray(CRint x,CRint y)const;
             // check and unlock screen
             void screenUnlock();
+
+            /// Override shared state of surfaces
+            void setSurfaceSharing(CRbool value, CRint index=-1);
+            bool getSurfaceSharing(CRint index=-1) const; // will return true if at least one surface is shared
+
         #elif defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2) || defined (PENJIN_SOFT)
             #ifdef PENJIN_3D
                 void setRotation(const Vector3df& rotationVector) {rotation = rotationVector;}
