@@ -7,7 +7,7 @@ Background::Background()
 	position.x = 0;
 	position.y = 0;
 	#ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
 }
 

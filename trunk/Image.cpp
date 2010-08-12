@@ -14,7 +14,7 @@ Image::Image()
 
     #ifdef PENJIN_SDL
         //  Get the screen pointer
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
     sheetMode = false;      //  Stores if we use a spritesheet or if we use separate surfaces.
     colourKey.alpha = 0;    //  Disable colourkey until ready.

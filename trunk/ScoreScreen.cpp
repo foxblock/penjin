@@ -9,7 +9,7 @@ ScoreScreen::ScoreScreen()
 	score = 0;
 	currentLetter = 'A';
 	#ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
 }
 
@@ -22,7 +22,7 @@ ScoreScreen::ScoreScreen(CRstring scoreFile)
 	score = 0;
 	currentLetter = 'A';
 	#ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
 }
 
@@ -68,7 +68,7 @@ void ScoreScreen::init()
     textStrings[2] = "OK?";
     textStrings[3] = "Game Over!";
 //   #ifdef PENJIN_SDL
-//        SDL_Surface* scr = SDL_GetVideoSurface();
+//        SDL_Surface* scr = GFX::getVideoSurface();
 //    #endif
     float t = 0.2f;
     text.setBoundaries(bounds);

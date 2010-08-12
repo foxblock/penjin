@@ -8,7 +8,7 @@ Sprite::Sprite()
         position.z = 0.0f;
     #endif
     #ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
 }
 #ifndef PENJIN_3D
@@ -16,7 +16,7 @@ Sprite::Sprite()
     {
         setPosition(x,y);
         #ifdef PENJIN_SDL
-            screen = SDL_GetVideoSurface();
+            screen = GFX::getVideoSurface();
         #endif
     }
 #else

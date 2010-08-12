@@ -58,11 +58,14 @@ namespace GFX
     #endif
     void showCursor(CRbool show);
     //SPECIAL EFFECTS
-
     #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
         SDL_Surface* getVideoSurface();
     #endif
     #ifdef PENJIN_SDL
+        #ifdef PENJIN_SCALE2X
+        void scale2x(SDL_Surface* input, SDL_Surface* output);
+
+        #endif
         void borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour);
         void borderColouring(CRint x, CRint y,CRint w,CRint h,CRint thick,Colour baseColour);
     #else
@@ -115,7 +118,7 @@ namespace GFX
         void loadIdentity();    // load the identity matrix
     #endif
 
-    #if defined (PENJIN_ES) || defined (PENJIN_ES2)
+    #if defined (PENJIN_ES) || defined (PENJIN_ES2) || defined (PENJIN_SCALE2X)
         void shutdown();
     #endif
 }

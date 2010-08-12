@@ -1,5 +1,5 @@
 #include "Line.h"
-
+#include "GFX.h"
 Line::Line()
 {
     //ctor
@@ -7,7 +7,7 @@ Line::Line()
     end.y = end.x = 10;
     lineWidth = 1.0f;
     #ifdef PENJIN_SDL
-    screen = SDL_GetVideoSurface();
+    screen = GFX::getVideoSurface();
     #endif
 }
 

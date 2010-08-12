@@ -15,7 +15,7 @@ Rectangle::Rectangle()
     #endif
     colour = WHITE;
     #ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
         rectangle = NULL;
         init();
     #endif
@@ -32,7 +32,7 @@ Rectangle::Rectangle()
         angle = 0.0f;
         thickness = 0;
         #ifdef PENJIN_SDL
-            screen = SDL_GetVideoSurface();
+            screen = GFX::getVideoSurface();
             rectangle = NULL;
             init();
         #endif

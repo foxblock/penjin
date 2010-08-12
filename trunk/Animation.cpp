@@ -16,7 +16,7 @@ Animation::Animation()
 	reachedEnd = false;
 	firstRender = false;
 	#ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
 	#endif
 }
 
