@@ -160,7 +160,15 @@ PENJIN_ERRORS Text::setFontSize(CRuint s)
 
 void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
 {
-    glyphs.at(0,0)->setRenderMode(mode);
+    if (glyphs.size())
+    {
+        if(glyphs.size(0))
+            glyphs.at(0,0)->setRenderMode(mode);
+        else
+            cout << "No Glyphs - Can't set RenderMode" << mode << endl;
+    }
+    else
+        cout << "No Glyphs - Can't set RenderMode" << mode << endl;
 }
 
 #ifdef PENJIN_SDL
