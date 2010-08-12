@@ -54,7 +54,7 @@ Text::Text()
         clipBoundary.h = 768;
     #else
         #ifdef PENJIN_SDL
-            screen = SDL_GetVideoSurface();
+            screen = GFX::getVideoSurface();
             clipBoundary.w = screen->w;
             clipBoundary.h = screen->h;
         #endif

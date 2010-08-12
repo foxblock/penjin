@@ -16,7 +16,7 @@ Menu::Menu()
         menuStart = Vector2di(0,0);
     #endif
     #ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
 
 }

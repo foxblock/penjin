@@ -40,7 +40,7 @@ class Rectangle
             #endif
             colour = WHITE;
             #ifdef PENJIN_SDL
-                screen = SDL_GetVideoSurface();
+                screen = GFX::getVideoSurface();
                 rectangle = NULL;
                 init();
             #endif

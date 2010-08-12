@@ -68,6 +68,9 @@ Engine::~Engine()
         Penjin::deInitFileSystem(); // shutdown FAT
 	#endif
 	#if defined(PENJIN_SDL) || defined(PENJIN_GL)
+        #ifdef PENJIN_SCALE2X
+            GFX::shutdown();
+        #endif
         SDL_Quit();
     #elif defined (PENJIN_ES) || defined (PENJIN_ES2)
         GFX::shutdown();

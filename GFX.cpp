@@ -33,8 +33,13 @@ namespace GFX
         uint yRes = 768;
         bool fullscreen = false;
     #endif
-#if defined (PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
-    SDL_Surface* screen = SDL_GetVideoSurface();
+#if defined (PENJIN_SDL) || defined(PENJIN_GL)
+    #if defined PENJIN_SDL && PENJIN_SCALE2X
+        SDL_Surface* scaled = SDL_GetVideoSurface();
+        SDL_Surface* screen = NULL;
+    #else
+        SDL_Surface* screen = SDL_GetVideoSurface();
+    #endif
 #elif PENJIN_ASCII
 
 #endif
@@ -95,7 +100,12 @@ void GFX::forceBlit()
     #ifdef PENJIN_GL
         SDL_GL_SwapBuffers();
     #elif PENJIN_SDL
-        SDL_Flip(screen);
+        #ifdef PENJIN_SCALE2X
+            scale2x(screen,scaled);
+            SDL_Flip(scaled);
+        #else
+            SDL_Flip(screen);
+        #endif
     #elif PENJIN_CACA
         /// TODO: Pass display pointer into GFX or create here instead.
         caca_refresh_display(display);
@@ -236,14 +246,34 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
         flags = flags | SDL_FULLSCREEN;
     if(bpp == 0 || !(bpp == 8 || bpp == 16 || bpp == 32))
         bpp = info->vfmt->BitsPerPixel;
-    screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
-	if(screen  == NULL )
-		return PENJIN_SDL_SETVIDEOMODE_FAILED;
-    else
-    {
-        xRes = screen->w;
-        yRes = screen->h;
-    }
+    #if defined PENJIN_SDL && PENJIN_SCALE2X
+        scaled  = SDL_SetVideoMode(2*xRes, 2*yRes, bpp, flags);
+        if(scaled  == NULL )
+            return PENJIN_SDL_SETVIDEOMODE_FAILED;
+
+        if (scaled == NULL)
+        {
+            cerr << "Error creating surface: " << SDL_GetError() << endl;
+            exit(1);
+        }
+
+        screen = SDL_CreateRGBSurface(SDL_SWSURFACE, xRes, yRes, bpp,
+        scaled->format->Rmask, scaled->format->Gmask, scaled->format->Bmask, scaled->format->Amask);
+        if (screen == NULL)
+        {
+            cerr << "Error creating surface: " << SDL_GetError() << endl;
+            exit(1);
+        }
+    #else
+        screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
+        if(screen  == NULL )
+            return PENJIN_SDL_SETVIDEOMODE_FAILED;
+        else
+        {
+            xRes = screen->w;
+            yRes = screen->h;
+        }
+    #endif
     #if defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
         glEnable(GL_CULL_FACE); // don't render the back of polygons...
     #endif
@@ -372,9 +402,126 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
 }
 #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
 SDL_Surface* GFX::getVideoSurface(){return screen;}
-
 #endif
 #ifdef PENJIN_SDL
+    #ifdef PENJIN_SCALE2X
+        #ifndef MAX
+        #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
+        #define MIN(a,b)    (((a) < (b)) ? (a) : (b))
+        #endif
+
+
+        #define READINT24(x)      ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
+        #define WRITEINT24(x, i)  {(x)[0]=i>>16; (x)[1]=(i>>8)&0xff; x[2]=i&0xff; }
+        void GFX::scale2x(SDL_Surface* src, SDL_Surface* dst)
+        {
+            int looph, loopw;
+
+            Uint8* srcpix = (Uint8*)src->pixels;
+            Uint8* dstpix = (Uint8*)dst->pixels;
+
+            const int srcpitch = src->pitch;
+            const int dstpitch = dst->pitch;
+            const int width = src->w;
+            const int height = src->h;
+
+            switch(src->format->BytesPerPixel)
+            {
+            case 1: {
+                    Uint8 E0, E1, E2, E3, B, D, E, F, H;
+                for(looph = 0; looph < height; ++looph)
+                {
+                    for(loopw = 0; loopw < width; ++ loopw)
+                    {
+                            B = *(Uint8*)(srcpix + (MAX(0,looph-1)*srcpitch) + (1*loopw));
+                            D = *(Uint8*)(srcpix + (looph*srcpitch) + (1*MAX(0,loopw-1)));
+                            E = *(Uint8*)(srcpix + (looph*srcpitch) + (1*loopw));
+                            F = *(Uint8*)(srcpix + (looph*srcpitch) + (1*MIN(width-1,loopw+1)));
+                            H = *(Uint8*)(srcpix + (MIN(height-1,looph+1)*srcpitch) + (1*loopw));
+
+                        E0 = D == B && B != F && D != H ? D : E;
+                                        E1 = B == F && B != D && F != H ? F : E;
+                        E2 = D == H && D != B && H != F ? D : E;
+                        E3 = H == F && D != H && B != F ? F : E;
+
+                        *(Uint8*)(dstpix + looph*2*dstpitch + loopw*2*1) = E0;
+                        *(Uint8*)(dstpix + looph*2*dstpitch + (loopw*2+1)*1) = E1;
+                        *(Uint8*)(dstpix + (looph*2+1)*dstpitch + loopw*2*1) = E2;
+                        *(Uint8*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*1) = E3;
+                    }
+                }break;}
+            case 2: {
+                    Uint16 E0, E1, E2, E3, B, D, E, F, H;
+                for(looph = 0; looph < height; ++looph)
+                {
+                    for(loopw = 0; loopw < width; ++ loopw)
+                    {
+                            B = *(Uint16*)(srcpix + (MAX(0,looph-1)*srcpitch) + (2*loopw));
+                            D = *(Uint16*)(srcpix + (looph*srcpitch) + (2*MAX(0,loopw-1)));
+                            E = *(Uint16*)(srcpix + (looph*srcpitch) + (2*loopw));
+                            F = *(Uint16*)(srcpix + (looph*srcpitch) + (2*MIN(width-1,loopw+1)));
+                            H = *(Uint16*)(srcpix + (MIN(height-1,looph+1)*srcpitch) + (2*loopw));
+
+                        E0 = D == B && B != F && D != H ? D : E;
+                                        E1 = B == F && B != D && F != H ? F : E;
+                        E2 = D == H && D != B && H != F ? D : E;
+                        E3 = H == F && D != H && B != F ? F : E;
+
+                        *(Uint16*)(dstpix + looph*2*dstpitch + loopw*2*2) = E0;
+                        *(Uint16*)(dstpix + looph*2*dstpitch + (loopw*2+1)*2) = E1;
+                        *(Uint16*)(dstpix + (looph*2+1)*dstpitch + loopw*2*2) = E2;
+                        *(Uint16*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*2) = E3;
+                    }
+                }break;}
+            case 3: {
+                    int E0, E1, E2, E3, B, D, E, F, H;
+                for(looph = 0; looph < height; ++looph)
+                {
+                    for(loopw = 0; loopw < width; ++ loopw)
+                    {
+                            B = READINT24(srcpix + (MAX(0,looph-1)*srcpitch) + (3*loopw));
+                            D = READINT24(srcpix + (looph*srcpitch) + (3*MAX(0,loopw-1)));
+                            E = READINT24(srcpix + (looph*srcpitch) + (3*loopw));
+                            F = READINT24(srcpix + (looph*srcpitch) + (3*MIN(width-1,loopw+1)));
+                            H = READINT24(srcpix + (MIN(height-1,looph+1)*srcpitch) + (3*loopw));
+
+                        E0 = D == B && B != F && D != H ? D : E;
+                                        E1 = B == F && B != D && F != H ? F : E;
+                        E2 = D == H && D != B && H != F ? D : E;
+                        E3 = H == F && D != H && B != F ? F : E;
+
+                        WRITEINT24((dstpix + looph*2*dstpitch + loopw*2*3), E0);
+                        WRITEINT24((dstpix + looph*2*dstpitch + (loopw*2+1)*3), E1);
+                        WRITEINT24((dstpix + (looph*2+1)*dstpitch + loopw*2*3), E2);
+                        WRITEINT24((dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*3), E3);
+                    }
+                }break;}
+            default: { /*case 4:*/
+                    Uint32 E0, E1, E2, E3, B, D, E, F, H;
+                for(looph = 0; looph < height; ++looph)
+                {
+                    for(loopw = 0; loopw < width; ++ loopw)
+                    {
+                            B = *(Uint32*)(srcpix + (MAX(0,looph-1)*srcpitch) + (4*loopw));
+                            D = *(Uint32*)(srcpix + (looph*srcpitch) + (4*MAX(0,loopw-1)));
+                            E = *(Uint32*)(srcpix + (looph*srcpitch) + (4*loopw));
+                            F = *(Uint32*)(srcpix + (looph*srcpitch) + (4*MIN(width-1,loopw+1)));
+                            H = *(Uint32*)(srcpix + (MIN(height-1,looph+1)*srcpitch) + (4*loopw));
+
+                        E0 = D == B && B != F && D != H ? D : E;
+                                        E1 = B == F && B != D && F != H ? F : E;
+                        E2 = D == H && D != B && H != F ? D : E;
+                        E3 = H == F && D != H && B != F ? F : E;
+
+                        *(Uint32*)(dstpix + looph*2*dstpitch + loopw*2*4) = E0;
+                        *(Uint32*)(dstpix + looph*2*dstpitch + (loopw*2+1)*4) = E1;
+                        *(Uint32*)(dstpix + (looph*2+1)*dstpitch + loopw*2*4) = E2;
+                        *(Uint32*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*4) = E3;
+                    }
+                }break;}
+            }
+        }
+    #endif
     void GFX::setClearColour(const Colour& c){clear = c;}
     void GFX::borderColouring(CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour){borderColouring(screen,x,y,w,h,thick,baseColour);}
     void GFX::borderColouring(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint thick,Colour baseColour)
@@ -596,9 +743,12 @@ SDL_Surface* GFX::getVideoSurface(){return screen;}
 void GFX::showVideoInfo()
 {
     #if defined (PENJIN_GL) || defined (PENJIN_SDL)
-        SDL_Surface* screen = SDL_GetVideoSurface();
+        screen = getVideoSurface();
         cout << "Screen Info" << endl;
         cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
+        #ifdef PENJIN_SCALE2X
+        cout << "Scale2X Active." << endl;
+        #endif
     #endif
     #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined(PENJIN_ES2)
         printf("GL Info\n");
@@ -681,16 +831,20 @@ uint GFX::getYResolution()
         }
     #endif
 #endif
-#if defined(PENJIN_ES) || defined(PENJIN_ES2)
+#if defined(PENJIN_ES) || defined(PENJIN_ES2) || defined(PENJIN_SCALE2X)
 void GFX::shutdown()
 {
-    eglMakeCurrent( eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
-	eglDestroyContext ( eglDisplay, eglContext );
-	eglDestroySurface ( eglDisplay, eglSurface );
-	eglTerminate ( eglDisplay );
-    if (x11Window) XDestroyWindow(x11Display, x11Window);
-    if (x11Colormap) XFreeColormap( x11Display, x11Colormap );
-    if (x11Display) XCloseDisplay(x11Display);
+    #ifdef PENJIN_SCALE2X
+        SDL_FreeSurface(scaled);
+    #else
+        eglMakeCurrent( eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+        eglDestroyContext ( eglDisplay, eglContext );
+        eglDestroySurface ( eglDisplay, eglSurface );
+        eglTerminate ( eglDisplay );
+        if (x11Window) XDestroyWindow(x11Display, x11Window);
+        if (x11Colormap) XFreeColormap( x11Display, x11Colormap );
+        if (x11Display) XCloseDisplay(x11Display);
+    #endif
 }
 #endif
 

@@ -5,7 +5,7 @@ BackBuffer::BackBuffer()
     //ctor
     #ifdef PENJIN_SDL
         buffer = NULL;
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #else
         #ifdef PENJIN_GL
             glClear(GL_ACCUM_BUFFER_BIT);

@@ -38,7 +38,7 @@ Emitter::Emitter()
     particles = NULL;
     invisible = 0;
     #ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
     emitTimer.setMode(MILLI_SECONDS);
     emitTimer.start();

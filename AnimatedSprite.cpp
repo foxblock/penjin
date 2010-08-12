@@ -9,7 +9,7 @@ AnimatedSprite::AnimatedSprite()
 	position.x = 0;
 	position.y = 0;
 	#ifdef PENJIN_SDL
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     #endif
     #ifdef PENJIN_3D
         position.z = 0.0f;
@@ -27,7 +27,7 @@ AnimatedSprite::AnimatedSprite()
         animationTimer.start();
         playReversed = false;
         reachedEnd = false;
-        screen = SDL_GetVideoSurface();
+        screen = GFX::getVideoSurface();
     }
 #else
     AnimatedSprite::AnimatedSprite(CRfloat x,CRfloat y)
