@@ -162,8 +162,8 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
 {
     if (glyphs.size())
     {
-        if(glyphs.size(0))
-            glyphs.at(0,0)->setRenderMode(mode);
+        if(glyphs.size(fontSize-1))
+            glyphs.at(fontSize-1,0)->setRenderMode(mode);
         else
             cout << "No Glyphs - Can't set RenderMode" << mode << endl;
     }
