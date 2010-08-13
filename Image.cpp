@@ -145,7 +145,7 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     PENJIN_ERRORS error = loadImageNoKey(name);
     if(error != PENJIN_OK)
         return error;
-    sheetMode = true;  //  successful loading means we have a tilesheet
+    sheetMode = true;  // successful loading means we have a tilesheet
 
     return assignClipAreas(xTiles, yTiles, 0, 0);
 }
@@ -163,7 +163,7 @@ PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yT
         images[images.size()-1].second = true;
         //  Apply colour key
         uint currentI = (uint)images.size()-1;
-        error = setTransparentColour(currentI,Vector2di(0,0));
+        error = PENJIN_OK;//setTransparentColour(currentI,Vector2di(0,0));
         if(error != PENJIN_OK)
             return error;
     #endif
