@@ -72,18 +72,6 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
         uint currentI = (uint)images.size()-1;
         colourKey.alpha = 0;
         error = setTransparentColour(currentI,Vector2di(0,0));
-        //  check current blend mode.
-        SDL_Surface* t = images.at(currentI).first;
-        if(images.at(currentI).first->flags & SDL_SRCALPHA)
-        {
-            images[currentI].first = SDL_DisplayFormatAlpha(t);
-        }
-        else
-        {
-            images[currentI].first = SDL_DisplayFormat(t);
-            setTransparentColour(currentI,colourKey);
-        }
-        SDL_FreeSurface(t);
     #else
         textures.resize(textures.size()+1);
         error = (PENJIN_ERRORS)textures.back().loadTexture(name);
@@ -106,12 +94,20 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
         #else
             SDL_Surface* surf = IMG_Load(name.c_str());
         #endif
-        images.push_back(make_pair(surf,false));
-        if (!images[currentI].first)
+        if (surf)
         {
-            images.pop_back();
-            return PENJIN_IMG_UNABLE_TO_OPEN;
+            if(surf->flags & SDL_SRCALPHA)
+            {
+                surf = SDL_DisplayFormatAlpha(surf);
+            }
+            else
+            {
+                surf = SDL_DisplayFormat(surf);
+            }
+            images.push_back(make_pair(surf,false));
         }
+        else
+            return PENJIN_IMG_UNABLE_TO_OPEN;
         #ifdef PENJIN_CACHE_ROTATIONS
             setupCaching();
         #endif
