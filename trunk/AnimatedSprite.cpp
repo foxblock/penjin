@@ -115,7 +115,14 @@ PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImag
 
 PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear();return image.loadImageSheet(fileName, xTiles, yTiles);}
 
-PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles){image.clear();return image.loadImageSheet(s, xTiles, yTiles, skipTiles, numTiles);}
+PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent)
+{
+    image.clear();
+    if (transparent)
+        return image.loadImageSheet(s, xTiles, yTiles, skipTiles, numTiles);
+    else
+        return image.loadImageSheetNoKey(s, xTiles, yTiles, skipTiles, numTiles);
+}
 
 #ifdef PENJIN_SDL
     void AnimatedSprite::render(SDL_Surface *screen){image.renderImage(currentFrame,screen,position);}

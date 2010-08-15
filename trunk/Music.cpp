@@ -16,8 +16,9 @@ void Music::freeAll()
 {
 	if(music)
 	{
-        if(isPlaying())
-            stop();
+	    if (isPaused())
+            Mix_ResumeMusic();
+        Mix_HaltMusic();
 		Mix_FreeMusic(music);				// Release the memory allocated to music
 		music = NULL;
 	}
