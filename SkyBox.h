@@ -16,9 +16,11 @@ class SkyBox
         void setResolution();
         //  Manually set the texture coords to avoid borders
         void setResolution(CRuint textureResolution);
+
         //  Set the target that the SkyBox follows
-        void setTarget(Vector3df* t){target = t;}
-        //  render the skybox to the scene
+        void setTarget(Vector3df t){target = t;}
+        void setRotation(Vector3df r){rotation = r;}
+        //  render the skybox to the scene before you set your camera
         void render();
 
     private:
@@ -26,7 +28,8 @@ class SkyBox
         int currentTexture;
         float TEX_MIN;
         float TEX_MAX;
-        Vector3df* target;
+        Vector3df target;
+        Vector3df rotation;
 };
 
 #endif // SKYBOX_H

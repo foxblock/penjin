@@ -166,7 +166,7 @@ void AnimatedSprite::update()
                         if (numLoops != 0)
                         {
                             reachedEnd = false;
-                            currentFrame = min(1u,image.size()-1); // set to second frame so we don't play the first frame two times in a row
+                            currentFrame = min((size_t)1,image.size()-1); // set to second frame so we don't play the first frame two times in a row
                             if (numLoops > 0)
                                 --numLoops;
                         }
