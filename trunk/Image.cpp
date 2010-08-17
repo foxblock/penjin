@@ -96,6 +96,7 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
         #endif
         if (surf)
         {
+            SDL_Surface* oldSurface = surf;
             if(surf->flags & SDL_SRCALPHA)
             {
                 surf = SDL_DisplayFormatAlpha(surf);
@@ -104,6 +105,7 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
             {
                 surf = SDL_DisplayFormat(surf);
             }
+            SDL_FreeSurface(oldSurface);
             images.push_back(make_pair(surf,false));
         }
         else
