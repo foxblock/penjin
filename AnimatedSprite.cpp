@@ -15,8 +15,9 @@ AnimatedSprite::AnimatedSprite()
         position.z = 0.0f;
     #endif
 
-    playReversed = false;
+    hasFinishedVal = false;
 	reachedEnd = false;
+	mode = pmNormal;
 }
 #ifdef PENJIN_SDL
     AnimatedSprite::AnimatedSprite(CRint x,CRint y)
@@ -25,8 +26,9 @@ AnimatedSprite::AnimatedSprite()
         animationTimer.setMode(THIRTY_FRAMES);
         numLoops = firstLoops = -1;
         animationTimer.start();
-        playReversed = false;
+        hasFinishedVal = false;
         reachedEnd = false;
+        mode = pmNormal;
         screen = GFX::getVideoSurface();
     }
 #else
@@ -41,8 +43,9 @@ AnimatedSprite::AnimatedSprite()
         #ifdef PENJIN_3D
             position.z = 0.0f;
         #endif
-        playReversed = false;
+        hasFinishedVal = false;
         reachedEnd = false;
+        mode = pmNormal;
     }
     #ifdef PENJIN_3D
     AnimatedSprite::AnimatedSprite(CRfloat x,CRfloat y,CRfloat z)
@@ -54,8 +57,9 @@ AnimatedSprite::AnimatedSprite()
         position.x = x;
         position.y = y;
         position.z = z;
-        playReversed = false;
+        hasFinishedVal = false;
         reachedEnd = false;
+        mode = pmNormal;
     }
     #endif
 #endif
@@ -75,30 +79,6 @@ bool AnimatedSprite::hasCollided(AnimatedSprite &spr)
 }
 */
 
-/*PENJIN_ERRORS AnimatedSprite::setTransparentColour(const Colour& c)
-{
-    PENJIN_ERRORS error = PENJIN_ERROR;
-    for(int i = image.size()-1; i>= 0; --i)
-    {
-        error = image.setTransparentColour(i,c);
-        if(error != PENJIN_OK)
-            return error;
-    }
-    return PENJIN_OK;
-}
-*/
-PENJIN_ERRORS AnimatedSprite::setTransparentColour(const Vector2di& v)
-{
-    PENJIN_ERRORS error = PENJIN_ERROR;
-    for(int i = image.size()-1; i>= 0; --i)
-    {
-        error = image.setTransparentColour(i,v);
-        if(error != PENJIN_OK)
-            return error;
-    }
-    return PENJIN_OK;
-}
-
 PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 {
     #ifdef PENJIN_SDL
@@ -113,11 +93,12 @@ PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 
 PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}
 
-PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear();return image.loadImageSheet(fileName, xTiles, yTiles);}
+PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); animationTimer.start(); return image.loadImageSheet(fileName, xTiles, yTiles);}
 
 PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent)
 {
     image.clear();
+    animationTimer.start();
     if (transparent)
         return image.loadImageSheet(s, xTiles, yTiles, skipTiles, numTiles);
     else
@@ -132,64 +113,82 @@ PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTi
 
 void AnimatedSprite::update()
 {
-	if(!playReversed)
-	{
-    	if(animationTimer.getScaledTicks() >= 1)
+    if (not hasFinishedVal && animationTimer.getScaledTicks() >= 1) // has the next frame been reached?
+    {
+        animationTimer.start();
+        switch (mode)
         {
-            animationTimer.start();
-            ++currentFrame;
-        }
-        int size = image.size()-1;
-        if((int)currentFrame > size)
-        {
-            if(numLoops == -1) {
-                currentFrame = 0;
-                reachedEnd = true;
-            }
-            else if( numLoops > 0)
+            case pmNormal:
             {
-                currentFrame = 0;
-                --numLoops;
-            }
-            else
-                currentFrame = size;
-        }
-	}
-	else
-	{
-	    if(!reachedEnd)
-	    {
-            if(animationTimer.getScaledTicks() >= 1)
-            {
-                currentFrame++;
-                animationTimer.start();
-            }
-            int size = image.size()-1;
-            if((int)currentFrame > size)
-            {
-                    currentFrame = size;
-                    reachedEnd = true;
-            }
-	    }
-	    else
-	    {
-            if(animationTimer.getScaledTicks() >= 1)
-            {
-                animationTimer.start();
-                --currentFrame;
-            }
-            if(currentFrame <= 0)
-            {
-                if(numLoops == -1)
-                    currentFrame = 0;
-                else if( numLoops > 0)
+                ++currentFrame;
+                if (currentFrame > image.size()-1)
                 {
-                    currentFrame = 0;
-                    --numLoops;
+                    if (numLoops != 0) // looping
+                    {
+                        currentFrame = 0;
+                        if (numLoops > 0) // don't loop forever
+                            --numLoops;
+                    }
+                    else
+                    {
+                        currentFrame = image.size()-1;
+                        hasFinishedVal = true;
+                    }
                 }
-                reachedEnd = false;
+                break;
             }
-	    }
-	}
+            case pmReverse:
+            {
+                --currentFrame;
+                if (currentFrame < 0)
+                {
+                    if (numLoops != 0) // looping
+                    {
+                        currentFrame = image.size()-1;
+                        if (numLoops > 0)
+                            --numLoops;
+                    }
+                    else
+                    {
+                        currentFrame = 0;
+                        hasFinishedVal = true;
+                    }
+                }
+                break;
+            }
+            case pmPulse:
+            {
+                if (reachedEnd) // play backwards (phase 2)
+                {
+                    --currentFrame;
+                    if (currentFrame < 0)
+                    {
+                        if (numLoops != 0)
+                        {
+                            reachedEnd = false;
+                            currentFrame = min(1u,image.size()-1); // set to second frame so we don't play the first frame two times in a row
+                            if (numLoops > 0)
+                                --numLoops;
+                        }
+                        else
+                        {
+                            currentFrame = 0;
+                            hasFinishedVal = true;
+                            reachedEnd = false;
+                        }
+                    }
+                }
+                else // play forwards (phase 1)
+                {
+                    ++currentFrame;
+                    if (currentFrame > image.size()-1)
+                    {
+                        currentFrame = max((int)image.size()-2,0); // set to penultimate frame so we don't play the last one two times in a row
+                        reachedEnd = true;
+                    }
+                }
+                break;
+            }
+        }
+    }
 }
-
