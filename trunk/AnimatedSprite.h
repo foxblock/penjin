@@ -4,6 +4,13 @@
 #include "Image.h"
 #include "Timer.h"
 
+enum PlayMode
+{
+    pmNormal=0,
+    pmReverse,
+    pmPulse
+};
+
 class AnimatedSprite
 {
     public:
@@ -18,12 +25,12 @@ class AnimatedSprite
         #endif
 
         PENJIN_ERRORS loadFrame(SDL_Surface* s);
-        PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
-        PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
+        virtual PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
+        virtual PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
         PENJIN_ERRORS loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent=true); // loads a spritesheet from a shared image
         void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
-        PENJIN_ERRORS setTransparentColour(const Vector2di& v);
+        PENJIN_ERRORS setTransparentColour(const Vector2di& v){return image.setTransparentColour(v);};
         PENJIN_ERRORS setTransparentColour(const PENJIN_COLOURS& c){return setTransparentColour(Colour(c));}
         #ifdef PENJIN_SDL
             void disableTransparentColour(){image.disableTransparentColour();}
@@ -69,9 +76,9 @@ class AnimatedSprite
         void setLooping(CRbool shouldLoop)
         {
             if(shouldLoop)
-                numLoops = -1;
+                numLoops = firstLoops = -1;
             else
-                numLoops = 0;
+                numLoops = firstLoops = 0;
         }
         void clearFrames(){image.clear();}
         #ifndef PENJIN_3D
@@ -90,20 +97,43 @@ class AnimatedSprite
         #endif
 
         uint getCurrentFrame()const{return currentFrame;}
-        bool hasFinished()const{return((size_t)currentFrame >= image.size()-1 && numLoops == 0);}
-        bool hasReachedEnd() const {return reachedEnd;}
-        void resetReachedEnd() {reachedEnd = false;}
-        void setReversePlay(CRbool reverse){playReversed = reverse;}
-        void rewind(){currentFrame = 0;numLoops = firstLoops;}
+        bool hasFinished()const {return hasFinishedVal;};
+        void setReversePlay(CRbool reverse)
+        {
+            if (reverse)
+                mode = pmReverse;
+            else
+                mode = pmNormal;
+        };
+        void setPulsePlay(CRbool pulse)
+        {
+            if (pulse)
+                mode = pmPulse;
+            else
+                mode = pmNormal;
+        };
+        void setPlayMode(PlayMode newMode){mode = newMode;};
+        PlayMode getPlayMode() const {return mode;};
+        void rewind() // rewind the sprite, resets hasFinished, too
+        {
+            if (mode == pmReverse)
+                currentFrame = image.size()-1;
+            else
+                currentFrame = 0;
+            numLoops = firstLoops;
+            hasFinishedVal = false;
+            reachedEnd = false;
+        }
         void setCurrentFrame(CRint framenumber){currentFrame = framenumber;}
-    private:
+    protected:
         Image image;
         Timer animationTimer;
-        int numLoops;
+        int numLoops; // -1 - loop forever, 0 - don't loop, else - number of loops
         int firstLoops;
-        bool playReversed;
-        bool reachedEnd;
-        uint currentFrame;
+        PlayMode mode;
+        bool hasFinishedVal;
+        bool reachedEnd; // used for pulse playing mode
+        int currentFrame;
         #ifdef PENJIN_3D
             Vector3df position;
         #else
