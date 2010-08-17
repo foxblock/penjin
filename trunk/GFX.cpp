@@ -401,7 +401,12 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     return PENJIN_OK;
 }
 #if defined(PENJIN_SDL) || defined(PENJIN_GL) || defined(PENJIN_SOFT)
-SDL_Surface* GFX::getVideoSurface(){return screen;}
+SDL_Surface* GFX::getVideoSurface()
+{
+    if(screen == NULL)
+        screen = SDL_GetVideoSurface();
+    return screen;
+}
 #endif
 #ifdef PENJIN_SDL
     #ifdef PENJIN_SCALE2X
@@ -744,6 +749,11 @@ void GFX::showVideoInfo()
 {
     #if defined (PENJIN_GL) || defined (PENJIN_SDL)
         screen = getVideoSurface();
+        if(!screen)
+        {
+            cout << "Problem getting VideoInfo - screen is NULL." << endl;
+            return;
+        }
         cout << "Screen Info" << endl;
         cout << screen->w << "x" << screen->h << " " << StringUtility::intToString(screen->format->BitsPerPixel) << "BPP" << endl;
         #ifdef PENJIN_SCALE2X
@@ -827,7 +837,6 @@ uint GFX::getYResolution()
             #else
                 glFrustum(-range*aspect,range*aspect,-range,range,znear,zfar);
             #endif
-
         }
     #endif
 #endif
