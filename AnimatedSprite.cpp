@@ -93,7 +93,6 @@ PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 
 PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}
 
-PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); animationTimer.start(); return image.loadImageSheet(fileName, xTiles, yTiles);}
 PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); return image.loadImageSheet(fileName, xTiles, yTiles);}
 
 PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent)
