@@ -124,12 +124,15 @@ class Menu
             PENJIN_ERRORS loadSelectionFrame(CRuint index,CRstring fileName);
             PENJIN_ERRORS loadSelectionFrames(CRuint index,CRstring tileSheet,CRuint xTiles,CRuint yTiles);
 
+            // TODO: Implement the following functions
             void setFrameRate(CRuint fps);                    //  Set the animation frame rate
             void setLooping(CRint numLoops);                  //  set num loops, -1 is infinite.
             void setLooping(CRbool shouldLoop);               // true == infinite looping, false == no looping
-            void setReversePlay(CRbool reverse);              //  Reverse playback on last frame?
+            void setReversePlay(CRbool reverse);
+            void setPulsePlay(CRbool pulse);
+            //
         #endif
-        void setMenuItemText(CRstring text);              //  Set the topmost menu item text properties
+        void setMenuItemText(CRstring text);              //  Set the last added menu item text properties
         void setMenuItemText(CRuint index,CRstring text);  //  Set the display text of the menu item
         void setSelectionIndicator(CRchar c);             //  Set the character acting as a selection indicator GLOBAL
         void setSelectionIndicator(CRuint index,CRchar c); //  Set the character indicating a selection for a specific menu item

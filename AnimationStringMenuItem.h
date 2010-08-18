@@ -35,6 +35,7 @@ class AnimationStringMenuItem : public MenuItem
         void setLooping(CRint numLoops){anim.setLooping(numLoops);}
         void setLooping(CRbool shouldLoop){anim.setLooping(shouldLoop);}
         void setReversePlay(CRbool reverse){anim.setReversePlay(reverse);}
+        void setPulsePlay(CRbool pulse){anim.setPulsePlay(pulse);}
 
         /// Set text properties - inherited from the text handler passed in
         void setTextHandler(Text* pointer){text.setTextHandler(pointer);}
