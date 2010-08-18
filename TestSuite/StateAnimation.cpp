@@ -4,11 +4,10 @@
 StateAnimation::StateAnimation()
 {
     //ctor
-    anim =NULL;
-    animS = NULL;
+    anim = NULL;
     looping = true;
-    paused = true;
-    reverse = false;
+    paused = false;
+    playMode = pmNormal;
     animMode = ANIM_TILE;
     fpsMode = SECONDS;
 }
@@ -21,69 +20,80 @@ StateAnimation::~StateAnimation()
 
 void StateAnimation::clear()
 {
-    if(anim)
-        delete anim;
-    if(animS)
-        delete animS;
-
+    delete anim;
     anim = NULL;
-    animS = NULL;
 }
 
 void StateAnimation::init()
 {
     GFX::setClearColour(BLACK);
     text.loadFont("font/unispace.ttf",15);
-    text.setPosition(40, GFX::getYResolution()-80);
+    text.setPosition(GFX::getXResolution()-400, 50);
     text.setBoundaries(Vector2di(0,0),Vector2di(GFX::getXResolution(),GFX::getYResolution()));
     text.setRelativity(true);
     changeAnimMode();
     setFPS();
-    setPause();
 }
 
 void StateAnimation::render()
 {
     GFX::clearScreen();
-    text.setPosition(40, GFX::getYResolution()-80);
+    text.setPosition(GFX::getXResolution()-400, 50);
     if(anim)
     {
         anim->render();
-        text.print("Animation: ");
-        if(animMode == ANIM_TILE)
-            text.print("TILES ");
-        else
-            text.print("FRAMES ");
-        text.print("Frame: ");text.print((int)anim->getCurrentFrame());
+        text.print("Mode (A): ");
+        switch (animMode)
+        {
+            case ANIM_TILE:
+                text.print("Animation, TILESHEET\n");
+                break;
+            case ANIM_FRAMES:
+                text.print("Animation, FRAMES\n");
+                break;
+            case SPR_TILE:
+                text.print("AnimatedSprite, TILESHEET\n");
+                break;
+            case SPR_FRAMES:
+                text.print("AnimatedSprite, FRAMES\n");
+                break;
+        }
+        text.print("Frame: ");
+        text.print((int)anim->getCurrentFrame());
+        text.print("\n");
         if(anim->hasFinished())
         {
-            text.print("  Finished!");
+            text.print("Finished\n");
         }
     }
-    else if(animS)
-    {
-        animS->render();
-        text.print("AnimatedSprite: ");
-        if(animMode == SPR_TILE)
-            text.print("TILES ");
-        else
-            text.print("FRAMES ");
-        text.print("Frame: ");text.print((int)animS->getCurrentFrame());
-        if(animS->hasFinished())
-        {
-            text.print("  Finished!");
-        }
-    }
-    if(looping)
-        text.print("   Looping     ");
-    else
-        text.print("   No Looping  ");
-    if(reverse)
-        text.print("ReversePlay    ");
-    else
-        text.print("No ReversePlay ");
 
-    text.setPosition(40, GFX::getYResolution()-120);
+    text.print("Paused (X): ");
+    if (paused)
+        text.print("true\n");
+    else
+        text.print("false\n");
+
+    text.print("Looping (L): ");
+    if(looping)
+        text.print("true\n");
+    else
+        text.print("false\n");
+
+    text.print("Play mode (R): ");
+    switch (playMode)
+    {
+        case pmNormal:
+            text.print("Normal\n");
+            break;
+        case pmReverse:
+            text.print("Reverse\n");
+            break;
+        case pmPulse:
+            text.print("Pulsing\n");
+            break;
+    }
+
+    text.print("FPS (B): ");
     if(fpsMode == FIFTEEN_FRAMES)
         text.print("FIFTEEN_FRAMES");
     else if(fpsMode == THIRTY_FRAMES)
@@ -102,14 +112,15 @@ void StateAnimation::render()
         text.print("SECONDS");
     else if(fpsMode == MINUTES)
         text.print("MINUTES");
+    text.print("\n\n");
+
+    text.print("LEFT to rewind");
 }
 
 void StateAnimation::unlimitedUpdate()
 {
-    if(anim)
+    if(anim && not paused)
         anim->update();
-    else if(animS)
-        animS->update();
 }
 
 void StateAnimation::userInput()
@@ -117,9 +128,10 @@ void StateAnimation::userInput()
     /*
     A button toggles through the different animation objects and frame load methods
     L button toggles looping
-    R button toggles reverse play
+    R button cycles through play modes
     B cycles fps scalers in timer.
     LEFT rewinds the animation.
+    X toggles pause
     */
     input->update();
     #ifdef PLATFORM_PC
@@ -148,9 +160,10 @@ void StateAnimation::userInput()
     }
     if(input->isR())
     {
-        reverse = !reverse;
-        setReverse();
+        cyclePlayMode();
     }
+    if (input->isX())
+        togglePause();
     input->resetKeys();
 }
 
@@ -162,56 +175,78 @@ void StateAnimation::changeAnimMode()
         animMode = SPR_FRAMES;
     else if(animMode > SPR_FRAMES)
         animMode = ANIM_TILE;
+
+    // delete old sprite
     clear();
-    if(animMode == ANIM_TILE)
+
+    if(animMode == ANIM_TILE) // Animation (no auto-keying) loaded from a sprite-sheet
     {
         anim = new Animation;
-        anim->loadFrames(dir+"sheet_3x1_tiles"+ext,3,1);
-        anim->setFrameRate(SECONDS);
+        Animation* temp = (Animation*)anim;
+        temp->loadFrames(dir+"frames"+ext,1,6);
+        temp->setFrameRate(SECONDS);
     }
-    else if(animMode == ANIM_FRAMES)
+    else if(animMode == ANIM_FRAMES) // Animation loaded from individual frames
     {
         anim = new Animation;
-        anim->loadFrame(dir+"frames/01"+ext);
-        anim->loadFrame(dir+"frames/02"+ext);
-        anim->loadFrame(dir+"frames/03"+ext);
+        Animation* temp = (Animation*)anim;
+        temp->loadFrame(dir+"frames/1"+ext);
+        temp->loadFrame(dir+"frames/2"+ext);
+        temp->loadFrame(dir+"frames/3"+ext);
+        temp->loadFrame(dir+"frames/4"+ext);
+        temp->loadFrame(dir+"frames/5"+ext);
+        temp->loadFrame(dir+"frames/6"+ext);
+        temp->setFrameRate(SECONDS);
+    }
+    else if(animMode == SPR_TILE) // AnimatedSprite (with auto-keying) loaded from sprite-sheet
+    {
+        anim = new AnimatedSprite;
+        anim->loadFrames(dir+"frames"+ext,1,6);
         anim->setFrameRate(SECONDS);
     }
-    else if(animMode == SPR_TILE)
+    else if(animMode == SPR_FRAMES) // AnimatedSprite loaded from individual frames
     {
-        animS = new AnimatedSprite;
-        animS->loadFrames(dir+"sheet_3x1_tiles"+ext,3,1);
-        animS->setFrameRate(SECONDS);
+        anim = new AnimatedSprite;
+        anim->loadFrame(dir+"frames/1"+ext);
+        anim->loadFrame(dir+"frames/2"+ext);
+        anim->loadFrame(dir+"frames/3"+ext);
+        anim->loadFrame(dir+"frames/4"+ext);
+        anim->loadFrame(dir+"frames/5"+ext);
+        anim->loadFrame(dir+"frames/6"+ext);
+        anim->setFrameRate(SECONDS);
     }
-    else if(animMode == SPR_FRAMES)
-    {
-        animS = new AnimatedSprite;
-        animS->loadFrame(dir+"frames/01"+ext);
-        animS->loadFrame(dir+"frames/02"+ext);
-        animS->loadFrame(dir+"frames/03"+ext);
-        animS->setFrameRate(SECONDS);
-    }
+    anim->setPosition(50,200);
     setLooping();
-    setReverse();
+    anim->setPlayMode((PlayMode)playMode);
 }
 
 void StateAnimation::setLooping()
 {
     if(anim)
         anim->setLooping(looping);
-    else if(animS)
-        animS->setLooping(looping);
 }
 
-void StateAnimation::setReverse()
+void StateAnimation::cyclePlayMode()
 {
     if(anim)
-        anim->setReversePlay(reverse);
-    else if(animS)
-        animS->setReversePlay(reverse);
+    {
+        switch(anim->getPlayMode())
+        {
+            case pmNormal:
+                anim->setPlayMode(pmReverse);
+                break;
+            case pmReverse:
+                anim->setPlayMode(pmPulse);
+                break;
+            case pmPulse:
+                anim->setPlayMode(pmNormal);
+                break;
+        }
+        playMode = anim->getPlayMode();
+    }
 }
 
-void StateAnimation::setPause()
+void StateAnimation::togglePause()
 {
     paused = !paused;
 }
@@ -220,16 +255,12 @@ void StateAnimation::setFPS()
 {
     if(anim)
         anim->setFrameRate((TimerScalers)fpsMode);
-    else if(animS)
-        animS->setFrameRate((TimerScalers)fpsMode);
 }
 
 void StateAnimation::rewind()
 {
     if(anim)
         anim->rewind();
-    else if(animS)
-        animS->rewind();
 }
 
 void StateAnimation::cycleTimerMode()

@@ -3,11 +3,7 @@
 
 #include "PenjinStates.h"
 
-//#include "Animation.h"
-//#include "AnimatedSprite.h"
-class Animation;
 class AnimatedSprite;
-//#include "Emitter.h"
 #include "Text.h"
 /*
 ABOUT: This class is designed to test all animated functionality.
@@ -30,13 +26,12 @@ class StateAnimation : public BaseState
         virtual void unlimitedUpdate();
 
     private:
-        // Animation objects
-        Animation* anim;        //  To test regular Animation objects
-        AnimatedSprite* animS;  //  To test AnimatedSprite objects
+        // Animation object
+        AnimatedSprite* anim;
 
         //  Animation properties
         bool looping;       //  looping on or off.
-        bool reverse;       //  play reversed too?
+        int playMode;       //  play normal, reversed or pulsing
         bool paused;        //  paused state
         enum ANIM_MODE
         {
@@ -52,10 +47,10 @@ class StateAnimation : public BaseState
 
         void changeAnimMode();
         void setLooping();
-        void setReverse();
+        void cyclePlayMode();
         void cycleTimerMode();
         void setFPS();
-        void setPause();
+        void togglePause();
         void rewind();
         void clear();
 };
