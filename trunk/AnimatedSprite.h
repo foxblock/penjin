@@ -113,6 +113,7 @@ class AnimatedSprite
                 mode = pmNormal;
         };
         void setPlayMode(PlayMode newMode){mode = newMode;};
+        void setPlayMode(int newMode){mode = (PlayMode)newMode;};
         PlayMode getPlayMode() const {return mode;};
         void rewind() // rewind the sprite, resets hasFinished, too
         {
