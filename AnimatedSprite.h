@@ -72,7 +72,7 @@ class AnimatedSprite
         uint getHeight()const{return image.getHeight();}
         void setFrameRate(const TimerScalers& fps){animationTimer.setMode(fps);}
         void setTimerScaler(CRfloat cusScaler){animationTimer.setScaler(cusScaler);}//Set a custom timer update scaler.
-        void setLooping(CRint numLoops){this->numLoops = firstLoops = numLoops;}
+        void setLooping(CRint numLoops){this->numLoops = firstLoops = (numLoops-1);}
         void setLooping(CRbool shouldLoop)
         {
             if(shouldLoop)
