@@ -217,7 +217,7 @@ short StringUtility::stringToShort(CRstring value)
 
 bool StringUtility::stringToBool(CRstring value)
 {
-    if (value == "true" || value == "1")
+    if (value == "true" || value == "True" || value == "1")
         return true;
     else
         return false;
