@@ -633,7 +633,6 @@ SDL_Surface* GFX::getVideoSurface()
     void GFX::clearScreen(SDL_Surface* scr)
     {
         SDL_FillRect(scr,NULL,clear.getSDL_Uint32Colour());
-        SDL_BlitSurface(NULL,NULL,scr,NULL);
     }
     void GFX::clearScreen(){clearScreen(screen);}
     void GFX::setPixel(SDL_Surface* scr, CRint x, CRint y, Colour c)

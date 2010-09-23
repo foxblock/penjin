@@ -29,7 +29,7 @@ void TextDoc::clear()
 }
 
 
-PENJIN_ERRORS TextDoc::load(vector<string> lines)
+PENJIN_ERRORS TextDoc::load(const vector<string>& lines)
 {
     docData = lines;
     return PENJIN_OK;

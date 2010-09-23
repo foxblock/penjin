@@ -30,7 +30,7 @@ uint Parser::countNumCommands(CRint com)
 }
 
 
-PENJIN_ERRORS Parser::loadParserConfig(vector<string> lines)
+PENJIN_ERRORS Parser::loadParserConfig(const vector<string>& lines)
 {
     PENJIN_ERRORS status = doc.load(lines);
     //  Load the parser's configuration script
@@ -186,7 +186,7 @@ PENJIN_ERRORS Parser::saveCommandList(CRstring fileName)
     return doc.save(fileName);
 }
 
-PENJIN_ERRORS Parser::loadCommandList(vector<string> lines)
+PENJIN_ERRORS Parser::loadCommandList(const vector<string>& lines)
 {
     // Check if parser has been configured
     if(keyWords.empty())

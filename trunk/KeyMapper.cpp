@@ -24,7 +24,7 @@ void KeyMapper::clearKeys()
     keys.clear();
 }
 
-PENJIN_ERRORS KeyMapper::loadControlMap(vector<string> lines)
+PENJIN_ERRORS KeyMapper::loadControlMap(const vector<string>& lines)
 {
     parse->loadCommandList(lines);
     return parseData();
@@ -122,31 +122,6 @@ void KeyMapper::defaultMap()
     setupParser();
     vector<string> CMF;
     CMF.push_back(";   Default Penjin Control Map");
-/*
-;   FAILSAFE - uses keyboard
-;   DEVICE:type,id;
-DEVICE:KEYBOARD,0;
-;   KEY:action,key;
-KEY:UP,UP;
-KEY:DOWN,DOWN;
-KEY:LEFT,LEFT;
-KEY:RIGHT,RIGHT;
-KEY:A,x;
-KEY:B,z;
-KEY:X,a;
-KEY:Y,s;
-KEY:L,q;
-KEY:R,w;
-KEY:SELECT,RIGHT_SHIFT;
-KEY:START,RETURN;
-DEVICE_END:;
-DEVICE:MOUSE,0;
-BUTTON:MOUSE_LEFT,0;
-AXIS:MOUSE_X,0;
-AXIS:MOUSE_Y,1;
-DEVICE_END:;
-END:;
-*/
 #if defined(PLATFORM_PANDORA) || defined(PLATFORM_PC)
     CMF.push_back("DEVICE:KEYBOARD,0;");
             CMF.push_back("KEY:UP,UP;");

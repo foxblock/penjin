@@ -5,8 +5,6 @@
 
 SimpleJoy::~SimpleJoy()
 {
-
-
 #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 	if( fd_nubL > 0 )
 		close(fd_nubL );
@@ -22,6 +20,7 @@ SimpleJoy::~SimpleJoy()
     if(Joy)
         SDL_JoystickClose(0);
 #endif
+    delete [] players;
 }
 
 SimpleJoy::SimpleJoy()
@@ -83,10 +82,13 @@ SimpleJoy::SimpleJoy()
         }
     #endif
 
-    deadZone.x = 0;
-    deadZone.y = 0;
-    scaler = 1.0f;
-    mapLoaded = false;
+    //deadZone.x = 0;
+    //deadZone.y = 0;
+    //scaler = 1.0f;
+    //mapLoaded = false;
+    player = 0;
+    numPlayers = 0;
+    setNumPlayers(player+1);
     resetKeys();
 #ifdef _DEBUG
     joystickStatus();
@@ -95,12 +97,12 @@ SimpleJoy::SimpleJoy()
 
 void SimpleJoy::update()
 {
-    if(!mapLoaded)
+    if(!players[player].mapLoaded)
     {
-        mapper.loadDefaultMap();
-        mapLoaded = true;
+        players[player].mapper.loadDefaultMap();
+        players[player].mapLoaded = true;
     }
-    storeKeys.clear();
+    players[player].storeKeys.clear();
     #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         /// Read Pandora inputs
         PND_ReadEvents( fd_keys, DEV_KEYS );
@@ -111,22 +113,20 @@ void SimpleJoy::update()
     #else
         while (SDL_PollEvent(&Event))
         {
-            #ifndef PLATFORM_GP2X
             if(Event.type == SDL_QUIT)
             {
-                if(Quit == sjRELEASED)
-                    Quit = sjPRESSED;
+                if(players[player].Quit == sjRELEASED)
+                    players[player].Quit = sjPRESSED;
                 else
-                    Quit = sjHELD;
+                    players[player].Quit = sjHELD;
             }
-            #endif
             if(Event.type == SDL_KEYDOWN)
             {
                 KeyMapKey t(Event.key.keysym.sym);
                 tKey k;
                 k.key = t;
                 k.status = sjPRESSED;
-                storeKeys.push_back(k);
+                players[player].storeKeys.push_back(k);
             }
             else if(Event.type == SDL_KEYUP)
             {
@@ -134,85 +134,85 @@ void SimpleJoy::update()
                 tKey k;
                 k.key = t;
                 k.status = sjRELEASED;
-                storeKeys.push_back(k);
+                players[player].storeKeys.push_back(k);
             }
-            for(int b = mapper.size()-1; b>=0;--b)
+            for(int b = players[player].mapper.size()-1; b>=0;--b)
             {
-                KEY_MAP_DEVICE device = mapper.keys[b]->getDevice();
+                KEY_MAP_DEVICE device = players[player].mapper.keys[b]->getDevice();
                 if(device == DEV_KEYBOARD)
                 {
-                    if(((KeyMapKey*)mapper.keys[b])->getKey() == Event.key.keysym.sym)
+                    if(((KeyMapKey*)players[player].mapper.keys[b])->getKey() == Event.key.keysym.sym)
                     {
                         if(Event.type == SDL_KEYDOWN)
-                            mappedDown(mapper.keys[b]->getTarget());
+                            mappedDown(players[player].mapper.keys[b]->getTarget());
                         else if(Event.type == SDL_KEYUP)
-                            mappedUp(mapper.keys[b]->getTarget());
+                            mappedUp(players[player].mapper.keys[b]->getTarget());
                     }
                 }
                 else if(device == DEV_MOUSE_AXIS)
                 {
                     // Axis may be changed
                     if(Event.type == SDL_MOUSEMOTION)
-                        mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
+                        mappedMouseAxes(((KeyMapMouseAxis*)players[player].mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)players[player].mapper.keys[b])->getAxis());
                 }
                 else if(device == DEV_MOUSE_BUTTON)
                 {
-                    MouseButtons::SDL_MOUSE_BUTTONS button = ((KeyMapMouseButton*)mapper.keys[b])->getButton();
+                    MouseButtons::SDL_MOUSE_BUTTONS button = ((KeyMapMouseButton*)players[player].mapper.keys[b])->getButton();
                     if(button == Event.button.button)
                     {
                         //oldMouse = mouse;
                         // Buttons may have been pressed
                         if(Event.type == SDL_MOUSEBUTTONDOWN)
-                            mappedDown(mapper.keys[b]->getTarget());
+                            mappedDown(players[player].mapper.keys[b]->getTarget());
                         else if(Event.type == SDL_MOUSEBUTTONUP)
-                            mappedUp(mapper.keys[b]->getTarget());
+                            mappedUp(players[player].mapper.keys[b]->getTarget());
                     }
                 }
                 else if(device == DEV_JOYSTICK_AXIS)
                 {
                     // Axis may be changed
-                    if(((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                    if(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == Event.jaxis.axis)
                     {
                         if(Event.type == SDL_JOYAXISMOTION)
-                            mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                            mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
                     }
                 }
                 else if (device == DEV_JOYSTICK_HAT)
                 {
                     if(Event.type == SDL_JOYHATMOTION)
                     {
-                        if(((KeyMapHat*)mapper.keys[b])->getDirection() & Event.jhat.value)
-                            mappedDown(((KeyMapHat*)mapper.keys[b])->getTarget());
+                        if(((KeyMapHat*)players[player].mapper.keys[b])->getDirection() & Event.jhat.value)
+                            mappedDown(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
                         else
-                            mappedUp(((KeyMapHat*)mapper.keys[b])->getTarget());
+                            mappedUp(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
                     }
                 }
                 else if (device == DEV_DIGITAL_JOYSTICK_AXIS)
                 {
-                    if(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                    if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == Event.jaxis.axis)
                     {
                         #ifdef _DEBUG
-                        cout << "DAXIS: " << Event.jaxis.value << "  " << ((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTrigger() << endl;
+                        cout << "DAXIS: " << Event.jaxis.value << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
                         #endif
                         if(Event.type == SDL_JOYAXISMOTION)
                         {
 
-                            if(Event.jaxis.value == ((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTrigger())
-                                mappedDown(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTarget());
+                            if(Event.jaxis.value == ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger())
+                                mappedDown(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
                             else
-                                mappedUp(((KeyMapDigitalJoyAxis*)mapper.keys[b])->getTarget());
+                                mappedUp(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
                         }
                     }
                 }
                 else if(device == DEV_JOYSTICK_BUTTON)
                 {
-                    if(((KeyMapJoyButton*)mapper.keys[b])->getButton() == Event.jbutton.button)
+                    if(((KeyMapJoyButton*)players[player].mapper.keys[b])->getButton() == Event.jbutton.button)
                     {
                         // Buttons may have been pressed
                         if(Event.type == SDL_JOYBUTTONDOWN)
-                            mappedDown(mapper.keys[b]->getTarget());
+                            mappedDown(players[player].mapper.keys[b]->getTarget());
                         else if(Event.type == SDL_JOYBUTTONUP)
-                            mappedUp(mapper.keys[b]->getTarget());
+                            mappedUp(players[player].mapper.keys[b]->getTarget());
                     }
                 }
             }
@@ -222,12 +222,12 @@ void SimpleJoy::update()
 
 string SimpleJoy::isKeyLetter()
 {
-    for(int i = storeKeys.size()-1; i>=0;--i)
+    for(int i = players[player].storeKeys.size()-1; i>=0;--i)
     {
-        if(storeKeys.at(i).status == sjPRESSED && StringUtility::isLetter(storeKeys.at(i).key.getKey()))
+        if(players[player].storeKeys.at(i).status == sjPRESSED && StringUtility::isLetter(players[player].storeKeys.at(i).key.getKey()))
         {
             string t;
-            t.push_back(storeKeys.at(i).key.getKey());
+            t.push_back(players[player].storeKeys.at(i).key.getKey());
             return t;
         }
     }
@@ -242,20 +242,20 @@ void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
 
         #else
             #ifdef PENJIN_FIXED
-                case SJ_LEFTSTICK_X:    leftStick.x = fixedpoint::fix2int(Event.jaxis.value * scaler);break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = fixedpoint::fix2int(Event.jaxis.value * scaler);break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = fixedpoint::fix2int(Event.jaxis.value * scaler);break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = fixedpoint::fix2int(Event.jaxis.value * scaler);break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x += fixedpoint::fix2int(Event.jaxis.value * scaler);break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y += fixedpoint::fix2int(Event.jaxis.value * scaler);break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
 
             #else
-                case SJ_LEFTSTICK_X:    leftStick.x = Event.jaxis.value * scaler;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = Event.jaxis.value * scaler;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = Event.jaxis.value * scaler;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = Event.jaxis.value * scaler;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x += Event.jaxis.value * scaler;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y += Event.jaxis.value * scaler;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.jaxis.value * players[player].scaler;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.jaxis.value * players[player].scaler;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.jaxis.value * players[player].scaler;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.jaxis.value * players[player].scaler;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += Event.jaxis.value * players[player].scaler;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += Event.jaxis.value * players[player].scaler;break;
             #endif
         #endif
         default:                break;
@@ -284,12 +284,12 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
             #endif
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = val;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = val;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = val;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = val;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = val;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = val;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = val;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = val;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = val;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = val;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = val;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = val;break;
                 default:                break;
             }
         }
@@ -301,12 +301,12 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
             #endif
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = val;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = val;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = val;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = val;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = val;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = val;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = val;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = val;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = val;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = val;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = val;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = val;break;
                 default:                break;
             }
         }
@@ -314,23 +314,23 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
         if(axis == 0 && Event.motion.xrel != 0)
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = Event.motion.xrel;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = Event.motion.xrel;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = Event.motion.xrel;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = Event.motion.xrel;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = Event.motion.x;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = Event.motion.x;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.motion.xrel;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.motion.xrel;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.motion.xrel;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.motion.xrel;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = Event.motion.x;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = Event.motion.x;break;
                 default:                break;
             }
         if(axis == 1 && Event.motion.yrel != 0)
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    leftStick.x = Event.motion.yrel;break;
-                case SJ_LEFTSTICK_Y:    leftStick.y = Event.motion.yrel;break;
-                case SJ_RIGHTSTICK_X:   rightStick.x = Event.motion.yrel;break;
-                case SJ_RIGHTSTICK_Y:   rightStick.y = Event.motion.yrel;break;
-                case SJ_MOUSE_X:        oldMouse.x = mouse.x;mouse.x = Event.motion.y;break;
-                case SJ_MOUSE_Y:        oldMouse.y = mouse.y;mouse.y = Event.motion.y;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.motion.yrel;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.motion.yrel;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.motion.yrel;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.motion.yrel;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = Event.motion.y;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = Event.motion.y;break;
                 default:                break;
             }
     #endif
@@ -340,102 +340,102 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        case SJ_UP:             if(Up == sjRELEASED)
-                                    Up = sjPRESSED;
+        case SJ_UP:             if(players[player].Up == sjRELEASED)
+                                    players[player].Up = sjPRESSED;
                                 else
-                                    Up = sjHELD;
+                                    players[player].Up = sjHELD;
         break;
-        case SJ_DOWN:           if(Down == sjRELEASED)
-                                    Down = sjPRESSED;
+        case SJ_DOWN:           if(players[player].Down == sjRELEASED)
+                                    players[player].Down = sjPRESSED;
                                 else
-                                    Down = sjHELD;
+                                    players[player].Down = sjHELD;
         break;
-        case SJ_LEFT:           if(Left == sjRELEASED)
-                                    Left = sjPRESSED;
+        case SJ_LEFT:           if(players[player].Left == sjRELEASED)
+                                    players[player].Left = sjPRESSED;
                                 else
-                                    Left = sjHELD;
+                                    players[player].Left = sjHELD;
         break;
-        case SJ_RIGHT:          if(Right == sjRELEASED)
-                                    Right = sjPRESSED;
+        case SJ_RIGHT:          if(players[player].Right == sjRELEASED)
+                                    players[player].Right = sjPRESSED;
                                 else
-                                    Right = sjHELD;
+                                    players[player].Right = sjHELD;
         break;
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        case SJ_UPLEFT:         if(UpLeft == sjRELEASED)
-                                    UpLeft = sjPRESSED;
+        case SJ_UPLEFT:         if(players[player].UpLeft == sjRELEASED)
+                                    players[player].UpLeft = sjPRESSED;
                                 else
-                                    UpLeft = sjHELD;
+                                    players[player].UpLeft = sjHELD;
         break;
-        case SJ_UPRIGHT:        if(UpRight == sjRELEASED)
-                                    UpRight = sjPRESSED;
+        case SJ_UPRIGHT:        if(players[player].UpRight == sjRELEASED)
+                                    players[player].UpRight = sjPRESSED;
                                 else
-                                    UpLeft = sjHELD;
+                                    players[player].UpLeft = sjHELD;
         break;
-        case SJ_DOWNLEFT:       if(DownLeft == sjRELEASED)
-                                    DownLeft = sjPRESSED;
+        case SJ_DOWNLEFT:       if(players[player].DownLeft == sjRELEASED)
+                                    players[player].DownLeft = sjPRESSED;
                                 else
-                                    DownLeft = sjHELD;
+                                    players[player].DownLeft = sjHELD;
         break;
-        case SJ_DOWNRIGHT:      if(DownRight == sjRELEASED)
-                                    DownRight = sjPRESSED;
+        case SJ_DOWNRIGHT:      if(players[player].DownRight == sjRELEASED)
+                                    players[player].DownRight = sjPRESSED;
                                 else
-                                    DownRight = sjHELD;
+                                    players[player].DownRight = sjHELD;
         break;
-        case SJ_VOLUP:          if(VolumeUp == sjRELEASED)
-                                    VolumeUp = sjPRESSED;
+        case SJ_VOLUP:          if(players[player].VolumeUp == sjRELEASED)
+                                    players[player].VolumeUp = sjPRESSED;
                                 else
-                                    VolumeUp = sjHELD;
+                                    players[player].VolumeUp = sjHELD;
         break;
-        case SJ_VOLDOWN:        if(VolumeDown == sjRELEASED)
-                                    VolumeDown = sjPRESSED;
+        case SJ_VOLDOWN:        if(players[player].VolumeDown == sjRELEASED)
+                                    players[player].VolumeDown = sjPRESSED;
                                 else
-                                    VolumeDown = sjHELD;
+                                    players[player].VolumeDown = sjHELD;
         break;
-        case SJ_CLICK:          if(Click == sjRELEASED)
-                                    Click = sjPRESSED;
+        case SJ_CLICK:          if(players[player].Click == sjRELEASED)
+                                    players[player].Click = sjPRESSED;
                                 else
-                                    Click = sjHELD;
+                                    players[player].Click = sjHELD;
         break;
         #endif
-        case SJ_A:              if(A == sjRELEASED)
-                                    A = sjPRESSED;
+        case SJ_A:              if(players[player].A == sjRELEASED)
+                                    players[player].A = sjPRESSED;
                                 else
-                                    A = sjHELD;
+                                    players[player].A = sjHELD;
         break;
-        case SJ_B:              if(B == sjRELEASED)
-                                    B = sjPRESSED;
+        case SJ_B:              if(players[player].B == sjRELEASED)
+                                    players[player].B = sjPRESSED;
                                 else
-                                    B = sjHELD;
+                                    players[player].B = sjHELD;
         break;
-        case SJ_X:              if(X == sjRELEASED)
-                                    X = sjPRESSED;
+        case SJ_X:              if(players[player].X == sjRELEASED)
+                                    players[player].X = sjPRESSED;
                                 else
-                                    X = sjHELD;
+                                    players[player].X = sjHELD;
         break;
-        case SJ_Y:              if(Y == sjRELEASED)
-                                    Y = sjPRESSED;
+        case SJ_Y:              if(players[player].Y == sjRELEASED)
+                                    players[player].Y = sjPRESSED;
                                 else
-                                    Y = sjHELD;
+                                    players[player].Y = sjHELD;
         break;
-        case SJ_L:              if(L == sjRELEASED)
-                                    L = sjPRESSED;
+        case SJ_L:              if(players[player].L == sjRELEASED)
+                                    players[player].L = sjPRESSED;
                                 else
-                                    L= sjHELD;
+                                    players[player].L = sjHELD;
         break;
-        case SJ_R:              if(R == sjRELEASED)
-                                    R = sjPRESSED;
+        case SJ_R:              if(players[player].R == sjRELEASED)
+                                    players[player].R = sjPRESSED;
                                 else
-                                    R = sjHELD;
+                                    players[player].R = sjHELD;
         break;
-        case SJ_START:          if(Start == sjRELEASED)
-                                    Start = sjPRESSED;
+        case SJ_START:          if(players[player].Start == sjRELEASED)
+                                    players[player].Start = sjPRESSED;
                                 else
-                                    Start = sjHELD;
+                                    players[player].Start = sjHELD;
         break;
-        case SJ_SELECT:         if(Select == sjRELEASED)
-                                    Select = sjPRESSED;
+        case SJ_SELECT:         if(players[player].Select == sjRELEASED)
+                                    players[player].Select = sjPRESSED;
                                 else
-                                    Select = sjHELD;
+                                    players[player].Select = sjHELD;
         break;
 
         /*case SJ_LID:          Lid = true;break;
@@ -445,16 +445,16 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = true;break;
         case SJ_MOUSE_X:         = true;break;
         case SJ_MOUSE_Y:         = true;break;*/
-        case SJ_MOUSE_LEFT:     if(leftClick == sjRELEASED)
-                                    leftClick = sjPRESSED;
+        case SJ_MOUSE_LEFT:     if(players[player].leftClick == sjRELEASED)
+                                    players[player].leftClick = sjPRESSED;
                                 else
-                                    leftClick = sjHELD;
+                                    players[player].leftClick = sjHELD;
         break;
         //case SJ_MOUSE_CENTRE: = true;break;
-        case SJ_MOUSE_RIGHT:    if(rightClick == sjRELEASED)
-                                    rightClick = sjPRESSED;
+        case SJ_MOUSE_RIGHT:    if(players[player].rightClick == sjRELEASED)
+                                    players[player].rightClick = sjPRESSED;
                                 else
-                                    rightClick = sjHELD;
+                                    players[player].rightClick = sjHELD;
         break;
 
         default:                break;
@@ -465,28 +465,28 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        case SJ_UP:             Up = sjRELEASED;break;
-        case SJ_DOWN:           Down = sjRELEASED;break;
-        case SJ_LEFT:           Left = sjRELEASED;break;
-        case SJ_RIGHT:          Right = sjRELEASED;break;
+        case SJ_UP:             players[player].Up = sjRELEASED;break;
+        case SJ_DOWN:           players[player].Down = sjRELEASED;break;
+        case SJ_LEFT:           players[player].Left = sjRELEASED;break;
+        case SJ_RIGHT:          players[player].Right = sjRELEASED;break;
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        case SJ_UPLEFT:         UpLeft = sjRELEASED;break;
-        case SJ_UPRIGHT:        UpRight = sjRELEASED;break;
-        case SJ_DOWNLEFT:       DownLeft = sjRELEASED;break;
-        case SJ_DOWNRIGHT:      DownRight = sjRELEASED;break;
-        case SJ_VOLUP:          VolumeUp = sjRELEASED;break;
-        case SJ_VOLDOWN:        VolumeDown = sjRELEASED;break;
-        case SJ_CLICK:          Click = sjRELEASED;break;
+        case SJ_UPLEFT:         players[player].UpLeft = sjRELEASED;break;
+        case SJ_UPRIGHT:        players[player].UpRight = sjRELEASED;break;
+        case SJ_DOWNLEFT:       players[player].DownLeft = sjRELEASED;break;
+        case SJ_DOWNRIGHT:      players[player].DownRight = sjRELEASED;break;
+        case SJ_VOLUP:          players[player].VolumeUp = sjRELEASED;break;
+        case SJ_VOLDOWN:        players[player].VolumeDown = sjRELEASED;break;
+        case SJ_CLICK:          players[player].Click = sjRELEASED;break;
         #endif
-        case SJ_A:              A = sjRELEASED;break;
-        case SJ_B:              B = sjRELEASED;break;
-        case SJ_X:              X = sjRELEASED;break;
-        case SJ_Y:              Y = sjRELEASED;break;
-        case SJ_L:              L = sjRELEASED;break;
-        case SJ_R:              R = sjRELEASED;break;
+        case SJ_A:              players[player].A = sjRELEASED;break;
+        case SJ_B:              players[player].B = sjRELEASED;break;
+        case SJ_X:              players[player].X = sjRELEASED;break;
+        case SJ_Y:              players[player].Y = sjRELEASED;break;
+        case SJ_L:              players[player].L = sjRELEASED;break;
+        case SJ_R:              players[player].R = sjRELEASED;break;
 
-        case SJ_START:          Start = sjRELEASED;break;
-        case SJ_SELECT:         Select = sjRELEASED;break;
+        case SJ_START:          players[player].Start = sjRELEASED;break;
+        case SJ_SELECT:         players[player].Select = sjRELEASED;break;
 
         /*case SJ_LID:          Lid = sjRELEASED;break;
         case SJ_LEFTSTICK_X:    = sjRELEASED;break;
@@ -495,9 +495,9 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = sjRELEASED;break;
         case SJ_MOUSE_X:         = sjRELEASED;break;
         case SJ_MOUSE_Y:         = sjRELEASED;break;*/
-        case SJ_MOUSE_LEFT:     leftClick = sjRELEASED;break;
+        case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED;break;
         //case SJ_MOUSE_CENTRE: = sjRELEASED;break;
-        case SJ_MOUSE_RIGHT:    rightClick = sjRELEASED;break;
+        case SJ_MOUSE_RIGHT:    players[player].rightClick = sjRELEASED;break;
         default:                break;
     }
 }
@@ -515,66 +515,61 @@ void SimpleJoy::resetKeys()
 {
 	clearEventQueue();
 
-    Start=Select=Up=Down=Left=Right=A=B=X=Y=L=R=sjRELEASED;
+    players[player].Start=players[player].Select=players[player].Up=players[player].Down=players[player].Left=players[player].Right
+    =players[player].A=players[player].B=players[player].X=players[player].Y=players[player].L=players[player].R=sjRELEASED;
     #ifdef PLATFORM_PC
-        Quit = sjRELEASED;
+        players[player].Quit = sjRELEASED;
     #endif
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        VolumeUp=VolumeDown=Click=UpLeft=UpRight=DownLeft=DownRight=sjRELEASED;
+        players[player].VolumeUp=players[player].VolumeDown=players[player].Click=players[player].UpLeft=players[player].UpRight
+        =players[player].DownLeft=players[player].DownRight=sjRELEASED;
     #endif
-        leftStick.x = 0;
-        leftStick.y = 0;
-        rightStick.x = 0;
-        rightStick.y = 0;
-        mouse.x = 0;
-        mouse.y = 0;
-        leftClick=rightClick=sjRELEASED;
-
-    /*#if defined(PLATFORM_PANDORA)
-        nubL.x = 0;
-        nubL.y = 0;
-        nubR.x = 0;
-        nubR.y = 0;
-    #endif*/
-        storeKeys.clear();
+        players[player].leftStick.x = 0;
+        players[player].leftStick.y = 0;
+        players[player].rightStick.x = 0;
+        players[player].rightStick.y = 0;
+        players[player].mouse.x = 0;
+        players[player].mouse.y = 0;
+        players[player].leftClick=players[player].rightClick=sjRELEASED;
+        players[player].storeKeys.clear();
 }
 void SimpleJoy::resetDpad()
 {
     clearEventQueue();
-    Up=Down=Left=Right=sjRELEASED;
+    players[player].Up=players[player].Down=players[player].Left=players[player].Right=sjRELEASED;
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        UpLeft=UpRight=DownLeft=DownRight=sjRELEASED;
+        players[player].UpLeft=players[player].UpRight=players[player].DownLeft=players[player].DownRight=sjRELEASED;
     #endif
 }
 void SimpleJoy::resetA()
 {
     clearEventQueue();
-    A=sjRELEASED;
+    players[player].A=sjRELEASED;
 }
 void SimpleJoy::resetB()
 {
     clearEventQueue();
-    B=sjRELEASED;
+    players[player].B=sjRELEASED;
 }
 void SimpleJoy::resetX()
 {
 	clearEventQueue();
-    X=sjRELEASED;
+    players[player].X=sjRELEASED;
 }
 void SimpleJoy::resetY()
 {
 	clearEventQueue();
-    Y=sjRELEASED;
+    players[player].Y=sjRELEASED;
 }
 void SimpleJoy::resetL()
 {
 	clearEventQueue();
-    L=sjRELEASED;
+    players[player].L=sjRELEASED;
 }
 void SimpleJoy::resetR()
 {
 	clearEventQueue();
-    R=sjRELEASED;
+    players[player].R=sjRELEASED;
 }
 
 void SimpleJoy::joystickStatus()
@@ -660,20 +655,20 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
     {
         case EV_KEY:
             // Mappings
-            for(int b = mapper.size()-1; b>=0; --b)
+            for(int b = players[player].mapper.size()-1; b>=0; --b)
             {
-                KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                KEY_MAP_DEVICE device = players[player].mapper.keys.at(b)->getDevice();
                 if(device == DEV_KEYBOARD)
                 {
-                    if(event->code == ((KeyMapKey*)mapper.keys[b])->getKey())
+                    if(event->code == ((KeyMapKey*)players[player].mapper.keys[b])->getKey())
                     {
                         #ifdef _DEBUG
                         cout << "Key:" << event->code << " Pressed!" << endl;
                         #endif
                         if(event->value == 1)
-                            mappedDown(mapper.keys[b]->getTarget());
+                            mappedDown(players[player].mapper.keys[b]->getTarget());
                         else if(event->value == 0)
-                            mappedUp(mapper.keys[b]->getTarget());
+                            mappedUp(players[player].mapper.keys[b]->getTarget());
                     }
                 }
             }
@@ -684,7 +679,7 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                 tKey k;
                 k.key = t;
                 k.status = sjPRESSED;
-                storeKeys.push_back(k);
+                players[player].storeKeys.push_back(k);
             }
             else if(event->value == 0)
             {
@@ -692,7 +687,7 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                 tKey k;
                 k.key = t;
                 k.status = sjRELEASED;
-                storeKeys.push_back(k);
+                players[player].storeKeys.push_back(k);
             }
         break;
         case EV_ABS:
@@ -715,38 +710,38 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                     cout << "TSRAW_X:" << rawTS.x << endl;
                     cout << "TSRAW_Y:" << rawTS.y << endl;
                     #endif
-                    for(int b = mapper.size()-1; b>=0; --b)
+                    for(int b = players[player].mapper.size()-1; b>=0; --b)
                     {
-                        KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                        KEY_MAP_DEVICE device = players[player].mapper.keys.at(b)->getDevice();
                         if(device == DEV_MOUSE_AXIS)
                         {
                             if(dev == DEV_TOUCH)
                             {
                                 //cout << "Axis: " << event->code << " Moved!" << endl;
-                                mappedMouseAxes(((KeyMapMouseAxis*)mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)mapper.keys[b])->getAxis());
+                                mappedMouseAxes(((KeyMapMouseAxis*)players[player].mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)players[player].mapper.keys[b])->getAxis());
                             }
                         }
                     }
                 }
             }
-            for(int b = mapper.size()-1; b>=0; --b)
+            for(int b = players[player].mapper.size()-1; b>=0; --b)
             {
-                KEY_MAP_DEVICE device = mapper.keys.at(b)->getDevice();
+                KEY_MAP_DEVICE device = players[player].mapper.keys.at(b)->getDevice();
                 if(device == DEV_JOYSTICK_AXIS)
                 {
                     switch( dev )
                     {
                         case DEV_NUBL:
-                            if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 0)
-                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 1)
-                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                            if( event->code == ABS_X && ((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == 0)
+                                mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
+                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == 1)
+                                mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
                         break;
                         case DEV_NUBR:
-                            if( event->code == ABS_X && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 2)
-                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
-                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)mapper.keys[b])->getAxis() == 3)
-                                mappedJoyAxes(((KeyMapJoyAxis*)mapper.keys[b])->getTarget());
+                            if( event->code == ABS_X && ((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == 2)
+                                mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
+                            if( event->code == ABS_Y && ((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == 3)
+                                mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
                         break;
                     }
                 }
@@ -756,9 +751,9 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
                     {
                         //cout << "Pressure: " << event->value << " Pressed!" << endl;
                         if(event->value)
-                            mappedDown(mapper.keys[b]->getTarget());
+                            mappedDown(players[player].mapper.keys[b]->getTarget());
                         else
-                            mappedUp(mapper.keys[b]->getTarget());
+                            mappedUp(players[player].mapper.keys[b]->getTarget());
                     }
                 }
             }
@@ -769,3 +764,37 @@ void SimpleJoy::PND_CheckEvent( struct input_event *event, int dev )
 
 }
 #endif
+
+void SimpleJoy::setNumPlayers(CRuint p)
+{
+    //  if we want more players than we have
+    Player* tp = NULL;
+    if(p > numPlayers)
+    {
+        //  save pointer to existing Players
+        tp = players;
+        //  setup new array
+        players = new Player[p];
+
+        //  copy existing players accross
+        for(int i = 0; i < numPlayers; ++i)
+        {
+            players[i].deadZone = tp[i].deadZone;
+            players[i].scaler = tp[i].scaler;
+            players[i].mapLoaded = tp[i].mapLoaded;
+        }
+        delete [] tp;
+
+        //  setup newest addition
+        players[p-1].deadZone.x = 0;
+        players[p-1].deadZone.y = 0;
+        players[p-1].scaler = 1.0f;
+        players[p-1].mapLoaded = false;
+        numPlayers = p;
+        /*players.push_back(&new Player());
+        players.at(p-1).deadZone.x = 0;
+        players.at(p-1).deadZone.y = 0;
+        players.at(p-1).scaler = 1.0f;
+        players.at(p-1).mapLoaded = false;*/
+    }
+}
