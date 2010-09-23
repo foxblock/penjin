@@ -215,12 +215,22 @@ short StringUtility::stringToShort(CRstring value)
 	return out;
 }
 
-bool StringUtility::stringToBool(CRstring value)
+bool StringUtility::stringToBool(CRstring value, CRbool useBoolString)
 {
-    if (value == "true" || value == "True" || value == "1")
-        return true;
+    if (useBoolString)
+    {
+        if (value == "true")
+            return true;
+        else
+            return false;
+    }
     else
-        return false;
+    {
+        if (value == "1")
+            return true;
+        else
+            return false;
+    }
 }
 
 double StringUtility::cStringToDouble(char* value){return stringToDouble((string)value);}

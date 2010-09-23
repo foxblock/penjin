@@ -26,7 +26,7 @@ class TextDoc
         ~TextDoc(){clear();}
         uint size(){return docData.size();}
         PENJIN_ERRORS load(CRstring file);					//	Load a plain text file
-        PENJIN_ERRORS load(vector<string> lines);           //  Load a doc from raw lines
+        PENJIN_ERRORS load(const vector<string>& lines);           //  Load a doc from raw lines
         PENJIN_ERRORS save(CRstring file);					//	Save a plain text file
         void search(CRstring target);				//	Search for a string in the doc
         void editLine(CRint line, CRstring newData);//	replace a line of data with new data

@@ -78,9 +78,6 @@ void Raycast::init(int x, int y, int w, int h)
 	planeY = 0.74; //the 2d raycaster version of camera plane
 
     drawSurface.loadBackground("images/Textures/Surface.png");
-    #ifdef PENJIN_SDL
-    drawSurface.setUseHardware(true);
-    #endif
     drawSurface.setPosition(Vector2di(screenX,screenY));
 
     time = 0;

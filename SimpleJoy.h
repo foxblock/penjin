@@ -4,6 +4,7 @@
 #include "PenjinTypes.h"
 #include "KeyMapper.h"
 #include <iostream>
+
 #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 #include <fstream>
 #endif
@@ -11,6 +12,7 @@ using std::cout;
 /*
 TODO: Add Wii Controls/GBA/NDS etc
 */
+
 class SimpleJoy
 {
     public:
@@ -20,20 +22,62 @@ class SimpleJoy
             sjPRESSED = 1,
             sjHELD = 2
         };
+        //  keymapping and a key status for the map.
+        struct tKey
+        {
+            KeyMapKey key;
+            sjSTATUS status;
+        };
+        //  Contains a player's control mapping and pressed buttons.
+        struct Player
+        {
+            //  Control map
+            KeyMapper mapper;
+            bool mapLoaded;
+            //  stored keyboard presses
+            vector <tKey> storeKeys;
+            //  standard game buttons
+            sjSTATUS Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
+            //  X box check and other quit message checking
+            sjSTATUS Quit;
+
+            //  Josystick config and values
+            Vector2di deadZone;
+            float scaler;
+            Vector2di leftStick;
+            Vector2di rightStick;
+
+            //  mouse
+            Vector2di mouse;
+            Vector2di oldMouse;
+            sjSTATUS leftClick, rightClick;
+
+            //  GP2X Specific
+        #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
+            sjSTATUS Click, VolumeUp, VolumeDown,UpLeft, UpRight, DownLeft, DownRight;
+        #endif
+        };
         SimpleJoy();
         ~SimpleJoy();
 
+        /// Multiplayer options
+        /*starting from 1... 1 == 1 player 2 == 2 players*/
+        void setNumPlayers(CRuint p);           //  Set how many player controller to track
+        /*Player 1 is starting at index 0.*/
+        void setPlayer(CRuint p){player = p;}   // set the ownership of inputs to this player
+        uint getPlayer()const{return player;}
+
         PENJIN_ERRORS loadControlMap(CRstring filename)
         {
-            PENJIN_ERRORS t = mapper.loadControlMap(filename);
+            PENJIN_ERRORS t = players[player].mapper.loadControlMap(filename);
             if(t == PENJIN_OK)
-                mapLoaded = true;
+                players[player].mapLoaded = true;
             return t;
         }
 
         PENJIN_ERRORS saveControlMap(CRstring filename)
         {
-            return mapper.saveControlMap(filename);
+            return players[player].mapper.saveControlMap(filename);
         }
 
         void update();					//	Get current status of keyboard
@@ -43,39 +87,41 @@ class SimpleJoy
         bool isPressed(const sjSTATUS& bstat)const{return (bstat == sjPRESSED);}
         bool isReleased(const sjSTATUS& bstat)const{return (bstat == sjRELEASED);}
 
-        sjSTATUS isStart()const{return Start;}
-        sjSTATUS isSelect()const{return Select;}
-        sjSTATUS isUp()const{return Up;}
-        sjSTATUS isDown()const{return Down;}
-        sjSTATUS isLeft()const{return Left;}
-        sjSTATUS isRight()const{return Right;}
-        sjSTATUS isA()const{return A;}
-        sjSTATUS isB()const{return B;}
-        sjSTATUS isX()const{return X;}
-        sjSTATUS isY()const{return Y;}
-        sjSTATUS isL()const{return L;}
-        sjSTATUS isR()const{return R;}
+        sjSTATUS isStart()const{return players[player].Start;}
+        sjSTATUS isSelect()const{return players[player].Select;}
+        sjSTATUS isUp()const{return players[player].Up;}
+        sjSTATUS isDown()const{return players[player].Down;}
+        sjSTATUS isLeft()const{return players[player].Left;}
+        sjSTATUS isRight()const{return players[player].Right;}
+        sjSTATUS isA()const{return players[player].A;}
+        sjSTATUS isB()const{return players[player].B;}
+        sjSTATUS isX()const{return players[player].X;}
+        sjSTATUS isY()const{return players[player].Y;}
+        sjSTATUS isL()const{return players[player].L;}
+        sjSTATUS isR()const{return players[player].R;}
         /// The fabled ANY button.
         sjSTATUS isAny()const
         {
-            if((A || B || X || Y || L || R || Start || Select) == sjPRESSED)
+            if((players[player].A || players[player].B || players[player].X || players[player].Y || players[player].L
+            || players[player].R || players[player].Start || players[player].Select) == sjPRESSED)
                 return sjPRESSED;
-            else if((A || B || X || Y || L || R || Start || Select) == sjHELD)
+            else if((players[player].A || players[player].B || players[player].X || players[player].Y || players[player].L
+            || players[player].R || players[player].Start || players[player].Select) == sjHELD)
                 return sjHELD;
             return sjRELEASED;
         }
-    #ifndef PLATFORM_GP2X
-        sjSTATUS isQuit()const{return Quit;}
-    #endif
+
+        sjSTATUS isQuit()const{return players[player].Quit;}
+
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
         /// GP2X Buttons
-        sjSTATUS isClick()const{return Click;}
-        sjSTATUS isVolumeUp()const{return VolumeUp;}
-        sjSTATUS isVolumeDown()const{return VolumeDown;}
-        sjSTATUS isUpLeft()const{return UpLeft;}
-        sjSTATUS isUpRight()const{return UpRight;}
-        sjSTATUS isDownLeft()const{return DownLeft;}
-        sjSTATUS isDownRight()const{return DownRight;}
+        sjSTATUS isClick()const{return players[player].Click;}
+        sjSTATUS isVolumeUp()const{return players[player].VolumeUp;}
+        sjSTATUS isVolumeDown()const{return players[player].VolumeDown;}
+        sjSTATUS isUpLeft()const{return players[player].UpLeft;}
+        sjSTATUS isUpRight()const{return players[player].UpRight;}
+        sjSTATUS isDownLeft()const{return players[player].DownLeft;}
+        sjSTATUS isDownRight()const{return players[player].DownRight;}
     #else
         sjSTATUS isUpLeft()const{return sjRELEASED;}
         sjSTATUS isUpRight()const{return sjRELEASED;}
@@ -87,25 +133,25 @@ class SimpleJoy
         sjSTATUS isKey(CRstring k)
         {
             KeyMapKey t(k);
-            for(int i = storeKeys.size()-1; i>=0;--i)
+            for(int i = players[player].storeKeys.size()-1; i>=0;--i)
             {
-                if(t.getKey() == storeKeys.at(i).key.getKey())
-                    return storeKeys.at(i).status;
+                if(t.getKey() == players[player].storeKeys.at(i).key.getKey())
+                    return players[player].storeKeys.at(i).status;
             }
         }
         string isKeyLetter();
 
         /// Joystick
-        void setDeadZone(const Vector2di& zone){deadZone = zone;}
-        void setDeadZoneX(CRint x){deadZone.x = x;}
-        void setDeadZoneY(CRint y){deadZone.y = y;}
-        void setScaler(CRfloat s){scaler = s;}
-        Vector2di getLeftStick()const{return leftStick;}
-        Vector2di getRightStick()const{return rightStick;}
-        int getLeftStickX()const{return leftStick.x;}
-        int getLeftStickY()const{return leftStick.y;}
-        int getRightStickX()const{return rightStick.x;}
-        int getRightStickY()const{return rightStick.y;}
+        void setDeadZone(const Vector2di& zone){players[player].deadZone = zone;}
+        void setDeadZoneX(CRint x){players[player].deadZone.x = x;}
+        void setDeadZoneY(CRint y){players[player].deadZone.y = y;}
+        void setScaler(CRfloat s){players[player].scaler = s;}
+        Vector2di getLeftStick()const{return players[player].leftStick;}
+        Vector2di getRightStick()const{return players[player].rightStick;}
+        int getLeftStickX()const{return players[player].leftStick.x;}
+        int getLeftStickY()const{return players[player].leftStick.y;}
+        int getRightStickX()const{return players[player].rightStick.x;}
+        int getRightStickY()const{return players[player].rightStick.y;}
 
         /// Joystick logical
         sjSTATUS isLeftStick()const
@@ -118,25 +164,25 @@ class SimpleJoy
         }
         sjSTATUS isLeftStickUp()const
         {
-            if(getLeftStickY() < -deadZone.y)
+            if(getLeftStickY() < -players[player].deadZone.y)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isLeftStickDown()const
         {
-            if(getLeftStickY() > deadZone.y)
+            if(getLeftStickY() > players[player].deadZone.y)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isLeftStickLeft()const
         {
-            if(getLeftStickX() < -deadZone.x)
+            if(getLeftStickX() < -players[player].deadZone.x)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isLeftStickRight()const
         {
-            if(getLeftStickX() > deadZone.x)
+            if(getLeftStickX() > players[player].deadZone.x)
                 return sjHELD;
             return sjRELEASED;
         }
@@ -151,44 +197,44 @@ class SimpleJoy
         }
         sjSTATUS isRightStickUp()const
         {
-            if(getRightStickY() < -deadZone.y)
+            if(getRightStickY() < -players[player].deadZone.y)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isRightStickDown()const
         {
-            if(getRightStickY() > deadZone.y)
+            if(getRightStickY() > players[player].deadZone.y)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isRightStickLeft()const
         {
-            if(getRightStickX() < -deadZone.x)
+            if(getRightStickX() < -players[player].deadZone.x)
                 return sjHELD;
             return sjRELEASED;
         }
         sjSTATUS isRightStickRight()const
         {
-            if(getRightStickX() > deadZone.x)
+            if(getRightStickX() > players[player].deadZone.x)
                 return sjHELD;
             return sjRELEASED;
         }
 
         /// Mouse
-        Vector2di getMouse()const{return mouse;}
-        int getMouseX()const{return mouse.x;}
-        int getMouseY()const{return mouse.y;}
-        Vector2di getMouseDelta()const{return mouse-oldMouse;}
-        int getMouseDeltaX()const{return mouse.x-oldMouse.x;}
-        int getMouseDeltaY()const{return mouse.y-oldMouse.y;}
+        Vector2di getMouse()const{return players[player].mouse;}
+        int getMouseX()const{return players[player].mouse.x;}
+        int getMouseY()const{return players[player].mouse.y;}
+        Vector2di getMouseDelta()const{return players[player].mouse-players[player].oldMouse;}
+        int getMouseDeltaX()const{return players[player].mouse.x-players[player].oldMouse.x;}
+        int getMouseDeltaY()const{return players[player].mouse.y-players[player].oldMouse.y;}
 
-        sjSTATUS isLeftClick()const{return leftClick;}
-        sjSTATUS isRightClick()const{return rightClick;}
+        sjSTATUS isLeftClick()const{return players[player].leftClick;}
+        sjSTATUS isRightClick()const{return players[player].rightClick;}
         /// TouchScreen - Just a wrapper to mouse
-        Vector2di getTouch()const{return mouse;}
-        int getTouchX()const{return mouse.x;}
-        int getTouchY()const{return mouse.y;}
-        sjSTATUS isTouch()const{return leftClick;}
+        Vector2di getTouch()const{return players[player].mouse;}
+        int getTouchX()const{return players[player].mouse.x;}
+        int getTouchY()const{return players[player].mouse.y;}
+        sjSTATUS isTouch()const{return players[player].leftClick;}
 
 		void clearEventQueue();
         void resetKeys();
@@ -212,29 +258,10 @@ class SimpleJoy
         void mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis);
         void mappedJoyAxes(const SIMPLEJOY_MAP& map);
 
-        sjSTATUS Start, Select, Up, Down, Left, Right, A, B, X, Y, L, R;
-        struct tKey
-        {
-            KeyMapKey key;
-            sjSTATUS status;
-        };
-        vector <tKey> storeKeys;
-    #ifndef PLATFORM_GP2X
-        sjSTATUS Quit;
-    #endif
-        Vector2di deadZone;
-        float scaler;
-        Vector2di leftStick;
-        Vector2di rightStick;
-        Vector2di mouse;
-        Vector2di oldMouse;
-        sjSTATUS leftClick, rightClick;
-
-    #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        sjSTATUS Click, VolumeUp, VolumeDown,UpLeft, UpRight, DownLeft, DownRight;
-    #endif
-        KeyMapper mapper;
-        bool mapLoaded;
+        //  This object stores a keymapping and button status for each Player
+        Player* players;
+        size_t numPlayers;
+        uint player;
 
     #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         #define DEV_NUBL 0

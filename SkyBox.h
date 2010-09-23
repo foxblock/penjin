@@ -23,6 +23,8 @@ class SkyBox
         //  render the skybox to the scene before you set your camera
         void render();
 
+        void refresh();
+
     private:
         Texture textures[6];
         int currentTexture;
@@ -30,6 +32,8 @@ class SkyBox
         float TEX_MAX;
         Vector3df target;
         Vector3df rotation;
+        vector<Point3df> vertices;
+        vector<Point2df> texCoords;
 };
 
 #endif // SKYBOX_H

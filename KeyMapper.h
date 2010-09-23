@@ -42,7 +42,7 @@ class KeyMapper
 
 
         PENJIN_ERRORS loadControlMap(CRstring filename);    //  Save and load the actual mapping
-        PENJIN_ERRORS loadControlMap(vector<string> lines);
+        PENJIN_ERRORS loadControlMap(const vector<string>& lines);
         PENJIN_ERRORS saveControlMap(CRstring filename);
 
         PENJIN_ERRORS saveParserConfig(CRstring filename);  //  Save the parser validation file
@@ -50,6 +50,9 @@ class KeyMapper
         void loadDefaultMap(){defaultMap();}
         std::vector <KeyMap*> keys;
     private:
+        // Disabled to prevent double freed pointers.
+        KeyMapper(const KeyMapper& BlingRef);
+        KeyMapper& operator=(const KeyMapper& BlingRef);
         PENJIN_ERRORS mapMouse(CRuchar id);
         PENJIN_ERRORS mapJoy(CRuchar id);
         PENJIN_ERRORS mapKey(CRuchar id);

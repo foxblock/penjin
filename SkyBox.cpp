@@ -47,6 +47,11 @@ int SkyBox::loadTexture(CRint i, CRstring file)
     return fileLoaded;
 }
 
+void SkyBox::refresh()
+{
+
+}
+
 void SkyBox::render()
 {
     glDisable(GL_DEPTH_TEST);
