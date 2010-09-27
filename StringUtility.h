@@ -55,7 +55,7 @@ namespace StringUtility
         long stringToLong(CRstring value);
         int stringToInt(CRstring value);
         short stringToShort(CRstring value);
-        bool stringToBool(CRstring value, CRbool useBoolString=true);
+        bool stringToBool(CRstring value);
 
         ///	Case modifyers
         string upper(string word);
