@@ -16,7 +16,8 @@ KeyMapKey::KeyMapKey(CRstring k)
     setKey(k);
 }
 
-#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+// && (defined(PENJIN_ES) || defined(PENJIN_ES2))
     KeyMapKey::KeyMapKey(__u16 k)
 #else
     KeyMapKey::KeyMapKey(SDLKey k)
@@ -35,7 +36,8 @@ KeyMapKey::~KeyMapKey()
 
 void KeyMapKey::setKey(CRstring k)
 {
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         if(k == "0")
             key=KEY_0;
         else if(k == "1")
@@ -92,8 +94,9 @@ void KeyMapKey::setKey(CRstring k)
             key=KEY_D;
         else if(k == "DELETE")
             key=KEY_DELETE;
-        else if(k == "$")
-            key=KEY_DOLLAR;
+// TODO: this should compile just fine, but doesn't for some reason.  Perhaps my input.h is out of date
+//        else if(k == "$")
+//            key=KEY_DOLLAR;
         else if(k == "DOWN")
             key=KEY_DOWN;
         else if(k == "e" || k == "E")
@@ -104,8 +107,9 @@ void KeyMapKey::setKey(CRstring k)
             key=KEY_EQUALS;*/
         else if(k == "ESCAPE")
             key=KEY_ESC;
-        else if(k == "EURO")
-            key=KEY_EURO;
+// TODO: this should compile just fine, but doesn't for some reason.  Perhaps my input.h is out of date
+//        else if(k == "EURO")
+//            key=KEY_EURO;
         /*else if(k == "!")
             key=KEY_EXCLAIM;*/
         else if(k == "f" || k == "F")
