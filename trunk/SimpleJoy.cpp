@@ -5,7 +5,8 @@
 
 SimpleJoy::~SimpleJoy()
 {
-#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+// && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 	if( fd_nubL > 0 )
 		close(fd_nubL );
 	if( fd_nubR > 0 )
@@ -18,14 +19,24 @@ SimpleJoy::~SimpleJoy()
         close(fd_touch);
 #else
     if(Joy)
-        SDL_JoystickClose(0);
+    {
+    	int i = 0;
+        SDL_Joystick **temp = Joy;
+        while (*temp) {
+            SDL_JoystickClose(*temp);
+            ++i;
+            ++temp;
+        }
+        Joy = NULL;
+    }
 #endif
     delete [] players;
 }
 
 SimpleJoy::SimpleJoy()
 {
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         // Open Pandora analog nub's
         fd_nubL = PND_OpenEventDeviceByName(PND_NUBL);
         fd_nubR = PND_OpenEventDeviceByName(PND_NUBR);
@@ -74,9 +85,13 @@ SimpleJoy::SimpleJoy()
         SDL_JoystickEventState(SDL_ENABLE);
 
        /* Check and open joystick device */
-        if (SDL_NumJoysticks() > 0) {
-            Joy = SDL_JoystickOpen(0);
-            if(!Joy) {
+       // New code magic opens multiple joysticks.  Unlock multiple simultaneous players, or dual stick single player
+        int i = SDL_NumJoysticks();
+        Joy = new SDL_Joystick*[i+1];
+        Joy[i] = NULL;
+        for (int count = 0; count < i; ++count) {
+            Joy[count] = SDL_JoystickOpen(count);
+            if(!Joy[count]) {
                 //cout << ErrorHandler().getErrorString();
             }
         }
@@ -103,7 +118,8 @@ void SimpleJoy::update()
         players[player].mapLoaded = true;
     }
     players[player].storeKeys.clear();
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         /// Read Pandora inputs
         PND_ReadEvents( fd_keys, DEV_KEYS );
         PND_ReadEvents( fd_gpio, DEV_GPIO );
@@ -170,11 +186,18 @@ void SimpleJoy::update()
                 }
                 else if(device == DEV_JOYSTICK_AXIS)
                 {
+                	// Assume 2 axis per stick
+                	// TODO: never assume...
+                	int axis = Event.jaxis.which*2 + Event.jaxis.axis;
+                	#if defined(PLATFORM_PANDORA)
+                	axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
+                	#endif
                     // Axis may be changed
-                    if(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                    if(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
                     {
-                        if(Event.type == SDL_JOYAXISMOTION)
+                        if(Event.type == SDL_JOYAXISMOTION) {
                             mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
+                        }
                     }
                 }
                 else if (device == DEV_JOYSTICK_HAT)
@@ -189,15 +212,21 @@ void SimpleJoy::update()
                 }
                 else if (device == DEV_DIGITAL_JOYSTICK_AXIS)
                 {
-                    if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == Event.jaxis.axis)
+                	// Assume 2 axis per stick
+                	// TODO: never assume...
+                	int axis = Event.jaxis.which*2 + Event.jaxis.axis;
+                	#if defined(PLATFORM_PANDORA)
+                	axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
+                	#endif
+                    if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
                     {
                         #ifdef _DEBUG
-                        cout << "DAXIS: " << Event.jaxis.value << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
+                        cout << "DAXIS: " << (Event.jaxis.value >> 8) << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
                         #endif
                         if(Event.type == SDL_JOYAXISMOTION)
                         {
 
-                            if(Event.jaxis.value == ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger())
+                            if((Event.jaxis.value >> 8) == ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger())
                                 mappedDown(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
                             else
                                 mappedUp(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
@@ -206,7 +235,10 @@ void SimpleJoy::update()
                 }
                 else if(device == DEV_JOYSTICK_BUTTON)
                 {
-                    if(((KeyMapJoyButton*)players[player].mapper.keys[b])->getButton() == Event.jbutton.button)
+                	// Assume 16 buttons per joystick
+                	// TODO: never assume...
+                	int button = Event.jbutton.which*16+Event.jbutton.button;
+                    if(((KeyMapJoyButton*)players[player].mapper.keys[b])->getButton() == button)
                     {
                         // Buttons may have been pressed
                         if(Event.type == SDL_JOYBUTTONDOWN)
@@ -238,33 +270,41 @@ void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+        #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+        // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = (ev[currentEvent].value >> 1) * players[player].scaler;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = (ev[currentEvent].value >> 1) * players[player].scaler;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = (ev[currentEvent].value >> 1) * players[player].scaler;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = (ev[currentEvent].value >> 1) * players[player].scaler;break;
+//                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += Event.jaxis.value * players[player].scaler;break;
+//                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += Event.jaxis.value * players[player].scaler;break;
 
         #else
             #ifdef PENJIN_FIXED
-                case SJ_LEFTSTICK_X:    players[player].leftStick.x = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
-                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
-                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
-                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
-                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
-                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += fixedpoint::fix2int(Event.jaxis.value * players[player].scaler);break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += fixedpoint::fix2int((Event.jaxis.value >> 8) * players[player].scaler);break;
 
             #else
-                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.jaxis.value * players[player].scaler;break;
-                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.jaxis.value * players[player].scaler;break;
-                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.jaxis.value * players[player].scaler;break;
-                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.jaxis.value * players[player].scaler;break;
-                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += Event.jaxis.value * players[player].scaler;break;
-                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += Event.jaxis.value * players[player].scaler;break;
+                case SJ_LEFTSTICK_X:    players[player].leftStick.x = (Event.jaxis.value >> 8) * players[player].scaler;break;
+                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = (Event.jaxis.value >> 8) * players[player].scaler;break;
+                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = (Event.jaxis.value >> 8) * players[player].scaler;break;
+                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = (Event.jaxis.value >> 8) * players[player].scaler;break;
+                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x += (Event.jaxis.value >> 8) * players[player].scaler;break;
+                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y += (Event.jaxis.value >> 8) * players[player].scaler;break;
             #endif
         #endif
-        default:                break;
+        default: cout << "Unknown joystick mapping: " << map << endl; break;
     }
 }
 
 void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
 {
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 /*  -13868 53 54178276 43 -8681 32884616 65536
     This implementation is a linear transformation using 7 parameters (a, b, c, d, e, f and s)
     to transform the device coordinates (Xd, Yd) into screen coordinates (Xs, Ys) using the following equations:
@@ -504,7 +544,8 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
 
 void SimpleJoy::clearEventQueue()
 {
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 
     #else
         SDL_Event event;
@@ -535,6 +576,7 @@ void SimpleJoy::resetKeys()
 }
 void SimpleJoy::resetDpad()
 {
+
     clearEventQueue();
     players[player].Up=players[player].Down=players[player].Left=players[player].Right=sjRELEASED;
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
@@ -574,22 +616,28 @@ void SimpleJoy::resetR()
 
 void SimpleJoy::joystickStatus()
 {
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 
     #else
-        std::cout << "Penjin found " << SDL_NumJoysticks() << " joysticks!\n";
-        for(int i=0 ; i<SDL_NumJoysticks() ; i++)
-        {
-            std::cout << SDL_JoystickName(i) << "\n";
-            std::cout << "Axis:\t\t" << SDL_JoystickNumAxes(Joy) << "\n";
-            std::cout << "Trackballs:\t" << SDL_JoystickNumBalls(Joy) << "\n";
-            std::cout << "Hats:\t\t" << SDL_JoystickNumHats(Joy) << "\n";
-            std::cout << "Buttons:\t" << SDL_JoystickNumButtons(Joy) << "\n";
+        std::cout << "Penjin found " << SDL_NumJoysticks() << " joysticks!" << std::endl;
+    	int i = 0;
+        SDL_Joystick **temp = Joy;
+        while (*temp != NULL) {
+        	std::cout << "Joystick #" << i << std::endl;
+            std::cout << SDL_JoystickName(i) << std::endl;
+            std::cout << "Axis:\t\t" << SDL_JoystickNumAxes(*temp) << std::endl;
+            std::cout << "Trackballs:\t" << SDL_JoystickNumBalls(*temp) << std::endl;
+            std::cout << "Hats:\t\t" << SDL_JoystickNumHats(*temp) << std::endl;
+            std::cout << "Buttons:\t" << SDL_JoystickNumButtons(*temp) << std::endl;
+            ++i;
+            ++temp;
         }
     #endif
 }
 
-#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+// && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 int SimpleJoy::PND_OpenEventDeviceByName( const char device_name[] )
 {
 	int fd;
@@ -638,7 +686,7 @@ void SimpleJoy::PND_ReadEvents( int fd, int device )
         haveTSy = false;
         rawTS.x = 0;
         rawTS.y = 0;
-		if (rd > (int) sizeof(struct input_event))
+		if (rd >= (int) sizeof(struct input_event))
 		{
 			for (i = 0; i < rd / (int) sizeof(struct input_event); i++)
 			{
