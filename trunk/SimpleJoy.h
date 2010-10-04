@@ -5,7 +5,8 @@
 #include "KeyMapper.h"
 #include <iostream>
 
-#if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+// && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 #include <fstream>
 #endif
 using std::cout;
@@ -248,7 +249,8 @@ class SimpleJoy
 
         /// Status
         void joystickStatus();
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         int getTouchPressure(){return ts_pressure;}
     #endif
 
@@ -263,7 +265,8 @@ class SimpleJoy
         size_t numPlayers;
         uint player;
 
-    #if defined(PLATFORM_PANDORA) && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
         #define DEV_NUBL 0
         #define DEV_NUBR 1
         #define DEV_KEYS 2
@@ -297,7 +300,7 @@ class SimpleJoy
         // KEV nub code
         //void MappedNubAxes(const SIMPLEJOY_MAP& map, CRint axis);
     #else
-        SDL_Joystick *Joy;		//	SDL joystick
+        SDL_Joystick **Joy;		//	SDL joysticks
         SDL_Event Event;
     #endif
 };
