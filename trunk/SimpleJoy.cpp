@@ -102,6 +102,7 @@ SimpleJoy::SimpleJoy()
     //scaler = 1.0f;
     //mapLoaded = false;
     player = 0;
+    players = NULL;
     numPlayers = 0;
     setNumPlayers(player+1);
     resetKeys();
