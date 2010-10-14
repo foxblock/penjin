@@ -34,9 +34,6 @@ void StateTitle::initMenu()
     const int spacing = 0;
     menu.setSpacing(spacing);
     menu.setHorizontalOffset(110);
-    #ifdef PENJIN_SDL
-        menu.setUseHardware(true);
-    #endif
     menu.addItem(MENU_STRING_ITEM);
     menu.setIsSelectable(true);
     menu.setMenuItemText("Animation Test");
