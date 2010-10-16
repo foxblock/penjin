@@ -88,7 +88,7 @@ class AnimatedSprite
             void setRotation(CRfloat angle){image.setRotation(angle);}
         #endif
         #ifdef PENJIN_SDL
-            void setUseHardware(CRbool useHW){image.setUseHardware(useHW);}
+            //void setUseHardware(CRbool useHW){image.setUseHardware(useHW);}
         #else
             #ifdef PENJIN_3D
                 void setScale(const Vector3df& scaleVec){image.setScale(scaleVec);}

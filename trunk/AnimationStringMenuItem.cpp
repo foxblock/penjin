@@ -41,8 +41,6 @@ void AnimationStringMenuItem::update()
         anim.render(screen);
         text.render();
     }
-
-    void AnimationStringMenuItem::setUseHardware(CRbool use){anim.setUseHardware(use);}
 #else
     void AnimationStringMenuItem::render()
     {

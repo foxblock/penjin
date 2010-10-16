@@ -72,15 +72,6 @@ Emitter::~Emitter()
     }
 }
 
-#ifdef PENJIN_SDL
-void Emitter::setUseHardware(CRbool use)
-{
-    if(sprite)
-        sprite->setUseHardware(use);
-    else if(animSprite)
-        animSprite->setUseHardware(use);
-}
-#endif
 PENJIN_ERRORS Emitter::loadSprite(CRstring filename)
 {
     if(sprite)
@@ -120,9 +111,6 @@ PENJIN_ERRORS Emitter::loadAnimatedSprite(CRstring filename)
     }
 
     animSprite = new AnimatedSprite;
-    #ifdef PENJIN_SDL
-        animSprite->setUseHardware(true);
-    #endif
     animSprite->setFrameRate(FIFTEEN_FRAMES);
     animSprite->setLooping(true);
 
@@ -152,9 +140,6 @@ PENJIN_ERRORS Emitter::loadAnimatedSprites(CRstring fileName,CRuint xTiles,CRuin
     }
 
     animSprite = new AnimatedSprite;
-    #ifdef PENJIN_SDL
-        animSprite->setUseHardware(true);
-    #endif
     animSprite->setFrameRate(FIFTEEN_FRAMES);
     animSprite->setLooping(true);
 
