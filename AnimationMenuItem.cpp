@@ -80,13 +80,6 @@ void AnimationMenuItem::update()
             selection->render(screen);
         }
     }
-
-    void AnimationMenuItem::setUseHardware(CRbool use)
-    {
-        anim.setUseHardware(use);
-        if(selection)
-            selection->setUseHardware(use);
-    }
 #else
     void AnimationMenuItem::render()
     {

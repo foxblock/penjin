@@ -422,25 +422,6 @@ void Menu::setSelectionIndicator(CRchar c)
     for(int i = menuItems.size()-1; i>=0; --i)
         setSelectionIndicator(i,c);
 }
-
-#ifdef PENJIN_SDL
-    void Menu::setUseHardware(CRbool use)
-    {
-        for(int i = menuItems.size()-1; i >=0; --i)
-        {
-            MENU_TYPES type = menuItems[i]->getType();
-            if(type == MENU_IMAGE_ITEM)
-                ((ImageMenuItem*)menuItems[i])->setUseHardware(use);
-            else if(type == MENU_IMAGE_STRING_ITEM)
-                ((ImageStringMenuItem*)menuItems[i])->setUseHardware(use);
-            else if(type == MENU_ANIM_ITEM)
-                ((AnimationMenuItem*)menuItems[i])->setUseHardware(use);
-            else if(type == MENU_ANIM_STRING_ITEM)
-                ((AnimationStringMenuItem*)menuItems[i])->setUseHardware(use);
-        }
-    }
-#endif
-
 #ifdef PENJIN_3D
  void Menu::setMenuItemDimensions(CRuint i,const Vector2di& dims){menuItems[i]->setDimensions(dims);}
 #endif
