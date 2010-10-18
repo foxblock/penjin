@@ -40,8 +40,9 @@ class FileLister : public Menu
 
         string getPath()const{return workingDir;}
         void setPath(CRstring path){workingDir = path;}
+        void setCheckFolderDepth(CRbool check){;}
         string getSelected();      //  Return the string of selected item
-        vector<string> getListing();//  Return entire director listing as a vector of strings.
+        vector<string> getListing(){return listing;}//  Return entire director listing as a vector of strings.
         string enter();             //  Enter the selected item(if directory) and return full path string of item.
         void goUp();                //  Go up one level in the directory tree
 
@@ -54,6 +55,7 @@ class FileLister : public Menu
 
         string workingDir;
         int folderDepth;
+        bool checkFolderDepth;
         vector<string> listing;
         vector<string> filters;
         enum DIR_TYPES
