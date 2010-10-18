@@ -10,6 +10,7 @@ FileLister::FileLister()
     delete [] temp;
     createListing();
     folderDepth = -1;
+    checkFolderDepth = true;
 }
 
 FileLister::FileLister(CRstring startDir)
@@ -17,6 +18,7 @@ FileLister::FileLister(CRstring startDir)
     workingDir = startDir;
     createListing();
     folderDepth = -1;
+    checkFolderDepth = true;
 }
 
 FileLister::~FileLister()
@@ -156,7 +158,7 @@ string FileLister::enter()
 
 void FileLister::goUp()
 {
-    if(folderDepth>=0)
+    if(folderDepth>=0 || !checkFolderDepth)
     {
         workingDir = Parser().getParentDirectory(workingDir);
         size_t back = workingDir.size()-1;
