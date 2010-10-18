@@ -59,7 +59,7 @@ void AchievementList::load(CRstring value)
     {
         for (uint I = 0; I < doneEvents.size() && I < value.length(); ++I)
         {
-            bool temp = StringUtility::stringToBool(value.substr(I,1),false);
+            bool temp = StringUtility::stringToBool(value.substr(I,1));
             doneEvents.at(I) = temp;
             if (temp)
                 ++doneCount;
