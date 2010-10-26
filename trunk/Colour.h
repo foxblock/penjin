@@ -49,6 +49,9 @@ class Colour
 			alpha = colour.alpha;
         }
         Colour (CRint rgb){setColour(rgb);}
+        // OpenGL type colour
+        Colour(CRfloat r,CRfloat g,CRfloat b,CRfloat a){setColour(r,g,b,a);}
+        Colour(CRfloat r,CRfloat g,CRfloat b){setColour(r,g,b,1.0f);}
 
         // OpenGL type colour
         void setColour(CRfloat r,CRfloat g,CRfloat b,CRfloat a);
