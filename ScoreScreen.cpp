@@ -57,7 +57,7 @@ void ScoreScreen::init()
 	emit[2].setLifeTime(1100);
 	emit[2].setMaxVelocity(Vector2df(4.5f,4.5f));
 	emit[2].setDeviation(0.05f);
-    emit[2].setColour(Colour(128,128,255));
+    emit[2].setColour(Colour((uchar)128,128,255));
 
     /// PreUpdate emitters
     for(int i = emit.size()-1;i >=0; --i)
