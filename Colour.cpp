@@ -11,7 +11,7 @@ void Colour::setColour(const uchar& r,const uchar& g,const uchar& b,const uchar&
     #endif
 }
 
-void Colour::setColour(CRfloat r, CRfloat g, CRfloat b, CRfloat a)
+void Colour::setOGLColour(CRfloat r, CRfloat g, CRfloat b, CRfloat a)
 {
     #ifdef PENJIN_FIXED
         red = fixedpoint::fix2int(r);
