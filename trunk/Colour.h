@@ -40,6 +40,9 @@ class Colour
         Colour(const SDL_Color& c){setColour(c.r,c.g,c.b);}
         Colour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b);}
         Colour(const uchar& r,const uchar& g,const uchar& b,const uchar& a){setColour(r,g,b,a);}
+        // the following two are necessary, because gcc does not know whether to convert int to uchar or float
+        Colour(CRint r,CRint g,CRint b){setColour(r,g,b);}
+        Colour(CRint r,CRint g,CRint b,CRint a){setColour(r,g,b,a);}
         Colour(const PENJIN_COLOURS& colour){setColour(colour);}
         Colour(const Colour& colour)                    // Create a colour using another colour
         {
@@ -49,13 +52,12 @@ class Colour
 			alpha = colour.alpha;
         }
         Colour (CRint rgb){setColour(rgb);}
-        // OpenGL type colour
-        Colour(CRfloat r,CRfloat g,CRfloat b,CRfloat a){setColour(r,g,b,a);}
-        Colour(CRfloat r,CRfloat g,CRfloat b){setColour(r,g,b,1.0f);}
 
         // OpenGL type colour
-        void setColour(CRfloat r,CRfloat g,CRfloat b,CRfloat a);
-        void setColour(CRfloat r,CRfloat g,CRfloat b){setColour(r,g,b,1.0f);}
+        Colour(CRfloat r,CRfloat g,CRfloat b,CRfloat a){setOGLColour(r,g,b,a);}
+        Colour(CRfloat r,CRfloat g,CRfloat b){setOGLColour(r,g,b,1.0f);}
+        void setOGLColour(CRfloat r,CRfloat g,CRfloat b,CRfloat a);
+        void setOGLColour(CRfloat r,CRfloat g,CRfloat b){setOGLColour(r,g,b,1.0f);}
 
         //  Normal colours
         void setColour(const Colour& c){setColour(c.red,c.green,c.blue,c.alpha);}
