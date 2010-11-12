@@ -177,7 +177,13 @@ class Image
             // get a pixel
             Colour getPixel(CRint x,CRint y)const{return GFX::getPixel(images.at(0).first,x,y);}
             Colour getPixel(CRuint i,CRint x,CRint y)const{return GFX::getPixel(images.at(i).first,x,y);}
-            uint* getPixelArray(CRint x,CRint y)const;
+            Colour getPixelInFrame(CRint x, CRint y, CRint frame) const
+            {
+                if (sheetMode)
+                    return GFX::getPixel(images.at(0).first,x + clipAreas[frame].x,y + clipAreas[frame].y);
+                return getPixel(x,y);
+            }
+            //uint* getPixelArray(CRint x,CRint y)const;
             // check and unlock screen
             void screenUnlock();
 
