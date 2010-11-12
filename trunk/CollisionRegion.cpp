@@ -26,29 +26,29 @@ void CollisionRegion::generateHitRegion()
     if (map == NULL)
         return;
 
-    float x,y,w,h;
-    w = h = 0;
-    x = map->getWidth();
-    y = map->getHeight();
+    float l,t,r,b;
+    r = b = 0;
+    l = map->getWidth();
+    t = map->getHeight();
     // starting on the bottom left, go to the top right of the image
     // determines the smallest bounding box aroudn the colliding object
     for (float I = map->getWidth()-1; I >= 0; --I)
     {
         for (float K = map->getHeight()-1; K >= 0; --K)
         {
-            if (map->getPixel(I,K) != noCollision)
+            if (map->getPixelInFrame(I,K,0) != noCollision)
             {
-                w = max(w,I);
-                h = max(h,K);
-                x = min(x,I);
-                y = min(y,K);
+                r = max(r,I);
+                b = max(b,K);
+                l = min(l,I);
+                t = min(t,K);
             }
         }
     }
-    region.x = x;
-    region.y = y;
-    region.w = w-x+1;
-    region.h = h-y+1;
+    region.x = l;
+    region.y = t;
+    region.w = r-l+1;
+    region.h = b-t+1;
 }
 
 Colour CollisionRegion::getCollisionType(float x, float y, CRbool absolute) const
@@ -77,7 +77,8 @@ Colour CollisionRegion::getCollisionType(float x, float y, CRbool absolute) cons
         if(x < 0 || y < 0 || x >= getWidth() || y >= getHeight())
             return noCollision;
 
-        return map->getPixel(x + region.x,y + region.y);
+        // add the region offset here so we can work with getX / getY as the top / left corner pixel
+        return map->getPixelInFrame(x + region.x,y + region.y,0);
     }
 }  //  check what sort of collision has been made.
 
@@ -133,7 +134,8 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2
             for (float K = yPos; K < yPosMax; ++K)
             {
                 // if both have a collision-pixel at the same spot, we have a collision
-                if (this->hitTest(I - posObj.x,K - posObj.y,false) && tester->hitTest(I - posTester.x,K - posTester.y,false))
+                // also substract the region offset here, because hitTest works with it
+                if (this->hitTest(I - objPosX,K - objPosY,false) && tester->hitTest(I - testerPosX,K - testerPosY,false))
                     return true;
             }
         }
