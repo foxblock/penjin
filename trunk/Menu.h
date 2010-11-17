@@ -105,9 +105,6 @@ class Menu
             void setTextBgColour(const Colour& col){text->setBgColour(col);}
             void setTransparentColour(Colour c);
             Text* getTextObject() {return text;}; // use this to make advanced changes to the text, like alignment and render mode
-            #ifdef PENJIN_SDL
-                void setUseHardware(CRbool use);
-            #endif
             /// ImageMenuItem functions
             PENJIN_ERRORS loadImage(CRuint item,CRstring fileName);      //  Load an image for a specific menu item
             PENJIN_ERRORS loadImage(CRstring fileName);                //  Load an Image for the last MenuItem
