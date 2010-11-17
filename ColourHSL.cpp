@@ -153,6 +153,7 @@ Colour ColourHSL::getColourRGBA()
             else
                 tOut[i] = t1;
         }
+        return Colour(tOut[0],tOut[1],tOut[2],(float)alpha);
     #else
         uchar t1,t2;
         uchar tIn[3];
@@ -185,6 +186,7 @@ Colour ColourHSL::getColourRGBA()
             else
                 tOut[i] = t1;
         }
+        return Colour(tOut[0],tOut[1],tOut[2],alpha);
     #endif
-    return Colour(tOut[0],tOut[1],tOut[2],alpha);
+
 }

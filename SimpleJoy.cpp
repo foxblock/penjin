@@ -615,6 +615,12 @@ void SimpleJoy::resetR()
     players[player].R=sjRELEASED;
 }
 
+void SimpleJoy::resetUp()
+{
+    clearEventQueue();
+    players[player].Up=sjRELEASED;
+}
+
 void SimpleJoy::joystickStatus()
 {
     #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
