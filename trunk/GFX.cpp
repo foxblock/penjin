@@ -142,7 +142,7 @@ void GFX::renderPixelBuffer()
                 //  Blend if necesary
                 SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL,v.colour.w);
                 //  Set the colour
-                setPixel(pixel,v.vertex.x,v.vertex.y,Colour(v.colour.x,v.colour.y,v.colour.z,v.colour.w));
+                setPixel(pixel,v.vertex.x,v.vertex.y,Colour((uchar)v.colour.x,v.colour.y,v.colour.z,v.colour.w));
                 SDL_Rect d;
                 d.x = v.vertex.x;
                 d.y = v.vertex.y;
@@ -577,11 +577,11 @@ SDL_Surface* GFX::getVideoSurface()
                     if(colour == 0)
                         setPixel(screen,i,j,BLACK);
                     else if(colour == 1)
-                        setPixel(screen,i,j,Colour(64,64,64));
+                        setPixel(screen,i,j,Colour((uchar)64,64,64));
                     else if(colour == 2)
-                        setPixel(screen,i,j,Colour(128,128,128));
+                        setPixel(screen,i,j,Colour((uchar)128,128,128));
                     else if(colour == 3)
-                        setPixel(screen,i,j,Colour(196,196,196));
+                        setPixel(screen,i,j,Colour((uchar)196,196,196));
                     else if(colour == 4)
                         setPixel(screen,i,j,WHITE);
                 }
@@ -600,11 +600,11 @@ SDL_Surface* GFX::getVideoSurface()
                         if(colour == 0)
                             setPixel(screen,i,j,BLACK);
                         else if(colour == 1)
-                            setPixel(screen,i,j,Colour(64,64,64));
+                            setPixel(screen,i,j,Colour((uchar)64,64,64));
                         else if(colour == 2)
-                            setPixel(screen,i,j,Colour(128,128,128));
+                            setPixel(screen,i,j,Colour((uchar)128,128,128));
                         else if(colour == 3)
-                            setPixel(screen,i,j,Colour(196,196,196));
+                            setPixel(screen,i,j,Colour((uchar)196,196,196));
                         else if(colour == 4)
                             setPixel(screen,i,j,WHITE);
                     }

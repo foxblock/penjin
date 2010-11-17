@@ -239,7 +239,10 @@ class SimpleJoy
 
 		void clearEventQueue();
         void resetKeys();
+
         void resetDpad();
+        void resetUp();
+
         void resetA();
         void resetB();
         void resetX();
