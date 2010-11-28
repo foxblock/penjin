@@ -7,6 +7,7 @@ Menu::Menu()
     #endif
     currentSelection = 0;
     correction = 0;
+    continuous = true;
     #ifdef PENJIN_3D
         menu3D = false;
         angle = 0.0f;
@@ -116,8 +117,21 @@ bool Menu::setMouseSelection(CRint x,CRint y)
 void Menu::menuUp()
 {
     int I = 1;
-    while (currentSelection - I >= 0)
+    while (currentSelection - I >= -1)
     {
+        if (currentSelection - I == -1)
+        {
+            if (continuous)
+            {
+                currentSelection = (int)menuItems.size();
+                I = 1;
+            }
+            else
+            {
+                currentSelection = 0;
+                return;
+            }
+        }
         if (menuItems[currentSelection - I]->getIsSelectable())
         {
             currentSelection -= I;
@@ -131,8 +145,21 @@ void Menu::menuUp()
 void Menu::menuDown()
 {
     int I = 1;
-    while (currentSelection + I < (int)menuItems.size())
+    while (currentSelection + I <= (int)menuItems.size())
     {
+        if (currentSelection + I == (int)menuItems.size())
+        {
+            if (continuous)
+            {
+                currentSelection = -1;
+                I = 1;
+            }
+            else
+            {
+                currentSelection = (int)menuItems.size() - 1;
+                return;
+            }
+        }
         if (menuItems[currentSelection + I]->getIsSelectable())
         {
             currentSelection += I;

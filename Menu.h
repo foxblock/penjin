@@ -39,6 +39,9 @@ class Menu
         void menuUp();
         void menuDown();
 
+        bool getContinuous() const {return continuous;}
+        void setContinuous (CRbool value) {continuous = value;}
+
         /// Report active selection
         int getSelection()
         {
@@ -159,6 +162,7 @@ class Menu
 
         int currentSelection;               //  Stores the current selection of the menu
         int correction;
+        bool continuous;
 };
 
 #endif // MENU_H_INCLUDED
