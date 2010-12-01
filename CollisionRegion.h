@@ -1,3 +1,21 @@
+/*
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+
+	This file is part of Penjin.
+
+	Penjin is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Penjin is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public License
+	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #ifndef COLLISIONREGION_H
 #define COLLISIONREGION_H
 
@@ -33,17 +51,27 @@ class CollisionRegion
 public:
     CollisionRegion();
     ~CollisionRegion();
+    void createMap()
+    {
+        if (map == NULL)
+            map = new Image;
+    }
 
     PENJIN_ERRORS loadImage(CRstring image)
     {
-        if (map == NULL)
-            map = new Image;
+        createMap();
         return map->loadImageNoKey(image);
     }
+
+    PENJIN_ERRORS loadImage(CRstring image,CRuint xTiles,CRuint yTiles)
+    {
+        createMap();
+        return map->loadImageSheetNoKey(image,xTiles,yTiles);
+    }
+
     PENJIN_ERRORS loadImage(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles)
     {
-        if (map == NULL)
-            map = new Image;
+        createMap();
         return map->loadImageSheetNoKey(surface,xTiles,yTiles,skipTiles,1);
     }
     // deletes the image, but preserves the region, call resetHitRegion to delete that, too
