@@ -20,7 +20,7 @@
 // template functions implementation
 //----------------------
 ///----------------------
-/// Analysis
+/// Sign
 ///----------------------
 
 template <class T>
@@ -29,6 +29,17 @@ int NumberUtility::sign(const T& value)
     return (value > 0) - (0 > value);
 }
 
+template <class T>
+T NumberUtility::makePositive(const T& value)
+{
+    return abs(value);
+}
+
+template <class T>
+T NumberUtility::makeNegative(const T& value)
+{
+    return - abs(value);
+}
 ///----------------------
 /// Statistics
 ///----------------------

@@ -18,6 +18,65 @@
 */
 #include "Parser.h"
 
+Parser::Parser()
+{
+    ini = NULL;
+    ini = new CSimpleIniA;
+}
+
+Parser::~Parser()
+{
+    delete ini;
+}
+
+PENJIN_ERRORS Parser::iniGetError(CRint error)
+{
+        /*    SI_FAIL     = -1,   //!< Generic failure
+    SI_NOMEM    = -2,   //!< Out of memory error
+    SI_FILE     = -3    //!< File error (see errno for detail error)*/
+    if(error<0)
+    {
+        if(error==-1)
+            return PENJIN_ERROR;
+        else if(error==-2)
+            return PENJIN_ERROR;
+        else
+            return PENJIN_FILE_NOT_FOUND;
+    }
+    return PENJIN_OK;
+}
+
+PENJIN_ERRORS Parser::load(CRstring file)
+{
+    return iniGetError(ini->LoadFile(file.c_str()));
+}
+
+PENJIN_ERRORS Parser::save(CRstring file)
+{
+    return iniGetError(ini->SaveFile(file.c_str()));
+}
+
+string Parser::getValue(CRstring section, CRstring key)
+{
+    return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
+}
+
+void Parser::setValue(CRstring section, CRstring key, CRstring value)
+{
+    ini->SetValue(section.c_str(),key.c_str(),value.c_str());
+}
+
+void Parser::removeValue(CRstring section, CRstring key)
+{
+    ini->Delete(section.c_str(),key.c_str(),true);
+}
+
+void Parser::removeSection(CRstring section)
+{
+    ini->Delete(section.c_str(),NULL);
+}
+
+/// DEPRECATED
 Command Parser::getNextCommand()
 {
 	Command temp;

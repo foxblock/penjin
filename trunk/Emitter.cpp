@@ -17,6 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Emitter.h"
+#include "CollisionRegion.h"
 
 Emitter::Emitter()
 {
@@ -55,6 +56,11 @@ Emitter::Emitter()
 
     particles = NULL;
     invisible = 0;
+    partCol = NULL;
+    partCol = new CollisionRegion;
+    partCol->setPosition(0,0);
+    partCol->setWidth(1);
+    partCol->setHeight(1);
     #ifdef PENJIN_SDL
         screen = GFX::getVideoSurface();
     #endif
@@ -88,6 +94,7 @@ Emitter::~Emitter()
         delete [] particles;
         particles = NULL;
     }
+    delete partCol;
 }
 
 PENJIN_ERRORS Emitter::loadSprite(CRstring filename)
@@ -99,9 +106,7 @@ PENJIN_ERRORS Emitter::loadSprite(CRstring filename)
     }
 
     sprite = new Sprite;
-    #ifdef PENJIN_SDL
-        sprite->setUseHardware(true);
-    #endif
+
     PENJIN_ERRORS result = sprite->loadSprite(filename);
 
     if(result == PENJIN_OK)
@@ -115,6 +120,9 @@ PENJIN_ERRORS Emitter::loadSprite(CRstring filename)
             return PENJIN_ERROR;
         for (int i=max-1; i>=0; --i)
             ((SpriteParticle*)particles[i])->setSprite(sprite);
+        partCol->loadImage(filename);
+        partCol->generateHitRegion();
+        partCol->freeImage();
     }
     return result;
 }
@@ -145,6 +153,9 @@ PENJIN_ERRORS Emitter::loadAnimatedSprite(CRstring filename)
             return PENJIN_ERROR;
         for (int i=max-1; i>=0; --i)
             ((AnimatedParticle*)particles[i])->setSprite(animSprite);
+        partCol->loadImage(filename);
+        partCol->generateHitRegion();
+        partCol->freeImage();
     }
     return result;
 }
@@ -173,6 +184,9 @@ PENJIN_ERRORS Emitter::loadAnimatedSprites(CRstring fileName,CRuint xTiles,CRuin
             return PENJIN_ERROR;
         for (int i=max-1; i>=0; --i)
             ((AnimatedParticle*)particles[i])->setSprite(animSprite);
+        partCol->loadImage(fileName,xTiles,yTiles);
+        partCol->generateHitRegion();
+        partCol->freeImage();
     }
     return result;
 }
@@ -205,7 +219,6 @@ void Emitter::setParticlesType(const PARTICLE_TYPES& type)
                 break;
             }
         }
-
     }
 }
 
@@ -214,7 +227,13 @@ void Emitter::setParticlesType(const PARTICLE_TYPES& type)
     {
         //  Run through all particles
         for(int i =max-1-invisible; i >= 0; --i)
+        {
             particles[i]->render(screen);
+            #ifdef _DEBUG
+            partCol->setPosition(particles[i]->getPosition());
+            partCol->render();
+            #endif
+        }
     }
 #else
     void Emitter::render()
@@ -249,11 +268,11 @@ void Emitter::advanceUpdate(CRuint n)
 {
     for(int i = n; i>=0; --i)
     {
-        if(invisible > 0)
+        /*if(invisible > 0)
         {
             --invisible;
             reset(max-1-invisible);
-        }
+        }*/
         for(int i = max-1-invisible; i >= 0; --i)
         {
             particles[i]->advanceUpdate();
@@ -297,11 +316,11 @@ void Emitter::advanceUpdate(CRuint n)
             {
                 if(repeat)
                     reset(i);
-                else
+                /*else
                 {
                     if(invisible < max)
                         ++invisible;
-                }
+                }*/
             }
 
             #ifdef PENJIN_3D
@@ -332,13 +351,13 @@ void Emitter::update()
     {
         finished = true;
         emitTimer.start();
-        if(invisible > 0)
+        /*if(invisible > 0)
         {
             --invisible;
-        }
+        }*/
     }
 
-    for(int i = max-1-invisible; i >= 0; --i)
+    for(int i = max-1/*-invisible*/; i >= 0; --i)
     {
         particles[i]->update();
 
@@ -378,11 +397,11 @@ void Emitter::update()
         {
             if(repeat)
                 reset(i);
-            else
+            /*else
             {
                 if(invisible < max)
                     ++invisible;
-            }
+            }*/
         }
 
         #ifdef PENJIN_3D
@@ -415,7 +434,9 @@ void Emitter::setMax(CRint max)
         particles[i] = new Particle();
     }
 
-    invisible = (max-1)/6;
+    invisible = 0;//(max-1)/6;
+    partCol->setPosition(0,0);
+    partCol->setSize(1,1);
 }
 
 void Emitter::clearParticles()

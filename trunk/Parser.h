@@ -34,11 +34,26 @@ using namespace std;
 
 /// The keyword class stores the info needed to parse each keyword
 //  They are stored in an array so the ID is the array index.
+
 #include "KeyWord.h"
+
+#include "simpleini/SimpleIni.h"
 
 class Parser
 {
     public:
+        Parser();
+        ~Parser();
+        PENJIN_ERRORS load(CRstring file);  //  load a simple ini file
+        PENJIN_ERRORS save(CRstring file);  //  save a simple ini file
+
+        void setValue(CRstring section, CRstring key, CRstring value);
+        string getValue(CRstring section, CRstring key);
+        void removeValue(CRstring section, CRstring key);
+        void removeSection(CRstring section);
+
+
+        /// DECPRECATED - (Now favoring simpleini loading)
         PENJIN_ERRORS loadParserConfig(CRstring fileName);      //  Load a config script that tell the parser the format of what it will parse
         PENJIN_ERRORS loadCommandList(CRstring fileName);		    //	Load a script file, parses it and creates a commandlist
         PENJIN_ERRORS loadParserConfig(const vector<string>& lines);      //  Load a config script from raw strings
@@ -68,10 +83,12 @@ class Parser
         string stripVariableName(string line);	//	Removes the variable name from a string and leaves the values only.
 
     private:
+        PENJIN_ERRORS iniGetError(CRint error);
         uint countColons(CRstring line);
         queue <Command> commandList;	//	stores all decoded commands
         vector<KeyWord> keyWords;       //  List of key words the parser will look for
         TextDoc doc;
+        CSimpleIniA* ini;
 };
 
 #endif	//	PARSER_H

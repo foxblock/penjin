@@ -23,6 +23,7 @@
 #include "SpriteParticle.h"
 #include "Particle.h"
 #include "Random.h"
+class CollisionRegion;
 #include <vector>
 //#include <boost/shared_ptr.hpp>
 
@@ -160,6 +161,7 @@ class Emitter
             setDownBoundary(lowBound);
         }
         void setBoundaries(const SDL_Rect& boundaries){clipBoundary = boundaries;}
+        CollisionRegion* partCol;   //  We use the one collision object for any particle in this system.
     private:
         void clearParticles();
         Particle** particles;
@@ -192,6 +194,7 @@ class Emitter
         int updatePeriod;
         uint invisible;              //  number of particles which are classed as invisible
         SDL_Rect clipBoundary;      //  The area that the particle is allowed to exist within
+
         #ifdef PENJIN_SDL
             SDL_Surface* screen;
         #endif

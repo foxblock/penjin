@@ -29,7 +29,15 @@ another which kills and resets the particles.
 
 Author Kevin Winfield-Pantoja
 */
-#include "Emitter.h"
+
+#include "PenjinTypes.h"
+#include <vector>
+#include "Colour.h"
+class Emitter;//#include "Emitter.h"
+class CollisionRegion;
+#ifdef PENJIN_SDL
+    struct SDL_Surface;
+#endif
 
 class ParticleCollider
 {
@@ -38,10 +46,9 @@ class ParticleCollider
         ParticleCollider();
         virtual ~ParticleCollider();
 
-        void linkEmitter(Emitter* e){emit.push_back(e);}
-        void setPosition(const Vector2di& position){this->position = position;}
-        void setDimensions(const Vector2di& dims){dimensions = dims;}
-        void setColour(const Colour& c){colour = c;}
+        void linkEmitter(Emitter* e);
+        void setPosition(const Vector2di& position);
+        void setDimensions(const Vector2di& dims);
 
         virtual void update(){;}
     #ifdef PENJIN_SDL
@@ -52,9 +59,7 @@ class ParticleCollider
 
     protected:
         vector <Emitter*> emit; // These are just pointers, we manipulate already existing particles
-        Vector2di position;
-        Vector2di dimensions;
-        Colour colour;
+        CollisionRegion* region;
 };
 
 #endif // PARTICLECOLLIDER_H

@@ -17,14 +17,15 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ParticleMirror.h"
-
+#include "Emitter.h"
+#include "CollisionRegion.h"
 ParticleMirror::ParticleMirror()
 {
     //ctor
-    colour = RED;
-    dampening.x=dampening.y=0.1f;
-    position.x = position.y = 0;
-    dimensions.x = dimensions.y = 1;
+    //colour = RED;
+    dampening.x=dampening.y=0.01f;
+    //position.x = position.y = 0;
+    //dimensions.x = dimensions.y = 1;
 }
 
 ParticleMirror::~ParticleMirror()
@@ -46,22 +47,28 @@ void ParticleMirror::update()
                     // Check direction of particle
                     Vector2df v = emit[i]->getVelocity(j);
                     Vector2df pos = emit[i]->getPosition(j);
-                    if(pos.x >= position.x && pos.x <= position.x + dimensions.x
-                    && pos.y >= position.y && pos.y <= position.y + dimensions.y)
+                    emit[i]->partCol->setPosition(pos);
+                    Directions dir = emit[i]->partCol->directionTest(region,false);
+
+                    if(dir != diNONE)
                     {
                         //collision
                         // Check particle velocity to guess which side is hit
                         emit[i]->setPosition(j,pos-v);
                         emit[i]->setAcceleration(j,Vector2df(0.0f,0.0f));
-                        if((v.x <= 0.001f && v.x >= -0.001f) || v.y <= 0.001f)
+                        if((abs(v.x) <= 0.01f) || abs(v.y) <= 0.01f)
                         {
                             emit[i]->reset(j);
                             continue;
                         }
-                        if(pos.x < position.x || pos.x>position.x)
-                            v.x = -v.x * dampening.x;
-                        if(pos.y < position.y || pos.y > position.y)
-                            v.y = -v.y * dampening.y;
+                        if(dir == diLEFT)
+                            v.x = NumberUtility::makeNegative(v.x * dampening.x);
+                        else if(dir == diRIGHT)
+                            v.x = NumberUtility::makePositive(v.x * dampening.x);
+                        if(dir == diTOP )
+                            v.y = NumberUtility::makeNegative(v.y * dampening.y);
+                        else if( dir == diBOTTOM)
+                            v.y = NumberUtility::makePositive(v.y * dampening.y);
                         emit[i]->setVelocity(j,v);
                     }
                 #endif

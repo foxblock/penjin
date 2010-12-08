@@ -18,28 +18,44 @@
 */
 #include "ParticleCollider.h"
 
+#include "Emitter.h"
+#include "CollisionRegion.h"
+
 ParticleCollider::ParticleCollider()
 {
     //ctor
-    colour = RED;
-    position.x = position.y = 0;
-    dimensions.x = dimensions.y = 1;
+    region = NULL;
+    region = new CollisionRegion;
+    region->setWidth(1);
+    region->setHeight(1);
 }
 
 ParticleCollider::~ParticleCollider()
 {
     //dtor
+    delete region;
+}
+
+void ParticleCollider::setPosition(const Vector2di& pos)
+{
+    region->setPosition(pos);
+}
+
+void ParticleCollider::setDimensions(const Vector2di& dims)
+{
+    region->setWidth(dims.x);
+    region->setHeight(dims.y);
+}
+
+void ParticleCollider::linkEmitter(Emitter* e)
+{
+emit.push_back(e);
 }
 
 #ifdef PENJIN_SDL
 void ParticleCollider::render(SDL_Surface* screen)
 {
-    SDL_Rect t;
-    t.x = position.x;
-    t.y = position.y;
-    t.w = dimensions.x;
-    t.h = dimensions.y;
-    SDL_FillRect(screen, &t, SDL_MapRGB(screen->format,colour.red,colour.green,colour.blue));
+    region->render();
 }
 #else
 

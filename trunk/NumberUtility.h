@@ -46,6 +46,11 @@ namespace NumberUtility
     int nextPowerOfTwo(CRint x);
     template <class T>
     int sign(const T& value); // Signum function, returns the sign of a number (-1 for negative numbers, 1 for positive ones, 0 for 0)
+    template <class T>
+    T makePositive(const T& value); //  force a positive value
+    template <class T>
+    T makeNegative(const T& value); //  force a negative value
+
     //int wrapValue(int value, CRint limit);
     template <class T>
     T wrapValue(T val,const T& limit)
