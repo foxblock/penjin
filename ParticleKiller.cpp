@@ -17,7 +17,8 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ParticleKiller.h"
-
+#include "Emitter.h"
+#include "CollisionRegion.h"
 ParticleKiller::ParticleKiller()
 {
     //ctor
@@ -40,14 +41,13 @@ void ParticleKiller::update()
                     // TODO 3D version
                 #else
                     // Check direction of particle
-                    Vector2df v = emit[i]->getVelocity(j);
+                    //Vector2df v = emit[i]->getVelocity(j);
+                    /// check collision using region and reset if particle collided.
                     Vector2df pos = emit[i]->getPosition(j);
-                    if(pos.x >= position.x && pos.x <= position.x + dimensions.x
-                    && pos.y >= position.y && pos.y <= position.y + dimensions.y)
+                    if(region->hitTest(emit[i]->partCol,false))
                     {
                         //collision
-                        // Check particle velocity to guess which side is hit
-                        emit[i]->setPosition(j,pos-v);
+                        emit[i]->setPosition(j,pos-emit[i]->getVelocity(j));
                         emit[i]->setAcceleration(j,Vector2df(0.0f,0.0f));
                         emit[i]->reset(j);
                     }

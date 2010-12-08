@@ -109,6 +109,8 @@ class Particle
         #endif  //  PENJIN_3D
 
         int getLifeTime()const{return lifeTime;}
+        bool getIsActive()const{return isActive;}
+        void setIsActive(CRbool a){isActive = a;}
 
         PARTICLE_TYPES getParticleType()const{return particleType;}
         void setLifeTime(CRint s){lifeTime = s;}
@@ -133,6 +135,7 @@ class Particle
         Timer timer;                //  This regulates the updates of the particle
         bool useDeviance;
         int lifeTime;               //  Life of particles in ms;
+        bool isActive;                //  true if active, false if not
         PARTICLE_TYPES particleType;          //  identifies between particle, SpriteParticle and AnimatedParticle types
 };
 

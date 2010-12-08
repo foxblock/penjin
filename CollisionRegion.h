@@ -51,11 +51,7 @@ class CollisionRegion
 public:
     CollisionRegion();
     ~CollisionRegion();
-    void createMap()
-    {
-        if (map == NULL)
-            map = new Image;
-    }
+
 
     PENJIN_ERRORS loadImage(CRstring image)
     {
@@ -265,6 +261,11 @@ public:
     }
 
 private:
+    void createMap()
+    {
+        if (map == NULL)
+            map = new Image;
+    }
     Image *map;
     Rectangle *showRect;
     Colour noCollision;

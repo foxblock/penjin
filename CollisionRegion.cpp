@@ -140,6 +140,8 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2
     float testerPosY = posTester.y + tester->getRegionOffsetY();
     if (fullShape)
     {
+        /// TODO Optimise by testing rectangular collision first (if possible)
+        /// We only do more expensive per-pixel test if indeed a rectangle collision has happened.
         // determine overlaping area
         float xPos = max(objPosX, testerPosX);
         float yPos = max(objPosY, testerPosY);
