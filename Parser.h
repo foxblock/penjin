@@ -49,6 +49,7 @@ class Parser
 
         void setValue(CRstring section, CRstring key, CRstring value);
         string getValue(CRstring section, CRstring key);
+        vector<string> getValues(CRstring section, CRstring key);
         void removeValue(CRstring section, CRstring key);
         void removeSection(CRstring section);
 

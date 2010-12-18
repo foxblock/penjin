@@ -61,6 +61,18 @@ string Parser::getValue(CRstring section, CRstring key)
     return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
 }
 
+vector <string> Parser::getValues(CRstring section, CRstring key)
+{
+    vector<string> out;
+    CSimpleIniA::TNamesDepend values;
+    ini->GetAllValues(section.c_str(),key.c_str(), values);
+    values.sort(CSimpleIniA::Entry::LoadOrder());
+    CSimpleIniA::TNamesDepend::const_iterator i;
+    for (i = values.begin(); i != values.end(); ++i)
+        out.push_back(i->pItem);
+    return out;
+}
+
 void Parser::setValue(CRstring section, CRstring key, CRstring value)
 {
     ini->SetValue(section.c_str(),key.c_str(),value.c_str());
