@@ -259,8 +259,10 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         if(alpha == SDL_ALPHA_TRANSPARENT)
             return;
 
-        if(!images.size() || i >= this->size())
+        if(!images.size() || i >= this->size() || !images[i].first)
         {
+            return;
+            /* We can exit here as this only gets called if there is no image loaded or the image to render is out of bounds
             if(sheetMode)   //  We have a spritesheet
             {
                 //  If there is no area to clip the spritesheet we have a problem
@@ -268,7 +270,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
                     return;
             }
             else if(!images[i].first)
-                return;
+                return;*/
         }
 
        // Set up blitting area
