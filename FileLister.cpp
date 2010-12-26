@@ -17,6 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "FileLister.h"
+#include "Parser.h"
 
 FileLister::FileLister()
 {

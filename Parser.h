@@ -37,6 +37,8 @@ using namespace std;
 
 #include "KeyWord.h"
 
+// Caution: SimpleIni includes windows.h for WIN32 builds, this may lead to conflics with the Rectangle class
+// (as windows.h also defines Rectangle somewhere). To circumvent this only include Parser in implementation files!
 #include "simpleini/SimpleIni.h"
 
 class Parser
