@@ -44,7 +44,6 @@ Parses directory and gives strings so you can load needed files.
     #endif
 #endif
 #include "Menu.h"
-#include "Parser.h"
 
 class FileLister : public Menu
 {
