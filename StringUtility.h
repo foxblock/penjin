@@ -57,6 +57,12 @@ namespace StringUtility
         string intToString(CRint value);
         string shortToString(CRshort value);
         string boolToString(CRbool value, CRbool useBoolString=true);
+        template <class T>
+        string vecToString(const T& vec, CRstring separator=",")
+        {
+            // using doubleToString for maximum compatibility
+            return (doubleToString(vec.x) + separator + doubleToString(vec.y));
+        }
 
         /// Char* string conversions
         Fixed cStringToFixed(char* value);
