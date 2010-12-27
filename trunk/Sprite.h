@@ -76,6 +76,7 @@ class Sprite
             void setPosition(const T& position){this->position = position;}
             float getX()const{return position.x;}
             float getY()const{return position.y;}
+            Colour getPixel(CRint x,CRint y) const {return image.getPixel(x,y);}
         #else
             void setScale(const Vector3df& scale);
             void setX(CRfloat x){position.x = x;}

@@ -16,6 +16,11 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/// -------------------------------------------------------------------------------------
+/// DEPRECATED  - please use CollisionRegion instead (it has all the features + some more)
+/// -------------------------------------------------------------------------------------
+
 #ifndef COLLISIONMAP_H
 #define COLLISIONMAP_H
 
