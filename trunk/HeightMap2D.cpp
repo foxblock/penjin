@@ -98,11 +98,12 @@ void HeightMap2D::generateHeightMap(CRuint newChunkSize, const InterpolationMode
         flushCache(cache);
     }
     #ifdef _DEBUG
-    cout << "HeightMap2D: Analyse complete, " << map.size() << " chunks of size " << chunkSize << " have been created." << endl;
+    cout << "HeightMap2D: Analysis complete, " << map.size() << " chunks of size " << chunkSize << " have been created." << endl;
     #endif
 }
 
-// Get the height for chunk posX
+// Get the height for posX based off the left border of the map
+// posX in pixels and relative to HeightMap position (so 0 refers to the first column of pixels in the first image regardless of position offset)
 int HeightMap2D::getHeight(CRint posX) const
 {
     int pos = posX / chunkSize;

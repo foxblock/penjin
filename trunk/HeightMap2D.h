@@ -31,7 +31,6 @@ public:
 
     void generateHeightMap(CRuint newChunkSize, const InterpolationMode& newMode);
 
-    // posX in pixels and relative to HeightMap position (so 0 refers to the first chunk in the first image regardless of position offset)
     int getHeight(CRint posX) const;
 
     int chunkCount() const {return map.size();};
