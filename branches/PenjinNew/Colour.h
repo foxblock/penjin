@@ -20,6 +20,7 @@
 #define COLOUR_H_INCLUDED
 
 #include "PenjinTypes.h"
+#include "PenjinObject.h"
 #include <SDL/SDL.h>
 #include <algorithm>
 using namespace std;
@@ -51,7 +52,7 @@ enum PENJIN_COLOURS
 	WHITE
 };
 
-class Colour
+class Colour : public PenjinObject
 {
     public:
         Colour(){setColour(WHITE);}
@@ -70,6 +71,7 @@ class Colour
 			alpha = colour.alpha;
         }
         Colour (CRint rgb){setColour(rgb);}
+        //virtual ~Colour(){;}
 
         // OpenGL type colour
         Colour(CRfloat r,CRfloat g,CRfloat b,CRfloat a){setOGLColour(r,g,b,a);}

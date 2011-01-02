@@ -28,7 +28,7 @@ using namespace std;
 using namespace PenjinErrors;
 #include "PenjinTypes.h"
 #include "Text.h"
-#include "TextDoc.h"
+#include "TextFile.h"
 #include "Encryption.h"
 #include "StringUtility.h"
 
@@ -86,7 +86,7 @@ class HiScore
         string* nameTable;
         uint lastNameIndex;
         uint mode;
-        TextDoc doc;
+        TextFile doc;
         Text text;
         Encryption crypt;
         string tableTitle;

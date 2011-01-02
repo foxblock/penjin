@@ -54,7 +54,7 @@
 #include "Colour.h"
 #include "Timer.h"
 #include "Vector2di.h"
-#include "TextDoc.h"
+#include "TextFile.h"
 #include "Encryption.h"
 #include "PenjinErrors.h"
 
@@ -156,7 +156,7 @@ class AchievementSystem
         vector<Achievement*> achievements;
         vector<Popup> popups;
         Encryption crypt;
-        TextDoc doc;
+        TextFile doc;
         string achievementFile;
 
         Vector2di offset; // offset for the list view (in pixels)

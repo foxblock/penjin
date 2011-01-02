@@ -26,7 +26,7 @@
 #include <queue>
 
 #include "Command.h"
-#include "TextDoc.h"
+#include "TextFile.h"
 #include "StringUtility.h"
 using namespace StringUtility;
 #include "ErrorHandler.h"
@@ -90,7 +90,7 @@ class Parser
         uint countColons(CRstring line);
         queue <Command> commandList;	//	stores all decoded commands
         vector<KeyWord> keyWords;       //  List of key words the parser will look for
-        TextDoc doc;
+        TextFile doc;
         CSimpleIniA* ini;
 };
 

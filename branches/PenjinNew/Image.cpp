@@ -77,6 +77,16 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2di& v)
     #endif
 }
 
+PENJIN_ERRORS Image::load(CRstring file)
+{
+    return loadImage(file);
+}
+
+PENJIN_ERRORS Image::save(CRstring name)
+{
+    return PENJIN_FUNCTION_IS_STUB;
+}
+
 PENJIN_ERRORS Image::loadImage(CRstring name)
 {
     PENJIN_ERRORS error;
@@ -242,6 +252,11 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
         }
     }
     return PENJIN_OK;
+}
+
+void Image::render()
+{
+    renderImage(position);
 }
 
 #ifdef PENJIN_SDL

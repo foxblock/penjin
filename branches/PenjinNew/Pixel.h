@@ -20,10 +20,10 @@
 #define PIXEL_H
 
 #include "PenjinTypes.h"
-#include "Colour.h"
+#include "PenjinPrimitive.h"
 #include "GFX.h"
 
-class Pixel
+class Pixel : public PenjinPrimitive
 {
     public:
         Pixel();

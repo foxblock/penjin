@@ -45,7 +45,11 @@ using namespace PenjinErrors;
 #include "GFX.h"
 #include "NumberUtility.h"
 
-class Image
+#include "PenjinFileObject.h"
+#include "PenjinRenderObject.h"
+#include "PenjinDimensionObject.h"
+
+class Image : public PenjinFileObject, PenjinRenderObject, PenjinDimensionObject
 {
     public:
         Image();
@@ -81,6 +85,8 @@ class Image
                 cout << ErrorHandler().getErrorString(PenjinErrors::PENJIN_FUNCTION_IS_STUB) << endl;
             }
 		#endif
+		virtual PENJIN_ERRORS load(CRstring fileName);
+		virtual PENJIN_ERRORS save(CRstring fileName);
 		PENJIN_ERRORS loadImage(CRstring imageName);                                 // Load an image into the vector
         PENJIN_ERRORS loadImageNoKey(CRstring imageName);
         PENJIN_ERRORS loadImageSheet(CRstring imageName,CRuint xTiles,CRuint yTiles);  // store the separated images on the vector
@@ -89,6 +95,7 @@ class Image
         PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // see above comment
         PENJIN_ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
 
+        virtual void render();
         #ifdef PENJIN_3D
             void renderImage(uint i,CRfloat destX,CRfloat destY,CRfloat destZ);
             template <class T>

@@ -20,7 +20,8 @@
 #define RECTANGLE_H
 
 #include "PenjinTypes.h"
-#include "Colour.h"
+#include "PenjinPrimitive.h"
+#include "PenjinDimensionObject.h"
 #include "GFX.h"
 
 #ifdef PENJIN_GL
@@ -34,7 +35,7 @@ This class is a strict simple Rectangle.
 Use the Quad class for uneven quads
 */
 
-class Rectangle
+class Rectangle : public PenjinPrimitive, PenjinDimensionObject
 {
     public:
         Rectangle();
@@ -56,19 +57,13 @@ class Rectangle
                 scale.x = scale.y = 1.0f;
                 angle = 0.0f;
             #endif
-            colour = WHITE;
+            //colour = WHITE;
             #ifdef PENJIN_SDL
                 screen = GFX::getVideoSurface();
                 rectangle = NULL;
                 init();
             #endif
         }
-
-        template <class T>
-        void setPosition(const T& x, const T& y){position.x = x; position.y=y;}
-
-        template <class T>
-        void setPosition(const T& pos) {position.x = pos.x; position.y = pos.y;};
 
         template <class T>
         void setDimensions(const T& w, const T& h)
@@ -101,7 +96,7 @@ class Rectangle
             #endif
         }
 
-        void setColour(const Colour& c)
+        /*void setColour(const Colour& c)
         {
             colour = c;
             #ifdef PENJIN_SDL
@@ -114,7 +109,7 @@ class Rectangle
             #ifdef PENJIN_SDL
                 SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
             #endif
-        }
+        }*/
 #ifdef PENJIN_SDL
     void setThickness(CRuint t)
     {
@@ -137,15 +132,15 @@ class Rectangle
     protected:
 
         Vector2di dimensions;
-        Colour colour;
+        //Colour colour;
 
     #ifdef PENJIN_3D
-        Vector3df position;
+        //Vector3df position;
         Vector3df scale;
         Vector3df rotation;
         float thickness;
     #else
-        Vector2df position;
+        //Vector2df position;
         Vector2df scale;
         float angle;
         uint thickness;
