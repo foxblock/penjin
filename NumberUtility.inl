@@ -30,6 +30,18 @@ int NumberUtility::sign(const T& value)
 }
 
 template <class T>
+T NumberUtility::signMax(const T& a, const T&b)
+{
+    return max(abs(a),abs(b)) * sign(a);
+}
+
+template <class T>
+T NumberUtility::signMin(const T& a, const T&b)
+{
+    return min(abs(a),abs(b)) * sign(a);
+}
+
+template <class T>
 T NumberUtility::makePositive(const T& value)
 {
     return abs(value);

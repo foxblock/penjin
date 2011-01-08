@@ -47,6 +47,10 @@ namespace NumberUtility
     template <class T>
     int sign(const T& value); // Signum function, returns the sign of a number (-1 for negative numbers, 1 for positive ones, 0 for 0)
     template <class T>
+    T signMax(const T& a, const T&b); // Max function, checking for absolute max, but returns value regarding sign of a
+    template <class T>
+    T signMin(const T& a, const T&b);
+    template <class T>
     T makePositive(const T& value); //  force a positive value
     template <class T>
     T makeNegative(const T& value); //  force a negative value
