@@ -48,7 +48,7 @@ void ParticleMirror::update()
                     Vector2df v = emit[i]->getVelocity(j);
                     Vector2df pos = emit[i]->getPosition(j);
                     emit[i]->partCol->setPosition(pos);
-                    Directions dir = emit[i]->partCol->directionTest(region,false);
+                    SimpleDirection dir = emit[i]->partCol->directionTest(region,false);
 
                     if(dir != diNONE)
                     {
