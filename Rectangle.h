@@ -94,7 +94,28 @@ class Rectangle
         void setDimensions(const T& size)
         {
             dimensions.x = size.x;
-	    dimensions.y = size.y;
+            dimensions.y = size.y;
+            #ifdef PENJIN_SDL
+                resize();
+                setRectangle();
+            #endif
+        }
+
+        template <class T>
+        void setWidth(const T& val)
+        {
+            dimensions.x = val;
+            #ifdef PENJIN_SDL
+                resize();
+                setRectangle();
+            #endif
+
+        }
+
+        template <class T>
+        void setHeight(const T& val)
+        {
+            dimensions.y = val;
             #ifdef PENJIN_SDL
                 resize();
                 setRectangle();
