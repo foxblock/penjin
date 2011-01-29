@@ -23,6 +23,7 @@ class SimpleDirection
 public:
     SimpleDirection(){value = diNONE;}
     SimpleDirection(CRint init){value = checkIntValue(init);}
+    // TODO: Add class constructor taking a vector
 
     virtual ~SimpleDirection(){}
 
@@ -33,10 +34,6 @@ public:
     virtual int xDirection() const; // -1 - left, 0 - none, 1 - right
     virtual int yDirection() const; // -1 - up, 0 - none 1 - down
     virtual Vector2di vectorDirection() const;
-
-    // Assignment operator
-    template <class T>
-    SimpleDirection& operator=(const T& dir) const {return SimpleDirection(dir);}
 
     // Comparison operators
     bool operator==(const SimpleDirection& dir) const {return (this->value == dir.value);}
