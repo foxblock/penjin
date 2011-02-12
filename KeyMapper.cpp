@@ -149,6 +149,10 @@ void KeyMapper::defaultMap()
     CMF.push_back("DEVICE_END:;");
     CMF.push_back("DEVICE:MOUSE,0;");
         CMF.push_back("BUTTON:MOUSE_LEFT,0;");
+    #ifdef PLATFORM_PC
+        CMF.push_back("BUTTON:MOUSE_CENTRE,1;");
+        CMF.push_back("BUTTON:MOUSE_RIGHT,2;");
+    #endif
         CMF.push_back("AXIS:MOUSE_X,0;");
         CMF.push_back("AXIS:MOUSE_Y,1;");
     CMF.push_back("DEVICE_END:;");

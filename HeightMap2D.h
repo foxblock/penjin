@@ -25,6 +25,7 @@ public:
     void clearImages();
 
     void loadImage(CRstring imageFile, const Colour& noCollisionColour);
+    void addChunks(const vector<int>& chunks);
 
     uint getChunkSize() const {return chunkSize;};
     InterpolationMode getInterpolationMode() const {return imMode;};
