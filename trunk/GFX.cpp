@@ -153,20 +153,24 @@ void GFX::renderPixelBuffer()
             glDisableClientState(GL_COLOR_ARRAY);
             glDisable(GL_BLEND);
         #elif PENJIN_SDL
-            SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
+            //SDL_Surface* pixel = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
             for(uint i=0; i < pixBuff.size(); ++i )
             {
                 ColourVertex v = pixBuff.at(i);
                 //  Blend if necesary
-                SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL,v.colour.w);
+                //SDL_SetAlpha(pixel, SDL_SRCALPHA|SDL_RLEACCEL,v.colour.w);
+                /// Using the pixel surface here would draw a pixel at an offset on a 1x1 surface
+                /// So it would almost always draw outside of bounds and the pixel surface remains black
+                /// Using the pixel surface seems like a detour to me anyway as we already have all
+                /// the data and can draw to the main screen surface directly
                 //  Set the colour
-                setPixel(pixel,v.vertex.x,v.vertex.y,Colour((uchar)v.colour.x,(uchar)v.colour.y,(uchar)v.colour.z,(uchar)v.colour.w));
-                SDL_Rect d;
+                setPixel(screen,v.vertex.x,v.vertex.y,Colour((uchar)v.colour.x,(uchar)v.colour.y,(uchar)v.colour.z,(uchar)v.colour.w));
+                /*SDL_Rect d;
                 d.x = v.vertex.x;
                 d.y = v.vertex.y;
-                SDL_BlitSurface(pixel, NULL, screen, &d);
+                SDL_BlitSurface(pixel, NULL, screen, &d);*/
             }
-            SDL_FreeSurface(pixel);
+            //SDL_FreeSurface(pixel);
         #endif
         // After rendering all pixels we should clear out the buffer :P
         pixBuff.clear();
