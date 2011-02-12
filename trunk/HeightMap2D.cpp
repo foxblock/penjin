@@ -49,6 +49,12 @@ void HeightMap2D::loadImage(CRstring imageFile, const Colour& noCollisionColour)
     images.push_back(make_pair(temp,noCollisionColour));
 }
 
+// Add a vector of chunks to the end of the current map
+void HeightMap2D::addChunks(const vector<int>& chunks)
+{
+    map.insert(map.end(),chunks.begin(),chunks.end());
+}
+
 // Generate height data from the loaded images
 void HeightMap2D::generateHeightMap(CRuint newChunkSize, const InterpolationMode& newMode)
 {

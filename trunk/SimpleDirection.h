@@ -44,6 +44,10 @@ public:
     template <class T>
     bool operator!=(const T& dir) const {return (this->value != dir);}
 
+    // comparison operators for use with map
+    bool operator<(const SimpleDirection& dir) const {return (this->value < dir.value);}
+    bool operator>(const SimpleDirection& dir) const {return (this->value > dir.value);}
+
     // Negator
     SimpleDirection operator-() const {return this->opposite();}
 

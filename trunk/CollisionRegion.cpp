@@ -244,7 +244,7 @@ SimpleDirection CollisionRegion::directionTest(const CollisionRegion* const test
     }
 }
 
-void  CollisionRegion::render()
+void CollisionRegion::render()
 {
     if (map)
     {
