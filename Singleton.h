@@ -1,5 +1,5 @@
 /*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -15,25 +15,38 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef SINGLETON_H
+#define SINGLETON_H
 
-#include EnumParser.h
+#include "Object.h"
+
+#ifndef NULL
+    #define NULL 0
+#endif
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    template <class T>
+    class Singleton : public Object
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
+            static T* getInstance()
+            {
+                return instance ? instance : (instance = new T);
+            }
+        protected:
+            Singleton();
+            virtual ~Singleton();
 
         private:
-            static LocalisedStringManager* localeMan;
-    }
+            Singleton(Singleton const&);
+            Singleton& operator=(Singleton const&);
+            static T* instance;
+    };
+    template <class T> T* Singleton<T>::instance=NULL;
 }
-#endif	//	ERRORHANDLER_H
+
+
+
+
+#endif // SINGLETON_H

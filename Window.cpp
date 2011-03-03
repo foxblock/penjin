@@ -16,24 +16,26 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+#include "Window.h"
+#include <string>
+using Penjin::Window;
+using std::string;
 
-#include EnumParser.h
-
-namespace Penjin
+Window::Window()
 {
-    class ErrorHandler : public EnumParser
-    {
-        public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+    //ctor
+    title = NULL;
+    title = new string;
 }
-#endif	//	ERRORHANDLER_H
+
+Window::~Window()
+{
+    //dtor
+    delete title;
+}
+
+void Window::setTitle(const string& t)
+{
+    title = t;
+}
+

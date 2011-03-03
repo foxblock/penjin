@@ -1,5 +1,5 @@
 /*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -15,25 +15,14 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#include "EnumParser.h"
 
-#include EnumParser.h
-
-namespace Penjin
+EnumParser::EnumParser()
 {
-    class ErrorHandler : public EnumParser
-    {
-        public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+    //ctor
 }
-#endif	//	ERRORHANDLER_H
+
+EnumParser::~EnumParser()
+{
+    //dtor
+}

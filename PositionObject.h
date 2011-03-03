@@ -15,25 +15,32 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef POSITIONOBJECT_H
+#define POSITIONOBJECT_H
 
-#include EnumParser.h
+#include "Object.h"
+#include "Vector2df.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class PositionObject : public Object
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
+            /** Default constructor */
+            PositionObject();
+            /** Default destructor */
+            virtual ~PositionObject();
 
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
+            template <class T>
+            void setPosition(const T& pos){position.x=pos.x;position.y=pos.y;}
 
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+            template <class T>
+            void setPosition(const T& x, const T& y){position.x=x;position.y=y;}
+
+            Vector2df getPosition()const;
+
+        protected:
+            Vector2df position;
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // POSITIONOBJECT_H

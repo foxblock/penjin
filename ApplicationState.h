@@ -15,25 +15,19 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef APPLICATIONSTATE_H
+#define APPLICATIONSTATE_H
 
-#include EnumParser.h
 
-namespace Penjin
+class ApplicationState
 {
-    class ErrorHandler : public EnumParser
-    {
-        public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
+    public:
+        /** Default constructor */
+        ApplicationState();
+        /** Default destructor */
+        virtual ~ApplicationState();
+    protected:
+    private:
+};
 
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
-}
-#endif	//	ERRORHANDLER_H
+#endif // APPLICATIONSTATE_H

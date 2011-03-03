@@ -31,12 +31,12 @@ typedef unsigned char uchar;
 
 //  VECTORS - Have length() operations and such
 #include "trenki/vector_math.h"
-#include "Vector2df.h"
+/*#include "Vector2df.h"
 class Vector2dx;
 #include "Vector2di.h"
 #include "Vector3df.h"
 class Vector3dx;//#include "Vector3dx.h"
-#include "Vector3di.h"
+#include "Vector3di.h"*/
 typedef vmath::vec4<int> Vector4di;                             //  int 4d vector
 typedef vmath::vec4<float> Vector4df;                           //  float 4d vector
 typedef vmath::vec4<fixedpoint::fixed_point<16> > Vector4dx;    //  Fixed point 4d vector
@@ -121,5 +121,5 @@ typedef const std::string& CRstring;
     #endif
 #endif
 
-#include "Variable.h"	        // multiple type storage
+//#include "Variable.h"	        // multiple type storage
 #endif	//	TYPES_H

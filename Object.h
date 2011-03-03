@@ -15,25 +15,23 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
+*/#ifndef OBJECT_H
+#define OBJECT_H
+/**
+ \file PenjinObject is everything and nothing. it is a generic base class from which all other will be or are created.
 */
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
-
-#include EnumParser.h
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class Object
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
+            /** Default constructor */
+            Object();
+            /** Default destructor */
+            virtual ~Object();
 
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+            virtual bool equals(const Object& o);   /**< Compares one Object to another and return true if they are equivalent. */
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // OBJECT_H

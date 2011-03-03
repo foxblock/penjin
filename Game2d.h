@@ -1,5 +1,5 @@
 /*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -15,25 +15,25 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef GAME2D_H
+#define GAME2D_H
 
-#include EnumParser.h
+#include "Application.h"
+#include "UpdateObject.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class Game2d : public Application , UpdateObject
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
+            /** Default constructor */
+            Game2d();
+            /** Default destructor */
+            virtual ~Game2d();
 
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
+            virtual void loop();    /**< The main game loop */
 
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+        protected:
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // GAME2D_H

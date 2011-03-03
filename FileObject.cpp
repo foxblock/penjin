@@ -15,25 +15,20 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#include "FileObject.h"
+using Penjin::FileObject;
 
-#include EnumParser.h
-
-namespace Penjin
+FileObject::FileObject()
 {
-    class ErrorHandler : public EnumParser
-    {
-        public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+    //ctor
 }
-#endif	//	ERRORHANDLER_H
+
+FileObject::~FileObject()
+{
+    //dtor
+}
+
+void FileObject::setFileName(const string& f)
+{
+    fileName = f;
+}

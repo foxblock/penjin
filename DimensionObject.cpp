@@ -15,25 +15,31 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#include "DimensionObject.h"
 
-#include EnumParser.h
+using Penjin::DimensionObject;
 
-namespace Penjin
+DimensionObject::DimensionObject()
 {
-    class ErrorHandler : public EnumParser
-    {
-        public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+    //ctor
 }
-#endif	//	ERRORHANDLER_H
+
+DimensionObject::~DimensionObject()
+{
+    //dtor
+}
+
+Vector2di DimensionObject::getDimensions()const
+{
+    return dimensions;
+}
+
+int DimensionObject::getWdith()const
+{
+    return dimensions.x;
+}
+
+int DimensionObject::getHeight()const
+{
+    return dimensions.y;
+}

@@ -15,25 +15,29 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef LAYEROBJECT_H
+#define LAYEROBJECT_H
 
-#include EnumParser.h
+#include "RenderObject.h"
+#include "DimensionObject.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class LayerObject : public RenderObject, DimensionObject
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
+            /** Default constructor */
+            LayerObject();
+            /** Default destructor */
+            virtual ~LayerObject();
 
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
+            void setLayer(const int&l);
+            int getLayer();
+
+        protected:
+            int layer;
 
         private:
-            static LocalisedStringManager* localeMan;
-    }
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // LAYEROBJECT_H

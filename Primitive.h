@@ -15,25 +15,20 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef PRIMITIVE_H
+#define PRIMITIVE_H
 
-#include EnumParser.h
+#include "ColourObject.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class Primitive : public ColourObject
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
-        private:
-            static LocalisedStringManager* localeMan;
-    }
+            /** Default constructor */
+            Primitive();
+            /** Default destructor */
+            virtual ~Primitive();
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // PRIMITIVE_H

@@ -15,25 +15,22 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef	ERRORHANDLER_H
-#define	ERRORHANDLER_H
+*/#ifndef RADIALOBJECT_H
+#define RADIALOBJECT_H
 
-#include EnumParser.h
+#include "DimensionObject.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class RadialObject : public DimensionObject
     {
         public:
-            ErrorHandler();
-            virtual ~ErrorHandler();
-
-            string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
-
+            /** Default constructor */
+            RadialObject();
+            /** Default destructor */
+            virtual ~RadialObject();
+        protected:
         private:
-            static LocalisedStringManager* localeMan;
-    }
+    };
 }
-#endif	//	ERRORHANDLER_H
+#endif // PENJINRADIALOBJECT_H
