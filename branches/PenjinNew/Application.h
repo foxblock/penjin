@@ -25,16 +25,12 @@
 using Penjin::LocalisedStringManager;
 using Penjin::Singleton;
 
-
-class ApplicationState;
-
-
 /**
 *   \file Application is a base class to create certain application types.
 */
 namespace Penjin
 {
-    typedef Singleton<LocalisedStringManager> LocaleMan;
+    class ApplicationState;
 
     class Application : public Window
     {

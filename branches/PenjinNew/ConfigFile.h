@@ -20,12 +20,14 @@
 
 #include "FileObject.h"
 #include <vector>
+#include <string>
 using std::vector;
-class CSimpleIniA;
-
+using std::string;
 
 namespace Penjin
 {
+    class CSimpleIniA;
+
     class ConfigFile : public FileObject
     {
         public:

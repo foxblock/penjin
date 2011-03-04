@@ -26,7 +26,7 @@ Application::Application()
     //ctor
     //  We load the settings file for the app
     Penjin::ConfigFile conf;
-    Errors error = conf.load("config/settings.ini");
+    Errors error = conf.load((string)"config/settings.ini");
 
     //  If settings.ini not found create a default
     if(error == PENJIN_FILE_NOT_FOUND)

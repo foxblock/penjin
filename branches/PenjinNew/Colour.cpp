@@ -17,6 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Colour.h"
+using Penjin::Colour;
 
 void Colour::setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a)
 {

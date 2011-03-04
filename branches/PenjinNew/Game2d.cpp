@@ -15,7 +15,11 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#include "Game2d.h"
+*/
+#include "Game2d.h"
+#include "ApplicationState.h"
+using Penjin::Game2d;
+using Penjin::ApplicationState;
 
 Game2d::Game2d()
 {
@@ -28,7 +32,7 @@ Game2d::~Game2d()
 }
 
 
-virtual void Game2d::loop()
+void Game2d::loop()
 {
     while(!state->shouldQuit())
     {

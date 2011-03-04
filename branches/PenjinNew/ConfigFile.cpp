@@ -19,8 +19,9 @@
 
 #include "ConfigFile.h"
 #include "simpleini/SimpleIni.h"
-
+#include <string>
 using Penjin::ConfigFile;
+using std::string;
 
 ConfigFile::ConfigFile()
 {
@@ -34,10 +35,10 @@ ConfigFile::~ConfigFile()
 
 Penjin::Errors ConfigFile::load(const string& fileName)
 {
-
+    return Penjin::PENJIN_FUNCTION_IS_STUB;
 }
 
 Penjin::Errors ConfigFile::save(const string& fileName)
 {
-
+    return Penjin::PENJIN_FUNCTION_IS_STUB;
 }

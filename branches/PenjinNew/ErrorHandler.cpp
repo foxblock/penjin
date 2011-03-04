@@ -18,11 +18,13 @@
 */
 #include "ErrorHandler.h"
 #include "Errors.h"
+#include "LocalisedStringManager.h"
 using Penjin::ErrorHandler;
 using Penjin::Errors;
+using Penjin::LocaleMan;
 
 
-ErrorHandler<Errors>::ErrorHandler()
+ErrorHandler::ErrorHandler()
 {
         //  General Errors
         enumMap["PENJIN_ERROR"] = PENJIN_ERROR;
@@ -70,10 +72,10 @@ ErrorHandler::~ErrorHandler()
 
 string ErrorHandler::getErrorText(const string& error)
 {
-    return getErrorText(stringToEnum(error));
+    return Penjin::LocaleMan::getInstance()->getValue("Errors",error);
 }
 
 string ErrorHandler::getErrorText(const Errors& error)
 {
-    return Penjin::localeMan->getValue("Errors", error);
+    //return getErrorText(stringToEnum(error));
 }

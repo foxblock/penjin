@@ -15,19 +15,24 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef APPLICATIONSTATE_H
+*/
+#ifndef APPLICATIONSTATE_H
 #define APPLICATIONSTATE_H
 
+#include "RenderObject.h"
+#include "UpdateObject.h"
 
-class ApplicationState
+namespace Penjin
 {
-    public:
-        /** Default constructor */
-        ApplicationState();
-        /** Default destructor */
-        virtual ~ApplicationState();
-    protected:
-    private:
-};
-
+    class ApplicationState : public RenderObject, UpdateObject
+    {
+        public:
+            /** Default constructor */
+            ApplicationState();
+            /** Default destructor */
+            virtual ~ApplicationState();
+        protected:
+        private:
+    };
+}
 #endif // APPLICATIONSTATE_H
