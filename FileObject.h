@@ -20,7 +20,6 @@
 
 #include "Object.h"
 #include "Errors.h"
-
 #include <string>
 using std::string;
 
@@ -42,7 +41,7 @@ namespace Penjin
             void setFileName(const string& f);
 
         protected:
-            string fileName;    //we keep a copy of the the filename if needed.
+            string* fileName;    //we keep a copy of the the filename if needed.
     };
 }
 #endif // FILEOBJECT_H

@@ -18,8 +18,8 @@
 */#ifndef WINDOW_H
 #define WINDOW_H
 
-#include "LayerObject.h"
 #include <string>
+#include "LayerObject.h"
 using std::string;
 
 namespace Penjin

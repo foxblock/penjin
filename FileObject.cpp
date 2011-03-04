@@ -15,20 +15,24 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#include "FileObject.h"
+*/
+
+#include "FileObject.h"
 using Penjin::FileObject;
 
-FileObject::FileObject()
+FileObject::FileObject() : fileName(NULL)
 {
     //ctor
+    fileName = new string;
 }
 
 FileObject::~FileObject()
 {
     //dtor
+    delete fileName;
 }
 
 void FileObject::setFileName(const string& f)
 {
-    fileName = f;
+    *fileName = f;
 }

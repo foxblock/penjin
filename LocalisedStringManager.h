@@ -20,6 +20,8 @@
 
 #include "ConfigFile.h"
 #include "Singleton.h"
+#include <string>
+using std::string;
 
 namespace Penjin
 {
@@ -45,8 +47,9 @@ namespace Penjin
             LocalisedStringManager& operator=(LocalisedStringManager const&);   // assignment operator is private
             ~LocalisedStringManager();
 
-            string languageFolder;
-            string language;
+            string* languageFolder;
+            string* language;
     };
+    typedef Singleton<LocalisedStringManager> LocaleMan;
 }
 #endif // LOCALISEDSTRINGMANAGER_H

@@ -29,12 +29,12 @@ DimensionObject::~DimensionObject()
     //dtor
 }
 
-Vector2di DimensionObject::getDimensions()const
+Vector2d<int> DimensionObject::getDimensions()const
 {
     return dimensions;
 }
 
-int DimensionObject::getWdith()const
+int DimensionObject::getWidth()const
 {
     return dimensions.x;
 }

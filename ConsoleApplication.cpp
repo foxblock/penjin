@@ -20,6 +20,8 @@
 #include <iostream>
 using std::cout;
 using std::cin;
+using Penjin::ConsoleApplication;
+
 ConsoleApplication::ConsoleApplication()
 {
     //ctor

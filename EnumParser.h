@@ -21,8 +21,10 @@
 #include "Object.h"
 #include <string>
 #include <map>
+#include <iterator>
 using std::string;
 using std::map;
+using std::iterator;
 
 namespace Penjin
 {
@@ -31,16 +33,17 @@ namespace Penjin
     {
         public:
             /** Default constructor */
-            EnumParser();
+           // EnumParser();
             /** Default destructor */
-            virtual ~EnumParser();
+           // virtual ~EnumParser();
 
             T stringToEnum(const string & value)
             {
-                map <string, T>::const_iterator iValue = enumMap.find(value);
-                if (iValue  == enumMap.end())
+                /*enumMap::const_iterator p = enumMap.find(value);
+                if (p  == enumMap.end())
                         throw runtime_error("EnumParser Error");
-                return iValue->second;
+                return p->second;*/
+                return enumMap.find(value)->second;
             }
 
             map <string, T> enumMap;

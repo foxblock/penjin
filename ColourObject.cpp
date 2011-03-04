@@ -36,7 +36,7 @@ ColourObject::~ColourObject()
 
 void ColourObject::setColour(const Colour& c)
 {
-    colour = c;
+    *colour = c;
 }
 
 void ColourObject::setAlpha(CRuchar a)

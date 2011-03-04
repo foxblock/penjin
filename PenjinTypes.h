@@ -31,6 +31,7 @@ typedef unsigned char uchar;
 
 //  VECTORS - Have length() operations and such
 #include "trenki/vector_math.h"
+#include "trenki/fixed_class.h"
 /*#include "Vector2df.h"
 class Vector2dx;
 #include "Vector2di.h"

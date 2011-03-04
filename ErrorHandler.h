@@ -19,11 +19,12 @@
 #ifndef	ERRORHANDLER_H
 #define	ERRORHANDLER_H
 
-#include EnumParser.h
+#include "EnumParser.h"
+#include "Errors.h"
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser
+    class ErrorHandler : public EnumParser<Penjin::Errors>
     {
         public:
             ErrorHandler();
@@ -33,7 +34,7 @@ namespace Penjin
             string getErrorText(const Errors& error);
 
         private:
-            static LocalisedStringManager* localeMan;
-    }
+            //static LocalisedStringManager* localeMan;
+    };
 }
 #endif	//	ERRORHANDLER_H
