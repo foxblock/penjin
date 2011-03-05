@@ -111,7 +111,7 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, CRbool fullSh
         float yPosMax = min(this->getY() + this->getHeight(), tester->getY() + tester->getHeight());
 
         // check for collision
-        for (float I = xPos; I <= xPosMax; ++I)
+        for (float I = xPos; I < xPosMax; ++I)
         {
             for (float K = yPos; K < yPosMax; ++K)
             {
@@ -149,7 +149,7 @@ bool CollisionRegion::hitTest(const CollisionRegion* const tester, const Vector2
         float yPosMax = min(objPosY + this->getHeight(), testerPosY + tester->getHeight());
 
         // check for collision
-        for (float I = xPos; I <= xPosMax; ++I)
+        for (float I = xPos; I < xPosMax; ++I)
         {
             for (float K = yPos; K < yPosMax; ++K)
             {
@@ -243,7 +243,7 @@ SimpleDirection CollisionRegion::directionTest(const CollisionRegion* const test
         }
     }
 }
-
+/*
 void CollisionRegion::render()
 {
     if (map)
@@ -261,5 +261,25 @@ void CollisionRegion::render()
         showRect->setDimensions(region.w,region.h);
         showRect->setPosition(pos.x + region.x,pos.y + region.y);
         showRect->render();
+    }
+}*/
+
+void CollisionRegion::render(SDL_Surface* surf)
+{
+    if (map)
+    {
+        map->renderImage(surf, pos);
+    }
+    if (not showRect && region.w != 0 && region.h != 0)
+    {
+        showRect = new Rectangle(region.w,region.h);
+        showRect->setColour(Colour(GREEN));
+        showRect->setThickness(max(getWidth() / 100.0, 1.0));
+    }
+    if (showRect)
+    {
+        showRect->setDimensions(region.w,region.h);
+        showRect->setPosition(pos.x + region.x,pos.y + region.y);
+        showRect->render(surf);
     }
 }

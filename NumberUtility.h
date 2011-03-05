@@ -51,6 +51,10 @@ namespace NumberUtility
     template <class T>
     T signMin(const T& a, const T&b);
     template <class T>
+    T closestToZero(const T& a, const T& b);
+    template <class T>
+    T furthestFromZero(const T& a, const T& b);
+    template <class T>
     T makePositive(const T& value); //  force a positive value
     template <class T>
     T makeNegative(const T& value); //  force a negative value
