@@ -198,7 +198,8 @@ public:
     }
 
     // debug render function, draws the loaded image (if any) and the outline of the region
-    void render();
+    void render() {render(GFX::getVideoSurface());} // to main surface (aka screen)
+    void render(SDL_Surface* surf); // to another surface
 
     // returns the colour of the collision image at position x,y or checks against the region if no image has been loaded
     // absulute = true - the passed point is relative to the logic zero-point (for example the top-left corner of the screen)

@@ -39,7 +39,7 @@ class Engine
 		virtual PENJIN_ERRORS init();								//	Sets up the engine, can return an error.
 		virtual void stateManagement();					//	Setup next state if needed.
 
-		bool stateLoop();								//	Main game loop (true == continue execution, false == quit)
+		virtual bool stateLoop();								//	Main game loop (true == continue execution, false == quit)
 
 		///	Variable relaying between states
 		void setVariables();
@@ -66,6 +66,7 @@ class Engine
 		Timer* gameTimer;				//	Timer for frame regulation and event scheduling.
 		uint now;
 		#ifdef _DEBUG
+            int frameCount;
             float calcFPS()
             {
                 static float fps = 0.0f;
