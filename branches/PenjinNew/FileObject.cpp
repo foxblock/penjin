@@ -20,19 +20,27 @@
 #include "FileObject.h"
 using Penjin::FileObject;
 
-FileObject::FileObject() : fileName(NULL)
+FileObject::FileObject() : fileName("PENJIN_NO_FILE")
 {
     //ctor
-    fileName = new string;
 }
 
 FileObject::~FileObject()
 {
     //dtor
-    delete fileName;
 }
 
 void FileObject::setFileName(const string& f)
 {
-    *fileName = f;
+    fileName = f;
+}
+
+Penjin::Errors FileObject::load()
+{
+    return load(fileName);
+}
+
+Penjin::Errors FileObject::save()
+{
+    return save(fileName);
 }

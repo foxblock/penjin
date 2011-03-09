@@ -17,9 +17,12 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <string>
+#include <iostream>
 #include "Application.h"
 using Penjin::Application;
 using std::string;
+using std::cout;
+using std::endl;
 
 Application::Application()
 {
@@ -39,7 +42,7 @@ Application::Application()
     if(error == PENJIN_FILE_NOT_FOUND)
     {
         // TODO handle error properly
-        //cout << "ERROR" << endl;
+        cout << "Error loading Locale file!" << endl;
     }
     //  Set localised title
     this->setTitle( (string)Penjin::LocaleMan::getInstance()->getValue("Application","Title") );
@@ -48,9 +51,27 @@ Application::Application()
     //setWidth();
     //setHeight();
     //setFullscreen();
+
+    //  Then set initialState
 }
 
 Application::~Application()
 {
     //dtor
+}
+
+
+void Application::createDefaultSettings()
+{
+
+}
+
+Penjin::Errors Application::argHandler(int argc, char** argv)
+{
+
+}
+
+void Application::quit()
+{
+
 }

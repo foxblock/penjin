@@ -24,18 +24,26 @@ using std::string;
 Window::Window()
 {
     //ctor
-    title = NULL;
-    title = new string;
 }
 
 Window::~Window()
 {
     //dtor
-    delete title;
 }
 
 void Window::setTitle(const string& t)
 {
     title = t;
 }
+
+void Window::render()
+{
+
+}
+
+void Window::onClick()
+{
+    layer = 0;
+}
+
 

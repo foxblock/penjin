@@ -19,6 +19,7 @@
 #define CONFIGFILE_H
 
 #include "FileObject.h"
+#include "simpleini/SimpleIni.h"
 #include <vector>
 #include <string>
 using std::vector;
@@ -26,7 +27,7 @@ using std::string;
 
 namespace Penjin
 {
-    class CSimpleIniA;
+    //struct CSimpleIniA;
 
     class ConfigFile : public FileObject
     {
@@ -38,8 +39,8 @@ namespace Penjin
 
             virtual Penjin::Errors load(const string& fileName);
             virtual Penjin::Errors save(const string& fileName);
-            virtual Penjin::Errors load();
-            virtual Penjin::Errors save();
+            //virtual Penjin::Errors load();
+            //virtual Penjin::Errors save();
 
 
             void setValue(const string& section, const string& key, const string& value);
@@ -49,6 +50,7 @@ namespace Penjin
             void removeSection(const string& section);
 
         protected:
+            Penjin::Errors getError(const int& error);
             CSimpleIniA* ini;
     };
 }

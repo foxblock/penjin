@@ -30,5 +30,10 @@ Object::~Object()
 
 bool Object::equals(const Object& o)
 {
-    return(this == o);
+    return(sizeof(this) == sizeof(o));
+}
+
+bool Object::operator==(const Object& o)
+{
+    return equals(o);
 }

@@ -17,24 +17,27 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Game2d.h"
-#include "ApplicationState.h"
+#include "StateTitle.h"
 using Penjin::Game2d;
 using Penjin::ApplicationState;
 
 Game2d::Game2d()
 {
     //ctor
+    state = NULL;
+    state = new StateTitle;
 }
 
 Game2d::~Game2d()
 {
     //dtor
+    delete state;
 }
 
 
 void Game2d::loop()
 {
-    while(!state->shouldQuit())
+    while(!state->getShouldQuit())
     {
         state->input();
         state->update();

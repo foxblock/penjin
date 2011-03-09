@@ -15,9 +15,11 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#include "LayerObject.h"
+*/
+#include "LayerObject.h"
+using Penjin::LayerObject;
 
-LayerObject::LayerObject()
+LayerObject::LayerObject() : layer(0)
 {
     //ctor
 }

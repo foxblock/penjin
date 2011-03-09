@@ -26,7 +26,7 @@ namespace Penjin
     {
         //  General Errors
         PENJIN_ERROR = -1,
-        PENJIN_OK,
+        PENJIN_OK = 0,
         PENJIN_PARSE_ERROR,
         PENJIN_FILE_NOT_FOUND,
         PENJIN_UNABLE_TO_SAVE,

@@ -19,6 +19,7 @@
 #define VECTOR2DI_H
 
 #include "Vector1d.h"
+#include <cmath>
 namespace Penjin
 {
     template <typename T>
@@ -26,27 +27,35 @@ namespace Penjin
     {
         public:
             /** Default constructor */
-            Vector2d();
-            Vector2d(const T& x, const T& y);
-            Vector2d(const Vector1d<T> & v);
-            Vector2d(const Vector2d<T> & v);
+            Vector2d() : y(0){;}
+            Vector2d(const T& x, const T& y) : y(y) {this->x = x;}
+            Vector2d(const Vector1d<T> & v) : y(0) {this->x = v.x;}
+            Vector2d(const Vector2d<T> & v) : y(v.y) {this->x = v.x;}
 
             /** Default destructor */
-            virtual ~Vector2d();
+            virtual ~Vector2d(){;}
 
             void setY(const T& v){y=v;}
 
-            int getY()const;
+            T getY()const{return y;}
 
-            virtual float dot(const T& v)const;
+            virtual float dot(const Vector2d<T>& v)const{return (this->x*v.x+y*v.y);}
 
-            virtual float length()const;
-            virtual float lengthSquared()const;
-            virtual Vector2d<T> unit();
-            virtual void normalise();
+            virtual float length()const                 {return sqrt(lengthSquared());}
+            virtual float lengthSquared()const          {return (this->x*this->x + y*y);}
+            virtual Vector2d<T> unit()
+            {
+                float len = length();
+                if(len == 0)
+                    return Vector2d<T> (0,1);
 
-            virtual bool equals(const Vector1d<T>& v);
-            virtual bool equals(const T& v);
+                float temp = 1/len;
+                return Vector2d<T>(this->x*temp,this->y*temp);
+            }
+            virtual void normalise()                    {*this = unit();}
+
+            virtual bool equals(const Vector1d<T>& v){return ((y == 0) && (this->x == v.x));}
+            virtual bool equals(const Vector2d<T>& v){return ((this->x == v.x) && (y == v.y));}
 
         T y;
     };

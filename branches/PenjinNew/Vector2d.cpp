@@ -16,65 +16,65 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "Vector2di.h"
-using Penjin::Vector2di;
+#include "Vector2d.h"
+using Penjin::Vector2d;
 
-Vector2di::Vector2di() : y(0)
+Vector2d::Vector2d() : y(0)
 {
     //ctor
 }
 
-Vector2di::Vector2di(CRint xVal, CRint yVal) : x(xVal), y(yVal)
+Vector2d::Vector2d(CRint xVal, CRint yVal) : x(xVal), y(yVal)
 {
 
 }
 
-Vector2di::Vector2di(const Vector1di& v) : x(v.x), y(0)
+Vector2d::Vector2d(const Vector1d& v) : x(v.x), y(0)
 {
 
 }
 
-Vector2di::Vector2di(const Vector2di& v) : x(v.x), y(v.y)
+Vector2d::Vector2d(const Vector2d& v) : x(v.x), y(v.y)
 {
 
 }
 
-Vector2di::~Vector2di()
+Vector2d::~Vector2d()
 {
     //dtor
 }
 
-int Vector2di::getY()const
+int Vector2d::getY()const
 {
     return y;
 }
 
-float Vector2di::lengthSquared()const
+float Vector2d::lengthSquared()const
 {
     return (float)(x*x + y*y);
 }
 
-float Vector2di::length()const
+float Vector2d::length()const
 {
     return sqrt(lengthSquared());
 }
 
-Vector2di Vector2di::unit()
+Vector2d Vector2d::unit()
 {
     float len = length();
     if(len == 0)
-        return Vector2di(0,1);
+        return Vector2d(0,1);
 
     float temp = 1/len
-    return Vector2di(x*temp,y*temp);
+    return Vector2d(x*temp,y*temp);
 }
 
-void Vector2di::normalise()
+void Vector2d::normalise()
 {
     this = unit();
 }
 
-bool Vector2di::equals(const Vector1di& v)
+bool Vector2d::equals(const Vector1d& v)
 {
     if(y != 0)
         return false;
