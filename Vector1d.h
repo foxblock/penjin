@@ -15,9 +15,11 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef VECTOR1DI_H
-#define VECTOR1DI_H
+*/#ifndef VECTOR1D_H
+#define VECTOR1D_H
 #include "Object.h"
+#include <limits>
+
 namespace Penjin
 {
     template <typename T>
@@ -25,27 +27,33 @@ namespace Penjin
     {
         public:
             /** Default constructor */
-            Vector1d();
-            Vector1d(const T& xVal);
-            Vector1d(const Vector1d& v);
+            Vector1d() : x(0){;}
+            Vector1d(const T& xVal) : x(xVal){;}
+            Vector1d(const Vector1d& v) : x(v.x){;}
 
             /** Default destructor */
-            virtual ~Vector1d();
+            virtual ~Vector1d(){;}
 
 
-            void setX(const T& v){x=v;}
+            void setX(const T& v)               {x=v;}
+            T getX()const                       {return x;}
 
-            T getX()const;
+            virtual float length()const         {return (float)x;}
+            virtual float lengthSquared()const  {return (float)(x*x);}
+            virtual Vector1d unit()const        {return Vector1d(1);}
+            virtual void normalise()
+            {
+                float len = length();
+                if(len == 0 || len <= std::numeric_limits<float>::max())
+                    x = 1;
+                else
+                    x *= len;
+            }
 
-            virtual float length()const;
-            virtual float lengthSquared()const;
-            virtual Vector1d unit()const;
-            virtual void normalise();
-
-            virtual bool equals(const Vector1d& v);
+            virtual bool equals(const Vector1d& v){return (this->x == v.x);}
 
         //protected:
             T x;
     };
 }
-#endif // VECTOR1DI_H
+#endif // VECTOR1D_H

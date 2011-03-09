@@ -32,6 +32,7 @@ namespace Penjin
             virtual ~Object();
 
             virtual bool equals(const Object& o);   /**< Compares one Object to another and return true if they are equivalent. */
+            bool operator==(const Object& o);
     };
 }
 #endif // OBJECT_H

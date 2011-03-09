@@ -19,8 +19,8 @@
 #define POSITIONOBJECT_H
 
 #include "Object.h"
-#include "Vector2df.h"
-
+#include "Vector2d.h"
+using Penjin::Vector2d;
 namespace Penjin
 {
     class PositionObject : public Object
@@ -37,10 +37,10 @@ namespace Penjin
             template <class T>
             void setPosition(const T& x, const T& y){position.x=x;position.y=y;}
 
-            Vector2df getPosition()const;
+            Vector2d<float> getPosition()const;
 
         protected:
-            Vector2df position;
+            Vector2d<float> position;
     };
 }
 #endif // POSITIONOBJECT_H

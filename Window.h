@@ -46,7 +46,7 @@ namespace Penjin
 
         protected:
             bool fullscreen;    //  Does it takeup fullscreen
-            string* title;
+            string title;
     };
 }
 #endif // WINDOW_H

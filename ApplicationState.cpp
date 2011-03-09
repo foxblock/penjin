@@ -15,9 +15,11 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#include "ApplicationState.h"
+*/
+#include "ApplicationState.h"
+using Penjin::ApplicationState;
 
-ApplicationState::ApplicationState()
+ApplicationState::ApplicationState() : shouldQuit(false)
 {
     //ctor
 }
@@ -25,4 +27,14 @@ ApplicationState::ApplicationState()
 ApplicationState::~ApplicationState()
 {
     //dtor
+}
+
+bool ApplicationState::getShouldQuit()const
+{
+    return shouldQuit;
+}
+
+void ApplicationState::input()
+{
+
 }

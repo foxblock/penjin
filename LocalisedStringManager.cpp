@@ -19,11 +19,9 @@
 #include "LocalisedStringManager.h"
 using Penjin::LocalisedStringManager;
 
-LocalisedStringManager::LocalisedStringManager()
+LocalisedStringManager::LocalisedStringManager() : languageFolder("strings"), language("eng_GB")
 {
     //ctor
-    languageFolder = "strings";
-    language = "eng_GB";
 }
 
 LocalisedStringManager::~LocalisedStringManager()
@@ -44,5 +42,11 @@ void LocalisedStringManager::setLanguageFolder(const string& f)
 Penjin::Errors LocalisedStringManager::load()
 {
     fileName = "./"+languageFolder+"/"+language+".lng";
-    return load(fileName);
+    return this->ConfigFile::load(fileName);
 }
+
+Penjin::Errors LocalisedStringManager::save()
+{
+
+}
+

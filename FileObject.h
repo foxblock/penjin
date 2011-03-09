@@ -36,12 +36,12 @@ namespace Penjin
             virtual Penjin::Errors load(const string& fileName)=0;
             virtual Penjin::Errors save(const string& fileName)=0;
 
-            virtual Penjin::Errors load()=0;
-            virtual Penjin::Errors save()=0;
+            virtual Penjin::Errors load();
+            virtual Penjin::Errors save();
             void setFileName(const string& f);
 
         protected:
-            string* fileName;    //we keep a copy of the the filename if needed.
+            string fileName;    //we keep a copy of the the filename if needed.
     };
 }
 #endif // FILEOBJECT_H

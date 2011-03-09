@@ -18,7 +18,7 @@
 */
 
 #include "ConfigFile.h"
-#include "simpleini/SimpleIni.h"
+
 #include <string>
 using Penjin::ConfigFile;
 using std::string;
@@ -26,19 +26,44 @@ using std::string;
 ConfigFile::ConfigFile()
 {
     //ctor
+    ini = NULL;
+    ini = new CSimpleIniA;
 }
 
 ConfigFile::~ConfigFile()
 {
     //dtor
+    delete ini;
 }
 
 Penjin::Errors ConfigFile::load(const string& fileName)
 {
-    return Penjin::PENJIN_FUNCTION_IS_STUB;
+    return getError(ini->LoadFile(fileName.c_str()));
 }
 
 Penjin::Errors ConfigFile::save(const string& fileName)
 {
-    return Penjin::PENJIN_FUNCTION_IS_STUB;
+    return getError(ini->SaveFile(fileName.c_str()));
+}
+
+string ConfigFile::getValue(const string& section, const string& key)
+{
+    return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
+}
+
+Penjin::Errors ConfigFile::getError(const int& error)
+{
+    /*    SI_FAIL     = -1,   //!< Generic failure
+    SI_NOMEM    = -2,   //!< Out of memory error
+    SI_FILE     = -3    //!< File error (see errno for detail error)*/
+    if(error<0)
+    {
+        if(error==-1)
+            return PENJIN_ERROR;
+        else if(error==-2)
+            return PENJIN_ERROR;
+        else
+            return PENJIN_FILE_NOT_FOUND;
+    }
+    return PENJIN_OK;
 }

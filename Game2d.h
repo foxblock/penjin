@@ -19,11 +19,11 @@
 #define GAME2D_H
 
 #include "Application.h"
-#include "UpdateObject.h"
+//#include "UpdateObject.h"
 
 namespace Penjin
 {
-    class Game2d : public Application , UpdateObject
+    class Game2d : public Application //, UpdateObject
     {
         public:
             /** Default constructor */
@@ -31,6 +31,7 @@ namespace Penjin
             /** Default destructor */
             virtual ~Game2d();
 
+            //virtual void update()=0;
             virtual void loop();    /**< The main game loop */
 
         protected:

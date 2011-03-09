@@ -35,6 +35,7 @@ namespace Penjin
                 static LocalisedStringManager instanceLSM;   // Instantiated when this function is called
                 return instanceLSM;
             }
+            //virtual Penjin::Errors load(const string & file);
             virtual Penjin::Errors load();
             virtual Penjin::Errors save();
 
@@ -43,12 +44,12 @@ namespace Penjin
 
         private:
             //LocalisedStringManager();                                           // constructor is private
-            LocalisedStringManager(LocalisedStringManager const&);              // copy constructor is private
-            LocalisedStringManager& operator=(LocalisedStringManager const&);   // assignment operator is private
+            LocalisedStringManager(LocalisedStringManager const&){;}              // copy constructor is private
+            LocalisedStringManager& operator=(LocalisedStringManager const&){;}   // assignment operator is private
             ~LocalisedStringManager();
 
-            string* languageFolder;
-            string* language;
+            string languageFolder;
+            string language;
     };
     typedef Singleton<LocalisedStringManager> LocaleMan;
 }

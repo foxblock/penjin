@@ -20,7 +20,7 @@
 #define COLOUR_H_INCLUDED
 
 #include "PenjinTypes.h"
-#include "PenjinObject.h"
+#include "Object.h"
 #include <SDL/SDL.h>
 #include <algorithm>
 using namespace std;
@@ -53,7 +53,7 @@ namespace Penjin
         WHITE
     };
 
-    class Colour : public PenjinObject
+    class Colour : public Object
     {
         public:
             Colour(){setColour(WHITE);}
