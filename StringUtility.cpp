@@ -241,6 +241,15 @@ bool StringUtility::stringToBool(CRstring value)
         return false;
 }
 
+Vector2df StringUtility::stringToVec(CRstring value, CRstring separator)
+{
+    vector<string> tokens;
+    tokenize(value,tokens,separator);
+    if (tokens.size() != 2)
+        return Vector2df(0,0);
+    return Vector2df(stringToDouble(tokens.front()),stringToDouble(tokens.back()));
+}
+
 double StringUtility::cStringToDouble(char* value){return stringToDouble((string)value);}
 float StringUtility::cStringToFloat(char* value){return stringToFloat((string)value);}
 Fixed StringUtility::cStringToFixed(char* value){return stringToFixed((string)value);}
@@ -298,6 +307,7 @@ void StringUtility::reverse(char* s)
     swap(s[begin++], s[end--]);
 }
 
+// TODO: Add flags like srReplaceAll, etc.
 string StringUtility::substrReplace(string text, CRstring oldSubstr, CRstring newSubstr)
 {
     string::size_type found = text.find(oldSubstr,0);

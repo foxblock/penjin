@@ -48,6 +48,12 @@ class Engine
 		//	Functions for engine setup
 		void setInitialState(CRuint nextState);
 
+		// Framerate
+		// Pass the number of desired frames per second
+		// Real framerate may differ due to device limitations and rounding errors
+		// on very high framerates (>60)
+		void setFrameRate(CRuint fpsDesired);
+
 	protected:
         #ifndef PENJIN_ASCII
             string customControlMap;        //  filename for a controlmapping file
@@ -82,21 +88,9 @@ class Engine
             }
 		#endif
 
-        uint timeRemaining(CRuint x)
-        {
-            static uint nextTime = 0;
-            #ifndef PENJIN_SYS_TIMER
-                now = SDL_GetTicks();
-            #else
-                now = clock();
-            #endif
-            if (nextTime <= now)
-            {
-                nextTime = now + x;
-                return(0);
-            }
-            return(nextTime - now);
-        }
+        // sleeps the passed amount of milliseconds (and keeps track of rounding errors)
+        // time-critical therefore declared inline
+		inline void limitFPS(CRfloat sleepTime) const;
 };
 
 #endif	//	ENGINE_H

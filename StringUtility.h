@@ -58,10 +58,10 @@ namespace StringUtility
         string shortToString(CRshort value);
         string boolToString(CRbool value, CRbool useBoolString=true);
         template <class T>
-        string vecToString(const T& vec, CRstring separator=",")
+        string vecToString(const T& value, CRstring separator=",")
         {
             // using doubleToString for maximum compatibility
-            return (doubleToString(vec.x) + separator + doubleToString(vec.y));
+            return (doubleToString(value.x) + separator + doubleToString(value.y));
         }
 
         /// Char* string conversions
@@ -80,6 +80,7 @@ namespace StringUtility
         int stringToInt(CRstring value);
         short stringToShort(CRstring value);
         bool stringToBool(CRstring value);
+        Vector2df stringToVec(CRstring value, CRstring separator=",");
 
         ///	Case modifyers
         string upper(string word);
