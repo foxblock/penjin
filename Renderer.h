@@ -18,16 +18,44 @@
 */#ifndef RENDERER_H
 #define RENDERER_H
 
+#include "DimensionObject.h"
+#include "Singleton.h"
+#include "ColourObject.h"
 
-class Renderer
+
+namespace Penjin
 {
-    public:
-        /** Default constructor */
-        Renderer();
-        /** Default destructor */
-        virtual ~Renderer();
-    protected:
-    private:
-};
+    class Renderer : public DimensionObject
+    {
+        public:
+            /** Default constructor */
+            Renderer();
+            /** Default destructor */
+            virtual ~Renderer();
 
+            void setBitsPerPixel(const int& bpp);
+            void setFullscreen(const bool& fs);
+            void setClearColour(const Colour& c);
+
+            virtual void showCursor(const bool& show)=0;
+            /** Sets the currently set width, height and bit-depth to the screen */
+            virtual void applyVideoSettings()=0;
+
+            virtual void clear()=0;
+            virtual void blit()=0;
+
+
+            virtual void drawPixel(const Vector2d<float> & v, Colour c)=0;
+            virtual void drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2)=0;
+            virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims, const Colour& c, const int& lineWidth)=0;
+            virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry, const Colour& c, const int& lineWdith)=0;
+
+            virtual void showVideoInfo()=0;
+
+        protected:
+            int bpp;
+            bool fullScreen;
+            Colour clearColour;
+    };
+}
 #endif // RENDERER_H

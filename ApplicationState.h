@@ -18,6 +18,7 @@
 */
 /** \file ApplicationState is a base class to create application states for your application or game.
     It is not to be instantiated directly!
+*   \author Kevin Winfield-Pantoja
 */
 #ifndef APPLICATIONSTATE_H
 #define APPLICATIONSTATE_H
@@ -35,12 +36,16 @@ namespace Penjin
             /** Default destructor */
             virtual ~ApplicationState();
 
+            /**< \brief Handle user input. */
             virtual void input();
+            /**< \brief Update this state. */
             virtual void update()=0;
-
+            /**<    \brief Check if the state requests to quit or not.
+                    \return true if the state would like to quit and false if not.*/
             bool getShouldQuit()const;
+
         protected:
-            bool shouldQuit;
+            bool shouldQuit;    /**< the bool if the state would like to quit. */
     };
 }
 #endif // APPLICATIONSTATE_H

@@ -27,10 +27,15 @@ using Penjin::Singleton;
 
 /**
 *   \file Application is a base class to create certain application types.
+*   \author Kevin Winfield-Pantoja
 */
 namespace Penjin
 {
+
+    /********** Forward Decalrations **********/
     class ApplicationState;
+    /**************** Constants ******************/
+    const std::string CONFIG_FILE = "config/settings.ini";   /**< The configuration file location */
 
     class Application : public Window
     {
@@ -41,24 +46,25 @@ namespace Penjin
             virtual ~Application();
 
             /** \brief Processes commandline arguements
-             *
              * \param argc an int of the number of commands
              * \param argv the actual char** string data
              * \return Penjin::Errors the error code.
-             *
              */
             virtual Penjin::Errors argHandler(int argc, char** argv);
 
             //void setNextState(StateID next);
 
+            /** \brief Close down Penjin cleanly*/
             virtual void quit();
 
         protected:
+            /** \brief Create a default settings file if not detected*/
             void createDefaultSettings();
+            /** \brief Handle state switching*/
             void stateManagement();
 
             // StateID next;
-            ApplicationState* state;
+            ApplicationState* state;    /**< The state of the application */
     };
 }
 #endif // APPLICATION_H

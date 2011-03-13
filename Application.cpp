@@ -24,12 +24,12 @@ using std::string;
 using std::cout;
 using std::endl;
 
-Application::Application()
+Application::Application() : state(NULL)
 {
     //ctor
     //  We load the settings file for the app
     Penjin::ConfigFile conf;
-    Errors error = conf.load((string)"config/settings.ini");
+    Errors error = conf.load(Penjin::CONFIG_FILE);
 
     //  If settings.ini not found create a default
     if(error == PENJIN_FILE_NOT_FOUND)
@@ -41,23 +41,17 @@ Application::Application()
     error = Penjin::LocaleMan::getInstance()->load();
     if(error == PENJIN_FILE_NOT_FOUND)
     {
-        // TODO handle error properly
+        // If locale not found we can only give English error.
         cout << "Error loading Locale file!" << endl;
     }
     //  Set localised title
     this->setTitle( (string)Penjin::LocaleMan::getInstance()->getValue("Application","Title") );
-
-    // TODO: Setup video properties from settings file.
-    //setWidth();
-    //setHeight();
-    //setFullscreen();
-
-    //  Then set initialState
 }
 
 Application::~Application()
 {
     //dtor
+    delete state;
 }
 
 

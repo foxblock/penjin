@@ -32,9 +32,6 @@ namespace Penjin
 
             string getErrorText(const string& error);
             string getErrorText(const Errors& error);
-
-        private:
-            //static LocalisedStringManager* localeMan;
     };
 }
 #endif	//	ERRORHANDLER_H
