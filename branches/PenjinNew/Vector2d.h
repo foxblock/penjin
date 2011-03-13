@@ -54,8 +54,8 @@ namespace Penjin
             }
             virtual void normalise()                    {*this = unit();}
 
-            virtual bool equals(const Vector1d<T>& v){return ((y == 0) && (this->x == v.x));}
-            virtual bool equals(const Vector2d<T>& v){return ((this->x == v.x) && (y == v.y));}
+            virtual bool equals(const Vector1d<T>& v)   {return ((y == 0) && (this->x == v.x));}
+            virtual bool equals(const Vector2d<T>& v)   {return ((this->x == v.x) && (y == v.y));}
 
         T y;
     };

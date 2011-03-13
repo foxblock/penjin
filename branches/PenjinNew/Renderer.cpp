@@ -17,7 +17,8 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */#include "Renderer.h"
 
-Renderer::Renderer()
+using Penjin::Renderer;
+Renderer::Renderer() :  bpp(0), fullScreen(false), clearColour(BLACK)
 {
     //ctor
 }
@@ -25,4 +26,19 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
     //dtor
+}
+
+void Renderer::setBitsPerPixel(const int& bpp)
+{
+    this->bpp = bpp;
+}
+
+void Renderer::setFullscreen(const bool& fs)
+{
+    fullScreen = fs;
+}
+
+void Renderer::setClearColour(const Colour& c)
+{
+    clearColour = c;
 }

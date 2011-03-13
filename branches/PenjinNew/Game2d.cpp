@@ -16,22 +16,60 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
+
 #include "Game2d.h"
 #include "StateTitle.h"
+#include "GFX.h"
+#include "StringUtility.h"
 using Penjin::Game2d;
 using Penjin::ApplicationState;
 
 Game2d::Game2d()
 {
     //ctor
-    state = NULL;
-    state = new StateTitle;
+    Penjin::Errors e = PENJIN_OK;
+    Uint32 flags=0;
+    #if defined (PENJIN_SDL_VIDEO) || defined(PENJIN_SDL)
+        flags = flags | SDL_INIT_VIDEO;
+    #endif
+    #if defined (PENJIN_SDL_AUDIO) || defined(PENJIN_SDL)
+        //  Set SDL_Mixer
+        flags = flags | SDL_INIT_AUDIO;
+    #endif
+    #if defined (PENJIN_SDL_INPUT) || defined(PENJIN_SDL)
+        //  Setup SDL input handling
+        flags = flags | SDL_INIT_JOYSTICK;
+    #endif
+    #if defined (PENJIN_SDL_TIMER) || defined(PENJIN_SDL)
+        //  Setup SDL timer
+        flags = flags | SDL_INIT_TIMER;
+    #endif
+    if(flags != 0)
+    {
+        //  TODO handle error properly
+        if(SDL_Init(flags) < 0)
+            e = PENJIN_SDL_SOMETHING_FAILED;
+    }
+
+    //  Load video config
+    if(e == PENJIN_OK)
+    {
+        Penjin::ConfigFile cfg;
+        cfg.load(Penjin::CONFIG_FILE);
+        Penjin::GFX::getInstance()->setWidth(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Width")));
+        Penjin::GFX::getInstance()->setHeight(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Height")));
+        Penjin::GFX::getInstance()->setBitsPerPixel(Penjin::StringUtility::stringToInt(cfg.getValue("Video","BitsPerPixel")));
+        Penjin::GFX::getInstance()->setFullscreen(Penjin::StringUtility::stringToBool(cfg.getValue("Video","Fullscreen")));
+    }
+    if(flags)
+        Penjin::GFX::getInstance()->applyVideoSettings();
 }
 
 Game2d::~Game2d()
 {
     //dtor
-    delete state;
 }
 
 
@@ -42,5 +80,6 @@ void Game2d::loop()
         state->input();
         state->update();
         state->render();
+        Penjin::GFX::getInstance()->blit();
     }
 }

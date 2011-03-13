@@ -1,5 +1,8 @@
+#ifndef GFX_H_INCLUDED
+#define GFX_H_INCLUDED
+
 /*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -16,31 +19,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "DimensionObject.h"
-using Penjin::DimensionObject;
+/***************************************************************************************************
+*   \file CLASS_NAME is a bladiblabla that blah blah by blah.
+*/
 
-DimensionObject::DimensionObject()
-{
-    //ctor
-    dimensions.x = dimensions.y = 0;
-}
+#if defined(PENJIN_SDL_VIDEO) || defined(PENJIN_SDL) && !defined(PENJIN_GL_VIDEO)
+    #include "RendererSDL_2d.h"
+#endif
 
-DimensionObject::~DimensionObject()
-{
-    //dtor
-}
-
-Vector2d<int> DimensionObject::getDimensions()const
-{
-    return dimensions;
-}
-
-int DimensionObject::getWidth()const
-{
-    return dimensions.x;
-}
-
-int DimensionObject::getHeight()const
-{
-    return dimensions.y;
-}
+#endif // GFX_H_INCLUDED

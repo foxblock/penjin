@@ -46,5 +46,6 @@ namespace Penjin
             Colour* colour;
 
     };
+    typedef ColourObject Pixel;
 }
 #endif // COLOUROBJECT_H

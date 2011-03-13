@@ -25,9 +25,8 @@
 #include <algorithm>
 using namespace std;
 /**
-  * Colour class allows manipulation of colours
-  *
-  * @author Kevin Winfield-Pantoja
+  * \file Colour class allows manipulation of colours
+  * \author Kevin Winfield-Pantoja
   */
 
 namespace Penjin
