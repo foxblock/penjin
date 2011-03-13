@@ -144,6 +144,7 @@ class AnimatedSprite
             reachedEnd = false;
         }
         void setCurrentFrame(CRint framenumber){currentFrame = framenumber;}
+        size_t frameCount() const {return image.size();} // return the number of frames
     protected:
         Image image;
         Timer animationTimer;

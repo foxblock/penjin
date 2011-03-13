@@ -106,6 +106,11 @@ void Engine::setInitialState(CRuint nextState)
     state->setNextState(nextState);
 }
 
+void Engine::setFrameRate(CRuint fpsDesired)
+{
+    gameTimer->setScaler(1000 / (float)fpsDesired);
+}
+
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
 {
 	//	This is just an example of how to handle commandlines, you would override this depending on actual needs.
@@ -219,6 +224,7 @@ PENJIN_ERRORS Engine::penjinInit()
         if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0 )
             return PENJIN_SDL_SOMETHING_FAILED;
     #endif
+    gameTimer->setMode(SIXTY_FRAMES); // default framerate (60)
     PENJIN_ERRORS err = init();
     if(err != PENJIN_OK)
         return err;
@@ -265,7 +271,6 @@ PENJIN_ERRORS Engine::penjinInit()
         if(customControlMap != "NULL")
             input->loadControlMap(customControlMap);
     #endif
-    gameTimer->setMode(SIXTY_FRAMES);
     #ifndef PENJIN_SYS_TIMER
         now = SDL_GetTicks();
     #else
@@ -300,41 +305,37 @@ bool Engine::stateLoop()
 		        state->onPause();
 		        state->setFirstPaused(true);
             }
-            if(gameTimer->getScaledTicks() > 1)
-            {
-                state->pauseInput();
-                state->pauseUpdate();
-                #ifdef PENJIN_SDL
+
+            // the following will always last at least the time of one frame
+            gameTimer->start();
+            state->pauseInput();
+            state->pauseUpdate();
+            #ifdef PENJIN_SDL
                 //GFX::lockSurface();
-                #endif
-                state->pauseScreen();
-                #ifdef PENJIN_SDL
-                //GFX::unlockSurface();
-                #endif
-                #ifndef PENJIN_ASCII
-                    GFX::forceBlit();
-                #endif
-                gameTimer->start();
-            }
-            else
-            #ifndef PENJIN_SYS_TIMER
-                SDL_Delay(50);
-            #else
-                sleep(50);
             #endif
+            state->pauseScreen();
+            #ifdef PENJIN_SDL
+                //GFX::unlockSurface();
+            #endif
+            #ifndef PENJIN_ASCII
+                GFX::forceBlit();
+            #endif
+			// if done in time, wait for the rest of the frame
+			limitFPS(gameTimer->getScaler() - gameTimer->getTicks());
         }
         else if(!state->getIsPaused() && state->getFirstPaused())
         {
             state->onResume();
             state->setFirstPaused(false);
         }
-		else if(gameTimer->getScaledTicks() > 1)
+		else
 		{
+            // the following will always last at least the time of one frame
 			gameTimer->start();
 			state->userInput();
 			state->update();
 			#ifdef USE_ACHIEVEMENTS
-			ACHIEVEMENTS->update();
+                ACHIEVEMENTS->update();
 			#endif
 
 			if(state->getNeedInit())
@@ -375,18 +376,9 @@ bool Engine::stateLoop()
                     }
                 #endif
 			#endif
+			// if done in time, wait for the rest of the frame
+			limitFPS(gameTimer->getScaler() - gameTimer->getTicks());
 		}
-		#ifndef PENJIN_SYS_TIMER
-		else
-		{
-		    SDL_Delay(timeRemaining((uint)gameTimer->getScaler()));  // Release CPU briefly
-		}
-		#else
-        /*else
-		{
-		    sleep(timeRemaining((uint)gameTimer.getScaler()));  // Release CPU briefly
-		}*/
-		#endif
 		return true;   // Continue program execution
 	}
 	else
@@ -426,4 +418,19 @@ void Engine::stateManagement()
     }
 }
 
+inline void Engine::limitFPS(CRfloat sleepTime) const
+{
+    static float diff = 0; // value compensating the precision loss due to float-int conversions
+    if (sleepTime > 0)
+    {
+        diff += sleepTime - (int)sleepTime;
+#ifndef PENJIN_SYS_TIMER
+        SDL_Delay((int)sleepTime + (int)diff);  // Release CPU briefly
+#else
+        sleep((int)sleepTime + (int)diff);  // Release CPU briefly
+#endif
+        while ((int)diff > 0)
+            --diff;
+    }
+}
 
