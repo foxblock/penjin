@@ -52,7 +52,7 @@ using std::vector;
 	#define	STATE_BASE 1	//	Standard state
 #endif	//	STATE_BASE
 
-class  BaseState
+class BaseState
 {
 	public:
 		BaseState();

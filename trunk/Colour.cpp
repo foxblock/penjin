@@ -169,6 +169,53 @@ void Colour::setColour(CRint rgb)
     #endif
 }
 
+void Colour::setColour(CRstring ident)
+{
+    // convert to upper-case for case in-sensitive checking
+    string s = ident;
+    for(int I = s.size()-1; I >= 0; --I)
+        s[I] = toupper((char)s[I]);
+
+    if (s == "BLACK")
+        setColour(BLACK);
+    else if (s == "RED")
+        setColour(RED);
+    else if (s == "LIGHT_RED" || s == "LIGHT-RED" || s == "LIGHTRED" || s == "LIGHT RED")
+        setColour(LIGHT_RED);
+    else if (s == "GREEN")
+        setColour(GREEN);
+    else if (s == "LIGHT_GREEN" || s == "LIGHT-GREEN" || s == "LIGHTGREEN" || s == "LIGHT GREEN")
+        setColour(LIGHT_GREEN);
+    else if (s == "BLUE")
+        setColour(BLUE);
+    else if (s == "LIGHT_BLUE" || s == "LIGHT-BLUE" || s == "LIGHTBLUE" || s == "LIGHT BLUE")
+        setColour(LIGHT_BLUE);
+    else if (s == "YELLOW")
+        setColour(YELLOW);
+    else if (s == "PURPLE")
+        setColour(PURPLE);
+    else if (s == "MAGENTA" || s == "FUCHSIA" || s == "PINK" || s == "MAGIC PINK" || s == "MAGIC-PINK")
+        setColour(MAGENTA);
+    else if (s == "CYAN" || s == "TEAL")
+        setColour(CYAN);
+    else if (s == "ORANGE")
+        setColour(ORANGE);
+    else if (s == "BROWN")
+        setColour(BROWN);
+    else if (s == "GREY" || s == "GRAY")
+        setColour(GREY);
+    else if (s == "LIGHT_GREY" || s == "LIGHT-GREY" || s == "LIGHTGREY" || s == "LIGHT GREY" ||
+             s == "LIGHT_GRAY" || s == "LIGHT-GRAY" || s == "LIGHTGRAY" || s == "LIGHT GRAY")
+        setColour(LIGHT_GREY);
+    else if (s == "DARK_GREY" || s == "DARK-GREY" || s == "DARKGREY" || s == "DARK GREY" ||
+             s == "DARK_GRAY" || s == "DARK-GRAY" || s == "DARKGRAY" || s == "DARK GRAY")
+        setColour(DARK_GREY);
+    else if (s == "WHITE")
+        setColour(WHITE);
+    else
+        setColour(BLACK);
+}
+
 bool Colour::lessThan(CRuchar r, CRuchar g, CRuchar b, CRuchar a)const
 {
    if(red >= r)

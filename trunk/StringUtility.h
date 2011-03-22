@@ -85,8 +85,6 @@ namespace StringUtility
         ///	Case modifyers
         string upper(string word);
         string lower(string word);
-        char upper(CRchar l);	//	converts character to uppercase
-        char lower(CRchar l);	//	converts character to lowercase
 
         ///	Digit/Letter checking
         bool isLetter(CRchar letter);

@@ -19,6 +19,8 @@
 #ifndef COLOUR_H_INCLUDED
 #define COLOUR_H_INCLUDED
 
+#include <map>
+
 #include "PenjinTypes.h"
 #include <SDL/SDL.h>
 #include <algorithm>
@@ -70,6 +72,7 @@ class Colour
 			alpha = colour.alpha;
         }
         Colour (CRint rgb){setColour(rgb);}
+        Colour (CRstring ident){setColour(ident);}
 
         // OpenGL type colour
         Colour(CRfloat r,CRfloat g,CRfloat b,CRfloat a){setOGLColour(r,g,b,a);}
@@ -83,6 +86,7 @@ class Colour
         void setColour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b,255);}            // Set the colour using RGB
         void setColour(const PENJIN_COLOURS& colour);						//	Set the colour using predefines
         void setColour(CRint rgb);                                          // Set the colour using a Delphi int (red + green * 256 + blue * 256 * 256)
+        void setColour(CRstring ident); // set the colour using a written version of the PENJIN_COLOURS
 
         SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
         Uint32 getSDL_Uint32Colour(const SDL_Surface* dst)const;

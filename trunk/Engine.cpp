@@ -390,7 +390,7 @@ bool Engine::stateLoop()
 
 		// Initialise the changed state
 		state->init();
-		state->setNeedInit(false);  // Set that we have performed the init
+		state->setNeedInit(false);    // Set that we have performed the init
 		return true;                  // Continue program execution
 	}
 	//  Should never reach here
