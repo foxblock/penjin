@@ -56,7 +56,7 @@ class FileLister : public Menu
         virtual void update();
 
         string getPath()const{return workingDir;}
-        void setPath(CRstring path){workingDir = path;}
+        void setPath(CRstring path){workingDir = path; createListing();}
         void setCheckFolderDepth(CRbool check){;}
         string getSelected();      //  Return the string of selected item
         vector<string> getListing(){return listing;}//  Return entire director listing as a vector of strings.

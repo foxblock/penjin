@@ -161,15 +161,6 @@ string StringUtility::longToString(CRlong value)
 	return str;
 }
 
-char StringUtility::lower(CRchar l)
-{
-	//	if it's lowercase
-	char o = l;
-	if (isupper(l))
-		o = tolower(l);
-	return o;
-}
-
 string StringUtility::shortToString(CRshort value)
 {
 	stringstream ss;
@@ -257,15 +248,6 @@ int StringUtility::cStringToInt(char* value){return stringToInt((string)value);}
 long StringUtility::cStringToLong(char* value){return stringToLong((string)value);}
 short StringUtility::cStringToShort(char* value){return stringToShort((string)value);}
 
-char StringUtility::upper(CRchar l)
-{
-    char o = l;
-	//	if it's lowercase
-	if (islower(l))
-		o = toupper(l);
-	return o;
-}
-
 int StringUtility::charToInt(CRchar n)
 {
     char o = n;
@@ -286,14 +268,14 @@ char StringUtility::intToChar(CRint n)
 string StringUtility::upper(string word)
 {
     for(int i = word.size()-1; i >= 0; --i)
-        word[i] = upper((char)word[i]);
+        word[i] = toupper((char)word[i]);
     return word;
 }
 
 string StringUtility::lower(string word)
 {
     for(int i = word.size()-1; i >= 0; --i)
-        word[i] = lower((char)word[i]);
+        word[i] = tolower((char)word[i]);
     return word;
 }
 string StringUtility::leadingZero(CRint value){return (value<10?"0":"") + StringUtility::intToString(value);}
