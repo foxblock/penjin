@@ -17,7 +17,8 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************
-*   \file CLASS_NAME is a bladiblabla that blah blah by blah.
+*   \file RendererSDL_2d is a 2d renderer using SDL.
+*   \author Kevin Winfield-Pantoja
 */
 
 #ifndef RENDERERSDL_2D_H
@@ -43,10 +44,10 @@ namespace Penjin
             virtual void blit();
 
 
-            virtual void drawPixel(const Vector2d<float> & v, Colour c);
+            virtual void drawPixel(const Vector2d<float> & v);
             virtual void drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2);
-            virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims, const Colour& c, const int& lineWidth);
-            virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry, const Colour& c, const int& lineWdith);
+            virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims);
+            virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry);
 
             virtual void showVideoInfo();
 

@@ -41,5 +41,5 @@ void ColourObject::setColour(const Colour& c)
 
 void ColourObject::setAlpha(CRuchar a)
 {
-    colour->alpha = a;
+    colour->a = a;
 }

@@ -1,4 +1,5 @@
-/*
+/**
+    \section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -15,7 +16,12 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef CONFIGFILE_H
+*/
+/**
+  * \file ConfigFile class allows the loading of ini files
+  * \author Kevin Winfield-Pantoja
+  */
+#ifndef CONFIGFILE_H
 #define CONFIGFILE_H
 
 #include "FileObject.h"
@@ -27,8 +33,6 @@ using std::string;
 
 namespace Penjin
 {
-    //struct CSimpleIniA;
-
     class ConfigFile : public FileObject
     {
         public:
@@ -37,11 +41,17 @@ namespace Penjin
             /** Default destructor */
             virtual ~ConfigFile();
 
-            virtual Penjin::Errors load(const string& fileName);
-            virtual Penjin::Errors save(const string& fileName);
-            //virtual Penjin::Errors load();
-            //virtual Penjin::Errors save();
+            /** \brief loads the ini file for parsing and value extraction.
+             * \param fileName : The file to load.
+             * \return PENJIN_OK if file was loaded successfully.
+             */
+            virtual Penjin::ERRORS load(const string& fileName);
 
+            /** \brief saves the changes to the ini file.
+             * \param fileName : The file to save.
+             * \return PENJIN_OK if file was saved successfully.
+             */
+            virtual Penjin::ERRORS save(const string& fileName);
 
             void setValue(const string& section, const string& key, const string& value);
             string getValue(const string& section, const string& key);
@@ -50,7 +60,7 @@ namespace Penjin
             void removeSection(const string& section);
 
         protected:
-            Penjin::Errors getError(const int& error);
+            Penjin::ERRORS getError(const int& error);
             CSimpleIniA* ini;
     };
 }

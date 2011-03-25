@@ -20,7 +20,7 @@
 #include "Errors.h"
 #include "LocalisedStringManager.h"
 using Penjin::ErrorHandler;
-using Penjin::Errors;
+using Penjin::ERRORS;
 using Penjin::LocaleMan;
 
 
@@ -75,7 +75,7 @@ string ErrorHandler::getErrorText(const string& error)
     return Penjin::LocaleMan::getInstance()->getValue("Errors",error);
 }
 
-string ErrorHandler::getErrorText(const Errors& error)
+string ErrorHandler::getErrorText(const ERRORS& error)
 {
     //return getErrorText(stringToEnum(error));
 }

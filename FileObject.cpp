@@ -35,12 +35,12 @@ void FileObject::setFileName(const string& f)
     fileName = f;
 }
 
-Penjin::Errors FileObject::load()
+Penjin::ERRORS FileObject::load()
 {
     return load(fileName);
 }
 
-Penjin::Errors FileObject::save()
+Penjin::ERRORS FileObject::save()
 {
     return save(fileName);
 }

@@ -15,7 +15,9 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#include "RenderObject.h"
+*/
+#include "GFX.h"
+#include "RenderObject.h"
 using Penjin::RenderObject;
 RenderObject::RenderObject()
 {
@@ -26,3 +28,9 @@ RenderObject::~RenderObject()
 {
     //dtor
 }
+
+void RenderObject::queueRender()
+{
+    Penjin::GFX::getInstance()->queueRenderObject(this);
+}
+

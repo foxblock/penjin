@@ -36,8 +36,8 @@ namespace Penjin
                 return instanceLSM;
             }
             //virtual Penjin::Errors load(const string & file);
-            virtual Penjin::Errors load();
-            virtual Penjin::Errors save();
+            virtual Penjin::ERRORS load();
+            virtual Penjin::ERRORS save();
 
             void setLanguage(const string& lang);
             void setLanguageFolder(const string& f);

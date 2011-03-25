@@ -39,14 +39,14 @@ void LocalisedStringManager::setLanguageFolder(const string& f)
     languageFolder = f;
 }
 
-Penjin::Errors LocalisedStringManager::load()
+Penjin::ERRORS LocalisedStringManager::load()
 {
     fileName = "./"+languageFolder+"/"+language+".lng";
     return this->ConfigFile::load(fileName);
 }
 
-Penjin::Errors LocalisedStringManager::save()
+Penjin::ERRORS LocalisedStringManager::save()
 {
-
+    return Penjin::PENJIN_FUNCTION_IS_STUB;
 }
 

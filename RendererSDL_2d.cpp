@@ -17,13 +17,15 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************
-*   \file CLASS_NAME is a bladiblabla that blah blah by blah.
+*   \file RendererSDL_2d is a 2d renderer using SDL.
+*   \author Kevin Winfield-Pantoja
 */
 #include <SDL/SDL.h>
+#include <SDL/SDL_gfxPrimitives.h>
 #include "RendererSDL_2d.h"
 #include "Errors.h"
 using Penjin::RendererSDL_2d;
-using Penjin::Errors;
+using Penjin::ERRORS;
 
 RendererSDL_2d::RendererSDL_2d()
 {
@@ -77,28 +79,52 @@ void RendererSDL_2d::blit()
     SDL_Flip(screen);
 }
 
-void RendererSDL_2d::drawPixel(const Vector2d<float> & v, Colour c)
+void RendererSDL_2d::drawPixel(const Vector2d<float> & v)
 {
         SDL_Rect r;
-        r.x=v.x;
-        r.y=v.y;
-        r.w=r.h=1;
-        SDL_FillRect(screen,&r,c.getSDL_Uint32Colour());
+        int t = drawWidth*0.5f;
+        r.x=v.x-t;
+        r.y=v.y-t;
+        r.w=r.h=drawWidth;
+        SDL_FillRect(screen,&r,drawColour.getSDL_Uint32Colour());
 }
 
 void RendererSDL_2d::drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2)
 {
-
+    /*
+    // When source changes have filtered through this function will be useful...
+    thickLineRGBA(screen,
+    p1.x, p1.y,
+    p2.x, p2.y,
+    drawWidth,
+    drawColour.red, drawColour.green, drawColour.blue, drawColour.alpha);
+    */
+    lineRGBA(screen,
+    p1.x, p1.y,
+    p2.x, p2.y,
+    drawColour.r, drawColour.g, drawColour.b, drawColour.a);
 }
 
-void RendererSDL_2d::drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims, const Colour& c, const int& lineWidth)
+void RendererSDL_2d::drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims)
 {
-
+    if(drawWidth<=0)
+        boxRGBA(screen, pos.x, pos.y, dims.x, dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+    else
+    {
+        //  TODO: variable width support.
+        rectangleRGBA(screen, pos.x, pos.y, dims.x, dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+    }
 }
 
-void RendererSDL_2d::drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry, const Colour& c, const int& lineWidth)
+void RendererSDL_2d::drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry)
 {
-
+    if(drawWidth<=0)
+        filledEllipseRGBA(screen, centre.x, centre.y, rx, ry, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+    else
+    {
+        //  TODO: variable width support.
+        ellipseRGBA(screen, centre.x, centre.y, rx, ry, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+    }
 }
 
 void RendererSDL_2d::showVideoInfo()

@@ -15,16 +15,20 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef RENDERER_H
+*/
+#ifndef RENDERER_H
 #define RENDERER_H
 
 #include "DimensionObject.h"
 #include "Singleton.h"
 #include "ColourObject.h"
-
+#include  <vector>
 
 namespace Penjin
 {
+    class Timer;
+    class RenderObject;
+
     class Renderer : public DimensionObject
     {
         public:
@@ -36,26 +40,38 @@ namespace Penjin
             void setBitsPerPixel(const int& bpp);
             void setFullscreen(const bool& fs);
             void setClearColour(const Colour& c);
+            void setDrawColour(const Colour& c);
+            void setDrawWidth(const int& w);
+            void setFrameRate(const uint& fps);
 
             virtual void showCursor(const bool& show)=0;
             /** Sets the currently set width, height and bit-depth to the screen */
             virtual void applyVideoSettings()=0;
 
+            void frameLimiter();
             virtual void clear()=0;
             virtual void blit()=0;
 
+            virtual void queueRenderObject(RenderObject* obj);
+            virtual void renderQueue();
 
-            virtual void drawPixel(const Vector2d<float> & v, Colour c)=0;
+
+            virtual void drawPixel(const Vector2d<float> & v)=0;
             virtual void drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2)=0;
-            virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims, const Colour& c, const int& lineWidth)=0;
-            virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry, const Colour& c, const int& lineWdith)=0;
+            virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims)=0;
+            virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry)=0;
 
             virtual void showVideoInfo()=0;
 
         protected:
             int bpp;
+            uint fps;
             bool fullScreen;
             Colour clearColour;
+            Colour drawColour;
+            int drawWidth;
+            Timer* timer;
+            vector <RenderObject*> rendObjs;
     };
 }
 #endif // RENDERER_H
