@@ -17,6 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Timer.h"
+using Penjin::Timer;
 
 #ifdef PENJIN_FIXED
 Fixed Timer::calcScaler(const TimerScalers& mode)

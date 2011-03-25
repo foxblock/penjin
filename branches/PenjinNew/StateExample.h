@@ -1,5 +1,6 @@
-/*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+/**
+	\section LICENSE
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -15,33 +16,31 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef FILEOBJECT_H
-#define FILEOBJECT_H
+*/
+/***************************************************************************************************
+*   \file CLASS_NAME is INSERT DESCRIPTION
+*   \author Kevin Winfield-Pantoja
+*/
 
-#include "Object.h"
-#include "Errors.h"
-#include <string>
-using std::string;
+#ifndef STATEEXAMPLE_H
+#define STATEEXAMPLE_H
+
+#include "ApplicationState.h"
 
 namespace Penjin
 {
-    class FileObject : public Object
+    class StateExample : public ApplicationState
     {
         public:
             /** Default constructor */
-            FileObject();
+            StateExample();
             /** Default destructor */
-            virtual ~FileObject();
+            virtual ~StateExample();
 
-            virtual Penjin::ERRORS load(const string& fileName)=0;
-            virtual Penjin::ERRORS save(const string& fileName)=0;
+            virtual void render();
+            virtual void update();
+            virtual void input();
 
-            virtual Penjin::ERRORS load();
-            virtual Penjin::ERRORS save();
-            void setFileName(const string& f);
-
-        protected:
-            string fileName;    //we keep a copy of the the filename if needed.
     };
 }
-#endif // FILEOBJECT_H
+#endif // STATEEXAMPLE_H

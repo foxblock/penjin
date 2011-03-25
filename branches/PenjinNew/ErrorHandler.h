@@ -24,14 +24,14 @@
 
 namespace Penjin
 {
-    class ErrorHandler : public EnumParser<Penjin::Errors>
+    class ErrorHandler : public EnumParser<Penjin::ERRORS>
     {
         public:
             ErrorHandler();
             virtual ~ErrorHandler();
 
             string getErrorText(const string& error);
-            string getErrorText(const Errors& error);
+            string getErrorText(const ERRORS& error);
     };
 }
 #endif	//	ERRORHANDLER_H

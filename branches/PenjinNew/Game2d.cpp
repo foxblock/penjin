@@ -29,7 +29,7 @@ using Penjin::ApplicationState;
 Game2d::Game2d()
 {
     //ctor
-    Penjin::Errors e = PENJIN_OK;
+    Penjin::ERRORS e = PENJIN_OK;
     Uint32 flags=0;
     #if defined (PENJIN_SDL_VIDEO) || defined(PENJIN_SDL)
         flags = flags | SDL_INIT_VIDEO;
@@ -58,6 +58,7 @@ Game2d::Game2d()
     {
         Penjin::ConfigFile cfg;
         cfg.load(Penjin::CONFIG_FILE);
+        Penjin::GFX::getInstance()->setFrameRate(Penjin::StringUtility::stringToInt(cfg.getValue("Video","FrameRate")));
         Penjin::GFX::getInstance()->setWidth(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Width")));
         Penjin::GFX::getInstance()->setHeight(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Height")));
         Penjin::GFX::getInstance()->setBitsPerPixel(Penjin::StringUtility::stringToInt(cfg.getValue("Video","BitsPerPixel")));
@@ -75,11 +76,18 @@ Game2d::~Game2d()
 
 void Game2d::loop()
 {
+    //  We have to get the state pointer to begin with
+    state = Penjin::StateMan::getInstance()->getState();
     while(!state->getShouldQuit())
     {
+        //  Then we check states each update loop
+        Penjin::StateMan::getInstance()->stateManagement();
+        state = Penjin::StateMan::getInstance()->getState();
         state->input();
         state->update();
         state->render();
+        Penjin::GFX::getInstance()->renderQueue();
         Penjin::GFX::getInstance()->blit();
+        Penjin::GFX::getInstance()->frameLimiter();
     }
 }

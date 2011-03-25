@@ -29,7 +29,7 @@ Application::Application() : state(NULL)
     //ctor
     //  We load the settings file for the app
     Penjin::ConfigFile conf;
-    Errors error = conf.load(Penjin::CONFIG_FILE);
+    ERRORS error = conf.load(Penjin::CONFIG_FILE);
 
     //  If settings.ini not found create a default
     if(error == PENJIN_FILE_NOT_FOUND)
@@ -60,9 +60,9 @@ void Application::createDefaultSettings()
 
 }
 
-Penjin::Errors Application::argHandler(int argc, char** argv)
+Penjin::ERRORS Application::argHandler(int argc, char** argv)
 {
-
+    return PENJIN_FUNCTION_IS_STUB;
 }
 
 void Application::quit()

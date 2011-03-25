@@ -36,12 +36,12 @@ ConfigFile::~ConfigFile()
     delete ini;
 }
 
-Penjin::Errors ConfigFile::load(const string& fileName)
+Penjin::ERRORS ConfigFile::load(const string& fileName)
 {
     return getError(ini->LoadFile(fileName.c_str()));
 }
 
-Penjin::Errors ConfigFile::save(const string& fileName)
+Penjin::ERRORS ConfigFile::save(const string& fileName)
 {
     return getError(ini->SaveFile(fileName.c_str()));
 }
@@ -51,7 +51,7 @@ string ConfigFile::getValue(const string& section, const string& key)
     return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
 }
 
-Penjin::Errors ConfigFile::getError(const int& error)
+Penjin::ERRORS ConfigFile::getError(const int& error)
 {
     /*    SI_FAIL     = -1,   //!< Generic failure
     SI_NOMEM    = -2,   //!< Out of memory error

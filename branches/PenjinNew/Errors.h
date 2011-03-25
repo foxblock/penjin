@@ -22,7 +22,7 @@
 
 namespace Penjin
 {
-    enum Errors
+    enum ERRORS
     {
         //  General Errors
         PENJIN_ERROR = -1,

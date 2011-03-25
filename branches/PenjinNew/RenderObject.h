@@ -30,6 +30,8 @@ namespace Penjin
             virtual ~RenderObject();
 
             virtual void render()=0;
+            virtual void queueRender();
+
         protected:
         private:
     };

@@ -1,5 +1,6 @@
-/*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+/**
+    \section LICENSE
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -31,7 +32,7 @@ using namespace std;
 
 namespace Penjin
 {
-    enum PENJIN_COLOURS
+    enum COLOURS
     {
         BLACK=0,
         RED,
@@ -62,13 +63,13 @@ namespace Penjin
             // the following two are necessary, because gcc does not know whether to convert int to uchar or float
             Colour(CRint r,CRint g,CRint b){setColour(r,g,b);}
             Colour(CRint r,CRint g,CRint b,CRint a){setColour(r,g,b,a);}
-            Colour(const PENJIN_COLOURS& colour){setColour(colour);}
+            Colour(const COLOURS& colour){setColour(colour);}
             Colour(const Colour& colour)                    // Create a colour using another colour
             {
-                red = colour.red;
-                green = colour.green;
-                blue = colour.blue;
-                alpha = colour.alpha;
+                r = colour.r;
+                g = colour.g;
+                b = colour.b;
+                a = colour.a;
             }
             Colour (CRint rgb){setColour(rgb);}
             //virtual ~Colour(){;}
@@ -80,10 +81,10 @@ namespace Penjin
             void setOGLColour(CRfloat r,CRfloat g,CRfloat b){setOGLColour(r,g,b,1.0f);}
 
             //  Normal colours
-            void setColour(const Colour& c){setColour(c.red,c.green,c.blue,c.alpha);}
+            void setColour(const Colour& c){setColour(c.r,c.g,c.b,c.a);}
             void setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a);	//	Set the colour using RGBA
             void setColour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b,255);}            // Set the colour using RGB
-            void setColour(const PENJIN_COLOURS& colour);						//	Set the colour using predefines
+            void setColour(const COLOURS& colour);						//	Set the colour using predefines
             void setColour(CRint rgb);                                          // Set the colour using a Delphi int (red + green * 256 + blue * 256 * 256)
 
             SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
@@ -104,13 +105,13 @@ namespace Penjin
             {
                 Colour b = *this;
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                    b.red = min(b.red + c.red,1.0f);
-                    b.green = min(b.green + c.green,1.0f);
-                    b.blue = min(b.blue + c.blue,1.0f);
+                    b.r = min(b.r + c.r,1.0f);
+                    b.g = min(b.g + c.g,1.0f);
+                    b.b = min(b.b + c.b,1.0f);
                 #else
-                    b.red = min((uint)b.red + c.red,(uint)255);
-                    b.green = min((uint)b.green + c.green,(uint)255);
-                    b.blue = min((uint)b.blue + c.blue,(uint)255);
+                    b.r = min((uint)b.r + c.r,(uint)255);
+                    b.g = min((uint)b.g + c.g,(uint)255);
+                    b.b = min((uint)b.b + c.b,(uint)255);
                 #endif
                 return b;
             }
@@ -118,13 +119,13 @@ namespace Penjin
             {
                 Colour b = *this;
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                    b.red = max(b.red - c.red,0.0f);
-                    b.green = max(b.green - c.green,0.0f);
-                    b.blue = max(b.blue - c.blue,0.0f);
+                    b.r = max(b.r - c.r,0.0f);
+                    b.g = max(b.g - c.g,0.0f);
+                    b.b = max(b.b - c.b,0.0f);
                 #else
-                    b.red = max(b.red - c.red,0);
-                    b.green = max(b.green - c.green,0);
-                    b.blue = max(b.blue - c.blue,0);
+                    b.r = max(b.r - c.r,0);
+                    b.g = max(b.g - c.g,0);
+                    b.b = max(b.b - c.b,0);
                 #endif
                 return b;
             }
@@ -136,13 +137,13 @@ namespace Penjin
             {
                 Colour b = *this;
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                    b.red = min(b.red * c.red,1.0f);
-                    b.green = min(b.green * c.green,1.0f);
-                    b.blue = min(b.blue * c.blue,1.0f);
+                    b.r = min(b.r * c.r,1.0f);
+                    b.g = min(b.g * c.g,1.0f);
+                    b.b = min(b.b * c.b,1.0f);
                 #else
-                    b.red = min((uint)b.red * c.red,(uint)255);
-                    b.green = min((uint)b.green * c.green,(uint)255);
-                    b.blue = min((uint)b.blue * c.blue,(uint)255);
+                    b.r = min((uint)b.r * c.r,(uint)255);
+                    b.g = min((uint)b.g * c.g,(uint)255);
+                    b.b = min((uint)b.b * c.b,(uint)255);
                 #endif
                 return b;
             }
@@ -150,25 +151,25 @@ namespace Penjin
             Colour operator*(const T& c)
             {
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                    red = red*(float)c;
-                    green = green*(float)c;
-                    blue = blue*(float)c;
+                    r = r*(float)c;
+                    g = g*(float)c;
+                    b = b*(float)c;
                     return *this;
                 #else
-                    return (*this *Colour(c,c,c));
+                    return (*this * Colour(c,c,c));
                 #endif
             }
             Colour operator/(const Colour& c)
             {
                 Colour b = *this;
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                    b.red = max(b.red / c.red,0.0f);
-                    b.green = max(b.green / c.green,0.0f);
-                    b.blue = max(b.blue / c.blue,0.0f);
+                    b.r = max(b.r / c.r,0.0f);
+                    b.g = max(b.g / c.g,0.0f);
+                    b.b = max(b.b / c.b,0.0f);
                 #else
-                    b.red = max(b.red / c.red,0);
-                    b.green = max(b.green / c.green,0);
-                    b.blue = max(b.blue / c.blue,0);
+                    b.r = max(b.r / c.r,0);
+                    b.g = max(b.g / c.g,0);
+                    b.b = max(b.b / c.b,0);
                 #endif
                 return b;
             }
@@ -176,9 +177,9 @@ namespace Penjin
             {
                 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
                     float f = 1/(float)c;
-                    red = red*f;
-                    green = green*f;
-                    blue = blue*f;
+                    r = r*f;
+                    g = g*f;
+                    b = b*f;
                     return *this;
                 #else
                     return (*this /Colour(c,c,c));
@@ -186,35 +187,35 @@ namespace Penjin
             }
             //Colour operator/(const float& c){return Colour(red/c,green/c,blue/c,alpha);}
             //  Less Than Equal
-            bool operator<=(const Colour& c)const{return lessThanEqual(c.red,c.green,c.blue,c.alpha);}
-            bool operator<=(const PENJIN_COLOURS& colour)const{return operator<=(Colour(colour));}
+            bool operator<=(const Colour& c)const{return lessThanEqual(c.r,c.g,c.b,c.a);}
+            bool operator<=(const COLOURS& colour)const{return operator<=(Colour(colour));}
             bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b)const{return lessThanEqual(r,g,b,255);}
             bool lessThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return (isEqual(r,g,b,a) || lessThan(r,g,b,a));}
             //  Less Than
-            bool operator<(const Colour& c)const{return lessThan(c.red,c.green,c.blue,c.alpha);}
-            bool operator<(const PENJIN_COLOURS& colour)const{return operator<(Colour(colour));}
+            bool operator<(const Colour& c)const{return lessThan(c.r,c.g,c.b,c.a);}
+            bool operator<(const COLOURS& colour)const{return operator<(Colour(colour));}
             bool lessThan(const uchar& r,const uchar& g,const uchar& b)const{return lessThan(r,g,b,255);}
             bool lessThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a) const;
             //  More Than Equal
-            bool operator>=(const Colour& c)const{return moreThanEqual(c.red,c.green,c.blue,c.alpha);}
-            bool operator>=(const PENJIN_COLOURS& colour)const{return operator>=(Colour(colour));}
+            bool operator>=(const Colour& c)const{return moreThanEqual(c.r,c.g,c.b,c.a);}
+            bool operator>=(const COLOURS& colour)const{return operator>=(Colour(colour));}
             bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b)const{return moreThanEqual(r,g,b,255);}
             bool moreThanEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return (isEqual(r,g,b,a) || moreThan(r,g,b,a));}
             //  More Than
             bool operator>(const Colour& c)const{return !operator<(c);}
-            bool operator>(const PENJIN_COLOURS& colour)const{return !operator<(Colour(colour));}
+            bool operator>(const COLOURS& colour)const{return !operator<(Colour(colour));}
             bool moreThan(const uchar& r,const uchar& g,const uchar& b)const{return !lessThan(r,g,b,255);}
             bool moreThan(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return !lessThan(r,g,b,a);}
 
             //  Equivalency
-            bool operator==(const Colour& c)const{return isEqual(c.red,c.green,c.blue,c.alpha);}
-            bool operator==(const PENJIN_COLOURS& colour)const{return operator==(Colour(colour));}
+            bool operator==(const Colour& c)const{return isEqual(c.r,c.g,c.b,c.a);}
+            bool operator==(const COLOURS& colour)const{return operator==(Colour(colour));}
             bool isEqual(const uchar& r,const uchar& g,const uchar& b)const{return isEqual(r,g,b,255);}
             bool isEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const;
 
             //  Inequality
             bool operator!=(const Colour& colour)const{return !operator==(colour);}
-            bool operator!=(const PENJIN_COLOURS& colour)const{return !operator==(colour);}
+            bool operator!=(const COLOURS& colour)const{return !operator==(colour);}
             bool notEqual(const uchar& r,const uchar& g,const uchar& b)const{return !isEqual(r,g,b);}
             bool notEqual(const uchar& r,const uchar& g,const uchar& b,const uchar& a)const{return !isEqual(r,g,b,a);}
 
@@ -228,17 +229,17 @@ namespace Penjin
 
             // Colour data
             #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
-                float red; // Values stores in range 0.0 - 1.0f
-                float green;
-                float blue;
-                float alpha;
+                float r; // Values stores in range 0.0 - 1.0f
+                float g;
+                float b;
+                float a;
 
                 void toGL();
             #else
-                uchar red; // 0 - 256 range
-                uchar green;
-                uchar blue;
-                uchar alpha;
+                uchar r; // 0 - 256 range
+                uchar g;
+                uchar b;
+                uchar a;
 
                 void toNormal();
             #endif

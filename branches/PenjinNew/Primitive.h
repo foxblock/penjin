@@ -18,6 +18,7 @@
 */#ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
+#include "GFX.h"
 #include "ColourObject.h"
 
 namespace Penjin
