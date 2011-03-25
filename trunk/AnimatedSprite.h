@@ -53,6 +53,7 @@ class AnimatedSprite
         #ifdef PENJIN_SDL
             void disableTransparentColour(){image.disableTransparentColour();}
         #endif
+        Colour getTransparentColour() const {return image.getTransparentColour();}
         uchar getAlpha()const{return image.getAlpha();}
 
         void setPosition(const Vector2di& pos){position.x = pos.x;position.y=pos.y;}
@@ -113,6 +114,17 @@ class AnimatedSprite
                 void setRotation(const Vector3df& rotationVec){image.setRotation(rotationVec);}
             #endif
         #endif
+        #ifdef PENJIN_SDL
+            Colour getPixel(const Vector2di& pos) const
+            {
+                return getPixel(pos.x,pos.y);
+            }
+            Colour getPixel(CRint x, CRint y) const
+            {
+                return image.getPixelInFrame(x,y,currentFrame);
+            }
+        #endif
+
 
         uint getCurrentFrame()const{return currentFrame;}
         bool hasFinished()const {return hasFinishedVal;};

@@ -163,6 +163,7 @@ class Image
             #endif
             return error;
         }
+        Colour getTransparentColour() const {return colourKey;}
 
         size_t size()const;                  // Returns the number of images in the vector
         void clear();                 // Clears all images out of the vector
