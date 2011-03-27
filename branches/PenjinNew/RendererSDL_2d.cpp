@@ -108,11 +108,11 @@ void RendererSDL_2d::drawLine(const Vector2d<float> & p1, const Vector2d<float> 
 void RendererSDL_2d::drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims)
 {
     if(drawWidth<=0)
-        boxRGBA(screen, pos.x, pos.y, dims.x, dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+        boxRGBA(screen, pos.x, pos.y, pos.x+ dims.x, pos.y+ dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
     else
     {
         //  TODO: variable width support.
-        rectangleRGBA(screen, pos.x, pos.y, dims.x, dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
+        rectangleRGBA(screen, pos.x, pos.y, pos.x+ dims.x, pos.y+ dims.y, drawColour.r, drawColour.g, drawColour.b, drawColour.a);
     }
 }
 

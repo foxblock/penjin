@@ -21,7 +21,7 @@
 
 #include "DimensionObject.h"
 #include "Singleton.h"
-#include "ColourObject.h"
+#include "Colour.h"
 #include  <vector>
 
 namespace Penjin

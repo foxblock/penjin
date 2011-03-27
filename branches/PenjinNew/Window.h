@@ -15,7 +15,12 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef WINDOW_H
+*/
+/***************************************************************************************************
+*   \file Window is a Windowing object for building GUI elements.
+*   \author Kevin Winfield-Pantoja
+*/
+#ifndef WINDOW_H
 #define WINDOW_H
 
 #include <string>
@@ -32,17 +37,34 @@ namespace Penjin
             /** Default destructor */
             virtual ~Window();
 
+            /** \brief Renders this Window element */
             virtual void render();
-            virtual void onClick();     /**< When window is clicked, this function is called */
+            /** \brief When window is clicked, this function is called */
+            virtual void onClick();
+            /** \brief Brings window to foregrand, i.e. sets to layer 0 */
+            void focus();
+            /** \brief Refreshes the window display */
+            void refresh();
 
-            void focus();               /**< Brings window to foregrand, i.e. sets to layer 0 */
-            void refresh();             /**< Refreshes the window display */
-
+            /** \brief Sets this window to take up the full screen area.
+             * \param fs : true for fullscreen and false for windowed.
+             */
             void setFullscreen(const bool& fs);
+
+            /** \brief Sets the Name of this Window object.
+             * \param t : the name string.
+             */
             void setTitle(const string& t);
 
-            bool getFullscreen();
-            string getTitle();
+            /** \brief get whether the Window is fullscreen or not.
+             * \return true if fullscreen, false if windowed.
+             */
+            bool getFullscreen()const;
+
+            /** \brief Gets the Name of this Window object.
+             * \return The name string.
+             */
+            string getTitle()const;
 
         protected:
             bool fullscreen;    //  Does it takeup fullscreen
