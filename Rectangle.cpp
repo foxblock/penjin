@@ -23,7 +23,7 @@ using Penjin::Colour;
 
 Rectangle::Rectangle() : drawWidth(1)
 {
-
+    this->setColour(GREEN);
 }
 
 void Rectangle::setDrawWidth(const int& w)
@@ -33,7 +33,7 @@ void Rectangle::setDrawWidth(const int& w)
 
 void Rectangle::render()
 {
-    Penjin::GFX::getInstance()->setDrawColour(*colour);
+    Penjin::GFX::getInstance()->setDrawColour(*this);
     Penjin::GFX::getInstance()->setDrawWidth(drawWidth);
     Penjin::GFX::getInstance()->drawRectangle(position, dimensions);
 }

@@ -1,4 +1,5 @@
-/*
+/**
+    \section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -19,11 +20,12 @@
 #define PRIMITIVE_H
 
 #include "GFX.h"
-#include "ColourObject.h"
+#include "Colour.h"
+#include "RenderObject.h"
 
 namespace Penjin
 {
-    class Primitive : public ColourObject
+    class Primitive : public Colour, public RenderObject
     {
         public:
             /** Default constructor */
