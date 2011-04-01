@@ -92,7 +92,7 @@ PENJIN_ERRORS Sound::loadSound(CRstring soundName)
 
 void Sound::setVolume(CRuint volume, CRint id)
 {
-    if (id > instances.size())
+    if (id > (int)instances.size())
         return;
     if (id >= 0)
     {
@@ -101,7 +101,7 @@ void Sound::setVolume(CRuint volume, CRint id)
     else
     {
         for (int I = 0; I < instances.size(); ++I)
-            Mix_Volume(instances.at(id).first,volume);
+            Mix_Volume(instances.at(I).first,volume);
     }
 }
 
@@ -117,12 +117,17 @@ uint Sound::getVolume(CRint id) const
 
 bool Sound::isPaused(CRint id) const
 {
-    if (instances.size() == 0 || id > instances.size()-1 || id < -1)
+    if (instances.size() == 0 || id > (int)instances.size()-1 || id < -1)
         return false;
     else
     {
         if (id < 0)
-            return Mix_Paused(instances.begin()->first);
+        {
+            for (vector<pair<int,int> >::const_iterator iter = instances.begin(); iter != instances.end(); ++iter)
+                if (Mix_Paused(iter->first))
+                    return true;
+            return false;
+        }
         else
             return Mix_Paused(instances.at(id).first);
     }
@@ -135,7 +140,12 @@ bool Sound::isPlaying(CRint id) const
     else
     {
         if (id < 0)
-            return Mix_Playing(instances.begin()->first);
+        {
+            for (vector<pair<int,int> >::const_iterator iter = instances.begin(); iter != instances.end(); ++iter)
+                if (Mix_Playing(iter->first))
+                    return true;
+            return false;
+        }
         else
             return Mix_Playing(instances.at(id).first);
     }

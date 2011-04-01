@@ -260,6 +260,9 @@ class SimpleJoy
 
         void resetDpad();
         void resetUp();
+        void resetDown();
+        void resetLeft();
+        void resetRight();
 
         void resetA();
         void resetB();
