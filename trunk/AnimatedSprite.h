@@ -99,6 +99,8 @@ class AnimatedSprite
             else
                 numLoops = firstLoops = 0;
         }
+        bool getLooping() const {return (firstLoops != 0);}
+        int getLoops() const {return firstLoops;}
         void clearFrames(){image.clear();}
         #ifndef PENJIN_3D
             void setScale(CRfloat scale){image.setScale(scale);}
@@ -154,6 +156,7 @@ class AnimatedSprite
             numLoops = firstLoops;
             hasFinishedVal = false;
             reachedEnd = false;
+            animationTimer.start();
         }
         void setCurrentFrame(CRint framenumber){currentFrame = framenumber;}
         size_t frameCount() const {return image.size();} // return the number of frames

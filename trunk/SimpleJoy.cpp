@@ -639,6 +639,24 @@ void SimpleJoy::resetUp()
     players[player].Up=sjRELEASED;
 }
 
+void SimpleJoy::resetDown()
+{
+    clearEventQueue();
+    players[player].Down=sjRELEASED;
+}
+
+void SimpleJoy::resetLeft()
+{
+    clearEventQueue();
+    players[player].Left=sjRELEASED;
+}
+
+void SimpleJoy::resetRight()
+{
+    clearEventQueue();
+    players[player].Right=sjRELEASED;
+}
+
 void SimpleJoy::joystickStatus()
 {
     #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)

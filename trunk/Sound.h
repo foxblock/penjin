@@ -49,8 +49,8 @@ class Sound
         uint getVolume(CRint id=-1)const; // using -1 as id will return volume for first instance
         void setSimultaneousPlay(CRbool b){simultaneousPlay = b;} // allow playing of multiple instances of this sound as the same time
 
-        bool isPlaying(CRint id=-1)const; // no or id=-1 will return first instance's status
-        bool isPaused(CRint id=-1)const; // no or id=-1 will return first instance's status
+        bool isPlaying(CRint id=-1)const; // no or id=-1 will return true if any instance is playing
+        bool isPaused(CRint id=-1)const; // no or id=-1 will return true if any instance is paused
 
         void play(int loops=-2, CRint id=-1); // passing a loop parameter will overwrite the default value for this instance, passing -1 as id will add another instance to the list (if simul play is true)
         void pause(CRint id=-1); // pauses all instances if id is -1
