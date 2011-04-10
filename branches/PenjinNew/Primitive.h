@@ -16,13 +16,17 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef PRIMITIVE_H
+*/
+#ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
 #include "GFX.h"
 #include "Colour.h"
 #include "RenderObject.h"
-
+/**
+  * \file Primitive class is a base for gneral geometric shapes.
+  * \author Kevin Winfield-Pantoja
+  */
 namespace Penjin
 {
     class Primitive : public Colour, public RenderObject

@@ -21,7 +21,7 @@
 using Penjin::Rectangle;
 using Penjin::Colour;
 
-Rectangle::Rectangle() : drawWidth(1)
+Rectangle::Rectangle() : drawWidth(-1)
 {
     this->setColour(GREEN);
 }

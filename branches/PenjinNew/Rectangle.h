@@ -23,24 +23,27 @@
 #include "PenjinTypes.h"
 #include "Primitive.h"
 #include "DimensionObject.h"
+/**
+  * \file Rectangle class allows drawing of uniform Rectangles
+  * \author Kevin Winfield-Pantoja
+  */
 
-/*
-This class is a strict simple Rectangle.
-Use the Quad class for uneven quads
-*/
 namespace Penjin
 {
     class Rectangle : public Primitive, public DimensionObject
     {
         public:
             Rectangle();
-
+            /**< Render the Rectangle to screen */
             void render();
 
+            /** \brief Sets the drawing/line width of the renderer used to draw this rectangle.
+             * \param w : The width in pixels (-1 signifies a filled rectangle)
+             */
             void setDrawWidth(const int& w);
 
         private:
-            int drawWidth;
+            int drawWidth;  /**< The renderer line width to use in drawing this Rectangle. */
     };
 }
 #endif // RECTANGLE_H
