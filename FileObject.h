@@ -1,4 +1,5 @@
-/*
+/**
+    \section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -15,7 +16,12 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef FILEOBJECT_H
+*/
+/**
+  * \file FileObject provides a basic interface for the loading of files.
+  * \author Kevin Winfield-Pantoja
+  */
+#ifndef FILEOBJECT_H
 #define FILEOBJECT_H
 
 #include "Object.h"
@@ -33,11 +39,31 @@ namespace Penjin
             /** Default destructor */
             virtual ~FileObject();
 
+            /** \brief pure virtual function to load a file.
+             * \param fileName : The file to load.
+             * \return PENJIN_OK if file was loaded successfully.
+             */
             virtual Penjin::ERRORS load(const string& fileName)=0;
+
+            /** \brief pure virtual function to save a file.
+             * \param fileName : The file to load.
+             * \return PENJIN_OK if file was saved successfully.
+             */
             virtual Penjin::ERRORS save(const string& fileName)=0;
 
+            /** \brief function to load a file from the stored filename.
+             * \return PENJIN_OK if file was loaded successfully.
+             */
             virtual Penjin::ERRORS load();
+
+            /** \brief function to save a file to the stored filename.
+             * \return PENJIN_OK if file was saved successfully.
+             */
             virtual Penjin::ERRORS save();
+
+            /** \brief sets the internal fileName of this file.
+             *  \param f : the file name.
+             */
             void setFileName(const string& f);
 
         protected:

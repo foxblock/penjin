@@ -51,6 +51,12 @@ string ConfigFile::getValue(const string& section, const string& key)
     return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
 }
 
+
+void ConfigFile::setValue(const string& section, const string& key, const string& value, const string& comment)
+{
+    ini->SetValue(section.c_str(), key.c_str(), value.c_str(),comment.c_str());
+}
+
 Penjin::ERRORS ConfigFile::getError(const int& error)
 {
     /*    SI_FAIL     = -1,   //!< Generic failure

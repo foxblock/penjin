@@ -55,17 +55,71 @@ Game2d::Game2d()
 
     //  Load video config
     if(e == PENJIN_OK)
-    {
-        Penjin::ConfigFile cfg;
-        cfg.load(Penjin::CONFIG_FILE);
-        Penjin::GFX::getInstance()->setFrameRate(Penjin::StringUtility::stringToInt(cfg.getValue("Video","FrameRate")));
-        Penjin::GFX::getInstance()->setWidth(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Width")));
-        Penjin::GFX::getInstance()->setHeight(Penjin::StringUtility::stringToInt(cfg.getValue("Video","Height")));
-        Penjin::GFX::getInstance()->setBitsPerPixel(Penjin::StringUtility::stringToInt(cfg.getValue("Video","BitsPerPixel")));
-        Penjin::GFX::getInstance()->setFullscreen(Penjin::StringUtility::stringToBool(cfg.getValue("Video","Fullscreen")));
-    }
+        e = loadConfig();
+    //  If there is a problem with loading the cfg, create a default config
+    if(e != PENJIN_OK)
+        defaultConfig();
     if(flags)
         Penjin::GFX::getInstance()->applyVideoSettings();
+}
+
+Penjin::ERRORS Game2d::loadConfig()
+{
+    Penjin::ConfigFile cfg;
+    Penjin::ERRORS e = cfg.load(Penjin::CONFIG_FILE);
+    string value;
+    /// TODO: errors for missing config elements
+
+    value = cfg.getValue("Video","FrameRate");
+    if(value != "")
+    {
+        Penjin::GFX::getInstance()->setFrameRate(Penjin::StringUtility::stringToInt(value));
+        value = "";
+    }
+    value = cfg.getValue("Video","Width");
+    if(value != "")
+    {
+        Penjin::GFX::getInstance()->setWidth(Penjin::StringUtility::stringToInt(value));
+        value = "";
+    }
+    value = cfg.getValue("Video","Height");
+    if(value != "")
+    {
+        Penjin::GFX::getInstance()->setHeight(Penjin::StringUtility::stringToInt(value));
+        value = "";
+    }
+    value = cfg.getValue("Video","BitsPerPixel");
+    if(value != "")
+    {
+        Penjin::GFX::getInstance()->setBitsPerPixel(Penjin::StringUtility::stringToInt(value));
+        value = "";
+    }
+    value = cfg.getValue("Video","Fullscreen");
+    if(value != "")
+    {
+        Penjin::GFX::getInstance()->setFullscreen(Penjin::StringUtility::stringToBool(value));
+        value = "";
+    }
+    return e;
+}
+
+void Game2d::defaultConfig()
+{
+    Penjin::ConfigFile cfg;
+
+    string section = "Video";
+    cfg.setValue(section, "FrameRate", "60");
+    //  Setting Width and Height to 0 is auto resolution.
+    cfg.setValue(section, "Width","0");
+    cfg.setValue(section, "Height","0");
+    //  0 is Auto BPP
+    cfg.setValue(section,"BitsPerPixel", "0");
+    cfg.setValue(section,"Fullscreen","false");
+
+    section = "Locale";
+    cfg.setValue(section, "LanguageFolder", "strings");
+    cfg.setValue(section, "Language","en_GB");
+    cfg.save(Penjin::CONFIG_FILE);
 }
 
 Game2d::~Game2d()

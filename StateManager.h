@@ -18,7 +18,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************
-*   \file StateManager is a singleton class that you overide and build you state management.
+*   \file StateManager is a singleton class that you overide and build your state management.
 *   \author Kevin Winfield-Pantoja
 */
 

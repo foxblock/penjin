@@ -53,14 +53,38 @@ namespace Penjin
              */
             virtual Penjin::ERRORS save(const string& fileName);
 
-            void setValue(const string& section, const string& key, const string& value);
+            //virtual Penjin::ERRORS save();
+            //virtual Penjin::ERRORS load();
+
+            //void setValue(const string& section, const string& key, const string& value);
+            /** \brief set a value into the ConfigFile
+             * \param section : The section of the file to add the value.
+             * \param key : The key within the section to add the value.
+             * \param value : The actual value to be stored.
+             * \param comment: Any additional comment you wish to add to the file.
+             */
+            void setValue(const string& section, const string& key, const string& value, const string& comment=NULL);
+
+            /** \brief get a value from the ConfigFile
+             * \param section : The section of the file to take the value.
+             * \param key : The key within the section to take the value.
+             * \return The actual value.
+             */
             string getValue(const string& section, const string& key);
+
+            // TODO implementation for following 3 functions
             vector<string> getValues(const string& section, const string& key);
             void removeValue(const string& section, const string& key);
             void removeSection(const string& section);
 
         protected:
+            /** \brief get the Penjin error code from the Simple Ini error code
+             * \param error : The Simple Ini error code.
+             * \return The Penjin::ERRORS error code.
+             */
             Penjin::ERRORS getError(const int& error);
+
+            /**< the SimpleIni object */
             CSimpleIniA* ini;
     };
 }

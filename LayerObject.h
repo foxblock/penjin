@@ -15,7 +15,12 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef LAYEROBJECT_H
+*/
+/**
+  * \file LayerObject handles layering, e.g. of windows, tile layers, etc.
+  * \author Kevin Winfield-Pantoja
+  */
+#ifndef LAYEROBJECT_H
 #define LAYEROBJECT_H
 
 #include "RenderObject.h"

@@ -1,8 +1,8 @@
-#ifndef GFX_H_INCLUDED
-#define GFX_H_INCLUDED
+#ifndef STATELIST_H_INCLUDED
+#define STATELIST_H_INCLUDED
 
 /**
-    \section LICENSE
+	\section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -21,12 +21,28 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************
-*   \file GFX.h is a wrapper that ensures the correct renderer Singleton is included based on defines.
+*   \file StateList is template file of Penjin to demonstrate state lists.
 *   \author Kevin Winfield-Pantoja
 */
 
-#if defined(PENJIN_SDL_VIDEO) || defined(PENJIN_SDL) && !defined(PENJIN_GL_VIDEO)
-    #include "RendererSDL_2d.h"
-#endif
+/*
+Here you include the header of each state you create
+*/
+#include "StateExample.h"
+//  Local file per project wi just a list of each state .h file
+#include "MyStateIncludes.h"
 
-#endif // GFX_H_INCLUDED
+namespace Penjin
+{
+    /*
+        You add your state identifier in the enum below
+    */
+    enum STATES
+    {
+        STATE_EXAMPLE= -1,  // An example state just to show how to do states
+        STATE_NULL = 0,
+        //  Add your own state identifiers below in the local per-project file
+        #include "MyStateList.h"
+    };
+}
+#endif // STATELIST_H_INCLUDED

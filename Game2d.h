@@ -1,4 +1,5 @@
-/*
+/**
+    \section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -15,7 +16,12 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/#ifndef GAME2D_H
+*/
+/**
+  * \file Game2d is a base class for creating a 2d based game.
+  * \author Kevin Winfield-Pantoja
+  */
+#ifndef GAME2D_H
 #define GAME2D_H
 
 #include "Application.h"
@@ -33,7 +39,13 @@ namespace Penjin
             //virtual void update()=0;
             virtual void loop();    /**< The main game loop */
         protected:
+            /** \brief Attempts to load the config file from the default location.
+             * \return The error in trying to load the config file
+             */
+            Penjin::ERRORS loadConfig();
 
+            /**< creates a default configuration*/
+            void defaultConfig();
     };
 }
 #endif // GAME2D_H

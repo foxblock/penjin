@@ -29,7 +29,7 @@
 
 namespace Penjin
 {
-    class ApplicationState : public RenderObject, UpdateObject
+    class ApplicationState : public RenderObject, public UpdateObject
     {
         public:
             /** Default constructor */

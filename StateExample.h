@@ -18,7 +18,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************
-*   \file CLASS_NAME is INSERT DESCRIPTION
+*   \file StateExample is the ErrorState of Penjin shown if there is a mistake with your state code.
 *   \author Kevin Winfield-Pantoja
 */
 
