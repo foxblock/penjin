@@ -21,6 +21,8 @@
 #include "StringUtility.h"
 #include "ErrorHandler.h"
 
+using Penjin::SimpleJoy;
+
 SimpleJoy::~SimpleJoy()
 {
 #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)

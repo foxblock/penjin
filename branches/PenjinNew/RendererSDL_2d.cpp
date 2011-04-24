@@ -89,6 +89,17 @@ void RendererSDL_2d::drawPixel(const Vector2d<float> & v)
         SDL_FillRect(screen,&r,drawColour.getSDL_Uint32Colour());
 }
 
+// Deprecated... we need more functions that don't expose the SDL inner workings.
+void RendererSDL_2d::drawPixel(SDL_Surface* s, const Vector2d<float> & v)
+{
+        SDL_Rect r;
+        int t = drawWidth*0.5f;
+        r.x=v.x-t;
+        r.y=v.y-t;
+        r.w=r.h=drawWidth;
+        SDL_FillRect(s,&r,drawColour.getSDL_Uint32Colour());
+}
+
 void RendererSDL_2d::drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2)
 {
     /*
@@ -127,7 +138,79 @@ void RendererSDL_2d::drawEllipse(const Vector2d<float> & centre, const float& rx
     }
 }
 
+Colour RendererSDL_2d::getPixel(Vector2d<int> pos)
+{
+    return getPixel(screen,pos);
+}
+
+Colour RendererSDL_2d::getPixel(SDL_Surface* s, Vector2d<int> pos)
+{
+    if(s == NULL)
+        return Colour(MAGENTA);
+    int bpp = s->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)s->pixels + y * s->pitch + x * bpp;
+    Colour c;
+    switch(bpp) {
+    case 1:
+        c.convertColour(*p,s->format);break;
+
+    case 2:
+        c.convertColour(*(Uint16 *)p,s->format);break;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            c.convertColour(p[0] << 16 | p[1] << 8 | p[2],s->format);
+        else
+            c.convertColour(p[0] | p[1] << 8 | p[2] << 16,s->format);
+        break;
+    case 4:
+        c.convertColour( *(Uint32 *)p,s->format);break;
+
+    default:
+        c.setColour(MAGENTA);       /* shouldn't happen, but avoids warnings */
+    }
+    return c;
+}
+
+Colour RendererSDL_2d::getPixel(Surface s, Vector2d<int> pos)
+{
+    return getPixel(s.surface, pos);
+}
+
 void RendererSDL_2d::showVideoInfo()
 {
 
 }
+
+// Deprecated
+SDL_Surface* RendererSDL_2d::getSDLVideoSurface()
+{
+    return screen;
+}
+
+SDL_Surface* RendererSDL_2d::cropSurface(SDL_Surface* in, SDL_Rect* c)
+{
+    SDL_Surface *cropped = NULL;
+    //  Cropped surface
+    cropped = SDL_CreateRGBSurface(in->flags,c->w, c->h,in->format->BitsPerPixel, 0, 0, 0, 0);
+    Colour col = getPixel(cropped,0,0);
+    SDL_SetColorKey(cropped, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(cropped->format,col.r,col.g,col.b));
+    SDL_BlitSurface(in,c,cropped,NULL);
+    return cropped;
+}
+
+void lockSurface(SDL_Surface* s)
+{
+        // Check and lock the surface if necessary.
+        if (SDL_MUSTLOCK(s))
+            SDL_LockSurface(s);
+}
+
+void unlockSurface(SDL_Surface* s)
+{
+        // Check and unlock the surface if necessary
+        if ( SDL_MUSTLOCK(s) )
+            SDL_UnlockSurface(s);
+}
+

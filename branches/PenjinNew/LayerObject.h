@@ -36,7 +36,14 @@ namespace Penjin
             /** Default destructor */
             virtual ~LayerObject();
 
+            /** \brief Sets which layer this object occupies.
+             * \param l : the layer.
+             */
             void setLayer(const int&l);
+
+            /** \brief Gets which layer this object occupies.
+             * \return the layer.
+             */
             int getLayer();
 
         protected:

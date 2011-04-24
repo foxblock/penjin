@@ -54,6 +54,9 @@ namespace Penjin
              */
             virtual void drawPixel(const Vector2d<float> & v);
 
+            // deprecated
+            void drawPixel(SDL_Surface* s, const Vector2d<float> & v);
+
             /** \brief Draws a Line on the screen, depending on the renderer's Colour and line width.
              * \param p1 : The 2d vector of the starting position of the line in pixels.
              * \param p2 : The 2d vector of the ending position of the line in pixels.
@@ -73,8 +76,20 @@ namespace Penjin
              */
             virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry);
 
+
+            virtual Colour getPixel(Vector2d<int> pos);
+            virtual Colour getPixel(Surface s, Vector2d<int> pos);
+
+
+
             virtual void showVideoInfo();
 
+            //  Deprecated
+            Colour getPixel(SDL_Surface* s, Vector2d<int> pos);
+            SDL_Surface* getSDLVideoSurface();
+            SDL_Surface* cropSurface(SDL_Surface* in, SDL_Rect* cropArea);
+            void lockSurface(SDL_Surface* s);
+            void unlockSurface(SDL_Surface* s);
 
         private:
             SDL_Surface* screen;

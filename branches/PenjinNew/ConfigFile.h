@@ -63,7 +63,7 @@ namespace Penjin
              * \param value : The actual value to be stored.
              * \param comment: Any additional comment you wish to add to the file.
              */
-            void setValue(const string& section, const string& key, const string& value, const string& comment=NULL);
+            void setValue(const string& section, const string& key, const string& value, const string& comment="");
 
             /** \brief get a value from the ConfigFile
              * \param section : The section of the file to take the value.
@@ -72,8 +72,11 @@ namespace Penjin
              */
             string getValue(const string& section, const string& key);
 
-            // TODO implementation for following 3 functions
+            vector<string> getSections();
             vector<string> getValues(const string& section, const string& key);
+            vector<string> getKeys(const string& section);
+
+            // TODO implementation for following 2 functions
             void removeValue(const string& section, const string& key);
             void removeSection(const string& section);
 
