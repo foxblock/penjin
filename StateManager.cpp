@@ -54,14 +54,9 @@ void StateManager::stateManagement()
                 state = new StateExample;
                 break;
             }
-            /*  Add code as STATE_EXAMPLE for your customs states below
+            /*  Add code as STATE_EXAMPLE for your customs states in file below
             */
-            case STATE_TITLE:
-            {
-                state = new StateTitle;
-                break;
-            }
-
+            #include "MyStateChangeCode.h"
             /*  Generally speaking do not edit below.
             */
             default:

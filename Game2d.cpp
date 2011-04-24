@@ -23,6 +23,7 @@
 #include "StateTitle.h"
 #include "GFX.h"
 #include "StringUtility.h"
+#include "SimpleJoy.h"
 using Penjin::Game2d;
 using Penjin::ApplicationState;
 
@@ -137,7 +138,13 @@ void Game2d::loop()
         //  Then we check states each update loop
         Penjin::StateMan::getInstance()->stateManagement();
         state = Penjin::StateMan::getInstance()->getState();
+
+        // update joysticks etc
+        Penjin::Joy::getInstance()->update();
         state->input();
+        //  check for exit condition
+        if(Penjin::Joy::getInstance()->isQuit())
+            exit(EXIT_SUCCESS);
         state->update();
         state->render();
         Penjin::GFX::getInstance()->renderQueue();

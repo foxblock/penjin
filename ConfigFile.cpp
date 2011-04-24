@@ -54,7 +54,56 @@ string ConfigFile::getValue(const string& section, const string& key)
 
 void ConfigFile::setValue(const string& section, const string& key, const string& value, const string& comment)
 {
-    ini->SetValue(section.c_str(), key.c_str(), value.c_str(),comment.c_str());
+    if(comment == "")
+        ini->SetValue(section.c_str(), key.c_str(), value.c_str());
+    else
+        ini->SetValue(section.c_str(), key.c_str(), value.c_str(),comment.c_str());
+}
+
+vector<string> ConfigFile::getValues(const string& section, const string& key)
+{
+    vector<string> out;
+    // get all values of a key with multiple values
+    CSimpleIniA::TNamesDepend values;
+    ini->GetAllValues(section.c_str(), key.c_str(), values);
+    values.sort(CSimpleIniA::Entry::LoadOrder());
+    // output all of the items
+    CSimpleIniA::TNamesDepend::const_iterator i;
+    for (i = values.begin(); i != values.end(); ++i)
+    {
+        out.push_back(i->pItem);
+    }
+    return out;
+}
+
+vector<string> ConfigFile::getKeys(const string& section)
+{
+    vector<string> out;
+    // get all values of a key with multiple values
+    CSimpleIniA::TNamesDepend values;
+    ini->GetAllKeys(section.c_str(), values);
+    values.sort(CSimpleIniA::Entry::LoadOrder());
+    // output all of the items
+    CSimpleIniA::TNamesDepend::const_iterator i;
+    for (i = values.begin(); i != values.end(); ++i)
+    {
+        out.push_back(i->pItem);
+    }
+    return out;
+}
+
+vector<string> ConfigFile::getSections()
+{
+    vector<string> out;
+    CSimpleIniA::TNamesDepend sections;
+    ini->GetAllSections(sections);
+    sections.sort(CSimpleIniA::Entry::LoadOrder());
+    CSimpleIniA::TNamesDepend::const_iterator i;
+    for (i = sections.begin(); i != sections.end(); ++i)
+    {
+        out.push_back(i->pItem);
+    }
+    return out;
 }
 
 Penjin::ERRORS ConfigFile::getError(const int& error)

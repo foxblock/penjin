@@ -22,6 +22,7 @@
 #include "DimensionObject.h"
 #include "Singleton.h"
 #include "Colour.h"
+#include "Surface.h"
 #include  <vector>
 
 namespace Penjin
@@ -60,6 +61,11 @@ namespace Penjin
             virtual void drawLine(const Vector2d<float> & p1, const Vector2d<float> & p2)=0;
             virtual void drawRectangle(const Vector2d<float> & pos, const Vector2d<int> & dims)=0;
             virtual void drawEllipse(const Vector2d<float> & centre, const float& rx, const float& ry)=0;
+
+            virtual Colour getPixel(Vector2d<int> pos)=0;
+            virtual Colour getPixel(Surface s, Vector2d<int> pos)=0;
+
+            //virtual Surface cropSurface(Surface in, Rectangle cropArea)=0;
 
             virtual void showVideoInfo()=0;
 

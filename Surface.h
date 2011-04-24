@@ -1,5 +1,5 @@
 /**
-    \section LICENSE
+	\section LICENSE
 	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
@@ -17,37 +17,39 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** \file ApplicationState is a base class to create application states for your application or game.
-*   It is not to be instantiated directly!
+/***************************************************************************************************
+*   \file Surface is a class relating to storing pixels for blitting
 *   \author Kevin Winfield-Pantoja
 */
-#ifndef APPLICATIONSTATE_H
-#define APPLICATIONSTATE_H
 
-#include "RenderObject.h"
-#include "UpdateObject.h"
-#include "SimpleJoy.h"
+/// NOTE: This class's intended purpose is to abstract from the SDL_Surface WIP
+#ifndef SURFACE_H
+#define SURFACE_H
+
+#include "SDL/SDL.h"
 
 namespace Penjin
 {
-    class ApplicationState : public RenderObject, public UpdateObject
+    class Surface
     {
         public:
             /** Default constructor */
-            ApplicationState();
+            Surface();
             /** Default destructor */
-            virtual ~ApplicationState();
+            virtual ~Surface();
+            /** Copy constructor
+             *  \param other Object to copy from
+             */
+            Surface(const Surface& other);
+            /** Assignment operator
+             *  \param other Object to assign from
+             *  \return A reference to this
+             */
+            Surface& operator=(const Surface& other);
 
-            /**< \brief Handle user input. */
-            virtual void input();
-            /**< \brief Update this state. */
-            virtual void update()=0;
-            /**<    \brief Check if the state requests to quit or not.
-                    \return true if the state would like to quit and false if not.*/
-            bool getShouldQuit()const;
-
+            SDL_Surface* surface;
         protected:
-            bool shouldQuit;    /**< the bool if the state would like to quit. */
+        private:
     };
 }
-#endif // APPLICATIONSTATE_H
+#endif // SURFACE_H

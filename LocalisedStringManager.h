@@ -36,10 +36,21 @@ namespace Penjin
                 return instanceLSM;
             }
             //virtual Penjin::Errors load(const string & file);
+            /** \brief loads the locale strings
+             * \return the Penjin:ERRORS, error code.
+             */
             virtual Penjin::ERRORS load();
+            /** \brief saves the locale strings
+             * \return the Penjin:ERRORS, error code.
+             */
             virtual Penjin::ERRORS save();
-
+            /** \brief sets the locale of the string manager.
+             * \param lang : the locale code to search for.
+             */
             void setLanguage(const string& lang);
+            /** \brief sets the folder where to look for locale files.
+             * \param f : the path where the language files are stored.
+             */
             void setLanguageFolder(const string& f);
 
         private:
