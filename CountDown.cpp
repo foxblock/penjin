@@ -44,8 +44,6 @@ void CountDown::update()
 {
     if (limit - getScaledTicks() <= 0 && is_Started)
     {
-        if (callback)
-            (*callback)(obj);
         if (rewind == STOP_AND_REWIND)
         {
             stop();
@@ -58,6 +56,8 @@ void CountDown::update()
         {
             pause();
         }
+        if (callback)
+            (*callback)(obj);
     }
 }
 

@@ -168,8 +168,8 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
 
 PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
 {
-    PENJIN_ERRORS error;
     //  We load the image into the image vector
+    PENJIN_ERRORS error = PENJIN_OK;
     loadImage(surface);
 
     sheetMode = true;  //  successful loading means we have a tilesheet
