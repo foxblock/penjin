@@ -19,6 +19,6 @@
 #include "Animation.h"
 using Penjin::Animation;
 
-PENJIN_ERRORS Animation::loadFrame(CRstring fileName){return image.loadImageNoKey(fileName);}
+Penjin::ERRORS Animation::loadFrame(CRstring fileName){return image.loadImageNoKey(fileName);}
 
-PENJIN_ERRORS Animation::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); animationTimer.start(); return image.loadImageSheetNoKey(fileName, xTiles, yTiles);}
+Penjin::ERRORS Animation::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); animationTimer.start(); return image.loadImageSheetNoKey(fileName, xTiles, yTiles);}

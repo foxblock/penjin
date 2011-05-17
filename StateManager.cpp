@@ -35,6 +35,7 @@ StateManager::StateManager() : state(NULL), next(STATE_EXAMPLE), current(STATE_N
 StateManager::~StateManager()
 {
     //dtor
+    clearState();
 }
 
 void StateManager::setNextState(const STATES& s)
@@ -78,4 +79,11 @@ Penjin::STATES StateManager::getCurrentState()
 ApplicationState* StateManager::getState()
 {
     return state;
+}
+
+
+void StateManager::clearState()
+{
+    delete state;
+    state=NULL;
 }

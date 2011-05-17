@@ -29,3 +29,8 @@ PositionObject::~PositionObject()
 {
     //dtor
 }
+
+Vector2d<float> PositionObject::getPosition()const
+{
+    return position;
+}

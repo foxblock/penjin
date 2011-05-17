@@ -40,8 +40,8 @@ using namespace std;
 
 #include "PenjinFixedFunc.h"
 #include "PenjinTypes.h"
-#include "PenjinErrors.h"
-using namespace PenjinErrors;
+#include "Errors.h"
+//using namespace PenjinErrors;
 #include "Colour.h"
 #include "GFX.h"
 #include "NumberUtility.h"
@@ -84,13 +84,13 @@ namespace Penjin
                     cout << ErrorHandler().getErrorString(PenjinErrors::PENJIN_FUNCTION_IS_STUB) << endl;
                 }
             #endif
-            PENJIN_ERRORS loadImage(CRstring imageName);                                 // Load an image into the vector
-            PENJIN_ERRORS loadImageNoKey(CRstring imageName);
-            PENJIN_ERRORS loadImageSheet(CRstring imageName,CRuint xTiles,CRuint yTiles);  // store the separated images on the vector
-            PENJIN_ERRORS loadImageSheetNoKey(CRstring imageName,CRuint xTiles,CRuint yTiles);
-            PENJIN_ERRORS loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data, surfaces added ny this function won't get deleted when the image gets deleted - keep track of them yourself!
-            PENJIN_ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // see above comment
-            PENJIN_ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
+            Penjin::ERRORS loadImage(CRstring imageName);                                 // Load an image into the vector
+            Penjin::ERRORS loadImageNoKey(CRstring imageName);
+            Penjin::ERRORS loadImageSheet(CRstring imageName,CRuint xTiles,CRuint yTiles);  // store the separated images on the vector
+            Penjin::ERRORS loadImageSheetNoKey(CRstring imageName,CRuint xTiles,CRuint yTiles);
+            Penjin::ERRORS loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // use this for caching sprites, so Image objects can share data, surfaces added ny this function won't get deleted when the image gets deleted - keep track of them yourself!
+            Penjin::ERRORS loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles); // see above comment
+            Penjin::ERRORS assignClipAreas(CRuint xTiles, CRuint yTiles,CRuint skipTiles,CRuint numTiles); // extracted identical code from loadImageSheet[NoKey]
 
             #ifdef PENJIN_3D
                 void renderImage(uint i,CRfloat destX,CRfloat destY,CRfloat destZ);
@@ -125,10 +125,10 @@ namespace Penjin
                 #endif
             #endif
 
-            PENJIN_ERRORS setTransparentColour(CRuint i, const Vector2d<int>& pixel);
-            PENJIN_ERRORS setTransparentColour(const Vector2d<int>& pixel)
+            Penjin::ERRORS setTransparentColour(CRuint i, const Vector2d<int>& pixel);
+            Penjin::ERRORS setTransparentColour(const Vector2d<int>& pixel)
             {
-                PENJIN_ERRORS error = PENJIN_ERROR;
+                Penjin::ERRORS error = PENJIN_ERROR;
                 uint i;
                 #ifdef PENJIN_SDL
                 for (i=0;i<images.size();i++)
@@ -145,10 +145,10 @@ namespace Penjin
                 #endif
                 return error;
             }
-            PENJIN_ERRORS setTransparentColour(CRuint i, const Colour& c);
-            PENJIN_ERRORS setTransparentColour(const Colour& c)
+            Penjin::ERRORS setTransparentColour(CRuint i, const Colour& c);
+            Penjin::ERRORS setTransparentColour(const Colour& c)
             {
-                PENJIN_ERRORS error = PENJIN_ERROR;
+                Penjin::ERRORS error = PENJIN_ERROR;
                 uint i;
                 #ifdef PENJIN_SDL
                 for (i=0;i<images.size();i++)

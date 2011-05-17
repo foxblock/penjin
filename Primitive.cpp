@@ -28,3 +28,8 @@ Primitive::~Primitive()
 {
     //dtor
 }
+
+void Primitive::setDrawWidth(const int& w)
+{
+    drawWidth = w;
+}

@@ -46,6 +46,7 @@ namespace Penjin
 
             void setNextState(const STATES& next);
             STATES getCurrentState();
+            void clearState();
 
             ApplicationState* getState();
 

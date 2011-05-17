@@ -21,14 +21,10 @@
 using Penjin::Rectangle;
 using Penjin::Colour;
 
-Rectangle::Rectangle() : drawWidth(-1)
+Rectangle::Rectangle()
 {
     this->setColour(GREEN);
-}
-
-void Rectangle::setDrawWidth(const int& w)
-{
-    drawWidth = w;
+    drawWidth = -1;
 }
 
 void Rectangle::render()

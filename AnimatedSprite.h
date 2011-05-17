@@ -44,14 +44,14 @@ namespace Penjin
                 AnimatedSprite(CRint x,CRint y);
             #endif
 
-            PENJIN_ERRORS loadFrame(SDL_Surface* s);
-            virtual PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
-            virtual PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
-            PENJIN_ERRORS loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent=true); // loads a spritesheet from a shared image
+            Penjin::ERRORS loadFrame(SDL_Surface* s);
+            virtual Penjin::ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
+            virtual Penjin::ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
+            Penjin::ERRORS loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent=true); // loads a spritesheet from a shared image
             void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
-            PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
-            PENJIN_ERRORS setTransparentColour(const Vector2d<int>& v){return image.setTransparentColour(v);};
-            PENJIN_ERRORS setTransparentColour(const COLOURS& c){return setTransparentColour(Colour(c));}
+            Penjin::ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
+            Penjin::ERRORS setTransparentColour(const Vector2d<int>& v){return image.setTransparentColour(v);};
+            Penjin::ERRORS setTransparentColour(const COLOURS& c){return setTransparentColour(Colour(c));}
             #ifdef PENJIN_SDL
                 void disableTransparentColour(){image.disableTransparentColour();}
             #endif

@@ -39,17 +39,17 @@ namespace Penjin
 
             T getY()const{return y;}
 
-            virtual float dot(const Vector2d<T>& v)const{return (this->x*v.x+y*v.y);}
+            virtual T dot(const Vector2d<T>& v)const{return (this->x*v.x+y*v.y);}
+            virtual T length()const                 {return sqrt(lengthSquared());}
+            virtual T lengthSquared()const          {return (this->x*this->x + y*y);}
 
-            virtual float length()const                 {return sqrt(lengthSquared());}
-            virtual float lengthSquared()const          {return (this->x*this->x + y*y);}
             virtual Vector2d<T> unit()
             {
-                float len = length();
+                T len = length();
                 if(len == 0)
                     return Vector2d<T> (0,1);
 
-                float temp = 1/len;
+                T temp = 1/len;
                 return Vector2d<T>(this->x*temp,this->y*temp);
             }
             virtual void normalise()                    {*this = unit();}
@@ -62,6 +62,9 @@ namespace Penjin
 
         T y;
     };
+
+    //  Need to specialise to handle different types better...
+    //  ints will lose much precision currently, etc
 }
 
 #endif // VECTOR2DI_H

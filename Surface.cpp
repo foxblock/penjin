@@ -23,7 +23,7 @@
 */
 
 #include "Surface.h"
-
+using Penjin::Surface;
 Surface::Surface()
 {
     //ctor

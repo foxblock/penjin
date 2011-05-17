@@ -36,6 +36,14 @@ namespace Penjin
             Primitive();
             /** Default destructor */
             virtual ~Primitive();
+
+            /** \brief Sets the drawing/line width of the renderer used to draw this Primitive.
+             * \param w : The width in pixels (-1 signifies a filled Primitive)
+             */
+            void setDrawWidth(const int& w);
+
+        protected:
+            int drawWidth;  /**< The renderer line width to use in drawing this Primitive. */
     };
 }
 #endif // PRIMITIVE_H
