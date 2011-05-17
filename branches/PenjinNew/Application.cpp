@@ -51,7 +51,7 @@ Application::Application() : state(NULL)
 Application::~Application()
 {
     //dtor
-    delete state;
+    StateMan::getInstance()->clearState();
 }
 
 

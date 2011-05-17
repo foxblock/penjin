@@ -17,7 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Sprite.h"
-
+using Penjin::Sprite;
 Sprite::Sprite()
 {
     position.x = 0;
@@ -26,7 +26,7 @@ Sprite::Sprite()
         position.z = 0.0f;
     #endif
     #ifdef PENJIN_SDL
-        screen = GFX::getVideoSurface();
+        screen = GFX::getInstance()->getSDLVideoSurface();
     #endif
 }
 #ifndef PENJIN_3D
@@ -34,7 +34,7 @@ Sprite::Sprite()
     {
         setPosition(x,y);
         #ifdef PENJIN_SDL
-            screen = GFX::getVideoSurface();
+            screen = GFX::getInstance()->getSDLVideoSurface();
         #endif
     }
 #else
@@ -56,7 +56,7 @@ Sprite::Sprite()
     }
 #endif
 
-PENJIN_ERRORS Sprite::loadSprite(CRstring fileName){return image.loadImage(fileName);}
+Penjin::ERRORS Sprite::loadSprite(CRstring fileName){return image.loadImage(fileName);}
 
 #ifdef PENJIN_SDL
     void Sprite::render(SDL_Surface* screen){image.renderImage(screen,position);}

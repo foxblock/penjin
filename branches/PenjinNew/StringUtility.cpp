@@ -215,6 +215,15 @@ int StringUtility::stringToInt(CRstring value)
 	return out;
 }
 
+unsigned int StringUtility::stringToUnsignedInt(CRstring value)
+{
+	istringstream ins;	//	Create a string stream
+	ins.str(value);
+	unsigned int out = 0;
+	ins >> out;
+	return out;
+}
+
 long StringUtility::stringToLong(CRstring value)
 {
 	istringstream ins;	//	Create a string stream

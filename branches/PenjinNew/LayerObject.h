@@ -24,11 +24,11 @@
 #define LAYEROBJECT_H
 
 #include "RenderObject.h"
-#include "DimensionObject.h"
+#include "Rectangle.h"
 
 namespace Penjin
 {
-    class LayerObject : public RenderObject, DimensionObject
+    class LayerObject : public Rectangle
     {
         public:
             /** Default constructor */
@@ -48,8 +48,6 @@ namespace Penjin
 
         protected:
             int layer;
-
-        private:
     };
 }
 #endif // LAYEROBJECT_H

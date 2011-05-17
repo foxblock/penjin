@@ -22,6 +22,8 @@ using Penjin::LayerObject;
 LayerObject::LayerObject() : layer(0)
 {
     //ctor
+    drawWidth = 1;
+    setColour(LIGHT_BLUE);
 }
 
 LayerObject::~LayerObject()

@@ -45,6 +45,12 @@ namespace Penjin
              */
             template <class T>
             void setDimensions(const T& dims){dimensions.x=dims.x;dimensions.y=dims.y;}
+            /** \brief Set the width and height of an object.
+             * \param x : the width.
+             * \param y : the height.
+             */
+            template <class T>
+            void setDimensions(const T& x, const T& y){dimensions.x=x;dimensions.y=y;}
             /** \brief Set the width of an object.
              * \param w : the width to set, which must be numerical.
              */

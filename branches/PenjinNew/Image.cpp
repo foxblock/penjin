@@ -16,9 +16,10 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <iostream>
 #include "Image.h"
 using Penjin::Image;
-
+using std::cout;
 Image::Image()
 {
     alpha = 255;
@@ -45,7 +46,7 @@ Image::~Image()
 }
 
 
-PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
+Penjin::ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
 {
     #ifdef PENJIN_SDL
         if((size_t)i >= images.size())
@@ -65,7 +66,7 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
     #endif
 }
 
-PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2d<int>& v)
+Penjin::ERRORS Image::setTransparentColour(CRuint i, const Vector2d<int>& v)
 {
     #ifdef PENJIN_SDL
         if((size_t)i >= images.size())
@@ -78,9 +79,9 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Vector2d<int>& v)
     #endif
 }
 
-PENJIN_ERRORS Image::loadImage(CRstring name)
+Penjin::ERRORS Image::loadImage(CRstring name)
 {
-    PENJIN_ERRORS error;
+    Penjin::ERRORS error;
     #ifdef PENJIN_SDL
         //  load image
         error = loadImageNoKey(name);
@@ -93,7 +94,7 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
         error = setTransparentColour(currentI,Vector2d<int>(0,0));
     #else
         textures.resize(textures.size()+1);
-        error = (PENJIN_ERRORS)textures.back().loadTexture(name);
+        error = (Penjin::ERRORS)textures.back().loadTexture(name);
         if(error != PENJIN_OK)
         {
             textures.pop_back();
@@ -104,7 +105,7 @@ PENJIN_ERRORS Image::loadImage(CRstring name)
     return error;
 }
 
-PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
+Penjin::ERRORS Image::loadImageNoKey(CRstring name)
 {
     #ifdef PENJIN_SDL
         uint currentI = (uint)images.size();
@@ -134,7 +135,7 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
         #endif
     #else
         textures.resize(textures.size()+1);
-        PENJIN_ERRORS error = (PENJIN_ERRORS)textures[textures.size()-1].loadTexture(name);
+        Penjin::ERRORS error = (Penjin::ERRORS)textures[textures.size()-1].loadTexture(name);
         if(error != PENJIN_OK)
         {
             textures.pop_back();
@@ -145,10 +146,10 @@ PENJIN_ERRORS Image::loadImageNoKey(CRstring name)
     return PENJIN_OK;
 }
 
-PENJIN_ERRORS Image::loadImageSheet(CRstring name,CRuint xTiles,CRuint yTiles)
+Penjin::ERRORS Image::loadImageSheet(CRstring name,CRuint xTiles,CRuint yTiles)
 {
     //  We load the image into the image vector
-    PENJIN_ERRORS error = loadImage(name);
+    Penjin::ERRORS error = loadImage(name);
     if(error != PENJIN_OK)
         return error;
     sheetMode = true;  //  successful loading means we have a tilesheet
@@ -156,10 +157,10 @@ PENJIN_ERRORS Image::loadImageSheet(CRstring name,CRuint xTiles,CRuint yTiles)
     return assignClipAreas(xTiles, yTiles, 0, 0);
 }
 
-PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTiles)
+Penjin::ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTiles)
 {
     //  We load the image into the image vector
-    PENJIN_ERRORS error = loadImageNoKey(name);
+    Penjin::ERRORS error = loadImageNoKey(name);
     if(error != PENJIN_OK)
         return error;
     sheetMode = true;  // successful loading means we have a tilesheet
@@ -167,9 +168,9 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(CRstring name,CRuint xTiles,CRuint yTil
     return assignClipAreas(xTiles, yTiles, 0, 0);
 }
 
-PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
+Penjin::ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
 {
-    PENJIN_ERRORS error;
+    Penjin::ERRORS error;
     //  We load the image into the image vector
     loadImage(surface);
 
@@ -188,7 +189,7 @@ PENJIN_ERRORS Image::loadImageSheet(SDL_Surface *surface,CRuint xTiles,CRuint yT
     return assignClipAreas(xTiles, yTiles, skipTiles, numTiles);
 }
 
-PENJIN_ERRORS Image::loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
+Penjin::ERRORS Image::loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles)
 {
     //  We load the image into the image vector
     loadImage(surface);
@@ -203,7 +204,7 @@ PENJIN_ERRORS Image::loadImageSheetNoKey(SDL_Surface *surface,CRuint xTiles,CRui
 }
 
 // Build clipping areas - if numTiles is 0, it will be calculated automatically
-PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint p_numTiles)
+Penjin::ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint p_numTiles)
 {
     uint numTiles = p_numTiles;
     //  now we have to build the clipping areas based on the tile info we have.
@@ -792,17 +793,18 @@ void Image::toNegative()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i).first);
+            GFX::getInstance()->lockSurface(images.at(i).first);
             for(int x = images.at(i).first->w-1; x>=0; --x)
             {
                 for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i).first,x,y);
+                    t = GFX::getInstance()->getPixel(images.at(i).first,Vector2d<int>(x,y));
                     t = -t;
-                    GFX::setPixel(images.at(i).first,x,y,t);
+                    GFX::getInstance()->setDrawColour(t);
+                    GFX::getInstance()->drawPixel(images.at(i).first,Vector2d<float>(x,y));
                 }
             }
-            GFX::unlockSurface(images.at(i).first);
+            GFX::getInstance()->unlockSurface(images.at(i).first);
         }
     #else
 
@@ -815,17 +817,18 @@ void Image::swapGB()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i).first);
+            GFX::getInstance()->lockSurface(images.at(i).first);
             for(int x = images.at(i).first->w-1; x>=0; --x)
             {
                 for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i).first,x,y);
+                    t = GFX::getInstance()->getPixel(images.at(i).first,Vector2d<int>(x,y));
                     t.swapGB();
-                    GFX::setPixel(images.at(i).first,x,y,t);
+                    GFX::getInstance()->setDrawColour(t);
+                    GFX::getInstance()->drawPixel(images.at(i).first, Vector2d<float>(x,y));
                 }
             }
-            GFX::unlockSurface(images.at(i).first);
+            GFX::getInstance()->unlockSurface(images.at(i).first);
         }
     #else
 
@@ -838,17 +841,18 @@ void Image::swapRB()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i).first);
+            GFX::getInstance()->lockSurface(images.at(i).first);
             for(int x = images.at(i).first->w-1; x>=0; --x)
             {
                 for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i).first,x,y);
+                    t = GFX::getInstance()->getPixel(images.at(i).first,Vector2d<int>(x,y));
                     t.swapRB();
-                    GFX::setPixel(images.at(i).first,x,y,t);
+                    GFX::getInstance()->setDrawColour(t);
+                    GFX::getInstance()->drawPixel(images.at(i).first, Vector2d<float>(x,y));
                 }
             }
-            GFX::unlockSurface(images.at(i).first);
+            GFX::getInstance()->unlockSurface(images.at(i).first);
         }
     #else
 
@@ -861,17 +865,18 @@ void Image::swapRG()
         for(int i = images.size()-1; i>= 0; --i)
         {
             Colour t;
-            GFX::lockSurface(images.at(i).first);
+            GFX::getInstance()->lockSurface(images.at(i).first);
             for(int x = images.at(i).first->w-1; x>=0; --x)
             {
                 for(int y = images.at(i).first->h-1; y >= 0; --y)
                 {
-                    t = GFX::getPixel(images.at(i).first,x,y);
+                    t = GFX::getInstance()->getPixel(images.at(i).first,Vector2d<int>(x,y));
                     t.swapRG();
-                    GFX::setPixel(images.at(i).first,x,y,t);
+                    GFX::getInstance()->setDrawColour(t);
+                    GFX::getInstance()->drawPixel(images.at(i).first, Vector2d<float>(x,y));
                 }
             }
-            GFX::unlockSurface(images.at(i).first);
+            GFX::getInstance()->unlockSurface(images.at(i).first);
         }
     #else
 

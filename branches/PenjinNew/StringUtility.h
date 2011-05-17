@@ -79,6 +79,7 @@ namespace Penjin
         double stringToDouble(CRstring value);
         long stringToLong(CRstring value);
         int stringToInt(CRstring value);
+        unsigned int stringToUnsignedInt(CRstring value);
         short stringToShort(CRstring value);
         bool stringToBool(CRstring value);
 

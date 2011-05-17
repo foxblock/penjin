@@ -35,15 +35,7 @@ namespace Penjin
         public:
             Rectangle();
             /**< Render the Rectangle to screen */
-            void render();
-
-            /** \brief Sets the drawing/line width of the renderer used to draw this rectangle.
-             * \param w : The width in pixels (-1 signifies a filled rectangle)
-             */
-            void setDrawWidth(const int& w);
-
-        private:
-            int drawWidth;  /**< The renderer line width to use in drawing this Rectangle. */
+            virtual void render();
     };
 }
 #endif // RECTANGLE_H

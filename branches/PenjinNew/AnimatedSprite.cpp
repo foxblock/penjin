@@ -98,7 +98,7 @@ bool AnimatedSprite::hasCollided(AnimatedSprite &spr)
 }
 */
 
-PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
+Penjin::ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 {
     #ifdef PENJIN_SDL
         image.loadImage(s);
@@ -110,11 +110,11 @@ PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
     #endif
 }
 
-PENJIN_ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}
+Penjin::ERRORS AnimatedSprite::loadFrame(CRstring fileName){return image.loadImage(fileName);}
 
-PENJIN_ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); return image.loadImageSheet(fileName, xTiles, yTiles);}
+Penjin::ERRORS AnimatedSprite::loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles){image.clear(); return image.loadImageSheet(fileName, xTiles, yTiles);}
 
-PENJIN_ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent)
+Penjin::ERRORS AnimatedSprite::loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent)
 {
     image.clear();
     if (transparent)

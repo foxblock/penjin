@@ -38,12 +38,12 @@ namespace Penjin
             void setX(const T& v)               {x=v;}
             T getX()const                       {return x;}
 
-            virtual float length()const         {return (float)x;}
-            virtual float lengthSquared()const  {return (float)(x*x);}
+            virtual T length()const         {return (T)x;}
+            virtual T lengthSquared()const  {return (T)(x*x);}
             virtual Vector1d unit()const        {return Vector1d(1);}
             virtual void normalise()
             {
-                float len = length();
+                T len = length();
                 if(len == 0 || len <= std::numeric_limits<float>::max())
                     x = 1;
                 else

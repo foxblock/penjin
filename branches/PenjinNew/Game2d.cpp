@@ -144,7 +144,11 @@ void Game2d::loop()
         state->input();
         //  check for exit condition
         if(Penjin::Joy::getInstance()->isQuit())
-            exit(EXIT_SUCCESS);
+        {
+            // Break out of loop
+            break;
+        }
+
         state->update();
         state->render();
         Penjin::GFX::getInstance()->renderQueue();

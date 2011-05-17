@@ -25,8 +25,8 @@ namespace Penjin
     class Animation : public AnimatedSprite // same as AnimatedSprite, but without auto-keying
     {
         public:
-            virtual PENJIN_ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
-            virtual PENJIN_ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
+            virtual Penjin::ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
+            virtual Penjin::ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
     };
 }
 #endif	//	ANIMATION_H

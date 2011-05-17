@@ -27,6 +27,8 @@
 
 #if defined(PENJIN_SDL_VIDEO) || defined(PENJIN_SDL) && !defined(PENJIN_GL_VIDEO)
     #include "RendererSDL_2d.h"
+#elif defined(PENJIN_SDL_GL_VIDEO) || defined(PENJIN_GL)
+    // #include "RendererSDL_GL_2d.h"
 #endif
 
 #endif // GFX_H_INCLUDED

@@ -138,18 +138,18 @@ void RendererSDL_2d::drawEllipse(const Vector2d<float> & centre, const float& rx
     }
 }
 
-Colour RendererSDL_2d::getPixel(Vector2d<int> pos)
+Penjin::Colour RendererSDL_2d::getPixel(Vector2d<int> pos)
 {
     return getPixel(screen,pos);
 }
 
-Colour RendererSDL_2d::getPixel(SDL_Surface* s, Vector2d<int> pos)
+Penjin::Colour RendererSDL_2d::getPixel(SDL_Surface* s, Vector2d<int> pos)
 {
     if(s == NULL)
         return Colour(MAGENTA);
     int bpp = s->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)s->pixels + y * s->pitch + x * bpp;
+    Uint8 *p = (Uint8 *)s->pixels + pos.y * s->pitch + pos.x * bpp;
     Colour c;
     switch(bpp) {
     case 1:
@@ -173,7 +173,7 @@ Colour RendererSDL_2d::getPixel(SDL_Surface* s, Vector2d<int> pos)
     return c;
 }
 
-Colour RendererSDL_2d::getPixel(Surface s, Vector2d<int> pos)
+Penjin::Colour RendererSDL_2d::getPixel(Surface s, Vector2d<int> pos)
 {
     return getPixel(s.surface, pos);
 }
@@ -194,20 +194,20 @@ SDL_Surface* RendererSDL_2d::cropSurface(SDL_Surface* in, SDL_Rect* c)
     SDL_Surface *cropped = NULL;
     //  Cropped surface
     cropped = SDL_CreateRGBSurface(in->flags,c->w, c->h,in->format->BitsPerPixel, 0, 0, 0, 0);
-    Colour col = getPixel(cropped,0,0);
+    Colour col = getPixel(cropped,Vector2d<int>(0,0));
     SDL_SetColorKey(cropped, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(cropped->format,col.r,col.g,col.b));
     SDL_BlitSurface(in,c,cropped,NULL);
     return cropped;
 }
 
-void lockSurface(SDL_Surface* s)
+void RendererSDL_2d::lockSurface(SDL_Surface* s)
 {
         // Check and lock the surface if necessary.
         if (SDL_MUSTLOCK(s))
             SDL_LockSurface(s);
 }
 
-void unlockSurface(SDL_Surface* s)
+void RendererSDL_2d::unlockSurface(SDL_Surface* s)
 {
         // Check and unlock the surface if necessary
         if ( SDL_MUSTLOCK(s) )

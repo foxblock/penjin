@@ -1,5 +1,5 @@
 /*
-	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010 Kevin Winfield-Pantoja
+	Penjin is Copyright (c)2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Winfield-Pantoja
 
 	This file is part of Penjin.
 
@@ -15,29 +15,29 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef LINE_H
-#define LINE_H
-
-
-#include "Primitive.h"
-
+*/#ifndef BUTTON_H
+#define BUTTON_H
+#include "Widget.h"
+#include "UpdateObject.h"
 namespace Penjin
 {
-    class Line : public Primitive
+    class Rectangle;
+    class Button : public Widget, public UpdateObject
     {
         public:
-            Line();
-
-            virtual ~Line();
-
-            template <class T>
-            void setEndPosition(const T& pos){end.x = pos.x;end.y=pos.y;}
+            /** Default constructor */
+            Button();
+            /** Default destructor */
+            virtual ~Button();
 
             virtual void render();
+            virtual void update();
 
         protected:
-            Vector2d<float> end;
+            string text;        /** short action word of button*/
+            string description; /** Long description of what the button does */
+            Rectangle* selection;
+        private:
     };
 }
-#endif // LINE_H
+#endif // BUTTON_H
