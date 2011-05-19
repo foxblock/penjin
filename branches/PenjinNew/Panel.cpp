@@ -31,7 +31,7 @@ Panel::Panel() : shouldHide(false), hidden(false), selection(-1)//, hideOffset(0
     //ctor
     //setColour(DARK_GREY);
     Vector2d<int> t = Penjin::GFX::getInstance()->getDimensions();
-    t.y = t.y * 0.15f;
+    t.y = t.y * 0.18f;
     t.x = t.x -1;
     setDimensions(t);
     lowLight->setColour(BLACK);

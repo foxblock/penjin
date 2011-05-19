@@ -30,8 +30,8 @@ Button::Button() : selection(NULL)
     this->setHighLightColour(WHITE);
     this->setLowLightColour(DARK_GREY);
     Vector2d<int> t = Penjin::GFX::getInstance()->getDimensions();
-    t.y = t.y * 0.1f;
     t.x = t.x * 0.1f;
+    t.y = t.x;
     setDimensions(t);
     drawWidth = -1;
     selection = new Rectangle();
