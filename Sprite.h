@@ -54,6 +54,7 @@ namespace Penjin
             #endif
             uint getWidth()const{return image.getWidth();}
             uint getHeight()const{return image.getHeight();}
+            Vector2d<int> getDimensions()const{return Vector2d<int>(image.getWidth(), image.getHeight());}
 
             #ifdef PENJIN_CACHE_ROTATIONS
                 void setDegreesCached(CRuint d){image.setDegreesCached(d);}
