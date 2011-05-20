@@ -47,20 +47,15 @@ Penjin::ERRORS SpriteButton::loadImage(const string& f)
         sprite->setTransparentColour(Vector2d<int>(0,0));
         Vector2d<int> a = getDimensions();
         Vector2d<int> b = sprite->getDimensions();
-        if(a > b)
+        if(a < b)
         {
-            a = a - b;
-            a = a * 0.5f;
-            b.x = sprite->getX() + a.x;
-            b.y = sprite->getY() + a.y;
-            sprite->setPosition(b);
+            setDimensions(b);
         }
-        else
-        {
-            // Sprite too big for button
-            sprite->clear();
-            e = PENJIN_ERROR;
-        }
+        a = a - b;
+        a = a * 0.5f;
+        b.x = sprite->getX() + a.x;
+        b.y = sprite->getY() + a.y;
+        sprite->setPosition(b);
     }
     return e;
 }

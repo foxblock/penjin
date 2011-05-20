@@ -100,6 +100,10 @@ void Panel::update()
     Vector2d<float> t = Rectangle::position;
     for(unsigned int i = 0; i < widgets.size(); ++i)
     {
+        // resize panel if a wdiget is too big
+        if(widgets.at(i)->getDimensions() > getDimensions())
+            setDimensions(widgets.at(i)->getDimensions());
+
         int wCentre = widgets.at(i)->getDimensions().y*0.5f;
         int offset = (boxCentre -wCentre) +1;
         t.x += offset;

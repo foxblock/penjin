@@ -44,6 +44,13 @@ namespace Penjin
 
             void setLowLightColour(const Colour& c);
             void setHighLightColour(const Colour& c);
+            void setSelectionColour(const Colour& c);
+
+            void setShowHighLight(const bool& b);
+            void setShowLowLight(const bool& b);
+            void setShowSelection(const bool& b);
+            void setShowWidget(const bool& b);
+
             bool isMouseSelected();
             bool isMouseActive();
 
@@ -51,8 +58,14 @@ namespace Penjin
 
             Line* highLight;
             Line* lowLight;
-            bool active;
+            Colour* selectionColour;
+            bool active;        // The the Widget is activated
             bool selected;      // if the widet is selected but not active
+
+            bool showHighLight; // Show the lighted areas of a Widget
+            bool showLowLight;  // Show the shadowed ares of a Widget
+            bool showWidget;    // Show the Widget itself.
+            bool showSelection; // Show the Selection of the Wdiget
     };
 }
 #endif // WIDGET_H
