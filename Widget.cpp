@@ -22,11 +22,13 @@
 using Penjin::Widget;
 using Penjin::Line;
 
-Widget::Widget() : lowLight(NULL), highLight(NULL), active(false), selected(false)
+Widget::Widget() : lowLight(NULL), highLight(NULL), active(false), selected(false), showHighLight(true),
+                    showLowLight(true), showSelection(true), showWidget(true), selectionColour(NULL)
 {
     //ctor
     lowLight = new Line;
     highLight = new Line;
+    selectionColour = new Colour(WHITE);
 }
 
 Widget::~Widget()
@@ -34,31 +36,43 @@ Widget::~Widget()
     //dtor
     delete lowLight;
     delete highLight;
+    delete selectionColour;
 }
 
 void Widget::render()
 {
-    Rectangle::render();
+    if(showWidget)
+        Rectangle::render();
     Vector2d<int> t;
+
     // left highlight
     highLight->setPosition(Rectangle::position);
     t.x = Rectangle::position.x;
     t.y = Rectangle::position.y + dimensions.y;
     highLight->setEndPosition(t);
-    highLight->render();
+    if(showHighLight)
+        highLight->render();
+
     // bottom low light
     lowLight->setPosition(t);
     t.x = Rectangle::position.x + dimensions.x;
     lowLight->setEndPosition(t);
-    lowLight->render();
+    if(showLowLight)
+        lowLight->render();
+
+
+
     // right low light
     lowLight->setPosition(t);
     t.y = Rectangle::position.y;
     lowLight->setEndPosition(t);
-    lowLight->render();
+    if(showLowLight)
+        lowLight->render();
+
     // top high light
     highLight->setEndPosition(t);
-    highLight->render();
+    if(showHighLight)
+        highLight->render();
 }
 
 void Widget::setHighLightColour(const Colour& c)
@@ -69,6 +83,11 @@ void Widget::setHighLightColour(const Colour& c)
 void Widget::setLowLightColour(const Colour& c)
 {
     lowLight->setColour(c);
+}
+
+void Widget::setSelectionColour(const Colour& c)
+{
+    selectionColour->setColour(c);
 }
 
 void Widget::setActive(const bool& a)
@@ -107,3 +126,24 @@ bool Widget::isSelected()
 {
     return (isMouseSelected() || selected);
 }
+
+void Widget::setShowHighLight(const bool& b)
+{
+    showHighLight = b;
+}
+
+void Widget::setShowLowLight(const bool& b)
+{
+    showLowLight = b;
+}
+
+void Widget::setShowSelection(const bool& b)
+{
+    showSelection = b;
+}
+
+void Widget::setShowWidget(const bool& b)
+{
+    showWidget = b;
+}
+

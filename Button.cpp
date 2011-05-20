@@ -38,7 +38,7 @@ Button::Button() : selection(NULL)
     selection->setColour(WHITE);
     selection->setDrawWidth(1);
     selection->setDimensions(t.x+2,t.y+2);
-    selection->setPosition(position.x-2, position.y-2);
+    selection->setPosition(position.x-1, position.y-1);
 }
 
 Button::~Button()
@@ -49,17 +49,25 @@ Button::~Button()
 
 void Button::render()
 {
-
     if(isActive())
         Rectangle::render();
     else if(isSelected())
     {
-        Widget::render();
-        selection->setPosition(position.x-1, position.y-1);
-        selection->render();
+        if(showWidget)
+            Widget::render();
+        if(showSelection)
+        {
+            selection->setDimensions(dimensions.x+2,dimensions.y+2);
+            selection->setPosition(position.x-1, position.y-1);
+            selection->render();
+        }
     }
     else
-        Widget::render();
+    {
+        if(showWidget)
+            Widget::render();
+    }
+
 }
 
 void Button::update()
