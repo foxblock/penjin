@@ -17,6 +17,7 @@
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "GFX.h"
+#include "SimpleJoy.h"
 
 #include "Panel.h"
 #include "Vector2d.h"
@@ -143,6 +144,11 @@ int Panel::whichWidget()
                 return i;
             }
         }
+    }
+    else if(Joy::getInstance()->isLeftClick())
+    {
+        // if we click outside the panel we hide the panel
+        setShouldHide(true);
     }
     return -1;
 }
