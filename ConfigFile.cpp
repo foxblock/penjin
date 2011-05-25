@@ -48,9 +48,18 @@ Penjin::ERRORS ConfigFile::save(const string& fileName)
 
 string ConfigFile::getValue(const string& section, const string& key)
 {
+    if(ini->GetValue(section.c_str(),key.c_str(),NULL) == NULL)
+        return "";
     return (string)ini->GetValue(section.c_str(),key.c_str(),NULL);
 }
 
+string ConfigFile::getValue(const string& section, const string& key, const string& value)
+{
+    string val = getValue(section, key);
+    if(val == "")
+        setValue(section,key,value);
+    return value;
+}
 
 void ConfigFile::setValue(const string& section, const string& key, const string& value, const string& comment)
 {
