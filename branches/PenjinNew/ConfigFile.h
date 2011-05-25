@@ -72,6 +72,14 @@ namespace Penjin
              */
             string getValue(const string& section, const string& key);
 
+             /** \brief get a value from the ConfigFile and set the value if a value is missing
+             * \param section : The section of the file to take the value.
+             * \param key : The key within the section to take the value.
+             * \param value : The value to set if the requested value is missing!
+             * \return The actual value.
+             */
+            string getValue(const string& section, const string& key, const string& value);
+
             vector<string> getSections();
             vector<string> getValues(const string& section, const string& key);
             vector<string> getKeys(const string& section);
