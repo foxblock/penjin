@@ -67,6 +67,10 @@ class Glyph
         uint getHeight()const{return glyph.getHeight();}    //  return chracter height.
         RENDER_MODES getRenderMode()const{return renderMode;}
 
+        // updates the Glpyh with any changes occurred in the parent Text object
+        // returns true if anything changed, false otherwise
+        bool update(const Colour& col, const Colour& bg, const RENDER_MODES& mode);
+
     private:
         // Disabled to prevent double freed pointers.
         Glyph(const Glyph& noCopy);
@@ -84,6 +88,7 @@ class Glyph
         Colour  bgColour;
         TTF_Font* font;
         GlyphClass::RENDER_MODES renderMode;
+        bool needsInit;
         //  This is just a position we move around
         #ifdef PENJIN_3D
             Vector3df* position;

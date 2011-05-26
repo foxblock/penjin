@@ -107,6 +107,11 @@ class AnimatedSprite
             void setScaleX(CRfloat scaleX){image.setScaleX(scaleX);}
             void setScaleY(CRfloat scaleY){image.setScaleY(scaleY);}
             void setRotation(CRfloat angle){image.setRotation(angle);}
+            // Cache rotation config
+            #ifdef PENJIN_CACHE_ROTATIONS
+                void setDegreesCached(CRuint d){image.setDegreesCached(d);}
+                void precacheRotations(){image.precacheRotations();}
+            #endif
         #endif
         #ifdef PENJIN_SDL
             //void setUseHardware(CRbool useHW){image.setUseHardware(useHW);}

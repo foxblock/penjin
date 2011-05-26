@@ -25,6 +25,10 @@
 using namespace vmath;
 using namespace fixedpoint;
 
+#ifdef PENJIN_SDL
+struct SDL_Rect;
+#endif
+
 class Vector2df : public vec2<float>
 {
     public:
@@ -119,6 +123,10 @@ class Vector2df : public vec2<float>
         float length() const{return sqrt(lengthSquared());}
         float lengthSquared() const{return (x*x + y*y);}
         void normalise();
+        #ifdef PENJIN_SDL
+        bool inRect(const SDL_Rect& rect) const;
+        #endif
+        bool inRect(CRfloat x, CRfloat y, CRuint w, CRuint h) const;
 };
 
 #endif // VECTOR2DF_H

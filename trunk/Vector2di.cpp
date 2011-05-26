@@ -18,6 +18,10 @@
 */
 #include "Vector2di.h"
 
+#ifdef PENJIN_SDL
+#include <SDL/SDL.h>
+#endif
+
 void Vector2di::normalise()
 {
     float temp = 1/length();
@@ -31,4 +35,20 @@ void Vector2di::normalise()
 		x = 0;
 		y = 1;
 	}
+}
+
+#ifdef PENJIN_SDL
+bool Vector2di::inRect(const SDL_Rect& rect) const
+{
+    if (x < rect.x || y < rect.y || x >= rect.x + rect.w || y >= rect.y + rect.h)
+        return false;
+    return true;
+}
+#endif
+
+bool Vector2di::inRect(CRint x, CRint y, CRuint w, CRuint h) const
+{
+    if (this->x < x || this->y < y || this->x >= x + w || this->y >= y + h)
+        return false;
+    return true;
 }

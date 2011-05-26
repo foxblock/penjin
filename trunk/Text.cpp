@@ -266,52 +266,26 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
             }
 
             //  create more glyphs as needed - shifted 19 indices
-            while((int)glyphs[fontSize-1].size() <= c-19)
+            int start = glyphs[fontSize-1].size();
+            for (int I = start; I <= c-19; ++I)
             {
-                glyphs[fontSize-1].push_back(NULL);
-                glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
+                Glyph* temp = new Glyph;
+                temp->setFont(font);
+                temp->setCharacter(I+19);
+                temp->setFontSize(fontSize);
+                glyphs[fontSize-1].push_back(temp);
             }
+
+            Glyph* current = glyphs[fontSize-1].at(c-19);
 
             //  check properties of glyph if they differ from what we want to render.
-            bool changed = false;
-            if(glyphs[fontSize-1].at(c-19)->getColour() != colour)
-            {
-                glyphs[fontSize-1].at(c-19)->setColour(colour);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getBgColour() != bgColour)
-            {
-                glyphs[fontSize-1].at(c-19)->setBgColour(bgColour);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getFontSize() != fontSize)
-            {
-                glyphs[fontSize-1].at(c-19)->setFontSize(fontSize);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getCharacter() != c)
-            {
-                glyphs[fontSize-1].at(c-19)->setCharacter(c);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getRenderMode() != glyphs[fontSize-1].front()->getRenderMode())
-            {
-                glyphs[fontSize-1].at(c-19)->setRenderMode(glyphs[fontSize-1].front()->getRenderMode());
-                changed = true;
-            }
-            //  set common glyph properties
-            glyphs[fontSize-1].at(c-19)->setFont(font);
-            glyphs[fontSize-1].at(c-19)->setPosition(&position);
-            if(changed)
-            {
-                glyphs[fontSize-1].at(c-19)->refresh();
-                isRefreshed = true;
-            }
+            current->setPosition(&position);
+            isRefreshed = current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
 
             //  if everything up to date we can render the glyph
-            glyphs[fontSize-1].at(c-19)->render(screen);
+            current->render(screen);
             //  Advance cursor
-            position.x += glyphs[fontSize-1].at(c-19)->getWidth();
+            position.x += current->getWidth();
         }
         if(isRefreshed)
             calcDimensions();
@@ -421,52 +395,27 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
             }
 
             //  create more glyphs as needed - shifted 19 indices
-            while(glyphs[fontSize-1].size() <= c-19)
+            int start = glyphs[fontSize-1].size();
+            for (int I = start; I <= c-19; ++I)
             {
-                glyphs[fontSize-1].push_back(NULL);
-                glyphs[fontSize-1][glyphs[fontSize-1].size()-1] = new Glyph();
+                Glyph* temp = new Glyph;
+                temp->setFont(font);
+                temp->setCharacter(I+19);
+                temp->setFontSize(fontSize);
+                glyphs[fontSize-1].push_back(temp);
             }
+
+            Glyph* current = glyphs[fontSize-1].at(c-19);
 
             //  check properties of glyph if they differ from what we want to render.
-            bool changed = false;
-            if(glyphs[fontSize-1].at(c-19)->getColour() != colour)
-            {
-                glyphs[fontSize-1].at(c-19)->setColour(colour);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getBgColour() != bgColour)
-            {
-                glyphs[fontSize-1].at(c-19)->setBgColour(bgColour);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getFontSize() != fontSize)
-            {
-                glyphs[fontSize-1].at(c-19)->setFontSize(fontSize);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getCharacter() != c)
-            {
-                glyphs[fontSize-1].at(c-19)->setCharacter(c);
-                changed = true;
-            }
-            if(glyphs[fontSize-1].at(c-19)->getRenderMode() != glyphs[fontSize-1].front()->getRenderMode())
-            {
-                glyphs[fontSize-1].at(c-19)->setRenderMode(glyphs[fontSize-1].front()->getRenderMode());
-                changed = true;
-            }
-            //  set common glyph properties
-            glyphs[fontSize-1].at(c-19)->setFont(font);
-            glyphs[fontSize-1].at(c-19)->setPosition(&position);
-            if(changed)
-            {
-                glyphs[fontSize-1].at(c-19)->refresh();
-                isRefreshed = true;
-            }
+            current->setPosition(&position);
+            Glyph::GlyphProperties props = {colour,bgColour,glyphs[fontSize-1].front()->getRenderMode()};
+            isRefreshed = current->update(props);
 
             //  if everything up to date we can render the glyph
-            glyphs[fontSize-1].at(c-19)->render();
+            current->render();
             //  Advance cursor
-            position.x += glyphs[fontSize-1].at(c-19)->getWidth();
+            position.x += current->getWidth();
         }
         if(isRefreshed)
             calcDimensions();

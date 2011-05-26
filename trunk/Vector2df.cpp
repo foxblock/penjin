@@ -18,6 +18,10 @@
 */
 #include "Vector2df.h"
 
+#ifdef PENJIN_SDL
+#include <SDL/SDL.h>
+#endif
+
 Vector2df::Vector2df()
 {
     //ctor
@@ -36,4 +40,20 @@ void Vector2df::normalise()
 		x = 0.0f;
 		y = 1.0f;
 	}
+}
+
+#ifdef PENJIN_SDL
+bool Vector2df::inRect(const SDL_Rect& rect) const
+{
+    if (x < rect.x || y < rect.y || x >= rect.x + rect.w || y >= rect.y + rect.h)
+        return false;
+    return true;
+}
+#endif
+
+bool Vector2df::inRect(CRfloat x, CRfloat y, CRuint w, CRuint h) const
+{
+    if (this->x < x || this->y < y || this->x >= x + w || this->y >= y + h)
+        return false;
+    return true;
 }
