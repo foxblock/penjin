@@ -355,7 +355,7 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             for(int i = maxCached; i>=1; --i)
             {
                 setRotation(i);
-                renderImage(NULL,0,0);
+                renderImage(0,NULL,0,0);
             }
         }
     #endif
@@ -680,6 +680,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
 
     // This code fixes colour keying in 32 bpp mode (otherwise the colour key colour shows)
     // It also caused the rotated images to disappear in 16 bpp mode, so only run for 32 bpp
+    #ifndef NO_SDL_GFX_FIX
     if(in.format->BitsPerPixel == 32 && colourKey.alpha)
     {
         SDL_Surface* another = SDL_CreateRGBSurface(in.flags,tempImage->w, tempImage->h,in.format->BitsPerPixel, tempImage->format->Rmask, tempImage->format->Gmask, tempImage->format->Bmask, tempImage->format->Amask);
@@ -690,6 +691,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         SDL_FreeSurface(tempImage);
         return another;
     }
+    #endif
 
     return tempImage;
 }
@@ -709,12 +711,13 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
                 return;
             //  If the image is less than 5% of the screen dims then we cache all angles
             else if(dim.x < GFX::getXResolution()* 0.05f || dim.y < GFX::getYResolution()*0.05f)
-                maxCached = 358;
+                maxCached = 359;
             else
             {
                 //  TODO scale caching relative to size of sprite and screen resolution
                 maxCached = 0;
             }
+            precacheRotations();
         }
 
         void Image::cacheRotation(uint angle, SDL_Surface* s)

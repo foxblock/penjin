@@ -82,7 +82,7 @@ class Engine
                 #else
                     float currentTime = clock();
                 #endif
-                fps = fps*0.9f+(100.0f/(currentTime - lastTime));
+                fps = fps*0.9f+(100.0f/max(currentTime - lastTime,1.0f));
                 lastTime = currentTime;
                 return fps;
             }

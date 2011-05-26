@@ -29,6 +29,7 @@ Glyph::Glyph()
     #else
         renderMode = GlyphClass::NICE;
     #endif
+    needsInit = true;
 }
 
 Glyph::~Glyph()
@@ -67,6 +68,7 @@ void Glyph::refresh()
 #else
     glyph.loadSurface(tS);
 #endif
+    needsInit = false;
 }
 
 void Glyph::render()
@@ -104,4 +106,30 @@ void Glyph::render()
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     #endif
+}
+
+bool Glyph::update(const Colour& col, const Colour& bg, const RENDER_MODES& mode)
+{
+    if(getColour() != col)
+    {
+        setColour(col);
+        needsInit = true;
+    }
+    if(getBgColour() != bg)
+    {
+        setBgColour(bg);
+        needsInit = true;
+    }
+    if(getRenderMode() != mode)
+    {
+        setRenderMode(mode);
+        needsInit = true;
+    }
+
+    if(needsInit)
+    {
+        refresh();
+        return true;
+    }
+    return false;
 }

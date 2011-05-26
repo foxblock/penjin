@@ -108,7 +108,7 @@ void Engine::setInitialState(CRuint nextState)
 
 void Engine::setFrameRate(CRuint fpsDesired)
 {
-    gameTimer->setScaler(1000 / (float)fpsDesired);
+    gameTimer->setScaler(1000.0f / min((float)fpsDesired,1000.0f));
 }
 
 PENJIN_ERRORS Engine::argHandler(int argc, char **argv)
