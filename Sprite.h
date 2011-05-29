@@ -23,10 +23,20 @@
 #include "PenjinTypes.h"
 namespace Penjin
 {
-    class Sprite
+    class Sprite : public Image
     {
         public:
             Sprite();
+            virtual ~Sprite();
+
+            Penjin::ERRORS setTransparentColour(const Colour& c);
+            Penjin::ERRORS setTransparentColour(const Vector2d<int>& v);
+            void disableTransparentColour();
+
+        protected:
+            Colour transparent;
+
+            /*
             #ifndef PENJIN_3D
                 Sprite(CRint x,CRint y);
                 Sprite(const Vector2d<int>& position);
@@ -110,6 +120,7 @@ namespace Penjin
             #ifdef PENJIN_SDL
                 SDL_Surface* screen;
             #endif
+            */
     };
 }
 #endif // SPRITE_H_INCLUDED

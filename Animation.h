@@ -19,14 +19,56 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include "AnimatedSprite.h"
+
+#include "ImageSheet.h"
+#include "Timer.h"
+#include "UpdateObject.h"
+
+
 namespace Penjin
 {
-    class Animation : public AnimatedSprite // same as AnimatedSprite, but without auto-keying
+
+    /// Playback modes that the Animation can be played in.
+    enum PlayMode
+    {
+        pmNormal=0,     // Run through frames sequentially
+        pmReverse,      // Run through frames in reverse order.
+        pmPulse         // Run forward and then back through the frames.
+    };
+
+    class Animation : public ImageSheet, public Timer, public UpdateObject
     {
         public:
-            virtual Penjin::ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
-            virtual Penjin::ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
+            Animation();
+            virtual ~Animation();
+
+            /** \brief Set the Animation looping playback status.
+             * \param loop : if true looping playback, otherwise play once.
+             */
+            void setLooping(CRbool loop);
+            /** \brief Set the Animation looping playback status, specifying a number of loop cycles.
+             * \param loops : -1 means loop forever, any other value specify the number of loops.
+            */
+            void setLooping(CRint loops);
+            /** \brief Set the PlayMode of the Animation.
+             * \param mode : see PlayMode enum.
+             */
+            void setPlayMode(const PlayMode& mode);
+            PlayMode getPlayMode();
+            void setReversePlay(CRbool play);
+            void setPulsePlay(CRbool play);
+            bool hasFinished();
+
+            void rewind();
+
+            virtual void update();
+
+        protected:
+            int numLoops;       // -1 - loop forever, 0 - don't loop, else - number of loops
+            int firstLoops;
+            PlayMode playMode;
+            bool hasFinishedVal;
+            bool reachedEnd;        // used for pulse playing mode
     };
 }
 #endif	//	ANIMATION_H

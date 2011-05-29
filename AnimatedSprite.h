@@ -19,23 +19,37 @@
 #ifndef ANIMATEDSPRITE_H
 #define ANIMATEDSPRITE_H
 
-#include "Image.h"
-#include "Timer.h"
+#include "Animation.h"
 
 namespace Penjin
 {
-    enum PlayMode
-    {
-        pmNormal=0,
-        pmReverse,
-        pmPulse
-    };
-
-    class AnimatedSprite
+    class AnimatedSprite : public Animation
     {
         public:
             AnimatedSprite();
-            #ifndef PENJIN_SDL
+            virtual ~AnimatedSprite();
+
+            /** \brief Function to load an image sheet from file.
+             * \param fileName : The file to load.
+             * \param xTiles : The number of horizontal tiles.
+             * \param yTiles : The number of vertical tiles.
+             * \return PENJIN_OK if file was loaded successfully.
+             */
+            virtual Penjin::ERRORS load(const string& fileName, CRuint xTiles, CRuint yTiles);
+
+            /** \brief Function to load an image sheet from SDL_Surface*.
+             * \param surface : SDL_Surface* to load.
+             * \param xTiles : The number of horizontal tiles.
+             * \param yTiles : The number of vertical tiles.
+             * \return PENJIN_OK if surface was loaded successfully.
+             */
+            virtual Penjin::ERRORS load(SDL_Surface* surface, CRuint xTiles, CRuint yTiles);
+
+            Penjin::ERRORS setTransparentColour(const Colour& c);
+            Penjin::ERRORS setTransparentColour(const Vector2d<int>& v);
+            void disableTransparentColour();
+
+/*            #ifndef PENJIN_SDL
                 #ifdef PENJIN_3D
                     AnimatedSprite(CRfloat x,CRfloat y,CRfloat z);
                 #endif
@@ -48,7 +62,7 @@ namespace Penjin
             virtual Penjin::ERRORS loadFrame(CRstring fileName);     // adds a frame of animation for this sprite
             virtual Penjin::ERRORS loadFrames(CRstring fileName,CRuint xTiles,CRuint yTiles); // loads a spritesheet for animations
             Penjin::ERRORS loadFrames(SDL_Surface* s,CRuint xTiles,CRuint yTiles,CRuint skipTiles,CRuint numTiles,CRbool transparent=true); // loads a spritesheet from a shared image
-            void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
+            //void setAlpha(const uchar& alpha){image.setAlpha(alpha);}
             Penjin::ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
             Penjin::ERRORS setTransparentColour(const Vector2d<int>& v){return image.setTransparentColour(v);};
             Penjin::ERRORS setTransparentColour(const COLOURS& c){return setTransparentColour(Colour(c));}
@@ -89,8 +103,6 @@ namespace Penjin
             void update();
            // bool hasCollided(AnimatedSprite &spr);		//	Has this sprite collided with the passed in sprite?
 
-            uint getWidth()const{return image.getWidth();}
-            uint getHeight()const{return image.getHeight();}
             void setFrameRate(const TimerScalers& fps){animationTimer.setMode(fps);}
             void setTimerScaler(CRfloat cusScaler){animationTimer.setScaler(cusScaler);}//Set a custom timer update scaler.
             void setLooping(CRint numLoops){this->numLoops = firstLoops = (numLoops-1);}
@@ -163,8 +175,9 @@ namespace Penjin
             void setCurrentFrame(CRint framenumber){currentFrame = framenumber;}
             size_t frameCount() const {return image.size();} // return the number of frames
         protected:
-            Image image;
-            Timer animationTimer;
+            Colour transparent;
+            //Image image;
+            //Timer animationTimer;
             int numLoops; // -1 - loop forever, 0 - don't loop, else - number of loops
             int firstLoops;
             PlayMode mode;
@@ -179,6 +192,9 @@ namespace Penjin
             #ifdef PENJIN_SDL
                 SDL_Surface* screen;
             #endif
+            */
+        protected:
+            Colour transparent;
     };
 }
 #endif	//	ANIMATEDSPRITE_H

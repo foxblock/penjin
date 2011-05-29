@@ -19,25 +19,74 @@
 #include "AnimatedSprite.h"
 using Penjin::AnimatedSprite;
 
-AnimatedSprite::AnimatedSprite()
+AnimatedSprite::AnimatedSprite() : transparent(MAGENTA)
 {
-	currentFrame = 0;
-	animationTimer.setMode(THIRTY_FRAMES);
-    numLoops = -1;
-	animationTimer.start();
-	position.x = 0;
-	position.y = 0;
-	#ifdef PENJIN_SDL
-        screen = GFX::getInstance()->getSDLVideoSurface();
-    #endif
-    #ifdef PENJIN_3D
-        position.z = 0.0f;
-    #endif
 
-    hasFinishedVal = false;
-	reachedEnd = false;
-	mode = pmNormal;
 }
+
+AnimatedSprite::~AnimatedSprite()
+{
+
+}
+
+Penjin::ERRORS AnimatedSprite::load(const string& file, CRuint xTiles, CRuint yTiles)
+{
+    Penjin::ERRORS e = ImageSheet::load(file,xTiles,yTiles);
+    setTransparentColour(transparent);
+    return e;
+}
+
+Penjin::ERRORS AnimatedSprite::load(SDL_Surface* s, CRuint xTiles, CRuint yTiles)
+{
+    Penjin::ERRORS e = ImageSheet::load(s,xTiles,yTiles);
+    setTransparentColour(transparent);
+    return e;
+}
+
+Penjin::ERRORS AnimatedSprite::setTransparentColour(const Colour& c)
+{
+    if(sheetMode)
+    {
+        // We only have one image to set a transparent colour
+        if(SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(surface->format,c.r,c.g,c.b)) == -1)
+            return PENJIN_SDL_INVALID_COLORKEY;
+    }
+    else
+    {
+        // we need to run through all individual images and set transparent colour
+        for(uint i = surfaces.size()-1; i >=0; --i)
+        {
+            if(SDL_SetColorKey(surfaces.at(i), SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(surfaces.at(i)->format,c.r,c.g,c.b)) == -1)
+                return PENJIN_SDL_INVALID_COLORKEY;
+        }
+    }
+    transparent = c;
+    return PENJIN_OK;
+}
+
+Penjin::ERRORS AnimatedSprite::setTransparentColour(const Vector2d<int>& v)
+{
+    return setTransparentColour( GFX::getInstance()->getPixel(v) );
+}
+
+void AnimatedSprite::disableTransparentColour()
+{
+    if(sheetMode)
+    {
+        SDL_SetColorKey(surface, 0, surface->format->colorkey);
+    }
+    else
+    {
+        // we need to run through all individual images and disable transparent colour
+        for(uint i = surfaces.size()-1; i >=0; --i)
+        {
+            SDL_SetColorKey(surfaces.at(i), 0, surfaces.at(i)->format->colorkey);
+        }
+    }
+    transparent.a = 0;
+}
+
+/*
 #ifdef PENJIN_SDL
     AnimatedSprite::AnimatedSprite(CRint x,CRint y)
     {
@@ -82,21 +131,6 @@ AnimatedSprite::AnimatedSprite()
     }
     #endif
 #endif
-
-/*
-bool AnimatedSprite::hasCollided(AnimatedSprite &spr)
-{
-   uint a = image.getWidth()/2;
-   uint b = spr.image.getWidth()/2;
-
-   IntVector2d temp = *this - IntVector2d(spr.getX(),spr.getY());
-
-	if (temp.lengthSquared() <= a * a + b * b)
-	 	return true;
-
-	return false;
-}
-*/
 
 Penjin::ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 {
@@ -210,3 +244,4 @@ void AnimatedSprite::update()
         }
     }
 }
+*/

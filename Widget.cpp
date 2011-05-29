@@ -22,8 +22,8 @@
 using Penjin::Widget;
 using Penjin::Line;
 
-Widget::Widget() : lowLight(NULL), highLight(NULL), active(false), selected(false), showHighLight(true),
-                    showLowLight(true), showSelection(true), showWidget(true), selectionColour(NULL)
+Widget::Widget() :  highLight(NULL),lowLight(NULL),
+                    selectionColour(NULL),active(false), selected(false), showHighLight(true), showLowLight(true), showWidget(true), showSelection(true)
 {
     //ctor
     lowLight = new Line;

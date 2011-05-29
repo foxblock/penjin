@@ -16,13 +16,19 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with Penjin.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <iostream>
+
+#include <SDL/SDL_image.h>
+
 #include "Image.h"
+#include "GFX.h"
 using Penjin::Image;
-using std::cout;
-Image::Image()
+
+
+Image::Image() : surface(NULL)
 {
-    alpha = 255;
+    setDrawWidth(1);
+    setColour(MAGENTA);
+   /* alpha = 255;
     #ifdef PENJIN_3D
         rotation.x = rotation.y = rotation.z = 0.0f;
         scale.x = scale.y = scale.z = 1.0f;
@@ -38,14 +44,82 @@ Image::Image()
     #endif
     sheetMode = false;      //  Stores if we use a spritesheet or if we use separate surfaces.
     colourKey.a = 0;    //  Disable colourkey until ready.
+    */
 }
 
 Image::~Image()
 {
-	clear();
+	if(surface)
+        SDL_FreeSurface(surface);
 }
 
 
+void Image::render()
+{
+    // If we have a surface, we display it
+    if(surface)
+    {
+        SDL_SetAlpha(surface, SDL_SRCALPHA, a);
+        // Set up blitting area
+        SDL_Rect src, dst;
+        src.x = surface->clip_rect.x;
+        src.y = surface->clip_rect.y;
+        src.w = surface->w;
+        src.h = surface->h;
+
+        dst.x = position.x;
+        dst.y = position.y;
+        SDL_BlitSurface(surface, &src, GFX::getInstance()->getSDLVideoSurface(), &dst);
+        #ifdef _DEBUG
+            Rectangle::render();
+        #endif
+    }
+    // Otherwise we display a Rectangle where the image is supposed to be.
+    else
+        Rectangle::render();
+}
+
+Penjin::ERRORS Image::load(SDL_Surface* s)
+{
+    // If surface is invalid
+    if(s == NULL)
+        return PENJIN_ERROR;
+
+    // Free already existing surface
+    if(surface && (surface!=s))
+        SDL_FreeSurface(surface);
+    surface = s;
+
+    // Setup correct display format depending on if image contains alpha or not
+    SDL_Surface* oldSurface = surface;
+    if(surface->flags & SDL_SRCALPHA)
+        surface = SDL_DisplayFormatAlpha(surface);
+    else
+        surface = SDL_DisplayFormat(surface);
+
+    SDL_FreeSurface(oldSurface);
+
+    // update dimensions
+    dimensions.x = surface->w;
+    dimensions.y = surface->h;
+
+    return PENJIN_OK;
+}
+
+Penjin::ERRORS Image::load(const string& file)
+{
+    fileName = file;
+    SDL_Surface* t = IMG_Load(file.c_str());
+    Penjin::ERRORS e = Image::load(t);
+    return e;
+}
+
+Penjin::ERRORS Image::save(const string& file)
+{
+    return Penjin::PENJIN_FUNCTION_IS_STUB;
+}
+
+/*
 Penjin::ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
 {
     #ifdef PENJIN_SDL
@@ -499,12 +573,12 @@ Penjin::ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTil
 
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a)
     {
-        /*
-            glColor4i(r, g, b, a);
-            glBegin(GL_POINTS);
-                glVertex3f(x, y, z);
-            glEnd();
-        */
+
+            //glColor4i(r, g, b, a);
+            //glBegin(GL_POINTS);
+           //     glVertex3f(x, y, z);
+         //   glEnd();
+
     }
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b,const uchar& a);
     void Image::setPixel(CRfloat x,CRfloat y,CRfloat z,const uchar& r,const uchar& g,const uchar& b){setPixel(x,y,z,r,g,b,255);}
@@ -638,13 +712,13 @@ uint Image::getWidth()const
 }
 #ifdef PENJIN_SDL
 void Image::convertToHW()
-{/*
-    for(int i = images.size()-1; i>= 0; --i)
-    {
-        SDL_Surface* temp = images.at(i);
-        images.at(i) = SDL_ConvertSurface(images.at(i), screen->format, SDL_HWSURFACE);
-        SDL_FreeSurface(temp);
-    }*/
+{
+    //for(int i = images.size()-1; i>= 0; --i)
+    //{
+      //  SDL_Surface* temp = images.at(i);
+       // images.at(i) = SDL_ConvertSurface(images.at(i), screen->format, SDL_HWSURFACE);
+        //SDL_FreeSurface(temp);
+    //}
 }
 
 SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
@@ -920,3 +994,4 @@ bool Image::getSurfaceSharing(CRint index) const
         cout << "Error: Trying to access out of bounds index in Image::getSurfaceSharing(" << index << ")" << endl;
 }
 #endif
+*/

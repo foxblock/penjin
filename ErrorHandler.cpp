@@ -78,4 +78,5 @@ string ErrorHandler::getErrorText(const string& error)
 string ErrorHandler::getErrorText(const ERRORS& error)
 {
     //return getErrorText(stringToEnum(error));
+    return "PENJIN_FUNCTION_IS_STUB";
 }

@@ -58,6 +58,14 @@ namespace Penjin
             virtual bool equals(const Vector2d<T>& v)   {return ((this->x == v.x) && (y == v.y));}
 
             /// Operators
+            Vector2d<T> operator=(const Vector2d<T>& v){this->x = v.x;y=v.y;return *this;}
+            template <class S>
+            Vector2d<T> operator=(const Vector2d<S>& v){this->x = v.x;y=v.y;return *this;}
+
+            Vector2d<T> operator+(const Vector2d<T> & v)const{return Vector2d<T> (this->x + v.x, y + v.y);}
+            template <class S>
+            Vector2d<T> operator+(const Vector2d<S> & v)const{return Vector2d<T> (this->x + v.x, y + v.y);}
+
             Vector2d<T> operator-(const Vector2d<T> & v)const{return Vector2d<T> (this->x - v.x, y - v.y);}
             bool operator>(const Vector2d<T> & v)const{return (this->x > v.x) && (this->y > v.x);}
             bool operator<(const Vector2d<T> & v)const{return (this->x < v.x) && (this->y < v.x);}
@@ -70,6 +78,7 @@ namespace Penjin
 
     //  Need to specialise to handle different types better...
     //  ints will lose much precision currently, etc
+
 }
 
 #endif // VECTOR2DI_H

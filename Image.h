@@ -19,41 +19,41 @@
 #ifndef IMAGE_H_INCLUDED
 #define IMAGE_H_INCLUDED
 
-#include <SDL/SDL.h>
-#if PENJIN_SDL
-    #include <SDL/SDL_rotozoom.h>
-    #include <SDL/SDL_image.h>
-#else
-    #ifdef PENJIN_GL
-        #include <SDL/SDL_opengl.h>
-    #endif
-    #include "Texture.h"
-#endif
-
-#ifdef PLATFORM_WII
-    #include "Penjin.h"
-#endif
-
-#include <string>
-#include <vector>
-using namespace std;
-
-#include "PenjinFixedFunc.h"
-#include "PenjinTypes.h"
-#include "Errors.h"
-//using namespace PenjinErrors;
-#include "Colour.h"
-#include "GFX.h"
-#include "NumberUtility.h"
+#include "FileObject.h"
+#include "Rectangle.h"
 
 namespace Penjin
 {
-    class Image
+    class Image : public FileObject, public Rectangle
     {
         public:
             Image();
-            ~Image();
+            virtual ~Image();
 
+            /** \brief Function to load an image file.
+             * \param fileName : The file to load.
+             * \return PENJIN_OK if file was loaded successfully.
+             */
+            virtual Penjin::ERRORS load(const string& fileName);
+
+            /** \brief Function to load an SDL_Surface.
+             * \param s : The SDL_Surface* to load.
+             * \return PENJIN_OK if SDL_Surface* was loaded successfully.
+             */
+            virtual Penjin::ERRORS load(SDL_Surface* s);
+
+            /** \brief Function to save an image file.
+             * \param fileName : The file to load.
+             * \return PENJIN_OK if file was saved successfully.
+             */
+            virtual Penjin::ERRORS save(const string& fileName);
+
+            /** \brief Render image to the screen */
+            virtual void render();
+
+        protected:
+            SDL_Surface* surface;
+/*
             #ifdef PENJIN_SDL
                 void loadImage(SDL_Surface* s) // don't use this function for sharing surfaces (by default)
                 {
@@ -234,7 +234,7 @@ namespace Penjin
                         alpha = 1.0f;
                     else if(alpha<0.0f)
                         alpha = 0.0f;
-                    setAlpha(alpha*255);
+                    setAlpha((uchar)alpha*255);
                 }
                  // set a pixel
                 void setPixel(CRfloat x,CRfloat y,const Colour& colour);
@@ -253,10 +253,10 @@ namespace Penjin
                 void setDimensions(const Vector2d<int>& dims){textures[0].setDimensions(dims);}
 
                 // get a pixel
-               /* Colour getPixel(float x, float y);
+                Colour getPixel(float x, float y);
                 uint* getPixelArray(float x, float y);
                 Colour getPixel(float x, float y, float z);
-                uint* getPixelArray(float x, float y, float z);*/
+                uint* getPixelArray(float x, float y, float z);
             #endif
 
             //  Effects
@@ -312,7 +312,7 @@ namespace Penjin
                 Vector2d<float> scale;
                 float angle;                //  angle for rotations
             #endif
-
+*/
     };
 }
 #endif // IMAGE_H_INCLUDED

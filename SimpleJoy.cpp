@@ -852,7 +852,7 @@ void SimpleJoy::setNumPlayers(CRuint p)
         players = new Player[p];
 
         //  copy existing players accross
-        for(int i = 0; i < numPlayers; ++i)
+        for(uint i = 0; i < numPlayers; ++i)
         {
             players[i].deadZone = tp[i].deadZone;
             players[i].scaler = tp[i].scaler;

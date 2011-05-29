@@ -23,7 +23,7 @@ using Penjin::Renderer;
 using Penjin::Timer;
 using Penjin::RenderObject;
 
-Renderer::Renderer() :  bpp(0), fullScreen(false),clearColour(BLACK), drawColour(WHITE), drawWidth(1), timer(NULL), fps(60)
+Renderer::Renderer() :  bpp(0), fps(60), fullScreen(false),clearColour(BLACK), drawColour(WHITE), drawWidth(1), timer(NULL)
 {
     //ctor
     timer = new Timer;
@@ -63,7 +63,7 @@ void Renderer::setDrawWidth(const int & w)
 
 void Renderer::setFrameRate(const uint& fps)
 {
-    timer->setScaler(1000 / (float)fps);
+    timer->setFramesPerSecond(fps);
     this->fps = fps;
 }
 

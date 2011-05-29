@@ -23,10 +23,9 @@
 using Penjin::ConfigFile;
 using std::string;
 
-ConfigFile::ConfigFile()
+ConfigFile::ConfigFile() : ini(NULL), changed(false)
 {
     //ctor
-    ini = NULL;
     ini = new CSimpleIniA;
 }
 
@@ -43,6 +42,7 @@ Penjin::ERRORS ConfigFile::load(const string& fileName)
 
 Penjin::ERRORS ConfigFile::save(const string& fileName)
 {
+    changed = false;
     return getError(ini->SaveFile(fileName.c_str()));
 }
 
@@ -57,16 +57,28 @@ string ConfigFile::getValue(const string& section, const string& key, const stri
 {
     string val = getValue(section, key);
     if(val == "")
+    {
         setValue(section,key,value);
-    return value;
+        return value;
+    }
+    return val;
 }
 
 void ConfigFile::setValue(const string& section, const string& key, const string& value, const string& comment)
 {
+    // Check if value already exists in file... pure to prevent writes
+    string t = getValue(section, key);
+    if (t == value)
+        return;
+
+    // The value is different to what is in the file so we write it
     if(comment == "")
         ini->SetValue(section.c_str(), key.c_str(), value.c_str());
     else
         ini->SetValue(section.c_str(), key.c_str(), value.c_str(),comment.c_str());
+
+    // A change has been made.
+    changed=true;
 }
 
 vector<string> ConfigFile::getValues(const string& section, const string& key)
@@ -130,4 +142,9 @@ Penjin::ERRORS ConfigFile::getError(const int& error)
             return PENJIN_FILE_NOT_FOUND;
     }
     return PENJIN_OK;
+}
+
+bool ConfigFile::hasChanged()
+{
+    return changed;
 }

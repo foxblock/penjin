@@ -56,7 +56,7 @@ namespace Penjin
         private:
             //LocalisedStringManager();                                           // constructor is private
             LocalisedStringManager(LocalisedStringManager const&){;}              // copy constructor is private
-            LocalisedStringManager& operator=(LocalisedStringManager const&){;}   // assignment operator is private
+            LocalisedStringManager& operator=(LocalisedStringManager const&){return *this;}   // assignment operator is private
             ~LocalisedStringManager();
 
             string languageFolder;

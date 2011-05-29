@@ -18,8 +18,39 @@
 */
 #include "Sprite.h"
 using Penjin::Sprite;
+
 Sprite::Sprite()
 {
+
+}
+
+Sprite::~Sprite()
+{
+
+}
+
+Penjin::ERRORS Sprite::setTransparentColour(const Colour& c)
+{
+    // We only have one image to set a transparent colour
+    if(SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(surface->format,c.r,c.g,c.b)) == -1)
+        return PENJIN_SDL_INVALID_COLORKEY;
+    return PENJIN_OK;
+}
+
+Penjin::ERRORS Sprite::setTransparentColour(const Vector2d<int>& v)
+{
+    return setTransparentColour( GFX::getInstance()->getPixel(v) );
+}
+
+void Sprite::disableTransparentColour()
+{
+    SDL_SetColorKey(surface, 0, surface->format->colorkey);
+}
+
+/*
+Sprite::Sprite()
+{
+
     position.x = 0;
     position.y = 0;
     #ifdef PENJIN_3D
@@ -65,16 +96,7 @@ Penjin::ERRORS Sprite::loadSprite(CRstring fileName){return image.loadImage(file
 #endif
 
 #ifdef PENJIN_SDL
-bool Sprite::hasCollided(Sprite &spr)
-{/*
-   uint a = image.getWidth()/2;
-   uint b = spr.image.getWidth()/2;
-
-   IntVector2d temp = *this - IntVector2d(spr.getX(),spr.getY());
-
-	if (temp.lengthSquared() <= a * a + b * b)
-	 	return true;
-*/
-	return false;
 }
 #endif
+*/
+

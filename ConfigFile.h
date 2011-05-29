@@ -80,6 +80,9 @@ namespace Penjin
              */
             string getValue(const string& section, const string& key, const string& value);
 
+            /** If the file contants have been changed*/
+            bool hasChanged();
+
             vector<string> getSections();
             vector<string> getValues(const string& section, const string& key);
             vector<string> getKeys(const string& section);
@@ -97,6 +100,7 @@ namespace Penjin
 
             /**< the SimpleIni object */
             CSimpleIniA* ini;
+            bool changed;
     };
 }
 #endif // CONFIGFILE_H
