@@ -160,7 +160,7 @@ class Vector2di : public vec2<int>
         #ifdef PENJIN_SDL
         bool inRect(const SDL_Rect& rect) const;
         #endif
-        bool inRect(CRint x, CRint y, CRuint w, CRuint h) const;
+        bool inRect(const int x, const int y, const unsigned int w, const unsigned int h) const;
 };
 
 #endif // VECTOR2DI_H
