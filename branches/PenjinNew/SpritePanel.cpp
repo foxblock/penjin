@@ -47,7 +47,7 @@ void SpritePanel::render()
 
 Penjin::ERRORS SpritePanel::loadImage(const string& file)
 {
-    ERRORS e = sprite->loadSprite(file);
+    ERRORS e = sprite->load(file);
 
-
+    return e;
 }

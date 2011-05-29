@@ -63,9 +63,9 @@ namespace Penjin
             void setHeight(const T& h){dimensions.y=h;}
 
             // Getting methods
-            Vector2d<int> getDimensions()const;
-            int getWidth()const;
-            int getHeight()const;
+            virtual Vector2d<int> getDimensions()const;
+            virtual int getWidth()const;
+            virtual int getHeight()const;
 
         protected:
             Vector2d<int> dimensions;

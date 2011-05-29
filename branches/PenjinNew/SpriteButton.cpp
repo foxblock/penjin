@@ -41,7 +41,7 @@ SpriteButton::~SpriteButton()
 Penjin::ERRORS SpriteButton::loadImage(const string& f)
 {
     Penjin::ERRORS e;
-    e = sprite->loadSprite(f);
+    e = sprite->load(f);
     if(e == PENJIN_OK)
     {
         sprite->setTransparentColour(Vector2d<int>(0,0));
@@ -53,8 +53,7 @@ Penjin::ERRORS SpriteButton::loadImage(const string& f)
         }
         a = a - b;
         a = a * 0.5f;
-        b.x = sprite->getX() + a.x;
-        b.y = sprite->getY() + a.y;
+        b = sprite->getPosition() + Vector2d<float>(a.x,a.y);
         sprite->setPosition(b);
     }
     return e;

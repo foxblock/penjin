@@ -54,7 +54,7 @@ namespace Penjin
 
         private:
             StateManager(const StateManager& bling){;}
-            StateManager& operator=(StateManager const&){;}
+            StateManager& operator=(StateManager const&){return *this;}
             /** Default destructor */
             ~StateManager();
 

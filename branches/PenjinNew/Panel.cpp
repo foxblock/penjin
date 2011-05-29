@@ -115,7 +115,7 @@ void Panel::update()
         widgets.at(i)->setActive(false);
     }
 
-    if(selection > -1 && selection < widgets.size())
+    if(selection > -1 && selection < (int)widgets.size())
         widgets.at(selection)->setSelected(true);
     else
         selection = -1;
@@ -123,7 +123,7 @@ void Panel::update()
 
 void Panel::selectionConfirm()
 {
-    if(selection > -1 && selection < widgets.size())
+    if(selection > -1 && selection < (int)widgets.size())
         widgets.at(selection)->setActive(true);
     else
         selection = -1;

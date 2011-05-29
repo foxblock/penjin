@@ -203,6 +203,8 @@ namespace Penjin
                 void setScaler(CRfloat scale){setMode(CUSTOM);scaler = scale;}
                 float getScaler() const {return scaler;}
             #endif
+            // Set timerScaler in terms of frames per second
+            void setFramesPerSecond(CRuint fps){setScaler(1000/(float)fps);}
         protected:
             #ifdef PENJIN_FIXED
             Fixed calcScaler(const TimerScalers& mode);   // Calculate the resolution of timer updates

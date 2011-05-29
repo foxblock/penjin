@@ -54,12 +54,13 @@ void RendererSDL_2d::applyVideoSettings()
     info = SDL_GetVideoInfo();
     if(!info)
 	{
-		PENJIN_SDL_VIDEO_QUERY_FAILED;
+	    //need to handle error here
+		//PENJIN_SDL_VIDEO_QUERY_FAILED;
     }
     flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
 
     if(fullScreen)
-        flags | SDL_FULLSCREEN;
+        flags= flags | SDL_FULLSCREEN;
 
     if(bpp == 0 || !(bpp == 8 || bpp == 16 || bpp == 32))
         bpp = info->vfmt->BitsPerPixel;
