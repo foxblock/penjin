@@ -126,7 +126,7 @@ class Vector2df : public vec2<float>
         #ifdef PENJIN_SDL
         bool inRect(const SDL_Rect& rect) const;
         #endif
-        bool inRect(CRfloat x, CRfloat y, CRuint w, CRuint h) const;
+        bool inRect(const float& x, const float& y, const unsigned int& w, const unsigned int& h) const;
 };
 
 #endif // VECTOR2DF_H

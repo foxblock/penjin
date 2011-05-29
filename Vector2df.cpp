@@ -51,7 +51,7 @@ bool Vector2df::inRect(const SDL_Rect& rect) const
 }
 #endif
 
-bool Vector2df::inRect(CRfloat x, CRfloat y, CRuint w, CRuint h) const
+bool Vector2df::inRect(const float& x, const float& y, const unsigned int& w, const unsigned int& h) const
 {
     if (this->x < x || this->y < y || this->x >= x + w || this->y >= y + h)
         return false;
