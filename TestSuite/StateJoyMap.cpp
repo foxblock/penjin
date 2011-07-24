@@ -11,7 +11,7 @@ StateJoyMap::StateJoyMap()
     parse = new Parser;
     timer = new Timer;
     line = new Line;
-    rect = new Rectangle;
+    rect = new Rectangle::Rectangle; // damn Windows defining something called Rectangle
     testMode = true;
 }
 

@@ -1,5 +1,7 @@
 #include "StateCollision.h"
 
+#include "SimpleDirection.h"
+
 StateCollision::StateCollision()
 {
     //ctor
@@ -127,13 +129,13 @@ void StateCollision::update()
     }
     // Checking against a variable CollisionRegion (image and/or region)
     // Also checking for direction of collision
-    Directions dir = critterCol.directionTest(&bulletCol,options[fullShapeCheck]);
+    SimpleDirection dir = critterCol.directionTest(&bulletCol,options[fullShapeCheck]);
     if (dir != diNONE)
     {
         isCollision = true;
         whoCollision += "Bullet, ";
     }
-    switch (dir)
+    switch (dir.value)
     {
         case diLEFT:
             dirCollision = "left";
