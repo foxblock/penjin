@@ -36,6 +36,10 @@ Image::Image()
     #endif
     sheetMode = false;      //  Stores if we use a spritesheet or if we use separate surfaces.
     colourKey.alpha = 0;    //  Disable colourkey until ready.
+    #ifdef PENJIN_CACHE_ROTATIONS
+    currCached = 0;
+    maxCached = 0;
+    #endif
 }
 
 Image::~Image()
@@ -355,7 +359,13 @@ PENJIN_ERRORS Image::assignClipAreas(CRuint xTiles,CRuint yTiles,CRuint skipTile
             for(int i = maxCached; i>=1; --i)
             {
                 setRotation(i);
-                renderImage(0,NULL,0,0);
+                SDL_Rect src;
+                src.x = images[0].first->clip_rect.x;
+                src.y = images[0].first->clip_rect.y;
+                src.w = images[0].first->w;
+                src.h = images[0].first->h;
+                SDL_Rect dst = {0,0,0,0};
+                cacheRotation(i,rotoZoom(*images.at(0).first,src,dst));
             }
         }
     #endif
@@ -657,14 +667,16 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         #else
             tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_OFF);
         #endif
+        #ifndef NO_CENTRE_SCALING
         dst.x += (subSprite->w - tempImage->w)*0.5f;
         dst.y += (subSprite->h - tempImage->h)*0.5f;
+        #endif
         SDL_FreeSurface(subSprite);
     }
     else
     {
         //  second check if size has changed
-        //  If the size has change then we can't use the cached rotations
+        //  If the size has changed then we can't use the cached rotations
 
         #ifdef PENJIN_FIXED
             tempImage = rotozoomSurfaceXY(in,
