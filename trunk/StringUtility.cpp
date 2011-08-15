@@ -238,7 +238,7 @@ Vector2df StringUtility::stringToVec(CRstring value, CRstring separator)
     tokenize(value,tokens,separator);
     if (tokens.size() != 2)
         return Vector2df(0,0);
-    return Vector2df(stringToDouble(tokens.front()),stringToDouble(tokens.back()));
+    return Vector2df(stringToFloat(tokens.front()),stringToFloat(tokens.back()));
 }
 
 double StringUtility::cStringToDouble(char* value){return stringToDouble((string)value);}
