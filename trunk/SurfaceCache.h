@@ -28,17 +28,21 @@
 All image loading can done through this cache
 This helps to center error output and also ensures no graphic is loaded twice,
 but rather shared between objects through the SDL_Surface pointer
+
+Initial design by Howard C. Shaw, additional implementation and extension by foxblock
 **/
 
 #define SURFACE_CACHE SurfaceCache::getSurfaceCache()
 
 class SurfaceCache
 {
-    private:
+    protected:
         SurfaceCache();
         static SurfaceCache *self;
     public:
         virtual ~SurfaceCache();
+
+        // get the global instance of the cache
         static SurfaceCache* getSurfaceCache();
 
         // loads an image from file or the cache if already loaded previously
@@ -73,7 +77,6 @@ class SurfaceCache
         bool returnErrorSurface; // if set to true an errorSurface is returned, NULL otherwise (default = true)
         bool verbose;            // if set to true will write status messages to stdout (default true)
     protected:
-    private:
         SDL_Surface* createErrorSurface(const Uint32 width, const Uint32 height) const;
 
         struct CachedSurface
