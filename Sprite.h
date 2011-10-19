@@ -35,6 +35,9 @@ class Sprite
             Sprite(CRfloat x,CRfloat y,CRfloat z);
             Sprite(const Vector3df& position);
         #endif
+        #ifdef PENJIN_SDL
+            PENJIN_ERRORS loadSprite(SDL_Surface* s);        // Load from a shared surface
+        #endif
         PENJIN_ERRORS loadSprite(CRstring fileName);     // Loads an image for this sprite
 
         PENJIN_ERRORS setTransparentColour(const Colour& c){return image.setTransparentColour(c);}
@@ -47,7 +50,6 @@ class Sprite
             void render(SDL_Surface* screen);         // Draws the image onto the screen
             void render(){render(screen);}
             bool hasCollided(Sprite &spr);			//	Has this sprite collided with the passed in sprite?
-            void loadSprite(SDL_Surface* s){image.loadImage(s);}
         #else
             void render();
         #endif

@@ -101,6 +101,7 @@ PENJIN_ERRORS AnimatedSprite::loadFrame(SDL_Surface* s)
 {
     #ifdef PENJIN_SDL
         image.loadImage(s);
+        image.setSurfaceSharing(true,image.size()-1);
         return PENJIN_OK;
     #elif PENJIN_ES
         return PENJIN_FUNCTION_IS_STUB;
