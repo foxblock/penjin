@@ -593,6 +593,11 @@ void SimpleJoy::resetKeys()
         players[player].leftClick=players[player].rightClick=sjRELEASED;
         players[player].storeKeys.clear();
 }
+void SimpleJoy::resetMouseButtons()
+{
+    clearEventQueue();
+    players[player].leftClick=players[player].rightClick=sjRELEASED;
+}
 void SimpleJoy::resetDpad()
 {
 

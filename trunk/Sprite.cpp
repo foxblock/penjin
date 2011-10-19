@@ -56,6 +56,15 @@ Sprite::Sprite()
     }
 #endif
 
+#ifdef PENJIN_SDL
+PENJIN_ERRORS Sprite::loadSprite(SDL_Surface* s)
+{
+    image.loadImage(s);
+    image.setSurfaceSharing(true,image.size()-1);
+    return PENJIN_OK;
+}
+#endif
+
 PENJIN_ERRORS Sprite::loadSprite(CRstring fileName){return image.loadImage(fileName);}
 
 #ifdef PENJIN_SDL
