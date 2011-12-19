@@ -230,8 +230,8 @@ void Emitter::setParticlesType(const PARTICLE_TYPES& type)
         {
             particles[i]->render(screen);
             #ifdef _DEBUG
-            partCol->setPosition(particles[i]->getPosition());
-            partCol->render();
+            //partCol->setPosition(particles[i]->getPosition());
+            //partCol->render();
             #endif
         }
     }

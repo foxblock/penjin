@@ -18,6 +18,8 @@
 */
 #include "GFX.h"
 #include "NumberUtility.h"
+
+
 namespace GFX
 {
     uint bpp = 0;
@@ -34,9 +36,6 @@ namespace GFX
         uint xRes = 800;
         uint yRes = 480;
         bool fullscreen = true;
-        #ifndef FBIO_WAITFORVSYNC
-            #define FBIO_WAITFORVSYNC _IOW('F', 0x20, __u32)
-        #endif
     #elif PLATFORM_GP2X
         uint xRes = 320;
         uint yRes = 240;
@@ -102,18 +101,6 @@ void GFX::forceBlit()
         //  We do MMUHack BEFORE video flip!
         if(useHack)
             MMUHack::flushCache(screen->pixels, (char*)screen->pixels  + (screen->w * screen->h));
-    #elif PLATFORM_PANDORA
-        //  vertical sync to prevent tearing
-        int fd = open( "/dev/fb0" , O_RDONLY );
-		if( 0 < fd )
-		{
-			int ret = 0;
-			ret = ioctl(fd, FBIO_WAITFORVSYNC, &ret );
-			/*if ( ret != 0 )
-                VSYNC failed
-			*/
-		}
-		close(fd);
     #endif
     #ifdef PENJIN_GL
         SDL_GL_SwapBuffers();
@@ -269,7 +256,18 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
     if(bpp == 0 || !(bpp == 8 || bpp == 16 || bpp == 32))
         bpp = info->vfmt->BitsPerPixel;
     #if defined PENJIN_SDL && PENJIN_SCALE2X
-        scaled  = SDL_SetVideoMode(2*xRes, 2*yRes, bpp, flags);
+        #ifdef PLATFORM_PANDORA
+            // try to use NotaZ SDL
+            SDL_putenv("SDL_VIDEODRIVER=omapdss");
+            scaled  = SDL_SetVideoMode(2*xRes, 2*yRes, bpp, flags);
+            if(scaled == NULL)
+            {
+                unsetenv("SDL_VIDEODRIVER");
+                scaled  = SDL_SetVideoMode(2*xRes, 2*yRes, bpp, flags);
+            }
+        #else
+            scaled  = SDL_SetVideoMode(2*xRes, 2*yRes, bpp, flags);
+        #endif
         if(scaled  == NULL )
             return PENJIN_SDL_SETVIDEOMODE_FAILED;
 
@@ -287,14 +285,38 @@ PenjinErrors::PENJIN_ERRORS GFX::resetScreen()
             exit(1);
         }
     #else
-        screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
-        if(screen  == NULL )
-            return PENJIN_SDL_SETVIDEOMODE_FAILED;
-        else
-        {
-            xRes = screen->w;
-            yRes = screen->h;
-        }
+        #ifdef PLATFORM_PANDORA
+            // try to use NotaZ SDL
+            putenv("SDL_VIDEODRIVER=omapdss");
+            screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
+            if(screen  == NULL )
+            {
+                //  we failed to use NotazSDL
+                unsetenv("SDL_VIDEODRIVER");
+                screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
+                if(screen == NULL)
+                    return PENJIN_SDL_SETVIDEOMODE_FAILED;
+                else
+                {
+                    xRes = screen->w;
+                    yRes = screen->h;
+                }
+            }
+            else
+            {
+                xRes = screen->w;
+                yRes = screen->h;
+            }
+        #else
+            screen = SDL_SetVideoMode(xRes, yRes, bpp, flags);
+            if(screen  == NULL )
+                return PENJIN_SDL_SETVIDEOMODE_FAILED;
+            else
+            {
+                xRes = screen->w;
+                yRes = screen->h;
+            }
+        #endif
     #endif
     #if defined (PENJIN_GL) || defined(PENJIN_ES) || defined(PENJIN_ES2)
         glEnable(GL_CULL_FACE); // don't render the back of polygons...
