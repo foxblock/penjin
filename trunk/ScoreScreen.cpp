@@ -55,7 +55,7 @@ void ScoreScreen::init()
 	textStrings[1] = scores.getName(scores.getLastNameIndex());
 	scores.setBoundaries(bounds);
 	// Create a nice starfield effect
-	emit.resize(3);
+	/*emit.resize(3);
 	emit[0].setMax(bounds.w/bounds.h*200);
 	emit[0].setBoundaries(bounds);
 	emit[0].setPosition(Vector2di(bounds.w*0.5f,bounds.h*0.5f));
@@ -80,7 +80,7 @@ void ScoreScreen::init()
     /// PreUpdate emitters
     for(int i = emit.size()-1;i >=0; --i)
         emit[i].advanceUpdate(120);
-
+*/
     /// setup Text positions
     textStrings[0] = "   ";
     textStrings[2] = "OK?";
@@ -123,9 +123,9 @@ void ScoreScreen::charInput(uchar l)
 
 void ScoreScreen::update()
 {
-    for(int i = emit.size()-1; i >=0; --i)
+    /*for(int i = emit.size()-1; i >=0; --i)
         emit.at(i).update();
-
+*/
     if(textStrings[1].length()>3)
     {
         //	turn name entry off
@@ -143,9 +143,9 @@ void ScoreScreen::update()
 #ifdef PENJIN_SDL
     void ScoreScreen::render(SDL_Surface* screen)
     {
-        for(int i = emit.size()-1; i >=0; --i)
+/*for(int i = emit.size()-1; i >=0; --i)
             emit[i].render(screen);
-
+*/
         if(nameEntry)
         {
             /// Display Name entry mode
