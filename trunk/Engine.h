@@ -19,6 +19,10 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#if defined(_DEBUG) && !defined(PENJIN_CALC_FPS)
+#define PENJIN_CALC_FPS
+#endif
+
 #include "PenjinIncludes.h"	//	List all inclusions in this file
 #include "PenjinTypes.h"		//	All Penjin types listed here.
 #include "PenjinStates.h"		//	List all game states in this file
@@ -71,7 +75,7 @@ class Engine
 		vector<Variable> variables;		//	Variable storage for transfer between states
 		Timer* gameTimer;				//	Timer for frame regulation and event scheduling.
 		uint now;
-		#ifdef _DEBUG
+		#ifdef PENJIN_CALC_FPS
             int frameCount;
             float calcFPS()
             {
