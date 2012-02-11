@@ -358,8 +358,10 @@ bool Engine::stateLoop()
             #ifndef PENJIN_ASCII
                 GFX::forceBlit();
             #endif
-            #ifdef _DEBUG
+            #ifdef PENJIN_CALC_FPS
                 frameCount = calcFPS();
+            #endif
+            #ifdef _DEBUG
                 #ifdef PENJIN_SDL
                     if(frameCount>=20)//only update if there are a reasonable number of redundant updates
                     {

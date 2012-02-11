@@ -55,7 +55,12 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
             return PENJIN_INVALID_INDEX;
         if(images.at(i).first->flags & SDL_SRCALPHA)
         {
+            #ifdef DONT_REMOVE_TRANSPARENCY_ON_SET
+            colourKey = c;
+            colourKey.alpha = 255;
+            #else
             disableTransparentColour(i);
+            #endif
             return PENJIN_OK;
         }
         if(SDL_SetColorKey(images[i].first, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(images[i].first->format,c.red,c.green,c.blue)) == -1)
