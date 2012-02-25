@@ -636,6 +636,18 @@ void SimpleJoy::resetR()
     players[player].R=sjRELEASED;
 }
 
+void SimpleJoy::resetStart()
+{
+    clearEventQueue();
+    players[player].Start=sjRELEASED;
+}
+
+void SimpleJoy::resetSelect()
+{
+    clearEventQueue();
+    players[player].Select=sjRELEASED;
+}
+
 void SimpleJoy::resetUp()
 {
     clearEventQueue();

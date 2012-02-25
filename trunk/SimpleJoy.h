@@ -271,6 +271,8 @@ class SimpleJoy
         void resetY();
         void resetL();
         void resetR();
+        void resetStart();
+        void resetSelect();
 
         /// Status
         void joystickStatus();
