@@ -140,7 +140,7 @@ void KeyMapper::defaultMap()
     setupParser();
     vector<string> CMF;
     CMF.push_back(";   Default Penjin Control Map");
-#if defined(PLATFORM_PANDORA) || defined(PLATFORM_PC)
+#if defined(PLATFORM_PANDORA) || defined(PLATFORM_PC) || defined(PLATFORM_PI)
     CMF.push_back("DEVICE:KEYBOARD,0;");
             CMF.push_back("KEY:UP,UP;");
             CMF.push_back("KEY:DOWN,DOWN;");
@@ -149,7 +149,7 @@ void KeyMapper::defaultMap()
     CMF.push_back("DEVICE_END:;");
     CMF.push_back("DEVICE:MOUSE,0;");
         CMF.push_back("BUTTON:MOUSE_LEFT,0;");
-    #ifdef PLATFORM_PC
+    #if defined (PLATFORM_PC) || defined(PLATFORM_PI)
         CMF.push_back("BUTTON:MOUSE_CENTRE,1;");
         CMF.push_back("BUTTON:MOUSE_RIGHT,2;");
     #endif
@@ -158,7 +158,7 @@ void KeyMapper::defaultMap()
     CMF.push_back("DEVICE_END:;");
 #endif
 
-#ifdef PLATFORM_PC
+#if defined (PLATFORM_PC) || defined(PLATFORM_PI)
     CMF.push_back("DEVICE:KEYBOARD,0;");
             CMF.push_back("KEY:A,x;");
             CMF.push_back("KEY:B,z;");
@@ -169,7 +169,7 @@ void KeyMapper::defaultMap()
             CMF.push_back("KEY:SELECT,RIGHT_SHIFT;");
             CMF.push_back("KEY:START,RETURN;");
     CMF.push_back("DEVICE_END:;");
-#elif PLATFORM_GP2X
+#elif defined(PLATFORM_GP2X) || defined(PLATFORM_WIZ)
     CMF.push_back("DEVICE:JOYSTICK,0;");
             CMF.push_back("BUTTON:UP,0;");
             CMF.push_back("BUTTON:UPLEFT,1;");
@@ -190,6 +190,25 @@ void KeyMapper::defaultMap()
             CMF.push_back("BUTTON:VOLUP,16;");
             CMF.push_back("BUTTON:VOLDOWN,17;");
             CMF.push_back("BUTTON:CLICK,18;");
+    CMF.push_back("DEVICE_END:;");
+#elif PLATFORM_CAANOO
+    CMF.push_back("DEVICE:JOYSTICK,0;");
+            CMF.push_back("BUTTON:A,0;");
+            CMF.push_back("BUTTON:X,1;");
+            CMF.push_back("BUTTON:B,2;");
+            CMF.push_back("BUTTON:Y,3;");
+            CMF.push_back("BUTTON:L,4;");
+            CMF.push_back("BUTTON:R,5;");
+            CMF.push_back("BUTTON:START,8;");
+            CMF.push_back("BUTTON:SELECT,9;");
+            CMF.push_back("BUTTON:CLICK,10;");
+            CMF.push_back("AXIS:LEFTSTICK_X,0;");
+            CMF.push_back("AXIS:LEFTSTICK_Y,1;");
+    CMF.push_back("DEVICE_END:;");
+    CMF.push_back("DEVICE:MOUSE,0;");
+        CMF.push_back("BUTTON:MOUSE_LEFT,0;");
+        CMF.push_back("AXIS:MOUSE_X,0;");
+        CMF.push_back("AXIS:MOUSE_Y,1;");
     CMF.push_back("DEVICE_END:;");
 #elif PLATFORM_DINGOO
     CMF.push_back("DEVICE:KEYBOARD,0;");
