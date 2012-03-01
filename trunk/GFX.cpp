@@ -28,6 +28,10 @@ namespace GFX
         uint xRes = 1024;
         uint yRes = 768;
         bool fullscreen = false;
+    #elif PLATFORM_PI
+        uint xRes = 1024;
+        uint yRes = 768;
+        bool fullscreen = false;
     #elif PLATFORM_WII
         uint xRes = 640;
         uint yRes = 480;
@@ -41,6 +45,14 @@ namespace GFX
         uint yRes = 240;
         bool fullscreen = false;    // Enabling crashes the HWScaler.
         bool useHack = false;
+    #elif PLATFORM_CAANOO
+        uint xRes = 320;
+        uint yRes = 240;
+        bool fullscreen = false;
+    #elif PLATFORM_WIZ
+        uint xRes = 320;
+        uint yRes = 240;
+        bool fullscreen = false;
     #elif PLATFORM_DINGOO
         uint xRes = 320;
         uint yRes = 240;
