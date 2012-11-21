@@ -93,9 +93,7 @@ class Engine
 		#endif
 
         // sleeps the passed amount of milliseconds (and keeps track of rounding errors)
-        // time-critical therefore declared inline
-		inline void limitFPS(CRfloat sleepTime) const;
+		void limitFPS(CRfloat sleepTime) const;
 };
 
 #endif	//	ENGINE_H
-

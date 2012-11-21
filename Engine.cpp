@@ -435,4 +435,3 @@ inline void Engine::limitFPS(CRfloat sleepTime) const
             --diff;
     }
 }
-
