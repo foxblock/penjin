@@ -156,7 +156,7 @@ string FileLister::enter()
         return t;
     else if(((DirMenuItem*)menuItems.at(getSelection()))->getDirType() == DT_DIR)
     {
-        #ifdef _WIN32
+        #if defined(_WIN32) && !defined(PENJIN_FILE_LISTER_LINUX_PATHS)
             workingDir+= ("\\" + t);
         #else
             workingDir+= ("/" + t);
@@ -168,7 +168,7 @@ string FileLister::enter()
         cout << "FD: " << folderDepth << endl;
         #endif
     }
-    #ifdef _WIN32
+    #if defined(_WIN32) && !defined(PENJIN_FILE_LISTER_LINUX_PATHS)
         return getPath() + ("\\" + t);
     #else
         return getPath() + ("/" + t);
