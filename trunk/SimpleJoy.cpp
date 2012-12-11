@@ -576,20 +576,24 @@ void SimpleJoy::resetKeys()
 	clearEventQueue();
 
     players[player].Start=players[player].Select=players[player].Up=players[player].Down=players[player].Left=players[player].Right
-    =players[player].A=players[player].B=players[player].X=players[player].Y=players[player].L=players[player].R=sjRELEASED;
+		=players[player].A=players[player].B=players[player].X=players[player].Y=players[player].L=players[player].R=sjRELEASED;
     players[player].Quit = sjRELEASED;
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
         players[player].VolumeUp=players[player].VolumeDown=players[player].Click=players[player].UpLeft=players[player].UpRight
         =players[player].DownLeft=players[player].DownRight=sjRELEASED;
     #endif
-        players[player].leftStick.x = 0;
-        players[player].leftStick.y = 0;
-        players[player].rightStick.x = 0;
-        players[player].rightStick.y = 0;
-        players[player].mouse.x = 0;
-        players[player].mouse.y = 0;
-        players[player].leftClick=players[player].rightClick=sjRELEASED;
-        players[player].storeKeys.clear();
+	players[player].leftStick.x = 0;
+	players[player].leftStick.y = 0;
+	players[player].rightStick.x = 0;
+	players[player].rightStick.y = 0;
+	players[player].leftClick=players[player].rightClick=sjRELEASED;
+	players[player].storeKeys.clear();
+}
+void SimpleJoy::resetMousePosition()
+{
+    clearEventQueue();
+	players[player].mouse.x = 0;
+	players[player].mouse.y = 0;
 }
 void SimpleJoy::resetMouseButtons()
 {
@@ -598,7 +602,6 @@ void SimpleJoy::resetMouseButtons()
 }
 void SimpleJoy::resetDpad()
 {
-
     clearEventQueue();
     players[player].Up=players[player].Down=players[player].Left=players[player].Right=sjRELEASED;
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
