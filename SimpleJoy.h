@@ -258,6 +258,7 @@ class SimpleJoy
 		void clearEventQueue();
         void resetKeys();
 
+		void resetMousePosition();
         void resetMouseButtons();
         void resetDpad();
         void resetUp();
