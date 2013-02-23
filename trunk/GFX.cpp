@@ -620,8 +620,6 @@ SDL_Surface* GFX::getVideoSurface()
     void GFX::renderStatic(CRint xStart,CRint yStart,CRint w,CRint h,CRint spacing, CRint thickness){renderStatic(screen,xStart,yStart,w,h,spacing,thickness);}
     void GFX::renderStatic(SDL_Surface* screen,CRint x,CRint y,CRint w,CRint h,CRint spacing, CRint thick)
     {
-        //	Setup random numbers for 5 colours (white, black and 3 grays)
-        Random::setLimits(0,2);
         //	Now randomly run through the entire screen buffer and place a randompiece of static
         if(thick == -1)
         {
@@ -629,7 +627,7 @@ SDL_Surface* GFX::getVideoSurface()
             {
                 for(int j = h-1; j >= y-1; j-=spacing)
                 {
-                    uint colour = Random::nextInt();
+                    uint colour = Random::nextInt(0,2);
                     if(colour == 0)
                         setPixel(screen,i,j,BLACK);
                     else if(colour == 1)
@@ -652,7 +650,7 @@ SDL_Surface* GFX::getVideoSurface()
                     //	check if the coord is within the border else continue
                     if((j<= y+thick || j>=y+h-thick) || (i <= x+thick || i>=x+w-thick))
                     {
-                        uint colour = Random::nextInt();
+                        uint colour = Random::nextInt(0,2);
                         if(colour == 0)
                             setPixel(screen,i,j,BLACK);
                         else if(colour == 1)
