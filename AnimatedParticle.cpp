@@ -70,12 +70,12 @@ void AnimatedParticle::update()
     if(useDeviance)
         #ifndef PENJIN_3D
             #ifdef PENJIN_FIXED
-                position = position + Vector2dx(Random::nextFixed()-deviation,Random::nextFixed()-deviation);
+                position = position + Vector2dx(rand.nextFixed()-deviation,rand.nextFixed()-deviation);
             #else
-                position = position + Vector2df(Random::nextFloat()-deviation,Random::nextFloat()-deviation);
+                position = position + Vector2df(rand.nextFloat()-deviation,rand.nextFloat()-deviation);
             #endif
         #else
-            position = position + Vector3df(Random::nextFloat()-deviation,Random::nextFloat()-deviation,Random::nextFloat()-deviation);
+            position = position + Vector3df(rand.nextFloat()-deviation,rand.nextFloat()-deviation,rand.nextFloat()-deviation);
         #endif
 
 }

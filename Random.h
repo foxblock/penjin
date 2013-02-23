@@ -32,21 +32,13 @@ by Kevin Winfield-Pantoja
 
 namespace Random
 {
-    void setMax(CRint max);
-    void setMin(CRint min);
-    void setLimits(CRint min,CRint max);
-
-    int nextInt();		//	get the next random int
-    float nextFloat();	//	get the next float
-    double nextDouble();//	get the next double
-    Fixed nextFixed();
     bool nextBool();	//	random deterministic choice
 
     /// quick random numbers without setting limits
-    float nextFloat(CRint min, CRint max);
-    Fixed nextFixed(CRint min, CRint max);
+    float nextFloat(CRfloat min, CRfloat max);
+    Fixed nextFixed(CRFixed min, CRFixed max);
     int nextInt(CRint min, CRint max);
-    double nextDouble(CRint min, CRint max);
+    double nextDouble(CRdouble min, CRdouble max);
 
     void setSeed(CRint seed);
     int getSeed();

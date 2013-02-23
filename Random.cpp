@@ -20,8 +20,6 @@
 
 namespace Random
 {
-    int min = 0;
-    int max = 1;
     int seed = randSeed();
 }
 
@@ -44,38 +42,19 @@ bool Random::nextBool()
     return false;
 }
 
-Fixed Random::nextFixed()
-{
-    int range = max-min;
-    return (min + Fixed(range * rand() /(RAND_MAX + 1.0f)));
-}
-float Random::nextFloat()
+float Random::nextFloat(CRfloat min, CRfloat max)
 {
 	float range = max - min;
 	return (min + float(range * rand() / (RAND_MAX + 1.0f )));
 }
 
-double Random::nextDouble()
+Fixed Random::nextFixed(CRFixed min, CRFixed max)
 {
-	double range = max - min;
-	return (min + double(range * rand() / (RAND_MAX + 1.0)));
-}
-
-int Random::nextInt(){return (min + rand() % (max - min +1));}
-
-float Random::nextFloat(CRint min, CRint max)
-{
-	float range = max - min;
-	return (min + float(range * rand() / (RAND_MAX + 1.0f )));
-}
-
-Fixed Random::nextFixed(CRint min, CRint max)
-{
-    int range = max-min;
+    Fixed range = max-min;
     return (min + Fixed(range * rand() /(RAND_MAX + 1.0f)));
 }
 
-double Random::nextDouble(CRint min, CRint max)
+double Random::nextDouble(CRdouble min, CRdouble max)
 {
 	double range = max - min;
 	return (min + double(range * rand() / (RAND_MAX + 1.0)));
@@ -84,9 +63,6 @@ double Random::nextDouble(CRint min, CRint max)
 int Random::nextInt(CRint min, CRint max){return (min + rand() % (max - min +1));}
 
 void Random::setSeed(CRint s){srand(s);seed=s;}
-void Random::setLimits(CRint min,CRint max){setMin(min);setMax(max);}
-void Random::setMax(CRint m){max = m;}
-void Random::setMin(CRint m){min = m;}
 
 /// random class
 RandomClass::RandomClass(CRint min, CRint max){this->min = min;this->max = max;}
