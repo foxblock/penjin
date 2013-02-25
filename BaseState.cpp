@@ -27,6 +27,9 @@ BaseState::BaseState()
     nullify = false;
     needInit = true;
     nextState = 0;
+	#ifndef PENJIN_ASCII
+		input = NULL;
+    #endif
 }
 
 BaseState::~BaseState()
