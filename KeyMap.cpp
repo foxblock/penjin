@@ -87,6 +87,10 @@ void KeyMap::setSJMap(string t)
         target=SJ_MOUSE_CENTRE;
     else if(t == "MOUSE_RIGHT")
         target=SJ_MOUSE_RIGHT;
+	else if (t == "MOUSE_WHEELUP")
+		target=SJ_MOUSE_WHEELUP;
+	else if (t == "MOUSE_WHEELDOWN")
+		target=SJ_MOUSE_WHEELDOWN;
     else if(t == "VOLUP")
         target=SJ_VOLUP;
     else if(t == "VOLDOWN")

@@ -82,6 +82,8 @@ namespace KeyMappings
         SJ_MOUSE_LEFT,
         SJ_MOUSE_CENTRE,
         SJ_MOUSE_RIGHT,
+        SJ_MOUSE_WHEELUP,
+        SJ_MOUSE_WHEELDOWN,
         SJ_UNMAPPED
     };
 }

@@ -152,6 +152,8 @@ void KeyMapper::defaultMap()
     #if defined (PLATFORM_PC) || defined(PLATFORM_PI)
         CMF.push_back("BUTTON:MOUSE_CENTRE,1;");
         CMF.push_back("BUTTON:MOUSE_RIGHT,2;");
+        CMF.push_back("BUTTON:MOUSE_WHEELUP,3;");
+        CMF.push_back("BUTTON:MOUSE_WHEELDOWN,4;");
     #endif
         CMF.push_back("AXIS:MOUSE_X,0;");
         CMF.push_back("AXIS:MOUSE_Y,1;");

@@ -27,7 +27,9 @@ namespace MouseButtons
         SDL_MOUSE_NONE,
         SDL_MOUSE_LEFT,
         SDL_MOUSE_CENTRE,
-        SDL_MOUSE_RIGHT
+        SDL_MOUSE_RIGHT,
+        SDL_MOUSE_WHEELUP,
+        SDL_MOUSE_WHEELDOWN
     };
 }
 using namespace MouseButtons;
