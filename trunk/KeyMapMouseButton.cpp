@@ -47,6 +47,8 @@ void KeyMapMouseButton::setMouseButton(CRuchar b)
         case 0:     mouseButton = SDL_MOUSE_LEFT;   break;
         case 1:     mouseButton = SDL_MOUSE_CENTRE; break;
         case 2:     mouseButton = SDL_MOUSE_RIGHT;  break;
+        case 3:     mouseButton = SDL_MOUSE_WHEELUP;  break;
+        case 4:     mouseButton = SDL_MOUSE_WHEELDOWN;  break;
         default:    mouseButton = SDL_MOUSE_NONE;   break;
     }
 }

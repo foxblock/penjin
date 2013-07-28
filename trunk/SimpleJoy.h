@@ -70,6 +70,7 @@ class SimpleJoy
             Vector2di mouse;
             Vector2di oldMouse;
             sjSTATUS leftClick, rightClick;
+            int wheel;
 
             //  GP2X Specific
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
@@ -246,6 +247,8 @@ class SimpleJoy
         Vector2di getMouseDelta()const{return players[player].mouse-players[player].oldMouse;}
         int getMouseDeltaX()const{return players[player].mouse.x-players[player].oldMouse.x;}
         int getMouseDeltaY()const{return players[player].mouse.y-players[player].oldMouse.y;}
+        // returns mouse wheel movement since last reset (wheel-up will add 1, wheel-down substract 1)
+        int getMouseWheelDelta()const{return players[player].wheel;};
 
         sjSTATUS isLeftClick()const{return players[player].leftClick;}
         sjSTATUS isRightClick()const{return players[player].rightClick;}
@@ -260,6 +263,7 @@ class SimpleJoy
 
 		void resetMousePosition();
         void resetMouseButtons();
+        void resetMouseWheel();
         void resetDpad();
         void resetUp();
         void resetDown();

@@ -514,6 +514,10 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
                                     players[player].rightClick = sjPRESSED;
                                 else
                                     players[player].rightClick = sjHELD;
+		break;
+		case SJ_MOUSE_WHEELDOWN:--players[player].wheel;
+        break;
+        case SJ_MOUSE_WHEELUP:	++players[player].wheel;
         break;
 
         default:                break;
@@ -587,6 +591,7 @@ void SimpleJoy::resetKeys()
 	players[player].rightStick.x = 0;
 	players[player].rightStick.y = 0;
 	players[player].leftClick=players[player].rightClick=sjRELEASED;
+	players[player].wheel = 0;
 	players[player].storeKeys.clear();
 }
 void SimpleJoy::resetMousePosition()
@@ -600,6 +605,12 @@ void SimpleJoy::resetMouseButtons()
     clearEventQueue();
     players[player].leftClick=players[player].rightClick=sjRELEASED;
 }
+void SimpleJoy::resetMouseWheel()
+{
+	clearEventQueue();
+	players[player].wheel = 0;
+}
+
 void SimpleJoy::resetDpad()
 {
     clearEventQueue();
@@ -899,6 +910,7 @@ void SimpleJoy::setNumPlayers(CRuint p)
         players[p-1].deadZone.y = 0;
         players[p-1].scaler = 1.0f;
         players[p-1].mapLoaded = false;
+        players[p-1].wheel = 0;
         numPlayers = p;
         /*players.push_back(&new Player());
         players.at(p-1).deadZone.x = 0;
