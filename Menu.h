@@ -77,17 +77,17 @@ class Menu
 
         /// Set the topleft corner of the menu
         #ifndef PENJIN_3D
-            void setMenuStart(const Vector2di& start){menuStart = start;}
-            void setMenuStart(CRint x,CRint y){menuStart.x = x; menuStart.y = y;}
-            void setMenuStart(const Vector2dx& start){menuStart.x = start.x.intValue >> 16; menuStart.y = start.y.intValue >> 16;}
+            void setMenuStart(const Vector2di& start){menuStart = start; updatePositions();}
+            void setMenuStart(CRint x,CRint y){menuStart.x = x; menuStart.y = y; updatePositions();}
+            void setMenuStart(const Vector2dx& start){menuStart.x = start.x.intValue >> 16; menuStart.y = start.y.intValue >> 16; updatePositions();}
             Vector2df getMenuStart() const {return menuStart;}
         #else
             void setMenu3D(CRbool menu3D){this->menu3D = menu3D;}         //  Will render all menuItems as Cuboids rather than rects
             void setAngle(CRfloat angle){this->angle = angle;}
             void setAngleDelta(CRfloat angleDelta){this->angleDelta = angleDelta;}
-            void setMenuStart(const Vector3df& start){menuStart = start;}
-            void setMenuStart(CRfloat x,CRfloat y){setMenuStart(x,y,0.0f);}
-            void setMenuStart(CRfloat x,CRfloat y,CRfloat z){menuStart.x = x; menuStart.y = y; menuStart.z = z;}
+            void setMenuStart(const Vector3df& start){menuStart = start;; updatePositions();}
+            void setMenuStart(CRfloat x,CRfloat y){setMenuStart(x,y,0.0f);; updatePositions();}
+            void setMenuStart(CRfloat x,CRfloat y,CRfloat z){menuStart.x = x; menuStart.y = y; menuStart.z = z;; updatePositions();}
             void setMenuItemDimensions(CRuint index,const Vector2di& dimensions);   //  Overide the size
             void setMenuItemDimensions(const Vector2di& dimensions){setMenuItemDimensions(menuItems.size()-1, dimensions);}
             Vector3df getMenuStart() const {return menuStart;}

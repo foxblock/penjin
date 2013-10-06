@@ -232,22 +232,21 @@ void Menu::addItem(CRint type)
 
 void Menu::updatePositions()
 {
-    int s = menuItems.size()-1;
+	if (menuItems.empty())
+		return;
+
     //  Check for first MenuItem
-    menuItems[s]->setPosition(menuStart);
-    for(int i = s; i >= 0 ; --i)
+    menuItems[0]->setPosition(menuStart);
+    for(int i = 1; i < menuItems.size(); ++i)
     {
-        if (s != 0)
-        {
-            #ifdef PENJIN_3D
-                Vector3df pos = menuItems[s-1]->getPosition();
-                pos.y += (menuItems[s-1]->getSpacing() - menuItems[s-1]->getDimensions().y);
-            #else
-                Vector2df pos = menuItems[s-1]->getPosition();
-                pos.y += (menuItems[s-1]->getSpacing() + menuItems[s-1]->getDimensions().y);
-            #endif
-            menuItems[s]->setPosition(pos);
-        }
+		#ifdef PENJIN_3D
+			Vector3df pos = menuItems[i-1]->getPosition();
+			pos.y += (menuItems[i-1]->getSpacing() - menuItems[i-1]->getDimensions().y);
+		#else
+			Vector2df pos = menuItems[i-1]->getPosition();
+			pos.y += (menuItems[i-1]->getSpacing() + menuItems[i-1]->getDimensions().y);
+		#endif
+		menuItems[i]->setPosition(pos);
     }
 }
 
