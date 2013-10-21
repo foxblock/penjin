@@ -42,7 +42,9 @@ class Line
         void setEndPosition(const T& pos){end.x = pos.x;end.y=pos.y;}
 
         void setColour(const Colour& c){colour = c;}
+        #ifndef PENJIN_SDL
         void setLineWidth(CRfloat w){lineWidth = w;}
+        #endif
 
         #ifdef PENJIN_SDL
             void render(SDL_Surface* screen);
@@ -57,10 +59,11 @@ class Line
             Point2di start;
             Point2di end;
         #endif
-        float lineWidth;
         Colour colour;
         #ifdef PENJIN_SDL
         SDL_Surface* screen;
+        #else
+        float lineWidth;
         #endif
 };
 

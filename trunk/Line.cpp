@@ -23,9 +23,10 @@ Line::Line()
     //ctor
     start.x = start.y = 0;
     end.y = end.x = 10;
-    lineWidth = 1.0f;
     #ifdef PENJIN_SDL
     screen = GFX::getVideoSurface();
+    #else
+    lineWidth = 1.0f;
     #endif
 }
 
