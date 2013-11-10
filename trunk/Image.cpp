@@ -55,7 +55,7 @@ PENJIN_ERRORS Image::setTransparentColour(CRuint i, const Colour& c)
             return PENJIN_INVALID_INDEX;
         if(images.at(i).first->flags & SDL_SRCALPHA)
         {
-            #ifdef DONT_REMOVE_TRANSPARENCY_ON_SET
+            #ifdef PENJIN_DONT_REMOVE_TRANSPARENCY_ON_SET
             colourKey = c;
             colourKey.alpha = 255;
             #else
@@ -672,7 +672,7 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         #else
             tempImage = rotozoomSurfaceXY(subSprite, angle, scale.x, scale.y, SMOOTHING_OFF);
         #endif
-        #ifndef NO_CENTRE_SCALING
+        #ifndef PENJIN_NO_CENTRE_SCALING
         dst.x += (subSprite->w - tempImage->w)*0.5f;
         dst.y += (subSprite->h - tempImage->h)*0.5f;
         #endif

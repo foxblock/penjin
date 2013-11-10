@@ -420,7 +420,7 @@ void Engine::stateManagement()
     }
 }
 
-inline void Engine::limitFPS(CRfloat sleepTime) const
+void Engine::limitFPS(CRfloat sleepTime) const
 {
     static float diff = 0; // value compensating the precision loss due to float-int conversions
     if (sleepTime > 0)
