@@ -104,7 +104,7 @@ namespace NumberUtility
     template <class T, size_t length>
     size_t getSize(const T (&arr)[length]){return length;} // Get the size of any array (array type must not have private data members)
     template <class T, int length>
-    void insert(T (&arr)[length], CRint pos, T value); // Inserst a value at a position in an array - make sure the array is already big enough to hold the new value
+    void insert(T (&arr)[length], CRint pos, T value); // Insert a value at a position in an array - make sure the array is already big enough to hold the new value
     template <class T, int length>
     void sort(const T (&arr)[length], int (&sortIndex)[length], CRbool ascending); // Returns an array containing the indices of the elements sorted - NOT optimized for speed
 };

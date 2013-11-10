@@ -94,6 +94,7 @@ class Engine
 
         // sleeps the passed amount of milliseconds (and keeps track of rounding errors)
 		void limitFPS(CRfloat sleepTime) const;
+
 };
 
 #endif	//	ENGINE_H
