@@ -55,7 +55,7 @@ int NumberUtility::digitSum(CRuint value)
 double NumberUtility::fact(CRuint value)
 {
     double result=1;
-    for (int I=value; I > 0; --I)
+    for (int I=value; I > 1; --I)
     {
         result *= I;
     }

@@ -85,7 +85,9 @@ class Colour
         void setColour(const uchar& r,const uchar& g,const uchar& b,const uchar& a);	//	Set the colour using RGBA
         void setColour(const uchar& r,const uchar& g,const uchar& b){setColour(r,g,b,255);}            // Set the colour using RGB
         void setColour(const PENJIN_COLOURS& colour);						//	Set the colour using predefines
-        void setColour(CRint rgb);                                          // Set the colour using a Delphi int (red + green * 256 + blue * 256 * 256)
+        // Set the colour using an int (red * 256 * 256 + green * 256 + blue)
+        // Use with a hex-based colour code converted to an int (StringUtility::hexToInt)
+        void setColour(CRint rgb);
         void setColour(CRstring ident); // set the colour using a written version of the PENJIN_COLOURS
 
         SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
@@ -93,6 +95,10 @@ class Colour
         Uint32 getSDL_Uint32Colour(){return getSDL_Uint32Colour(SDL_GetVideoSurface());}
         int getIntColour() const;
         void convertColour(Uint32 colour,SDL_PixelFormat *format);      //  Converts an SDL Uint32 colour to a Colour object
+        // sends the colour through the video surface and thereby adjusts it
+        // to precision loss if the display has a bit depth of 16 or lower
+        // will only waste CPU time if bpp is 24 or higher
+        void adjustToDisplayColour() { convertColour( getSDL_Uint32Colour(), SDL_GetVideoSurface()->format ); }
 
         Colour getGreyScale();  //  Get this colour as a grayscale colour.
         void toGreyScale(){*this = getGreyScale();}     //  Convert this colour to grayscale

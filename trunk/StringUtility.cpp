@@ -206,6 +206,15 @@ int StringUtility::stringToInt(CRstring value)
 	return out;
 }
 
+int StringUtility::hexToInt(CRstring value)
+{
+	stringstream ss;
+	ss << std::hex << value;
+	int out = 0;
+	ss >> out;
+	return out;
+}
+
 long StringUtility::stringToLong(CRstring value)
 {
 	istringstream ins;	//	Create a string stream

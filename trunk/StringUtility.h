@@ -78,6 +78,7 @@ namespace StringUtility
         double stringToDouble(CRstring value);
         long stringToLong(CRstring value);
         int stringToInt(CRstring value);
+        int hexToInt(CRstring value);
         short stringToShort(CRstring value);
         bool stringToBool(CRstring value);
         Vector2df stringToVec(CRstring value, CRstring separator=",");

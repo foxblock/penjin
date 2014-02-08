@@ -558,7 +558,11 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = sjRELEASED;break;
         case SJ_MOUSE_X:         = sjRELEASED;break;
         case SJ_MOUSE_Y:         = sjRELEASED;break;*/
+        #ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+        case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED; players[player].leftClickNeedsRelease = false; break;
+        #else
         case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED;break;
+        #endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
         //case SJ_MOUSE_CENTRE: = sjRELEASED;break;
         case SJ_MOUSE_RIGHT:    players[player].rightClick = sjRELEASED;break;
         default:                break;
@@ -591,6 +595,9 @@ void SimpleJoy::resetKeys()
 	players[player].rightStick.x = 0;
 	players[player].rightStick.y = 0;
 	players[player].leftClick=players[player].rightClick=sjRELEASED;
+	#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+	players[player].leftClickNeedsRelease = true;
+	#endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
 	players[player].wheel = 0;
 	players[player].storeKeys.clear();
 }
@@ -604,6 +611,9 @@ void SimpleJoy::resetMouseButtons()
 {
     clearEventQueue();
     players[player].leftClick=players[player].rightClick=sjRELEASED;
+	#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+	players[player].leftClickNeedsRelease = true;
+	#endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
 }
 void SimpleJoy::resetMouseWheel()
 {
@@ -911,6 +921,9 @@ void SimpleJoy::setNumPlayers(CRuint p)
         players[p-1].scaler = 1.0f;
         players[p-1].mapLoaded = false;
         players[p-1].wheel = 0;
+	#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+        players[p-1].leftClickNeedsRelease = false;
+	#endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
         numPlayers = p;
         /*players.push_back(&new Player());
         players.at(p-1).deadZone.x = 0;

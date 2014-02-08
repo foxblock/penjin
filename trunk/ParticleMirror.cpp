@@ -62,13 +62,13 @@ void ParticleMirror::update()
                             continue;
                         }
                         if(dir == diLEFT)
-                            v.x = NumberUtility::makeNegative(v.x * dampening.x);
+                            v.x = -abs(v.x * dampening.x);
                         else if(dir == diRIGHT)
-                            v.x = NumberUtility::makePositive(v.x * dampening.x);
+                            v.x = abs(v.x * dampening.x);
                         if(dir == diTOP )
-                            v.y = NumberUtility::makeNegative(v.y * dampening.y);
+                            v.y = -abs(v.y * dampening.y);
                         else if( dir == diBOTTOM)
-                            v.y = NumberUtility::makePositive(v.y * dampening.y);
+                            v.y = abs(v.y * dampening.y);
                         emit[i]->setVelocity(j,v);
                     }
                 #endif
