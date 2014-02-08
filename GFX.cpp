@@ -878,6 +878,11 @@ uint GFX::getYResolution()
 {
     return yRes;
 }
+
+uint GFX::getBPP()
+{
+	return bpp;
+}
 #if defined (PENJIN_GL) || defined (PENJIN_SOFT) || defined (PENJIN_ES) || defined (PENJIN_ES2)
     #ifdef PENJIN_3D
         void GFX::perspective(CRfloat fov,CRfloat aspect,CRfloat znear,CRfloat zfar)

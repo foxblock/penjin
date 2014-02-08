@@ -70,6 +70,9 @@ class SimpleJoy
             Vector2di mouse;
             Vector2di oldMouse;
             sjSTATUS leftClick, rightClick;
+		#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+			bool leftClickNeedsRelease;
+		#endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
             int wheel;
 
             //  GP2X Specific
@@ -158,6 +161,7 @@ class SimpleJoy
                 if(t.getKey() == players[player].storeKeys.at(i).key.getKey())
                     return players[player].storeKeys.at(i).status;
             }
+            return sjRELEASED;
         }
         string isKeyLetter();
 
@@ -250,13 +254,22 @@ class SimpleJoy
         // returns mouse wheel movement since last reset (wheel-up will add 1, wheel-down substract 1)
         int getMouseWheelDelta()const{return players[player].wheel;};
 
+	#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
+        sjSTATUS isLeftClick()const
+        {
+        	if ( players[player].leftClickNeedsRelease )
+				return sjRELEASED;
+        	return players[player].leftClick;
+		}
+	#else
         sjSTATUS isLeftClick()const{return players[player].leftClick;}
+	#endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
         sjSTATUS isRightClick()const{return players[player].rightClick;}
         /// TouchScreen - Just a wrapper to mouse
-        Vector2di getTouch()const{return players[player].mouse;}
-        int getTouchX()const{return players[player].mouse.x;}
-        int getTouchY()const{return players[player].mouse.y;}
-        sjSTATUS isTouch()const{return players[player].leftClick;}
+        Vector2di getTouch()const{return getMouse();}
+        int getTouchX()const{return getMouseX();}
+        int getTouchY()const{return getMouseY();}
+        sjSTATUS isTouch()const{return isLeftClick();}
 
 		void clearEventQueue();
         void resetKeys();

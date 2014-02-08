@@ -54,10 +54,6 @@ namespace NumberUtility
     T closestToZero(const T& a, const T& b);
     template <class T>
     T furthestFromZero(const T& a, const T& b);
-    template <class T>
-    T makePositive(const T& value); //  force a positive value
-    template <class T>
-    T makeNegative(const T& value); //  force a negative value
 
     //int wrapValue(int value, CRint limit);
     template <class T>
@@ -85,28 +81,6 @@ namespace NumberUtility
     /// Angles
     float degToRad(CRfloat a);
     float radToDeg(CRfloat a);
-
-    /// Statistics
-    template <class T, int length>
-    T getGreatest(const T (&arr)[length]); // Returns the greatest number in an array
-    template <class T, int length>
-    int getGreatestIndex(const T (&arr)[length]); // Returns the index of the greatest number in an array
-    template <class T, int length>
-    bool isGreatest(const T (&arr)[length], CRuint index); // Checks if the supplied element is the greatest in an array of numbers
-    template <class T, int length>
-    T getLowest(const T (&arr)[length]); // Returns the lowest number in an array
-    template <class T, int length>
-    int getLowestIndex(const T (&arr)[length]); // Returns the index of the lowest number in an array
-    template <class T, int length>
-    bool isLowest(const T (&arr)[length], CRuint index); // Checks if the supplied element is the lowest in an array of numbers
-
-    /// Arrays
-    template <class T, size_t length>
-    size_t getSize(const T (&arr)[length]){return length;} // Get the size of any array (array type must not have private data members)
-    template <class T, int length>
-    void insert(T (&arr)[length], CRint pos, T value); // Insert a value at a position in an array - make sure the array is already big enough to hold the new value
-    template <class T, int length>
-    void sort(const T (&arr)[length], int (&sortIndex)[length], CRbool ascending); // Returns an array containing the indices of the elements sorted - NOT optimized for speed
 };
 
 #include "NumberUtility.inl"

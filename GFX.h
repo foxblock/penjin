@@ -66,6 +66,7 @@ namespace GFX
 
     uint getXResolution();
     uint getYResolution();
+    uint getBPP();
 
     // Force to blit to screen now!
     void forceBlit();

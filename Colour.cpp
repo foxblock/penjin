@@ -161,9 +161,9 @@ void Colour::setColour(const PENJIN_COLOURS& c)
 void Colour::setColour(CRint rgb)
 {
     alpha = 255;
-    red = (rgb & 0x0000ff);
+    red = (rgb & 0xff0000)/0x10000;
     green = (rgb & 0x00ff00)/0x100;
-    blue = (rgb & 0xff0000)/0x10000;
+    blue = (rgb & 0x0000ff);
     #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
         toGL();
     #endif
@@ -277,7 +277,7 @@ void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
 
 int Colour::getIntColour() const
 {
-    return red + green * 256 + blue * 256 * 256;
+    return red * 256 * 256 + green * 256 + blue;
 }
 
 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
