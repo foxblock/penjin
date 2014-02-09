@@ -99,6 +99,7 @@ class Colour
         // to precision loss if the display has a bit depth of 16 or lower
         // will only waste CPU time if bpp is 24 or higher
         void adjustToDisplayColour() { convertColour( getSDL_Uint32Colour(), SDL_GetVideoSurface()->format ); }
+        void adjustToDisplayColour( SDL_Surface *s ) { convertColour( getSDL_Uint32Colour( s ), s->format ); }
 
         Colour getGreyScale();  //  Get this colour as a grayscale colour.
         void toGreyScale(){*this = getGreyScale();}     //  Convert this colour to grayscale
