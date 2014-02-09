@@ -58,11 +58,7 @@ namespace StringUtility
         string shortToString(CRshort value);
         string boolToString(CRbool value, CRbool useBoolString=true);
         template <class T>
-        string vecToString(const T& value, CRstring separator=",")
-        {
-            // using doubleToString for maximum compatibility
-            return (doubleToString(value.x) + separator + doubleToString(value.y));
-        }
+        string vecToString(const T& value, CRstring separator=",");
 
         /// Char* string conversions
         Fixed cStringToFixed(char* value);
@@ -81,7 +77,8 @@ namespace StringUtility
         int hexToInt(CRstring value);
         short stringToShort(CRstring value);
         bool stringToBool(CRstring value);
-        Vector2df stringToVec(CRstring value, CRstring separator=",");
+        template <class T>
+        T stringToVec(CRstring value, CRstring separator=",");
 
         ///	Case modifyers
         string upper(string word);
@@ -105,4 +102,7 @@ namespace StringUtility
         void tokenize(CRstring str, vector<string>& tokens, CRstring delimiters, CRuint maxParts);
         string combine(const vector<string>& tokens, CRstring delimiter = ","); // compines an array or string parts into one string seperating them with the delimiter char
 }
+
+#include "StringUtility.inl"
+
 #endif	//	STRINGUTILITY_H

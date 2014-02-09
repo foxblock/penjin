@@ -241,15 +241,6 @@ bool StringUtility::stringToBool(CRstring value)
         return false;
 }
 
-Vector2df StringUtility::stringToVec(CRstring value, CRstring separator)
-{
-    vector<string> tokens;
-    tokenize(value,tokens,separator);
-    if (tokens.size() != 2)
-        return Vector2df(0,0);
-    return Vector2df(stringToFloat(tokens.front()),stringToFloat(tokens.back()));
-}
-
 double StringUtility::cStringToDouble(char* value){return stringToDouble((string)value);}
 float StringUtility::cStringToFloat(char* value){return stringToFloat((string)value);}
 Fixed StringUtility::cStringToFixed(char* value){return stringToFixed((string)value);}
