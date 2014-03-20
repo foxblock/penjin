@@ -134,6 +134,7 @@ class Text
             //	write a float number to the screen
             void print(SDL_Surface* scr, CRfloat number);
         #endif
+        string getLastText() {return lastText;}
 
         void clear();
 
@@ -182,6 +183,7 @@ class Text
         Colour colour;
         Colour bgColour;
         SDL_Rect clipBoundary;      //  The area that the Text is allowed to exist within
+        string lastText;
 };
 
 #endif	//	TEXT_H
