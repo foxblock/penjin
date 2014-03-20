@@ -81,6 +81,7 @@ Text::Text()
     bgColour = BLACK;
     relativePos = false;
     wrapText = true;
+    lastText = "";
 }
 
 void Text::clear()
@@ -161,6 +162,7 @@ PENJIN_ERRORS Text::loadFont(CRstring name,CRuint fontSize)
         glyphs[fontSize-1][0]->refresh();
         fontName = name;
         this->fontSize = fontSize;
+        calcDimensions(); // preliminary dimensions (already gives us a height at least)
 		return PENJIN_OK;
 	}
 	return PENJIN_TTF_UNABLE_TO_OPEN;
@@ -287,8 +289,11 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
             //  Advance cursor
             position.x += current->getWidth();
         }
-        if(isRefreshed)
-            calcDimensions();
+        if(isRefreshed || lastText != text)
+		{
+			calcDimensions();
+			lastText = text;
+		}
     }
 
     void Text::print(SDL_Surface* screen, char* text)
@@ -417,8 +422,11 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
             //  Advance cursor
             position.x += current->getWidth();
         }
-        if(isRefreshed)
-            calcDimensions();
+        if(isRefreshed || lastText != text)
+		{
+			calcDimensions();
+			lastText = text;
+		}
     }
     void Text::print(char* text)
     {

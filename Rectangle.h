@@ -136,6 +136,20 @@ class Rectangle
                 SDL_SetAlpha(rectangle, SDL_SRCALPHA|SDL_RLEACCEL, colour.alpha);
             #endif
         }
+
+		Vector2di getDimensions() {return dimensions;}
+		Colour getColour() {return colour;}
+        #ifdef PENJIN_3D
+        Vector3df getPosition() {return position;}
+        Vector3df getScale() {return scale;}
+        Vector3df getRotation() {return rotation;}
+        float getThickness() {return thickness;}
+        #else
+        Vector2df getPosition() {return position;}
+        Vector2df getScale() {return scale;}
+        float getAngle() {return angle;}
+        uint getThickness() {return thickness;}
+        #endif
 #ifdef PENJIN_SDL
     void setThickness(CRuint t)
     {
