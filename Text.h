@@ -138,11 +138,14 @@ class Text
 
         void clear();
 
+		// set the size of the boundary
         void setUpBoundary(const Vector2di& bound)
         {
             clipBoundary.w = bound.x;
             clipBoundary.h = bound.y;
         }
+        // this actually does not do anything
+        // to set the position of the boundary use setPosition
         void setDownBoundary(const Vector2di& bound)
         {
             clipBoundary.x = bound.x;
