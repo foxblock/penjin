@@ -879,6 +879,11 @@ uint GFX::getYResolution()
     return yRes;
 }
 
+bool GFX::getFullscreen()
+{
+	return fullscreen;
+}
+
 uint GFX::getBPP()
 {
 	return bpp;
