@@ -338,6 +338,9 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
         if(axis == 0 && ev[currentEvent].code == ABS_X)
         {
             int val = ((pointercal[0]*rawTS.x) + (pointercal[1]*rawTS.y) + pointercal[2])/pointercal[6];
+            #ifdef PENJIN_SCALE2X
+				val *= 0.5f;
+            #endif
             #ifdef _DEBUG
             cout << "Calc_X:" << val << endl;
             #endif
@@ -355,6 +358,9 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
         else if(axis == 1 && ev[currentEvent].code == ABS_Y)
         {
             int val = ((pointercal[3]*rawTS.x) + (pointercal[4]*rawTS.y) + pointercal[5])/pointercal[6];
+            #ifdef PENJIN_SCALE2X
+				val *= 0.5f;
+            #endif
             #ifdef _DEBUG
             cout << "Calc_Y:" << val << endl;
             #endif
@@ -373,24 +379,90 @@ void SimpleJoy::mappedMouseAxes(const SIMPLEJOY_MAP& map,CRuchar axis)
         if(axis == 0 && Event.motion.xrel != 0)
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.motion.xrel;break;
-                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.motion.xrel;break;
-                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.motion.xrel;break;
-                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.motion.xrel;break;
-                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = Event.motion.x;break;
-                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = Event.motion.x;break;
-                default:                break;
+                case SJ_LEFTSTICK_X:
+					players[player].leftStick.x = Event.motion.xrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].leftStick.x *= 0.5f;
+					#endif
+					break;
+                case SJ_LEFTSTICK_Y:
+                	players[player].leftStick.y = Event.motion.xrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].leftStick.y *= 0.5f;
+					#endif
+                	break;
+                case SJ_RIGHTSTICK_X:
+                	players[player].rightStick.x = Event.motion.xrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].rightStick.x *= 0.5f;
+					#endif
+                	break;
+                case SJ_RIGHTSTICK_Y:
+                	players[player].rightStick.y = Event.motion.xrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].rightStick.y *= 0.5f;
+					#endif
+                	break;
+                case SJ_MOUSE_X:
+                	players[player].oldMouse.x = players[player].mouse.x;
+                	players[player].mouse.x = Event.motion.x;
+					#ifdef PENJIN_SCALE2X
+					players[player].mouse.x *= 0.5f;
+					#endif
+                	break;
+                case SJ_MOUSE_Y:
+                	players[player].oldMouse.y = players[player].mouse.y;
+                	players[player].mouse.y = Event.motion.x;
+					#ifdef PENJIN_SCALE2X
+					players[player].mouse.y *= 0.5f;
+					#endif
+                	break;
+                default:
+                	break;
             }
         if(axis == 1 && Event.motion.yrel != 0)
             switch(map)
             {
-                case SJ_LEFTSTICK_X:    players[player].leftStick.x = Event.motion.yrel;break;
-                case SJ_LEFTSTICK_Y:    players[player].leftStick.y = Event.motion.yrel;break;
-                case SJ_RIGHTSTICK_X:   players[player].rightStick.x = Event.motion.yrel;break;
-                case SJ_RIGHTSTICK_Y:   players[player].rightStick.y = Event.motion.yrel;break;
-                case SJ_MOUSE_X:        players[player].oldMouse.x = players[player].mouse.x;players[player].mouse.x = Event.motion.y;break;
-                case SJ_MOUSE_Y:        players[player].oldMouse.y = players[player].mouse.y;players[player].mouse.y = Event.motion.y;break;
-                default:                break;
+                case SJ_LEFTSTICK_X:
+					players[player].leftStick.x = Event.motion.yrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].leftStick.x *= 0.5f;
+					#endif
+					break;
+                case SJ_LEFTSTICK_Y:
+                	players[player].leftStick.y = Event.motion.yrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].leftStick.y *= 0.5f;
+					#endif
+                	break;
+                case SJ_RIGHTSTICK_X:
+                	players[player].rightStick.x = Event.motion.yrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].rightStick.x *= 0.5f;
+					#endif
+                	break;
+                case SJ_RIGHTSTICK_Y:
+                	players[player].rightStick.y = Event.motion.yrel;
+					#ifdef PENJIN_SCALE2X
+					players[player].rightStick.y *= 0.5f;
+					#endif
+                	break;
+                case SJ_MOUSE_X:
+                	players[player].oldMouse.x = players[player].mouse.x;
+                	players[player].mouse.x = Event.motion.y;
+					#ifdef PENJIN_SCALE2X
+					players[player].mouse.x *= 0.5f;
+					#endif
+                	break;
+                case SJ_MOUSE_Y:
+                	players[player].oldMouse.y = players[player].mouse.y;
+                	players[player].mouse.y = Event.motion.y;
+					#ifdef PENJIN_SCALE2X
+					players[player].mouse.y *= 0.5f;
+					#endif
+                	break;
+                default:
+                	break;
             }
     #endif
 }
