@@ -356,13 +356,12 @@ void StringUtility::tokenize(CRstring str,
 // Combine a Tokenized vector back into a string
 string StringUtility::combine(const vector<string>& tokens, CRstring delimiter)
 {
-	string newString = "";
-	unsigned int i;
-
-	for (i=0;i<tokens.size();i++) {
-		newString += tokens[i];
-		newString += delimiter;
+	string result = "";
+	for (vector<string>::const_iterator I = tokens.begin(); I != tokens.end(); ++I)
+	{
+		result += *I;
+		if (I+1 < tokens.end())
+			result += delimiter;
 	}
-
-	return newString;
+	return result;
 }
