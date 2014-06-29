@@ -92,7 +92,7 @@ class AnimatedSprite
         void setFrameRate(const TimerScalers& fps){animationTimer.setMode(fps);}
         void setFrameRate(CRuint fps){ if (fps > 0) animationTimer.setScaler( 1000.0f / (float)fps );}
         void setTimerScaler(CRfloat cusScaler){animationTimer.setScaler(cusScaler);}//Set a custom timer update scaler.
-        void setLooping(CRint numLoops){this->numLoops = firstLoops = (numLoops-1);}
+        void setLooping(CRint numLoops){this->numLoops = firstLoops = numLoops;}
         void setLooping(CRbool shouldLoop)
         {
             if(shouldLoop)
