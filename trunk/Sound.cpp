@@ -168,6 +168,8 @@ void Sound::play(int loops, CRint id)
         {
             if (not isPlaying())
                 Mix_PlayChannel(instances.begin()->first,sound,instances.begin()->second);
+			else if (isPaused())
+				Mix_Resume(instances.begin()->first);
         }
         else
         {
