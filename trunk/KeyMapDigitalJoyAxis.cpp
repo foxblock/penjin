@@ -40,5 +40,5 @@ KeyMapDigitalJoyAxis::KeyMapDigitalJoyAxis(CRstring SJ,CRint a,CRint triggerVal,
     setSJMap(SJ);
     setDeviceID(id);
     device = DEV_DIGITAL_JOYSTICK_AXIS;
-    trigger = triggerVal * 32767;
+    trigger = triggerVal;
 }
