@@ -1,3 +1,5 @@
+<img src="http://projectinfinity.org.uk/lib/exe/fetch.php?media=homebrew:engines:penjin:images:penjinlogo-no-bg.png" alt="Penjin logo" />
+
 <a href='http://foxblock.pirategames.co.uk/dropbox/penjin_banner.png'><img src='http://foxblock.pirategames.co.uk/dropbox/penjin_banner_thumb.png' alt='Screenshots of games made with Penjin' /></a>
 
 # About #
