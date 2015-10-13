@@ -166,6 +166,7 @@ class SimpleJoy
         string isKeyLetter();
         void pollKeyboardInput(string *buffer, string mask);
         void stopKeyboardInput();
+        bool isPollingKeyboard();
 
         /// Joystick
         void setDeadZone(const Vector2di& zone){players[player].deadZone = zone;}

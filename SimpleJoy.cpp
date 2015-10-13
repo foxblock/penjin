@@ -166,7 +166,7 @@ void SimpleJoy::update()
                 players[player].storeKeys.push_back(k);
                 if (keyboardBuffer && Event.key.keysym.unicode < 0x80)
 				{
-					if (Event.key.keysym.sym == SDLK_BACKSPACE)
+					if (Event.key.keysym.sym == SDLK_BACKSPACE && !keyboardBuffer->empty())
 						(*keyboardBuffer).erase(keyboardBuffer->end()-1);
 					else if (Event.key.keysym.unicode >= 0x20 && (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
 						*keyboardBuffer += (char)Event.key.keysym.unicode;
@@ -305,6 +305,11 @@ void SimpleJoy::stopKeyboardInput()
 {
 	SDL_EnableUNICODE(0);
 	keyboardBuffer = NULL;
+}
+
+bool SimpleJoy::isPollingKeyboard()
+{
+	return keyboardBuffer != NULL;
 }
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
