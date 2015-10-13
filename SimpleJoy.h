@@ -164,6 +164,8 @@ class SimpleJoy
             return sjRELEASED;
         }
         string isKeyLetter();
+        void pollKeyboardInput(string *buffer, string mask);
+        void stopKeyboardInput();
 
         /// Joystick
         void setDeadZone(const Vector2di& zone){players[player].deadZone = zone;}
@@ -309,6 +311,21 @@ class SimpleJoy
         Player* players;
         size_t numPlayers;
         uint player;
+
+        string *keyboardBuffer;
+        string keyboardMask;
+        #ifdef _WIN32
+        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[]^_`{}~"
+        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[\\]^_`{}~"
+        #else
+        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-.:;<=>?@[\\]^_`{|}~"
+        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        #endif
+		#define KEYBOARD_MASK_ASCII " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+        #define KEYBOARD_MASK_LETTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        #define KEYBOARD_MASK_NUMBERS "0123456789"
+        #define KEYBOARD_MASK_FLOAT "0123456789,.-"
+        #define KEYBOARD_MARK_SYMBOLS " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
     #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
     // && (defined(PENJIN_ES) || defined(PENJIN_ES2))

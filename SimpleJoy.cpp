@@ -127,6 +127,8 @@ SimpleJoy::SimpleJoy()
 #ifdef _DEBUG
     joystickStatus();
 #endif
+	keyboardBuffer = NULL;
+	keyboardMask = "";
 }
 
 void SimpleJoy::update()
@@ -162,6 +164,13 @@ void SimpleJoy::update()
                 k.key = t;
                 k.status = sjPRESSED;
                 players[player].storeKeys.push_back(k);
+                if (keyboardBuffer && Event.key.keysym.unicode < 0x80)
+				{
+					if (Event.key.keysym.sym == SDLK_BACKSPACE)
+						(*keyboardBuffer).erase(keyboardBuffer->end()-1);
+					else if (Event.key.keysym.unicode >= 0x20 && (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
+						*keyboardBuffer += (char)Event.key.keysym.unicode;
+				}
             }
             else if(Event.type == SDL_KEYUP)
             {
@@ -283,6 +292,19 @@ string SimpleJoy::isKeyLetter()
         }
     }
     return "NULL";
+}
+
+void SimpleJoy::pollKeyboardInput(string *buffer, string mask)
+{
+	SDL_EnableUNICODE(1);
+	keyboardBuffer = buffer;
+	keyboardMask = mask;
+}
+
+void SimpleJoy::stopKeyboardInput()
+{
+	SDL_EnableUNICODE(0);
+	keyboardBuffer = NULL;
 }
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
