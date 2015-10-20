@@ -29,6 +29,7 @@ public:
 
     // Returns the opposite direction of this->value
     virtual SimpleDirection opposite() const {return SimpleDirection(getOpposite(value));}
+    virtual void makeOpposite() {value = getOpposite(value);}
 
     // Returns an integer describing the direction
     virtual int xDirection() const; // -1 - left, 0 - none, 1 - right
