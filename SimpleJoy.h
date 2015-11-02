@@ -77,7 +77,7 @@ class SimpleJoy
 
             //  GP2X Specific
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-            sjSTATUS Click, VolumeUp, VolumeDown,UpLeft, UpRight, DownLeft, DownRight;
+            sjSTATUS Click, VolumeUp, VolumeDown, UpLeft, UpRight, DownLeft, DownRight;
         #endif
         };
         SimpleJoy();
@@ -163,10 +163,23 @@ class SimpleJoy
             }
             return sjRELEASED;
         }
+	#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+		sjSTATUS isKey(__u16 k)
+	#else
+		sjSTATUS isKey(SDLKey k)
+	#endif
+		{
+			for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
+				if (I->key.getKey() == k)
+					return I->status;
+		}
+	#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
         string isKeyLetter();
-        void pollKeyboardInput(string *buffer, string mask);
+        void pollKeyboardInput(string *buffer, CRstring mask);
         void stopKeyboardInput();
         bool isPollingKeyboard();
+        bool keyboardBufferHasChanged();
+	#endif
 
         /// Joystick
         void setDeadZone(const Vector2di& zone){players[player].deadZone = zone;}
@@ -276,6 +289,12 @@ class SimpleJoy
 
 		void clearEventQueue();
         void resetKeys();
+        void resetKey(CRstring k);
+	#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+		void resetKey(__u16 k);
+	#else
+		void resetKey(SDLKey k);
+	#endif
 
 		void resetMousePosition();
         void resetMouseButtons();
@@ -313,7 +332,9 @@ class SimpleJoy
         size_t numPlayers;
         uint player;
 
+	#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
         string *keyboardBuffer;
+        bool keyboardBufferChanged;
         string keyboardMask;
         #ifdef _WIN32
         #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[]^_`{}~"
@@ -327,6 +348,7 @@ class SimpleJoy
         #define KEYBOARD_MASK_NUMBERS "0123456789"
         #define KEYBOARD_MASK_FLOAT "0123456789,.-"
         #define KEYBOARD_MARK_SYMBOLS " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+	#endif
 
     #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
     // && (defined(PENJIN_ES) || defined(PENJIN_ES2))

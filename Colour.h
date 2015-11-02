@@ -93,6 +93,9 @@ class Colour
         SDL_Color getSDL_Colour();		            //	Converts the stored colour to an SDL_Color object
         Uint32 getSDL_Uint32Colour(const SDL_Surface* dst)const;
         Uint32 getSDL_Uint32Colour(){return getSDL_Uint32Colour(SDL_GetVideoSurface());}
+        // Returns an Uint32 with the RGBA value: 0xRRGGBBAA (for SDL_gfx)
+        Uint32 getRGBAvalue() const {return (Uint32)(red << 24) + (Uint32)(green << 16) + (Uint32)(blue << 8) + (Uint32)255;}
+        // Returns an int with the RGB value: 0xRRGGBB
         int getIntColour() const;
         void convertColour(Uint32 colour,SDL_PixelFormat *format);      //  Converts an SDL Uint32 colour to a Colour object
         // sends the colour through the video surface and thereby adjusts it

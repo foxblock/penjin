@@ -127,8 +127,10 @@ SimpleJoy::SimpleJoy()
 #ifdef _DEBUG
     joystickStatus();
 #endif
+#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
 	keyboardBuffer = NULL;
 	keyboardMask = "";
+#endif
 }
 
 void SimpleJoy::update()
@@ -138,153 +140,211 @@ void SimpleJoy::update()
         players[player].mapper.loadDefaultMap();
         players[player].mapLoaded = true;
     }
-    players[player].storeKeys.clear();
-    #if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
-    // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
-        /// Read Pandora inputs
-        PND_ReadEvents( fd_keys, DEV_KEYS );
-        PND_ReadEvents( fd_gpio, DEV_GPIO );
-        PND_ReadEvents( fd_nubL, DEV_NUBL );
-        PND_ReadEvents( fd_nubR, DEV_NUBR );
-        PND_ReadEvents( fd_touch,DEV_TOUCH);
-    #else
-        while (SDL_PollEvent(&Event))
-        {
-            if(Event.type == SDL_QUIT)
-            {
-                if(players[player].Quit == sjRELEASED)
-                    players[player].Quit = sjPRESSED;
-                else
-                    players[player].Quit = sjHELD;
-            }
-            if(Event.type == SDL_KEYDOWN)
-            {
-                KeyMapKey t(Event.key.keysym.sym);
-                tKey k;
-                k.key = t;
-                k.status = sjPRESSED;
-                players[player].storeKeys.push_back(k);
-                if (keyboardBuffer && Event.key.keysym.unicode < 0x80)
+	if (players[player].Start == sjPRESSED)
+		players[player].Start = sjHELD;
+	if (players[player].Select == sjPRESSED)
+		players[player].Select = sjHELD;
+	if (players[player].Up == sjPRESSED)
+		players[player].Up = sjHELD;
+	if (players[player].Down == sjPRESSED)
+		players[player].Down = sjHELD;
+	if (players[player].Left == sjPRESSED)
+		players[player].Left = sjHELD;
+	if (players[player].Right == sjPRESSED)
+		players[player].Right = sjHELD;
+	if (players[player].A == sjPRESSED)
+		players[player].A = sjHELD;
+	if (players[player].B == sjPRESSED)
+		players[player].B = sjHELD;
+	if (players[player].X == sjPRESSED)
+		players[player].X = sjHELD;
+	if (players[player].Y == sjPRESSED)
+		players[player].Y = sjHELD;
+	if (players[player].L == sjPRESSED)
+		players[player].L = sjHELD;
+	if (players[player].R == sjPRESSED)
+		players[player].R = sjHELD;
+	if (players[player].Quit == sjPRESSED)
+		players[player].Quit = sjHELD;
+	if (players[player].leftClick == sjPRESSED)
+		players[player].leftClick = sjHELD;
+	if (players[player].rightClick == sjPRESSED)
+		players[player].rightClick = sjHELD;
+	for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
+		if (I->status == sjPRESSED)
+			I->status = sjHELD;
+#if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
+	if (players[player].Click == sjPRESSED)
+		players[player].Click = sjHELD;
+	if (players[player].VolumeUp == sjPRESSED)
+		players[player].VolumeUp = sjHELD;
+	if (players[player].VolumeDown == sjPRESSED)
+		players[player].VolumeDown = sjHELD;
+	if (players[player].UpLeft == sjPRESSED)
+		players[player].UpLeft = sjHELD;
+	if (players[player].UpRight == sjPRESSED)
+		players[player].UpRight = sjHELD;
+	if (players[player].DownLeft == sjPRESSED)
+		players[player].DownLeft = sjHELD;
+	if (players[player].DownRight == sjPRESSED)
+		players[player].DownRight = sjHELD;
+#endif
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+// && (defined(PENJIN_ES) || defined(PENJIN_ES2))
+	/// Read Pandora inputs
+	PND_ReadEvents( fd_keys, DEV_KEYS );
+	PND_ReadEvents( fd_gpio, DEV_GPIO );
+	PND_ReadEvents( fd_nubL, DEV_NUBL );
+	PND_ReadEvents( fd_nubR, DEV_NUBR );
+	PND_ReadEvents( fd_touch,DEV_TOUCH);
+#else
+	while (SDL_PollEvent(&Event))
+	{
+		if(Event.type == SDL_QUIT)
+		{
+			if(players[player].Quit == sjRELEASED)
+				players[player].Quit = sjPRESSED;
+			else
+				players[player].Quit = sjHELD;
+		}
+		if(Event.type == SDL_KEYDOWN)
+		{
+			KeyMapKey t(Event.key.keysym.sym);
+			tKey k;
+			k.key = t;
+			k.status = sjPRESSED;
+			players[player].storeKeys.push_back(k);
+			if (keyboardBuffer && Event.key.keysym.unicode < 0x80)
+			{
+				if (Event.key.keysym.sym == SDLK_BACKSPACE && !keyboardBuffer->empty())
 				{
-					if (Event.key.keysym.sym == SDLK_BACKSPACE && !keyboardBuffer->empty())
-						(*keyboardBuffer).erase(keyboardBuffer->end()-1);
-					else if (Event.key.keysym.unicode >= 0x20 && (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
-						*keyboardBuffer += (char)Event.key.keysym.unicode;
+					(*keyboardBuffer).erase(keyboardBuffer->end()-1);
+					keyboardBufferChanged = true;
 				}
-            }
-            else if(Event.type == SDL_KEYUP)
-            {
-                KeyMapKey t(Event.key.keysym.sym);
-                tKey k;
-                k.key = t;
-                k.status = sjRELEASED;
-                players[player].storeKeys.push_back(k);
-            }
-            for(int b = players[player].mapper.size()-1; b>=0;--b)
-            {
-                KEY_MAP_DEVICE device = players[player].mapper.keys[b]->getDevice();
-                if(device == DEV_KEYBOARD)
-                {
-                    if(((KeyMapKey*)players[player].mapper.keys[b])->getKey() == Event.key.keysym.sym)
-                    {
-                        if(Event.type == SDL_KEYDOWN)
-                            mappedDown(players[player].mapper.keys[b]->getTarget());
-                        else if(Event.type == SDL_KEYUP)
-                            mappedUp(players[player].mapper.keys[b]->getTarget());
-                    }
-                }
-                else if(device == DEV_MOUSE_AXIS)
-                {
-                    // Axis may be changed
-                    if(Event.type == SDL_MOUSEMOTION)
-                        mappedMouseAxes(((KeyMapMouseAxis*)players[player].mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)players[player].mapper.keys[b])->getAxis());
-                }
-                else if(device == DEV_MOUSE_BUTTON)
-                {
-                    MouseButtons::SDL_MOUSE_BUTTONS button = ((KeyMapMouseButton*)players[player].mapper.keys[b])->getButton();
-                    if(button == Event.button.button)
-                    {
-                        //oldMouse = mouse;
-                        // Buttons may have been pressed
-                        if(Event.type == SDL_MOUSEBUTTONDOWN)
-                            mappedDown(players[player].mapper.keys[b]->getTarget());
-                        else if(Event.type == SDL_MOUSEBUTTONUP)
-                            mappedUp(players[player].mapper.keys[b]->getTarget());
-                    }
-                }
-                else if(device == DEV_JOYSTICK_AXIS)
-                {
-                	// Assume 2 axis per stick
-                	// TODO: never assume...
-                	int axis = Event.jaxis.which*2 + Event.jaxis.axis;
-                	#if defined(PLATFORM_PANDORA)
-                	axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
-                	#endif
-                    // Axis may be changed
-                    if(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
-                    {
-                        if(Event.type == SDL_JOYAXISMOTION) {
-                            mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
-                        }
-                    }
-                }
-                else if (device == DEV_JOYSTICK_HAT)
-                {
-                    if(Event.type == SDL_JOYHATMOTION)
-                    {
-                        if(((KeyMapHat*)players[player].mapper.keys[b])->getDirection() & Event.jhat.value)
-                            mappedDown(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
-                        else
-                            mappedUp(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
-                    }
-                }
-                else if (device == DEV_DIGITAL_JOYSTICK_AXIS)
-                {
-                	// Assume 2 axis per stick
-                	// TODO: never assume...
-                	int axis = Event.jaxis.which*2 + Event.jaxis.axis;
-                	#if defined(PLATFORM_PANDORA)
-                	axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
-                	#endif
-                    if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
-                    {
-                        #ifdef _DEBUG
-                        cout << "DAXIS: " << (Event.jaxis.value >> 8) << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
-                        #endif
-                        if(Event.type == SDL_JOYAXISMOTION)
-                        {
+				else if ((Event.key.keysym.unicode == 0x0A || Event.key.keysym.unicode >= 0x20) && (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
+				{
+					*keyboardBuffer += (char)Event.key.keysym.unicode;
+					keyboardBufferChanged = true;
+				}
+			}
+		}
+		else if(Event.type == SDL_KEYUP)
+		{
+			for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
+			{
+				if (I->key.getKey() == Event.key.keysym.sym)
+				{
+					players[player].storeKeys.erase(I);
+					break;
+				}
+			}
+		}
+		for(int b = players[player].mapper.size()-1; b>=0;--b)
+		{
+			KEY_MAP_DEVICE device = players[player].mapper.keys[b]->getDevice();
+			if(device == DEV_KEYBOARD)
+			{
+				if(((KeyMapKey*)players[player].mapper.keys[b])->getKey() == Event.key.keysym.sym)
+				{
+					if(Event.type == SDL_KEYDOWN)
+						mappedDown(players[player].mapper.keys[b]->getTarget());
+					else if(Event.type == SDL_KEYUP)
+						mappedUp(players[player].mapper.keys[b]->getTarget());
+				}
+			}
+			else if(device == DEV_MOUSE_AXIS)
+			{
+				// Axis may be changed
+				if(Event.type == SDL_MOUSEMOTION)
+					mappedMouseAxes(((KeyMapMouseAxis*)players[player].mapper.keys[b])->getTarget(),((KeyMapMouseAxis*)players[player].mapper.keys[b])->getAxis());
+			}
+			else if(device == DEV_MOUSE_BUTTON)
+			{
+				MouseButtons::SDL_MOUSE_BUTTONS button = ((KeyMapMouseButton*)players[player].mapper.keys[b])->getButton();
+				if(button == Event.button.button)
+				{
+					//oldMouse = mouse;
+					// Buttons may have been pressed
+					if(Event.type == SDL_MOUSEBUTTONDOWN)
+						mappedDown(players[player].mapper.keys[b]->getTarget());
+					else if(Event.type == SDL_MOUSEBUTTONUP)
+						mappedUp(players[player].mapper.keys[b]->getTarget());
+				}
+			}
+			else if(device == DEV_JOYSTICK_AXIS)
+			{
+				// Assume 2 axis per stick
+				// TODO: never assume...
+				int axis = Event.jaxis.which*2 + Event.jaxis.axis;
+				#if defined(PLATFORM_PANDORA)
+				axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
+				#endif
+				// Axis may be changed
+				if(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
+				{
+					if(Event.type == SDL_JOYAXISMOTION) {
+						mappedJoyAxes(((KeyMapJoyAxis*)players[player].mapper.keys[b])->getTarget());
+					}
+				}
+			}
+			else if (device == DEV_JOYSTICK_HAT)
+			{
+				if(Event.type == SDL_JOYHATMOTION)
+				{
+					if(((KeyMapHat*)players[player].mapper.keys[b])->getDirection() & Event.jhat.value)
+						mappedDown(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
+					else
+						mappedUp(((KeyMapHat*)players[player].mapper.keys[b])->getTarget());
+				}
+			}
+			else if (device == DEV_DIGITAL_JOYSTICK_AXIS)
+			{
+				// Assume 2 axis per stick
+				// TODO: never assume...
+				int axis = Event.jaxis.which*2 + Event.jaxis.axis;
+				#if defined(PLATFORM_PANDORA)
+				axis -= 2; // The game buttons are technically joystick 0, even though they don't count as one...
+				#endif
+				if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
+				{
+					#ifdef _DEBUG
+					cout << "DAXIS: " << (Event.jaxis.value >> 8) << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
+					#endif
+					if(Event.type == SDL_JOYAXISMOTION)
+					{
 
-                            if((Event.jaxis.value >> 8) == ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger())
-                                mappedDown(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
-                            else
-                                mappedUp(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
-                        }
-                    }
-                }
-                else if(device == DEV_JOYSTICK_BUTTON)
-                {
-                	// Assume 16 buttons per joystick
-                	// TODO: never assume...
-                	int button = Event.jbutton.which*16+Event.jbutton.button;
-                    if(((KeyMapJoyButton*)players[player].mapper.keys[b])->getButton() == button)
-                    {
-                        // Buttons may have been pressed
-                        if(Event.type == SDL_JOYBUTTONDOWN)
-                            mappedDown(players[player].mapper.keys[b]->getTarget());
-                        else if(Event.type == SDL_JOYBUTTONUP)
-                            mappedUp(players[player].mapper.keys[b]->getTarget());
-                    }
-                }
-            }
-        }
-    #endif
+						if((Event.jaxis.value >> 8) == ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger())
+							mappedDown(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
+						else
+							mappedUp(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTarget());
+					}
+				}
+			}
+			else if(device == DEV_JOYSTICK_BUTTON)
+			{
+				// Assume 16 buttons per joystick
+				// TODO: never assume...
+				int button = Event.jbutton.which*16+Event.jbutton.button;
+				if(((KeyMapJoyButton*)players[player].mapper.keys[b])->getButton() == button)
+				{
+					// Buttons may have been pressed
+					if(Event.type == SDL_JOYBUTTONDOWN)
+						mappedDown(players[player].mapper.keys[b]->getTarget());
+					else if(Event.type == SDL_JOYBUTTONUP)
+						mappedUp(players[player].mapper.keys[b]->getTarget());
+				}
+			}
+		}
+	}
+#endif
 }
 
+#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
 string SimpleJoy::isKeyLetter()
 {
     for(int i = players[player].storeKeys.size()-1; i>=0;--i)
     {
-        if(players[player].storeKeys.at(i).status == sjPRESSED && StringUtility::isLetter(players[player].storeKeys.at(i).key.getKey()))
+        if(players[player].storeKeys.at(i).status != sjRELEASED && StringUtility::isLetter(players[player].storeKeys.at(i).key.getKey()))
         {
             string t;
             t.push_back(players[player].storeKeys.at(i).key.getKey());
@@ -294,11 +354,12 @@ string SimpleJoy::isKeyLetter()
     return "NULL";
 }
 
-void SimpleJoy::pollKeyboardInput(string *buffer, string mask)
+void SimpleJoy::pollKeyboardInput(string *buffer, CRstring mask)
 {
 	SDL_EnableUNICODE(1);
 	keyboardBuffer = buffer;
 	keyboardMask = mask;
+	keyboardBufferChanged = false;
 }
 
 void SimpleJoy::stopKeyboardInput()
@@ -311,6 +372,17 @@ bool SimpleJoy::isPollingKeyboard()
 {
 	return keyboardBuffer != NULL;
 }
+
+bool SimpleJoy::keyboardBufferHasChanged()
+{
+	if (keyboardBufferChanged)
+	{
+		keyboardBufferChanged = false;
+		return true;
+	}
+	return false;
+}
+#endif
 
 void SimpleJoy::mappedJoyAxes(const SIMPLEJOY_MAP& map)
 {
@@ -498,103 +570,27 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
 {
     switch(map)
     {
-        case SJ_UP:             if(players[player].Up == sjRELEASED)
-                                    players[player].Up = sjPRESSED;
-                                else
-                                    players[player].Up = sjHELD;
-        break;
-        case SJ_DOWN:           if(players[player].Down == sjRELEASED)
-                                    players[player].Down = sjPRESSED;
-                                else
-                                    players[player].Down = sjHELD;
-        break;
-        case SJ_LEFT:           if(players[player].Left == sjRELEASED)
-                                    players[player].Left = sjPRESSED;
-                                else
-                                    players[player].Left = sjHELD;
-        break;
-        case SJ_RIGHT:          if(players[player].Right == sjRELEASED)
-                                    players[player].Right = sjPRESSED;
-                                else
-                                    players[player].Right = sjHELD;
-        break;
+        case SJ_UP:             players[player].Up = sjPRESSED; break;
+        case SJ_DOWN:           players[player].Down = sjPRESSED; break;
+        case SJ_LEFT:           players[player].Left = sjPRESSED; break;
+        case SJ_RIGHT:          players[player].Right = sjPRESSED; break;
         #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
-        case SJ_UPLEFT:         if(players[player].UpLeft == sjRELEASED)
-                                    players[player].UpLeft = sjPRESSED;
-                                else
-                                    players[player].UpLeft = sjHELD;
-        break;
-        case SJ_UPRIGHT:        if(players[player].UpRight == sjRELEASED)
-                                    players[player].UpRight = sjPRESSED;
-                                else
-                                    players[player].UpLeft = sjHELD;
-        break;
-        case SJ_DOWNLEFT:       if(players[player].DownLeft == sjRELEASED)
-                                    players[player].DownLeft = sjPRESSED;
-                                else
-                                    players[player].DownLeft = sjHELD;
-        break;
-        case SJ_DOWNRIGHT:      if(players[player].DownRight == sjRELEASED)
-                                    players[player].DownRight = sjPRESSED;
-                                else
-                                    players[player].DownRight = sjHELD;
-        break;
-        case SJ_VOLUP:          if(players[player].VolumeUp == sjRELEASED)
-                                    players[player].VolumeUp = sjPRESSED;
-                                else
-                                    players[player].VolumeUp = sjHELD;
-        break;
-        case SJ_VOLDOWN:        if(players[player].VolumeDown == sjRELEASED)
-                                    players[player].VolumeDown = sjPRESSED;
-                                else
-                                    players[player].VolumeDown = sjHELD;
-        break;
-        case SJ_CLICK:          if(players[player].Click == sjRELEASED)
-                                    players[player].Click = sjPRESSED;
-                                else
-                                    players[player].Click = sjHELD;
-        break;
+        case SJ_UPLEFT:         players[player].UpLeft = sjPRESSED; break;
+        case SJ_UPRIGHT:        players[player].UpRight = sjPRESSED; break;
+        case SJ_DOWNLEFT:       players[player].DownLeft = sjPRESSED; break;
+        case SJ_DOWNRIGHT:      players[player].DownRight = sjPRESSED; break;
+        case SJ_VOLUP:          players[player].VolumeUp = sjPRESSED; break;
+        case SJ_VOLDOWN:        players[player].VolumeDown = sjPRESSED; break;
+        case SJ_CLICK:          players[player].Click = sjPRESSED; break;
         #endif
-        case SJ_A:              if(players[player].A == sjRELEASED)
-                                    players[player].A = sjPRESSED;
-                                else
-                                    players[player].A = sjHELD;
-        break;
-        case SJ_B:              if(players[player].B == sjRELEASED)
-                                    players[player].B = sjPRESSED;
-                                else
-                                    players[player].B = sjHELD;
-        break;
-        case SJ_X:              if(players[player].X == sjRELEASED)
-                                    players[player].X = sjPRESSED;
-                                else
-                                    players[player].X = sjHELD;
-        break;
-        case SJ_Y:              if(players[player].Y == sjRELEASED)
-                                    players[player].Y = sjPRESSED;
-                                else
-                                    players[player].Y = sjHELD;
-        break;
-        case SJ_L:              if(players[player].L == sjRELEASED)
-                                    players[player].L = sjPRESSED;
-                                else
-                                    players[player].L = sjHELD;
-        break;
-        case SJ_R:              if(players[player].R == sjRELEASED)
-                                    players[player].R = sjPRESSED;
-                                else
-                                    players[player].R = sjHELD;
-        break;
-        case SJ_START:          if(players[player].Start == sjRELEASED)
-                                    players[player].Start = sjPRESSED;
-                                else
-                                    players[player].Start = sjHELD;
-        break;
-        case SJ_SELECT:         if(players[player].Select == sjRELEASED)
-                                    players[player].Select = sjPRESSED;
-                                else
-                                    players[player].Select = sjHELD;
-        break;
+        case SJ_A:              players[player].A = sjPRESSED; break;
+        case SJ_B:              players[player].B = sjPRESSED; break;
+        case SJ_X:              players[player].X = sjPRESSED; break;
+        case SJ_Y:              players[player].Y = sjPRESSED; break;
+        case SJ_L:              players[player].L = sjPRESSED; break;
+        case SJ_R:              players[player].R = sjPRESSED; break;
+        case SJ_START:          players[player].Start = sjPRESSED; break;
+        case SJ_SELECT:         players[player].Select = sjPRESSED; break;
 
         /*case SJ_LID:          Lid = true;break;
         case SJ_LEFTSTICK_X:    = true;break;
@@ -603,17 +599,9 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = true;break;
         case SJ_MOUSE_X:         = true;break;
         case SJ_MOUSE_Y:         = true;break;*/
-        case SJ_MOUSE_LEFT:     if(players[player].leftClick == sjRELEASED)
-                                    players[player].leftClick = sjPRESSED;
-                                else
-                                    players[player].leftClick = sjHELD;
-        break;
+        case SJ_MOUSE_LEFT:     players[player].leftClick = sjPRESSED; break;
         //case SJ_MOUSE_CENTRE: = true;break;
-        case SJ_MOUSE_RIGHT:    if(players[player].rightClick == sjRELEASED)
-                                    players[player].rightClick = sjPRESSED;
-                                else
-                                    players[player].rightClick = sjHELD;
-		break;
+        case SJ_MOUSE_RIGHT:    players[player].rightClick = sjPRESSED; break;
 		case SJ_MOUSE_WHEELDOWN:--players[player].wheel;
         break;
         case SJ_MOUSE_WHEELUP:	++players[player].wheel;
@@ -646,7 +634,6 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
         case SJ_Y:              players[player].Y = sjRELEASED;break;
         case SJ_L:              players[player].L = sjRELEASED;break;
         case SJ_R:              players[player].R = sjRELEASED;break;
-
         case SJ_START:          players[player].Start = sjRELEASED;break;
         case SJ_SELECT:         players[player].Select = sjRELEASED;break;
 
@@ -657,11 +644,11 @@ void SimpleJoy::mappedUp(const SIMPLEJOY_MAP& map)
         case SJ_RIGHTSTICK_Y:   = sjRELEASED;break;
         case SJ_MOUSE_X:         = sjRELEASED;break;
         case SJ_MOUSE_Y:         = sjRELEASED;break;*/
+        case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED;
         #ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
-        case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED; players[player].leftClickNeedsRelease = false; break;
-        #else
-        case SJ_MOUSE_LEFT:     players[player].leftClick = sjRELEASED;break;
+        						players[player].leftClickNeedsRelease = false;
         #endif // PENJIN_PANDORA_TOUCHSCREEN_FIX
+								break;
         //case SJ_MOUSE_CENTRE: = sjRELEASED;break;
         case SJ_MOUSE_RIGHT:    players[player].rightClick = sjRELEASED;break;
         default:                break;
@@ -700,6 +687,35 @@ void SimpleJoy::resetKeys()
 	players[player].leftClick=players[player].rightClick=sjRELEASED;
 	players[player].wheel = 0;
 	players[player].storeKeys.clear();
+}
+void SimpleJoy::resetKey(CRstring k)
+{
+	clearEventQueue();
+	KeyMapKey t(k);
+	for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
+	{
+		if (I->key.getKey() == t.getKey())
+		{
+			players[player].storeKeys.erase(I);
+			return;
+		}
+	}
+}
+#if defined(PLATFORM_PANDORA) && !defined(PENJIN_SDL_INPUT)
+void SimpleJoy::resetKey(__u16 k)
+#else
+void SimpleJoy::resetKey(SDLKey k)
+#endif
+{
+	clearEventQueue();
+	for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
+	{
+		if (I->key.getKey() == k)
+		{
+			players[player].storeKeys.erase(I);
+			return;
+		}
+	}
 }
 void SimpleJoy::resetMousePosition()
 {

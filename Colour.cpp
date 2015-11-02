@@ -277,7 +277,7 @@ void Colour::convertColour(Uint32 pixel,SDL_PixelFormat *format)
 
 int Colour::getIntColour() const
 {
-    return red * 256 * 256 + green * 256 + blue;
+    return (red << 16)+ (green << 8) + blue;
 }
 
 #if defined (PENJIN_GL) || defined (PENJIN_ES) || defined (PENJIN_ES2)
