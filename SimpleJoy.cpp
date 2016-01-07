@@ -602,10 +602,8 @@ void SimpleJoy::mappedDown(const SIMPLEJOY_MAP& map)
         case SJ_MOUSE_LEFT:     players[player].leftClick = sjPRESSED; break;
         //case SJ_MOUSE_CENTRE: = true;break;
         case SJ_MOUSE_RIGHT:    players[player].rightClick = sjPRESSED; break;
-		case SJ_MOUSE_WHEELDOWN:--players[player].wheel;
-        break;
-        case SJ_MOUSE_WHEELUP:	++players[player].wheel;
-        break;
+		case SJ_MOUSE_WHEELDOWN:--players[player].wheel; break;
+        case SJ_MOUSE_WHEELUP:	++players[player].wheel; break;
 
         default:                break;
     }

@@ -144,6 +144,11 @@ class Text
             clipBoundary.w = bound.x;
             clipBoundary.h = bound.y;
         }
+        void setUpBoundary(CRint width, CRint height)
+        {
+        	clipBoundary.w = width;
+        	clipBoundary.h = height;
+        }
         // this actually does not do anything
         // to set the position of the boundary use setPosition
         void setDownBoundary(const Vector2di& bound)

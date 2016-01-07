@@ -267,7 +267,7 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
                 continue;
             }
 
-            //  create more glyphs as needed - shifted 19 indices
+            //  create more (empty) glyphs as needed - shifted 19 indices
             int start = glyphs[fontSize-1].size();
             for (int I = start; I <= c-19; ++I)
             {
@@ -280,9 +280,20 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
 
             Glyph* current = glyphs[fontSize-1].at(c-19);
 
-            //  check properties of glyph if they differ from what we want to render.
+            // check properties of glyph if they differ from what we want to render.
+            // init/fill glyph image, if glyph was just created
             current->setPosition(&position);
             isRefreshed = current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
+
+            // Forced wrapping (text does not fit screen and does not wrap nicely at next space)
+            if (wrapText)
+			{
+				if (position.x + current->getWidth() >= clipBoundary.w)
+				{
+					newLine();
+					current->setPosition(&position);
+				}
+			}
 
             //  if everything up to date we can render the glyph
             current->render(screen);
