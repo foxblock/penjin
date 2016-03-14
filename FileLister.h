@@ -57,14 +57,25 @@ class FileLister : public Menu
 
         string getPath()const{return workingDir;}
         void setPath(CRstring path){workingDir = path; createListing();}
-        void setCheckFolderDepth(CRbool check){;}
-        string getSelected();      //  Return the string of selected item
+        void setCheckFolderDepth(CRbool check){checkFolderDepth = check;}
+        string getSelected();       //  Return the string of selected item
+        int getSelectedType();      //  Return the type of the selected item (dir or not)
         vector<string> getListing(){return listing;}//  Return entire director listing as a vector of strings.
         string enter();             //  Enter the selected item(if directory) and return full path string of item.
         void goUp();                //  Go up one level in the directory tree
 
+		// Filter results by file extension. Only files with a matching extension
+		// will show up in the listing.
+		// Pass file extension without the leading dot (CORRENT: "txt", WRONG: ".txt")
+		// Use special filter "DIR" to filter for directories
         void addFilter(CRstring f){filters.push_back(f);createListing();}
         void clearFilters(){filters.clear();}
+        // Include ".." in listing to go to parent directory. Only works when "DIR" filter is used.
+        void includeParentDirInListing(CRbool inclParent) {includeParent = inclParent;}
+        // Include "." element. Only has an effect when "DIR" filter is used.
+        void includeThisDirInListing(CRbool inclThis) {includeThis = inclThis;}
+        // Include workingDir label-element at the beginning of the listing.
+        void includePathLabelInListing(CRbool inclLabel) {includeLabel = inclLabel;}
 
     private:
         void createListing();   //  creates strings for dir listing.
@@ -81,7 +92,9 @@ class FileLister : public Menu
             PATH
         };
         vector<int> listingTypes;
-
+		bool includeParent;
+		bool includeThis;
+		bool includeLabel;
 };
 
 #endif // FILELISTER_H

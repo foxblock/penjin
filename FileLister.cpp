@@ -30,6 +30,9 @@ FileLister::FileLister()
     createListing();
     folderDepth = -1;
     checkFolderDepth = true;
+    includeParent = true;
+    includeThis = true;
+    includeLabel = true;
 }
 
 FileLister::FileLister(CRstring startDir)
@@ -38,6 +41,9 @@ FileLister::FileLister(CRstring startDir)
     createListing();
     folderDepth = -1;
     checkFolderDepth = true;
+    includeParent = true;
+    includeThis = true;
+    includeLabel = true;
 }
 
 FileLister::~FileLister()
@@ -55,8 +61,11 @@ void FileLister::createListing()
 
     listing.clear();
     listingTypes.clear();
-    listing.push_back(workingDir);
-    listingTypes.push_back(PATH);
+    if (includeLabel)
+	{
+		listing.push_back(workingDir);
+		listingTypes.push_back(PATH);
+	}
     while((dirEnt = readdir(dir)))
     {
         if(filters.size() == 0)
@@ -80,8 +89,11 @@ void FileLister::createListing()
                 else
                     type=UNKNOWN;
             #endif
-            listing.push_back(choice);
-            listingTypes.push_back(type);
+            if ((choice != "." || includeThis) && (choice != ".." || includeParent))
+			{
+				listing.push_back(choice);
+				listingTypes.push_back(type);
+			}
         }
         else
         {
@@ -106,7 +118,8 @@ void FileLister::createListing()
                     else
                         type=UNKNOWN;
                 #endif
-                if( (filters.at(f) == "DIR" && type == DT_DIR) || choice.find("." + filters.at(f)) != choice.npos)
+                if ((filters.at(f) == "DIR" && type == DT_DIR && (choice != "." || includeThis) && (choice != ".." || includeParent))
+						|| choice.find("." + filters.at(f)) != choice.npos)
                 {
                     listing.push_back(choice);
                     listingTypes.push_back(type);
@@ -133,10 +146,10 @@ void FileLister::createDisplay()
         cout << "at(" << i << ") - " <<listing.at(i) << endl;
         #endif
         setMenuItemText(listing.at(i));
-        if(i != 0)
-            setIsSelectable(true);
-        else
+        if(i == 0 && includeLabel)
             setIsSelectable(false);
+        else
+            setIsSelectable(true);
         ((DirMenuItem*)menuItems.back())->setDirType(listingTypes.at(i));
     }
     setSelection(1);
@@ -147,6 +160,16 @@ string FileLister::getSelected()
     return listing.at(getSelection());
 }
 
+int FileLister::getSelectedType()
+{
+	if (menuItems.size() > getSelection())
+		return ((DirMenuItem*)menuItems.at(getSelection()))->getDirType();
+	else if (listingTypes.size() > getSelection())
+		return listingTypes.at(getSelection());
+	return -1;
+}
+
+
 string FileLister::enter()
 {
     string t = getSelected();
@@ -154,7 +177,7 @@ string FileLister::enter()
         goUp();
     else if(t == ".")   //  This directory.
         return t;
-    else if(((DirMenuItem*)menuItems.at(getSelection()))->getDirType() == DT_DIR)
+    else if(getSelectedType() == DT_DIR)
     {
         #if defined(_WIN32) && !defined(PENJIN_FILE_LISTER_LINUX_PATHS)
             workingDir+= ("\\" + t);
@@ -181,7 +204,7 @@ void FileLister::goUp()
     {
         workingDir = Parser().getParentDirectory(workingDir);
         size_t back = workingDir.size()-1;
-        if(workingDir.at(back) == '/' || workingDir.at(back) == '\\')
+        if(workingDir[0] != 0 && (workingDir.at(back) == '/' || workingDir.at(back) == '\\'))
             workingDir.resize(back);
         createListing();
         clear();

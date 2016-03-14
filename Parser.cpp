@@ -528,16 +528,20 @@ string Parser::stripVariableName(string line)
 
 string Parser::getParentDirectory(string fileName)
 {
-	uint x = (uint)strlen(fileName.c_str()) ;
+	uint x = (uint)strlen(fileName.c_str());
+	bool found = false;
 	while( x > 0)
 	{
 		if(fileName[x] == '/' || fileName[x] == '\\')	//Check for furthest forwardslash
 		{
-			//fileName[x+1] = 0;	//chop off the filename
+			found = true;
 			break;
 		}
 		--x;
 	}
+
+	if (!found)
+		return "";
 
 	char output[1000];
 	unsigned int i = 0;
