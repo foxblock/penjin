@@ -175,7 +175,7 @@ class SimpleJoy
 		}
 	#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
         string isKeyLetter();
-        void pollKeyboardInput(string *buffer, CRstring mask);
+        void pollKeyboardInput(string *buffer, CRstring mask="");
         void stopKeyboardInput();
         bool isPollingKeyboard();
         bool keyboardBufferHasChanged();

@@ -512,7 +512,7 @@ void Text::align(const Vector2di& guess)
 void Text::calcDimensions()
 {
     dimensions.x = position.x - startPos.x + glyphs[fontSize-1][0]->getWidth();
-    dimensions.y = TTF_FontLineSkip(font);
+    dimensions.y = position.y - startPos.y + TTF_FontLineSkip(font);
 }
 
 Vector2di Text::getDimensions(CRstring str)
