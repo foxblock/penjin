@@ -130,6 +130,7 @@ SimpleJoy::SimpleJoy()
 #if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
 	keyboardBuffer = NULL;
 	keyboardMask = "";
+	keyboardMaxLength = -1;
 #endif
 }
 
@@ -221,7 +222,9 @@ void SimpleJoy::update()
 					(*keyboardBuffer).erase(keyboardBuffer->end()-1);
 					keyboardBufferChanged = true;
 				}
-				else if ((Event.key.keysym.unicode == 0x0A || Event.key.keysym.unicode >= 0x20) && (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
+				else if ((Event.key.keysym.unicode == 0x0A || Event.key.keysym.unicode >= 0x20)
+						&& (keyboardMaxLength < 0 || keyboardBuffer->length() < keyboardMaxLength)
+						&& (keyboardMask[0] == 0 || keyboardMask.find((char)Event.key.keysym.unicode) != string::npos))
 				{
 					*keyboardBuffer += (char)Event.key.keysym.unicode;
 					keyboardBufferChanged = true;
@@ -354,12 +357,13 @@ string SimpleJoy::isKeyLetter()
     return "NULL";
 }
 
-void SimpleJoy::pollKeyboardInput(string *buffer, CRstring mask)
+void SimpleJoy::pollKeyboardInput(string *buffer, CRstring mask, CRint maxLength)
 {
 	SDL_EnableUNICODE(1);
 	keyboardBuffer = buffer;
 	keyboardMask = mask;
 	keyboardBufferChanged = false;
+	keyboardMaxLength = maxLength;
 }
 
 void SimpleJoy::stopKeyboardInput()

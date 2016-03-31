@@ -175,7 +175,7 @@ class SimpleJoy
 		}
 	#if !defined(PLATFORM_PANDORA) || defined(PENJIN_SDL_INPUT)
         string isKeyLetter();
-        void pollKeyboardInput(string *buffer, CRstring mask="");
+        void pollKeyboardInput(string *buffer, CRstring mask="", CRint maxLength=-1);
         void stopKeyboardInput();
         bool isPollingKeyboard();
         bool keyboardBufferHasChanged();
@@ -336,6 +336,7 @@ class SimpleJoy
         string *keyboardBuffer;
         bool keyboardBufferChanged;
         string keyboardMask;
+        int keyboardMaxLength;
         #ifdef _WIN32
         #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[]^_`{}~"
         #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[\\]^_`{}~"
