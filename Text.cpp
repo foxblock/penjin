@@ -62,25 +62,23 @@ Text::Text()
 	startPos.x = 0;
 	startPos.y = 0;
 	dimensions.x = dimensions.y = 0;
+	clipBoundary.x = 0;
+	clipBoundary.y = 0;
 	#ifdef PENJIN_3D
         #ifdef PENJIN_FIXED
-                position.z = startPos.z = 0;
+			position.z = startPos.z = 0;
         #else
             position.z = startPos.z = 0.0f;
         #endif
-        clipBoundary.w = 1024;
-        clipBoundary.h = 768;
     #else
         #ifdef PENJIN_SDL
             screen = GFX::getVideoSurface();
-            clipBoundary.w = screen->w;
-            clipBoundary.h = screen->h;
         #endif
 	#endif
     alignment = LEFT_JUSTIFIED;
     bgColour = BLACK;
     relativePos = false;
-    wrapText = true;
+    wrapText = false;
     lastText = "";
 }
 
@@ -191,266 +189,147 @@ void Text::setRenderMode(const GlyphClass::RENDER_MODES& mode)
         cout << "No Glyphs - Can't set RenderMode" << mode << endl;
 }
 
-#ifdef PENJIN_SDL
-    void Text::print(SDL_Surface* screen, CRstring text)
-    {
-        //  no text, no render
-        if(!text.size())
-            return;
+void Text::print(SDL_Surface* screen, CRstring text)
+{
+	//  no text, no render
+	if (!text.size())
+		return;
 
-        // make text advance cursor position
-        if(!relativePos)
-            position = startPos;
-        //  Check if any of the string has had to be recreated
-        bool isRefreshed = false;
-        // make a guess to dimensions using the Dummy char
-        Vector2di guess;
-        TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
-        if(alignment != LEFT_JUSTIFIED)
-        {
-            align(guess);
-        }
-        //  Run through the text chars
-        for(uint i = 0; i < text.size(); ++i)
-        {
-            uchar c = text[i];
-            // check for NULL terminator
-            if(c == '\0')
-            {
-                break;
-            }
-            //  check for newLine
-            else if(c == '\n')
-            {
-                newLine();
-                continue;
-            }
-            // check for space char
-            else if(c == ' ')
-            {
-                //  use dummy for spacing
-                position.x+=glyphs[fontSize-1][0]->getWidth();
-                // we get a substring that is from here to the end of the string.
-                if(wrapText)
-                {
-                    if(i+1<text.size())
-                    {
-                        string subString = text.substr(i+1);
-                        // we search this substring for the next space
-                        uint x = 0;
-                        for(x = 0; x<subString.size();++x)
-                        {
-                            if(subString[x] == ' ')
-                                break;
-                        }
-                        subString = subString.substr(0,x);
-                        TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
-                    }
-
-                    if(position.x + guess.x >= clipBoundary.w)
-                        newLine();
-                    continue;
-                }
-                else
-                    continue;
-            }
-            //  check for tab
-            else if(c == '\t')
-            {
-                //  use dummy for spacing
-                position.x+=glyphs[fontSize-1][0]->getWidth()*3;
-                continue;
-            }
-            // check for other unprintables
-            else if(!isprint(c))
-            {
-                continue;
-            }
-
-            //  create more (empty) glyphs as needed - shifted 19 indices
-            int start = glyphs[fontSize-1].size();
-            for (int I = start; I <= c-19; ++I)
-            {
-                Glyph* temp = new Glyph;
-                temp->setFont(font);
-                temp->setCharacter(I+19);
-                temp->setFontSize(fontSize);
-                glyphs[fontSize-1].push_back(temp);
-            }
-
-            Glyph* current = glyphs[fontSize-1].at(c-19);
-
-            // check properties of glyph if they differ from what we want to render.
-            // init/fill glyph image, if glyph was just created
-            current->setPosition(&position);
-            isRefreshed = current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
-
-            // Forced wrapping (text does not fit screen and does not wrap nicely at next space)
-            if (wrapText)
+	// make text advance cursor position
+	if (!relativePos)
+		position = startPos;
+	//  Check if any of the string has had to be recreated
+	bool isRefreshed = false;
+	// make a guess to dimensions using the Dummy char
+	Vector2di guess;
+	TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
+	if (alignment != LEFT_JUSTIFIED)
+	{
+		align(guess);
+	}
+	//  Run through the text chars
+	for (uint i = 0; i < text.size(); ++i)
+	{
+		uchar c = text[i];
+		// check for NULL terminator
+		if (c == '\0')
+		{
+			break;
+		}
+		//  check for newLine
+		else if (c == '\n')
+		{
+			newLine();
+			continue;
+		}
+		// check for space char
+		else if (c == ' ')
+		{
+			//  use dummy for spacing
+			position.x += glyphs[fontSize-1][0]->getWidth();
+			// we get a substring that is from here to the end of the string.
+			if (wrapText)
 			{
-				if (position.x + current->getWidth() >= clipBoundary.w)
+				if (i+1<text.size())
 				{
-					newLine();
-					current->setPosition(&position);
+					string subString = text.substr(i+1);
+					// we search this substring for the next space
+					uint x = 0;
+					for (x = 0; x < subString.size(); ++x)
+					{
+						if(subString[x] == ' ' || subString[x] == '-') // characters at which we break the line
+							break;
+					}
+					subString = subString.substr(0,x);
+					TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
 				}
+				// Wrapping can be calculated no matter how text is aligned
+				if ((clipBoundary.x > 0 && position.x + guess.x >= startPos.x + clipBoundary.x)
+						|| (clipBoundary.x <= 0 && position.x + guess.x >= GFX::getXResolution()))
+					newLine();
+				continue;
 			}
-
-            //  if everything up to date we can render the glyph
-            current->render(screen);
-            //  Advance cursor
-            position.x += current->getWidth();
-        }
-        if(isRefreshed || lastText != text)
-		{
-			calcDimensions();
-			lastText = text;
+			else
+				continue;
 		}
-    }
-
-    void Text::print(SDL_Surface* screen, char* text)
-    {
-        string t = text;
-        print(screen,t);
-    }
-
-    /// TODO: Fix newlines with \n symbol.
-    void Text::print(const char* text){print(screen,text);}
-    void Text::print(CRstring text){print(screen,text);}
-    void Text::print(char* text){print(screen,text);}
-    void Text::print(SDL_Surface* screen,const char* text)
-    {
-        string t = text;
-        print( screen,t);
-    }
-        //	write an integer to the screen
-    void Text::print(SDL_Surface* scr, CRint number){print(scr,intToString(number));}
-    //	write a float number to the screen
-    void Text::print(SDL_Surface* scr, CRfloat number){print(scr,floatToString(number));}
-            //	write an integer to the screen
-    void Text::print(CRint number){print(screen,number);}
-    //	write a float number to the screen
-    void Text::print(CRfloat number){print(screen,number);}
-#else
-    //	write an integer to the screen
-    void Text::print(CRint number){print(StringUtility::intToString(number));}
-    //	write a float number to the screen
-    void Text::print(CRfloat number){print(StringUtility::floatToString(number));}
-    void Text::print(CRstring text)
-    {
-         //  no text, no render
-        if(!text.size())
-            return;
-
-        // make text advance cursor position
-        if(!relativePos)
-            position = startPos;
-        //  Check if any of the string has had to be recreated
-        bool isRefreshed = false;
-        // make a guess to dimensions using the Dummy char
-        Vector2di guess;
-        TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
-        if(alignment != LEFT_JUSTIFIED)
-        {
-            align(guess);
-        }
-        //  Run through the text chars
-        for(uint i = 0; i < text.size(); ++i)
-        {
-            uchar c = text[i];
-            // check for NULL terminator
-            if(c == '\0')
-            {
-                break;
-            }
-            //  check for newLine
-            else if(c == '\n')
-            {
-                newLine();
-                continue;
-            }
-            // check for space char
-            else if(c == ' ')
-            {
-                //  use dummy for spacing
-                position.x+=glyphs[fontSize-1][0]->getWidth();
-                // we get a substring that is from here to the end of the string.
-                if(wrapText)
-                {
-                    if(i+1<text.size())
-                    {
-                        string subString = text.substr(i+1);
-                        // we search this substring for the next space
-                        uint x = 0;
-                        for(x = 0; x<subString.size();++x)
-                        {
-                            if(subString[x] == ' ')
-                                break;
-                        }
-                        subString = subString.substr(0,x);
-                        TTF_SizeText(font, subString.c_str(), &guess.x, &guess.y );
-                    }
-
-                    if(position.x + guess.x >= clipBoundary.w)
-                        newLine();
-                    continue;
-                }
-                else
-                    continue;
-            }
-            //  check for tab
-            else if(c == '\t')
-            {
-                //  use dummy for spacing
-                position.x+=glyphs[fontSize-1][0]->getWidth()*3;
-                continue;
-            }
-            // check for other unprintables
-            else if(!isprint(c))
-            {
-                continue;
-            }
-
-            //  create more glyphs as needed - shifted 19 indices
-            int start = glyphs[fontSize-1].size();
-            for (int I = start; I <= c-19; ++I)
-            {
-                Glyph* temp = new Glyph;
-                temp->setFont(font);
-                temp->setCharacter(I+19);
-                temp->setFontSize(fontSize);
-                glyphs[fontSize-1].push_back(temp);
-            }
-
-            Glyph* current = glyphs[fontSize-1].at(c-19);
-
-            //  check properties of glyph if they differ from what we want to render.
-            current->setPosition(&position);
-            Glyph::GlyphProperties props = {colour,bgColour,glyphs[fontSize-1].front()->getRenderMode()};
-            isRefreshed = current->update(props);
-
-            //  if everything up to date we can render the glyph
-            current->render();
-            //  Advance cursor
-            position.x += current->getWidth();
-        }
-        if(isRefreshed || lastText != text)
+		//  check for tab
+		else if(c == '\t')
 		{
-			calcDimensions();
-			lastText = text;
+			//  use dummy for spacing
+			position.x += glyphs[fontSize-1][0]->getWidth()*3;
+			continue;
 		}
-    }
-    void Text::print(char* text)
-    {
-        string t = text;
-        print(t);
-    }
+		// check for other unprintables
+		else if(!isprint(c))
+		{
+			continue;
+		}
 
-    void Text::print(const char* text)
-    {
-        string t = text;
-        print(t);
-    }
-#endif
+		//  create more (empty) glyphs as needed - shifted 19 indices
+		int start = glyphs[fontSize-1].size();
+		for (int I = start; I <= c-19; ++I)
+		{
+			Glyph* temp = new Glyph;
+			temp->setFont(font);
+			temp->setCharacter(I+19);
+			temp->setFontSize(fontSize);
+			glyphs[fontSize-1].push_back(temp);
+		}
+
+		Glyph* current = glyphs[fontSize-1].at(c-19);
+
+		// check properties of glyph if they differ from what we want to render.
+		// init/fill glyph image, if glyph was just created
+		current->setPosition(&position);
+		isRefreshed = current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
+
+		// Forced wrapping (text does not fit screen and does not wrap nicely at next space)
+		if (wrapText)
+		{
+			if ((clipBoundary.x > 0 && position.x + current->getWidth() >= startPos.x + clipBoundary.x)
+					|| (clipBoundary.x <= 0 && position.x + current->getWidth() >= GFX::getXResolution()))
+			{
+				newLine();
+				current->setPosition(&position);
+			}
+		}
+
+		//  if everything up to date we can render the glyph
+		current->render(screen);
+		//  Advance cursor
+		position.x += current->getWidth();
+	}
+	if(isRefreshed || lastText != text)
+	{
+		calcDimensions();
+		lastText = text;
+	}
+}
+
+void Text::print(SDL_Surface* screen, char* text)
+{
+	string t = text;
+	print(screen,t);
+}
+
+/// TODO: Fix newlines with \n symbol.
+void Text::print(const char* text){print(screen,text);}
+void Text::print(CRstring text){print(screen,text);}
+void Text::print(char* text){print(screen,text);}
+void Text::print(SDL_Surface* screen,const char* text)
+{
+	string t = text;
+	print( screen,t);
+}
+	//	write an integer to the screen
+void Text::print(SDL_Surface* scr, CRint number){print(scr,intToString(number));}
+//	write a float number to the screen
+void Text::print(SDL_Surface* scr, CRfloat number){print(scr,floatToString(number));}
+		//	write an integer to the screen
+void Text::print(CRint number){print(screen,number);}
+//	write a float number to the screen
+void Text::print(CRfloat number){print(screen,number);}
+
 #ifndef PENJIN_3D
     void Text::setPosition(CRfloat x, CRfloat y)
     {
@@ -479,7 +358,7 @@ void Text::setColour(const uchar& red,const uchar& green,const uchar& blue)
 
 void Text::newLine()
 {
-    position.x =  startPos.x;
+    position.x = startPos.x;
     position.y += TTF_FontLineSkip(font);
 }
 
@@ -487,24 +366,19 @@ void Text::align(const Vector2di& guess)
 {
     if(alignment == CENTRED)
     {
-    #ifndef PENJIN_3D
-        Vector2df b(clipBoundary.w,clipBoundary.h);
-        b-= (position + guess);
-        b*=0.5f;
-        //position.x = startPos.x;
-        position.x += b.x;
-    #else
-        Vector3df b = Vector3df(clipBoundary.w,clipBoundary.h,0);
-        Vector3df g(guess.x,guess.y,0);
-        b-= (position + g);
-        b*=0.5f;
-        //position.x = startPos.x;
-        position.x += b.x;
-    #endif
+		position.x += (clipBoundary.x - guess.x) / 2.0f;
     }
     else if(alignment == RIGHT_JUSTIFIED)
     {
-        position.x = clipBoundary.w - guess.x;
+    	if (position.x != startPos.x)
+		{
+			// This happens when relativity is true and the last print operation did not end in a new line
+			// In this case we try to align to last printed text
+			// (We cannot do this on centred text, since it would not be properly centred then)
+			position.x -= guess.x;
+		}
+		else
+			position.x += clipBoundary.x - guess.x;
     }
     // Otherwise text is LEFT_JUSTIFIED so do nothing.
 }

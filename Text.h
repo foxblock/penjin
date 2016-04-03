@@ -66,7 +66,10 @@ class Text
 
         PENJIN_ERRORS setFontSize(CRuint s);
         uint getFontSize()const{return fontSize;}
-        //  Sets the starting position of the text
+        // Sets the starting position of the text
+        // If a bounding box has been set by a call to setBoundary, this sets the
+        // top-left corner position and text will be aligned in that bounding box.
+        // Else it will be aligned to this position
         template <class T>
         void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
 
@@ -92,6 +95,10 @@ class Text
         void setBgColour(const Colour& col){bgColour = col;setRenderMode(GlyphClass::BOXED);}
         Colour getBgColour()const{return bgColour;}
 
+		// Wrap text if it exceeds the horizontal boundary. Will try to wrap text
+		// nicely on space and - first, will wrap on any char if that is not possible
+		// The boundary is defined by a call to setBoundary.
+		// If no boundary has been defined the borders of the screen will break the text
         void setWrapping(CRbool shouldWrap){wrapText = shouldWrap;}
         bool getWrapping()const{return wrapText;}
         void setAlignment(const ALIGNMENT& align){alignment = align;}
@@ -101,8 +108,11 @@ class Text
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
         void setRenderMode(const GlyphClass::RENDER_MODES& m);
         GlyphClass::RENDER_MODES getRenderMode()const;
+        // Get dimensions of the text from the last print call
         Vector2di getDimensions()const{return dimensions;}
         Vector2di getDimensions(CRstring str);
+        int getWidth()const{return dimensions.x;}
+        int getHeight()const{return dimensions.y;}
         #ifndef PENJIN_3D
             Vector2df getStartPosition()const{return startPos;}
             Vector2df getPosition()const{return position;}
@@ -111,11 +121,8 @@ class Text
             Vector3df getStartPosition()const{return startPos;}
             Vector3df getPosition()const{return position;}
         #endif
-        int getWidth()const{return dimensions.x;}
-        int getHeight()const{return dimensions.y;}
-
+		// Keep the position in between multiple print calls
         void setRelativity(CRbool rel){relativePos = rel;}
-        //void setCentreText(CRbool centre){centreText = centre;} /// WARNING needs some work!
 
         ///	You must have used the above functions in order to use the following print functions
         void print(char* text);		//	write a char* string to the screen
@@ -138,30 +145,39 @@ class Text
 
         void clear();
 
-		// set the size of the boundary
-        void setUpBoundary(const Vector2di& bound)
-        {
-            clipBoundary.w = bound.x;
-            clipBoundary.h = bound.y;
-        }
-        void setUpBoundary(CRint width, CRint height)
-        {
-        	clipBoundary.w = width;
-        	clipBoundary.h = height;
-        }
-        // this actually does not do anything
-        // to set the position of the boundary use setPosition
-        void setDownBoundary(const Vector2di& bound)
+		// Set the size of the boundary
+		// The boundary affects text alignment and text wrapping (see those functions for more details).
+		// If none has been set or it has been set to a non-positive number, the
+		// borders of the screen will define text wrapping and position will be used for alignment
+        void setBoundary(const Vector2di& bound)
         {
             clipBoundary.x = bound.x;
             clipBoundary.y = bound.y;
         }
+        void setBoundary(CRint width, CRint height)
+        {
+        	clipBoundary.x = width;
+        	clipBoundary.y = height;
+        }
+        // Kept for backwards compatibility
+        void setUpBoundary(const Vector2di& bound)
+        {
+        	setBoundary(bound);
+        }
+        void setUpBoundary(CRint width, CRint height)
+        {
+        	setBoundary(width, height);
+        }
         void setBoundaries(const Vector2di& lowBound,const Vector2di& hiBound)
         {
-            setUpBoundary(hiBound);
-            setDownBoundary(lowBound);
+            setBoundary(hiBound);
+            setPosition(lowBound);
         }
-        void setBoundaries(const SDL_Rect& boundaries){clipBoundary = boundaries;}
+        void setBoundaries(SDL_Rect bounds)
+        {
+        	setPosition(bounds.x, bounds.y);
+        	setBoundary(bounds.w, bounds.h);
+        }
 
         void clearGlyphs();
     private:
@@ -190,7 +206,7 @@ class Text
         ALIGNMENT alignment;
         Colour colour;
         Colour bgColour;
-        SDL_Rect clipBoundary;      //  The area that the Text is allowed to exist within
+        Vector2di clipBoundary; // The size of the area that the Text is allowed to exist within (also used for position with right aligned or centred text)
         string lastText;
 };
 
