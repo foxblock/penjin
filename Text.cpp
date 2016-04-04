@@ -132,6 +132,8 @@ PENJIN_ERRORS Text::loadFont(CRstring name,CRuint fontSize)
     }
 	if(font)
 	{
+		// TODO: Implement kerning for glyphs
+		TTF_SetFontKerning(font, 0);
 	    // check if we already have Glyphs for this fontSize
 	    if(glyphs.size() >= fontSize)
 	    {
