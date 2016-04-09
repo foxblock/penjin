@@ -162,7 +162,8 @@ PENJIN_ERRORS Text::loadFont(CRstring name,CRuint fontSize)
         glyphs[fontSize-1][0]->refresh();
         fontName = name;
         this->fontSize = fontSize;
-        calcDimensions(); // preliminary dimensions (already gives us a height at least)
+        // At this point we can already calculate the height of a single line
+		dimensions.y = TTF_FontLineSkip(font);
 		return PENJIN_OK;
 	}
 	return PENJIN_TTF_UNABLE_TO_OPEN;
@@ -200,15 +201,14 @@ void Text::print(SDL_Surface* screen, CRstring text)
 	// make text advance cursor position
 	if (!relativePos)
 		position = startPos;
-	//  Check if any of the string has had to be recreated
-	bool isRefreshed = false;
-	// make a guess to dimensions using the Dummy char
 	Vector2di guess;
 	TTF_SizeText(font, text.c_str(), &guess.x, &guess.y );
 	if (alignment != LEFT_JUSTIFIED)
 	{
 		align(guess);
 	}
+	Vector2di topLeft(position.x, position.y);
+	Vector2di bottomRight(-1,-1);
 	//  Run through the text chars
 	for (uint i = 0; i < text.size(); ++i)
 	{
@@ -221,6 +221,8 @@ void Text::print(SDL_Surface* screen, CRstring text)
 		//  check for newLine
 		else if (c == '\n')
 		{
+			bottomRight.x = max(bottomRight.x, position.x);
+			topLeft.x = min(topLeft.x, startPos.x);
 			newLine();
 			continue;
 		}
@@ -248,7 +250,11 @@ void Text::print(SDL_Surface* screen, CRstring text)
 				// Wrapping can be calculated no matter how text is aligned
 				if ((clipBoundary.x > 0 && position.x + guess.x >= startPos.x + clipBoundary.x)
 						|| (clipBoundary.x <= 0 && position.x + guess.x >= GFX::getXResolution()))
+				{
+					bottomRight.x = max(bottomRight.x, position.x);
+					topLeft.x = min(topLeft.x, startPos.x);
 					newLine();
+				}
 				continue;
 			}
 			else
@@ -283,7 +289,7 @@ void Text::print(SDL_Surface* screen, CRstring text)
 		// check properties of glyph if they differ from what we want to render.
 		// init/fill glyph image, if glyph was just created
 		current->setPosition(&position);
-		isRefreshed = current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
+		current->update(colour,bgColour,glyphs[fontSize-1].front()->getRenderMode());
 
 		// Forced wrapping (text does not fit screen and does not wrap nicely at next space)
 		if (wrapText)
@@ -291,6 +297,8 @@ void Text::print(SDL_Surface* screen, CRstring text)
 			if ((clipBoundary.x > 0 && position.x + current->getWidth() >= startPos.x + clipBoundary.x)
 					|| (clipBoundary.x <= 0 && position.x + current->getWidth() >= GFX::getXResolution()))
 			{
+				bottomRight.x = max(bottomRight.x, position.x);
+				topLeft.x = min(topLeft.x, startPos.x);
 				newLine();
 				current->setPosition(&position);
 			}
@@ -301,11 +309,10 @@ void Text::print(SDL_Surface* screen, CRstring text)
 		//  Advance cursor
 		position.x += current->getWidth();
 	}
-	if(isRefreshed || lastText != text)
-	{
-		calcDimensions();
-		lastText = text;
-	}
+	bottomRight.x = max(bottomRight.x, position.x);
+	bottomRight.y = position.y + TTF_FontLineSkip(font);
+	dimensions = bottomRight - topLeft;
+	lastText = text;
 }
 
 void Text::print(SDL_Surface* screen, char* text)
@@ -377,18 +384,12 @@ void Text::align(const Vector2di& guess)
 			// This happens when relativity is true and the last print operation did not end in a new line
 			// In this case we try to align to last printed text
 			// (We cannot do this on centred text, since it would not be properly centred then)
-			position.x -= guess.x;
+			position.x -= dimensions.x + guess.x;
 		}
 		else
 			position.x += clipBoundary.x - guess.x;
     }
     // Otherwise text is LEFT_JUSTIFIED so do nothing.
-}
-
-void Text::calcDimensions()
-{
-    dimensions.x = position.x - startPos.x + glyphs[fontSize-1][0]->getWidth();
-    dimensions.y = position.y - startPos.y + TTF_FontLineSkip(font);
 }
 
 Vector2di Text::getDimensions(CRstring str)

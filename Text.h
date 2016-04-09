@@ -67,9 +67,9 @@ class Text
         PENJIN_ERRORS setFontSize(CRuint s);
         uint getFontSize()const{return fontSize;}
         // Sets the starting position of the text
-        // If a bounding box has been set by a call to setBoundary, this sets the
+        // If a bounding box has been set by a call to setBoundary, this sets its
         // top-left corner position and text will be aligned in that bounding box.
-        // Else it will be aligned to this position
+        // If no bounding box has been set, text will be aligned to this position
         template <class T>
         void setPosition(const T& pos){position.x = pos.x;position.y = pos.y;startPos = position;}
 
@@ -97,8 +97,9 @@ class Text
 
 		// Wrap text if it exceeds the horizontal boundary. Will try to wrap text
 		// nicely on space and - first, will wrap on any char if that is not possible
-		// The boundary is defined by a call to setBoundary.
+		// The boundary is defined by a call to setBoundary().
 		// If no boundary has been defined the borders of the screen will break the text
+		// NOTE: wrapping does not work with centred and right-aligned text
         void setWrapping(CRbool shouldWrap){wrapText = shouldWrap;}
         bool getWrapping()const{return wrapText;}
         void setAlignment(const ALIGNMENT& align){alignment = align;}
@@ -108,20 +109,28 @@ class Text
         bool isMonoSpaced()const{return TTF_FontFaceIsFixedWidth(font);}
         void setRenderMode(const GlyphClass::RENDER_MODES& m);
         GlyphClass::RENDER_MODES getRenderMode()const;
-        // Get dimensions of the text from the last print call
+        // Get dimensions of the text from the last print call (includes wrapping)
         Vector2di getDimensions()const{return dimensions;}
-        Vector2di getDimensions(CRstring str);
         int getWidth()const{return dimensions.x;}
         int getHeight()const{return dimensions.y;}
+        // Get the expected dimensions of the passed text.
+        // NOTE: Does not take wrapping into account!
+        Vector2di getDimensions(CRstring str);
         #ifndef PENJIN_3D
             Vector2df getStartPosition()const{return startPos;}
             Vector2df getPosition()const{return position;}
 
         #else
+			// Get the starting position of the text (the one you set in a call to setPosition() )
+			// NOTE: This is not always the top-left corner of the text.
+			// NOTE: This is the starting position of the first print call of consecutive print calls with relativity enabled
+			// If a text is not left-aligned, you have to calculate that yourself (use getDimensions() )
             Vector3df getStartPosition()const{return startPos;}
+            // Get the current position of the text-cursor, which is always behind the last-printed character
             Vector3df getPosition()const{return position;}
         #endif
 		// Keep the position in between multiple print calls
+		// NOTE: Does not work horizontally on centred text, because the size of the full text has be known for alignement before printing
         void setRelativity(CRbool rel){relativePos = rel;}
 
         ///	You must have used the above functions in order to use the following print functions
@@ -179,10 +188,10 @@ class Text
         	setBoundary(bounds.w, bounds.h);
         }
 
+		// Clear the glyph cache (will recreate necessary glyphs on next print call)
         void clearGlyphs();
     private:
         void align(const Vector2di& dims);
-        void calcDimensions();
         void newLine();
         TTF_Font* font;
         string fontName;
