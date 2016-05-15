@@ -311,7 +311,7 @@ void SimpleJoy::update()
 				if(((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getAxis() == axis)
 				{
 					#ifdef _DEBUG
-					cout << "DAXIS: " << (Event.jaxis.value >> 8) << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
+					//cout << "DAXIS: " << (Event.jaxis.value >> 8) << "  " << ((KeyMapDigitalJoyAxis*)players[player].mapper.keys[b])->getTrigger() << endl;
 					#endif
 					if(Event.type == SDL_JOYAXISMOTION)
 					{

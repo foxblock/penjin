@@ -121,6 +121,8 @@ void KeyMapKey::setKey(CRstring k)
             key=KEY_E;
         else if(k == "END")
             key=KEY_END;
+        else if(k == "ENTER" || k == "RETURN")
+            key=KEY_ENTER;
         /*else if(k == "=")
             key=KEY_EQUALS;*/
         else if(k == "ESCAPE")
@@ -278,8 +280,6 @@ void KeyMapKey::setKey(CRstring k)
             key=KEY_RIGHTALT;
         else if(k == "RIGHT_CTRL")
             key=KEY_RIGHTCTRL;
-        else if(k == "RETURN")
-            key=KEY_ENTER;
         else if(k == "RIGHT")
             key=KEY_RIGHT;
         else if(k == "]")
