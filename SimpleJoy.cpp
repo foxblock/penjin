@@ -663,8 +663,8 @@ void SimpleJoy::clearEventQueue()
     // && (defined(PENJIN_ES) || defined(PENJIN_ES2))
 
     #else
-        SDL_Event event;
-        while(SDL_PollEvent(&event));	//  Clears the event queue
+        SDL_Event temp;
+        while (SDL_PollEvent(&temp));	//  Clears the event queue
     #endif
 }
 void SimpleJoy::resetKeys()
@@ -692,7 +692,6 @@ void SimpleJoy::resetKeys()
 }
 void SimpleJoy::resetKey(CRstring k)
 {
-	clearEventQueue();
 	KeyMapKey t(k);
 	for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
 	{
@@ -709,7 +708,6 @@ void SimpleJoy::resetKey(__u16 k)
 void SimpleJoy::resetKey(SDLKey k)
 #endif
 {
-	clearEventQueue();
 	for (vector<tKey>::iterator I = players[player].storeKeys.begin(); I != players[player].storeKeys.end(); ++I)
 	{
 		if (I->key.getKey() == k)
@@ -721,13 +719,11 @@ void SimpleJoy::resetKey(SDLKey k)
 }
 void SimpleJoy::resetMousePosition()
 {
-    clearEventQueue();
 	players[player].mouse.x = 0;
 	players[player].mouse.y = 0;
 }
 void SimpleJoy::resetMouseButtons()
 {
-    clearEventQueue();
 	#ifdef PENJIN_PANDORA_TOUCHSCREEN_FIX
 	if (players[player].leftClick != sjRELEASED)
 		players[player].leftClickNeedsRelease = true;
@@ -736,13 +732,11 @@ void SimpleJoy::resetMouseButtons()
 }
 void SimpleJoy::resetMouseWheel()
 {
-	clearEventQueue();
 	players[player].wheel = 0;
 }
 
 void SimpleJoy::resetDpad()
 {
-    clearEventQueue();
     players[player].Up=players[player].Down=players[player].Left=players[player].Right=sjRELEASED;
     #if defined(PLATFORM_GP2X) || defined(PLATFORM_PC)
         players[player].UpLeft=players[player].UpRight=players[player].DownLeft=players[player].DownRight=sjRELEASED;
@@ -750,68 +744,56 @@ void SimpleJoy::resetDpad()
 }
 void SimpleJoy::resetA()
 {
-    clearEventQueue();
     players[player].A=sjRELEASED;
 }
 void SimpleJoy::resetB()
 {
-    clearEventQueue();
     players[player].B=sjRELEASED;
 }
 void SimpleJoy::resetX()
 {
-	clearEventQueue();
     players[player].X=sjRELEASED;
 }
 void SimpleJoy::resetY()
 {
-	clearEventQueue();
     players[player].Y=sjRELEASED;
 }
 void SimpleJoy::resetL()
 {
-	clearEventQueue();
     players[player].L=sjRELEASED;
 }
 void SimpleJoy::resetR()
 {
-	clearEventQueue();
     players[player].R=sjRELEASED;
 }
 
 void SimpleJoy::resetStart()
 {
-    clearEventQueue();
     players[player].Start=sjRELEASED;
 }
 
 void SimpleJoy::resetSelect()
 {
-    clearEventQueue();
     players[player].Select=sjRELEASED;
 }
 
 void SimpleJoy::resetUp()
 {
-    clearEventQueue();
     players[player].Up=sjRELEASED;
 }
 
 void SimpleJoy::resetDown()
 {
-    clearEventQueue();
     players[player].Down=sjRELEASED;
 }
 
 void SimpleJoy::resetLeft()
 {
-    clearEventQueue();
     players[player].Left=sjRELEASED;
 }
 
 void SimpleJoy::resetRight()
 {
-    clearEventQueue();
     players[player].Right=sjRELEASED;
 }
 

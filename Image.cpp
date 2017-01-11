@@ -691,8 +691,10 @@ SDL_Surface* Image::rotoZoom(SDL_Surface& in, SDL_Rect& src,  SDL_Rect& dst)
         #else
             tempImage = rotozoomSurfaceXY(&in, angle, scale.x, scale.y, SMOOTHING_OFF);
         #endif
+        #ifndef PENJIN_NO_CENTRE_SCALING
         dst.x += (src.w - tempImage->w)*0.5f;
         dst.y += (src.h - tempImage->h)*0.5f;
+        #endif
     }
 
     // This code fixes colour keying in 32 bpp mode (otherwise the colour key colour shows)
