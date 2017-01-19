@@ -56,19 +56,21 @@ class FileLister : public Menu
         virtual void update();
 
         string getPath()const{return workingDir;}
+        // Set the working directory and create the listing (set all other settings and filters beforehand!)
         void setPath(CRstring path){workingDir = path; createListing();}
         void setCheckFolderDepth(CRbool check){checkFolderDepth = check;}
         string getSelected();       //  Return the string of selected item
         int getSelectedType();      //  Return the type of the selected item (dir or not)
         vector<string> getListing(){return listing;}//  Return entire director listing as a vector of strings.
+        void clearListing(); 		//  Clear current listing
         string enter();             //  Enter the selected item(if directory) and return full path string of item.
         void goUp();                //  Go up one level in the directory tree
 
 		// Filter results by file extension. Only files with a matching extension
 		// will show up in the listing.
-		// Pass file extension without the leading dot (CORRENT: "txt", WRONG: ".txt")
+		// Pass file extension without the leading dot (CORRECT: "txt", WRONG: ".txt")
 		// Use special filter "DIR" to filter for directories
-        void addFilter(CRstring f){filters.push_back(f);createListing();}
+        void addFilter(CRstring f){filters.push_back(f);}
         void clearFilters(){filters.clear();}
         // Include ".." in listing to go to parent directory. Only works when "DIR" filter is used.
         void includeParentDirInListing(CRbool inclParent) {includeParent = inclParent;}

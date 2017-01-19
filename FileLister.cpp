@@ -59,8 +59,7 @@ void FileLister::createListing()
     if(!dir)
         return;
 
-    listing.clear();
-    listingTypes.clear();
+    clearListing();
     if (includeLabel)
 	{
 		listing.push_back(workingDir);
@@ -169,6 +168,11 @@ int FileLister::getSelectedType()
 	return -1;
 }
 
+void FileLister::clearListing()
+{
+	listing.clear();
+    listingTypes.clear();
+}
 
 string FileLister::enter()
 {
