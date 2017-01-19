@@ -338,11 +338,11 @@ class SimpleJoy
         string keyboardMask;
         int keyboardMaxLength;
         #ifdef _WIN32
-        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[]^_`{}~"
-        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !#$%&'()+,-.;=?@[\\]^_`{}~"
+        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !#$%&'()+,-.;=?@[]^_`{}~"
+        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !#$%&'()+,-.;=?@[\\]^_`{}~"
         #else
-        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-.:;<=>?@[\\]^_`{|}~"
-        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        #define KEYBOARD_MASK_FILE "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !\"#$%&'()*+,-.:;<=>?@[\\]^_`{|}~"
+        #define KEYBOARD_MASK_FILEFOLDER "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
         #endif
 		#define KEYBOARD_MASK_ASCII " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         #define KEYBOARD_MASK_LETTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
