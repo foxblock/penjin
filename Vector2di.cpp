@@ -40,7 +40,8 @@ void Vector2di::normalise()
 #ifdef PENJIN_SDL
 bool Vector2di::inRect(const SDL_Rect& rect) const
 {
-    if (x < rect.x || y < rect.y || x >= rect.x + rect.w || y >= rect.y + rect.h)
+	// Need to convert size values to signed int to circumvent errors with negative position values being converted to unsigned and overflowing
+    if (x < rect.x || y < rect.y || x >= rect.x + (int)rect.w || y >= rect.y + (int)rect.h)
         return false;
     return true;
 }
@@ -48,7 +49,8 @@ bool Vector2di::inRect(const SDL_Rect& rect) const
 
 bool Vector2di::inRect(const int x, const int y, const unsigned int w, const unsigned int h) const
 {
-    if (this->x < x || this->y < y || this->x >= x + w || this->y >= y + h)
+	// Need to convert size values to signed int to circumvent errors with negative position values being converted to unsigned and overflowing
+    if (this->x < x || this->y < y || this->x >= x + (int)w || this->y >= y + (int)h)
         return false;
     return true;
 }
