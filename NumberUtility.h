@@ -77,6 +77,14 @@ namespace NumberUtility
         }
         return val;
     }
+    template <>
+    inline int wrapValue<int>(int val, const int& limit)
+    {
+    	val = val % limit;
+    	if (val < 0)
+			return limit + val;
+		return val;
+    }
 
     /// Angles
     float degToRad(CRfloat a);

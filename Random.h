@@ -51,7 +51,7 @@ class RandomClass
         RandomClass(){;}
         RandomClass(CRint min, CRint max);
 
-        void setSeed(CRint s){seed = s;Random::setSeed(s);}
+        void setSeed(CRint s){seed = s; Random::setSeed(s);}
         int getSeed() const {return seed;}
 
         void setMax(CRint max);
